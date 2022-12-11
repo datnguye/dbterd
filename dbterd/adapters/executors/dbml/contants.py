@@ -1,0 +1,2 @@
+class Strategies:
+    DBML_TEST_RELATIONSHIP = "DBML_TEST_RELATIONSHIP"

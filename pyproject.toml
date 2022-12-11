@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "dbterd"
+version = "0.0.0"
+description = "dbterd is a Command Line Interface (CLI) to convert dbt manifest.json file to diagram file"
+authors = ["Dat Nguyen <datnguyen.it09@gmail.com>"]
+packages = [
+  {include = "dbterd"},
+  {include = "README.md"},
+  {include = "poetry.lock"},
+]
+
+[tool.poetry.scripts]
+dbterd = "dbterd.main:main"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+click = "^8.1.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+pytest-sugar = "^0.9.6"
+black = "^22.10.0"
+coverage = {version = "^6.5.0", extras = ["toml"]}
+poethepoet = "^0.16.4"
+pre-commit = "^2.20.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poe.tasks]
+git-hooks = { "shell" = "pre-commit install --install-hooks && pre-commit install --hook-type commit-msg" }
