@@ -1,7 +1,7 @@
 from dbterd.adapters.base import Executor
 
 
-class Worker(Executor):
+class DbtWorker(Executor):
     def __init__(self, ctx) -> None:
         super().__init__(ctx)
 

@@ -1,7 +1,7 @@
 import click
 from dbterd.helpers import jsonify
 from dbterd.cli import params
-from dbterd.adapters.worker import Worker
+from dbterd.adapters.worker import DbtWorker
 from dbterd.helpers.log import logger
 
 
@@ -36,4 +36,4 @@ def debug(ctx, **kwargs):
 @params.common_params
 def run(ctx, **kwargs):
     """Run the convert"""
-    Worker(ctx).run(**kwargs)
+    DbtWorker(ctx).run(**kwargs)

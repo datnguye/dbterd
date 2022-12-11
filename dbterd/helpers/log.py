@@ -30,7 +30,8 @@ class LogFormatter(logging.Formatter):
 logger = logging.getLogger("dbterd")
 logger.setLevel(logging.DEBUG)
 
-ch = logging.StreamHandler()
-ch.setLevel(logging.DEBUG)
-ch.setFormatter(LogFormatter())
-logger.addHandler(ch)
+if len(logger.handlers) == 0:
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    ch.setFormatter(LogFormatter())
+    logger.addHandler(ch)
