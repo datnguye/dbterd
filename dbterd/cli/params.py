@@ -12,6 +12,13 @@ def common_params(func):
         type=click.STRING,
     )
     @click.option(
+        "--manifest-version",
+        "-mv",
+        help="Specified dbt manifest.json version",
+        default=None,
+        type=click.STRING,
+    )
+    @click.option(
         "--target",
         "-t",
         help="Target to the diagram-as-code platform",

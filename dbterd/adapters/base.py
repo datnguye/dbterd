@@ -1,6 +1,8 @@
 import abc
+import json
 from click import Context
 from dbterd.adapters import factory
+from dbt_artifacts_parser import parser
 
 
 class Executor(abc.ABC):
@@ -14,6 +16,16 @@ class Executor(abc.ABC):
     def run(self, **kwargs):
         self.__run_by_strategy(**kwargs)
 
+    def __read_manifest(self, mp: str, mv: int = None):
+        with open(f"{mp}/manifest.json", "r") as fp:
+            manifest_dict = json.load(fp)
+            parse_func = getattr(parser, "parse_manifest")
+            if mv:
+                parse_func = getattr(parser, f"parse_manifest_v{mv}")
+            manifest_obj = parse_func(manifest=manifest_dict)
+
+            return manifest_obj
+
     def __run_by_strategy(self, **kwargs):
         target_module = factory.load_executor(name=kwargs["target"])
         operation_dispatcher = getattr(target_module, "run_operation_dispatcher")
@@ -21,4 +33,7 @@ class Executor(abc.ABC):
             f"{kwargs['target']}_{kwargs['algo']}",
             getattr(target_module, "operation_default"),
         )
-        strategy_func(manifest_path=kwargs["manifest_path"])
+        manifest = self.__read_manifest(
+            mp=kwargs["manifest_path"], mv=kwargs["manifest_version"]
+        )
+        strategy_func(manifest)

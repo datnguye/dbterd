@@ -11,13 +11,13 @@ class EnhancedJSONEncoder(json.JSONEncoder):
         return super().default(o)
 
 
-def mask(obj: str, masks: list = []):
+def __mask(obj: str, masks: list = []):
     obj_dict = json.loads(obj)
     for key, value in obj_dict.items():
         if key in masks:
             obj_dict[key] = value[0:5] + "***********"
         if isinstance(value, dict):
-            obj_dict[key] = mask(json.dumps(value, cls=EnhancedJSONEncoder), masks)
+            obj_dict[key] = __mask(json.dumps(value, cls=EnhancedJSONEncoder), masks)
 
     return obj_dict
 
@@ -27,5 +27,5 @@ def to_json(obj, masks=[]):
         return {}
     mask_dict = obj
     if "__dict__" in mask_dict:
-        mask_dict = mask(json.dumps(obj.__dict__, cls=EnhancedJSONEncoder), masks)
+        mask_dict = __mask(json.dumps(obj.__dict__, cls=EnhancedJSONEncoder), masks)
     return json.dumps(mask_dict, indent=4, cls=EnhancedJSONEncoder)
