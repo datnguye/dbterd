@@ -16,11 +16,9 @@ class Executor(abc.ABC):
 
     def __run_by_strategy(self, **kwargs):
         target_module = factory.load_executor(name=kwargs["target"])
-        operation_dispatcher = getattr(
-            target_module, "run_operation_dispatcher"
-        )
+        operation_dispatcher = getattr(target_module, "run_operation_dispatcher")
         strategy_func = operation_dispatcher.get(
             f"{kwargs['target']}_{kwargs['algo']}",
             getattr(target_module, "operation_default"),
         )
-        strategy_func(manifest_path=kwargs['manifest_path'])
+        strategy_func(manifest_path=kwargs["manifest_path"])

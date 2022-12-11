@@ -17,9 +17,7 @@ def mask(obj: str, masks: list = []):
         if key in masks:
             obj_dict[key] = value[0:5] + "***********"
         if isinstance(value, dict):
-            obj_dict[key] = mask(
-                json.dumps(value, cls=EnhancedJSONEncoder), masks
-            )
+            obj_dict[key] = mask(json.dumps(value, cls=EnhancedJSONEncoder), masks)
 
     return obj_dict
 
@@ -27,5 +25,7 @@ def mask(obj: str, masks: list = []):
 def to_json(obj, masks=[]):
     if not obj:
         return {}
-    mask_dict = mask(json.dumps(obj.__dict__, cls=EnhancedJSONEncoder), masks)
+    mask_dict = obj
+    if "__dict__" in mask_dict:
+        mask_dict = mask(json.dumps(obj.__dict__, cls=EnhancedJSONEncoder), masks)
     return json.dumps(mask_dict, indent=4, cls=EnhancedJSONEncoder)

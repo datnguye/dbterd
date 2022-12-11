@@ -2,6 +2,7 @@ import click
 from dbterd.helpers import jsonify
 from dbterd.cli import params
 from dbterd.adapters.worker import Worker
+from dbterd.helpers.log import logger
 
 
 # dbterd
@@ -23,9 +24,10 @@ def dbterd(ctx, **kwargs):
 @params.common_params
 def debug(ctx, **kwargs):
     """Inspect the hidden magics"""
-    print(f"Arguments used: {kwargs}")
-    print(f"Context used: {jsonify.to_json(ctx.obj)}")
-
+    logger.info("**Arguments used**")
+    logger.debug(jsonify.to_json(kwargs))
+    logger.info("**Arguments used**")
+    logger.debug(jsonify.to_json(ctx.obj))
 
 
 # dbterd run
