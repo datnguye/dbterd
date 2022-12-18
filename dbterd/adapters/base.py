@@ -1,4 +1,5 @@
 import abc
+from asyncio.log import logger
 import json
 from pathlib import Path
 from click import Context
@@ -38,5 +39,7 @@ class Executor(abc.ABC):
             mp=kwargs["manifest_path"], mv=kwargs["manifest_version"]
         )
         result = strategy_func(manifest)
-        with open(kwargs["output"] + f"{result[0]}", "w") as f:
+        path = kwargs["output"] + f"/{result[0]}"
+        with open(path, "w") as f:
+            logger.info(path)
             f.write(result[1])
