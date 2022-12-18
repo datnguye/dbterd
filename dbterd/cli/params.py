@@ -26,6 +26,13 @@ def common_params(func):
         type=click.STRING,
     )
     @click.option(
+        "--output",
+        "-o",
+        help="Output the result file. Default to the same target dir",
+        default=default.default_output_path(),
+        type=click.STRING,
+    )
+    @click.option(
         "--algo",
         "-a",
         help="Specified algorithm in the way to detect diagram connectors",

@@ -1,5 +1,6 @@
 import abc
 import json
+from pathlib import Path
 from click import Context
 from dbterd.adapters import factory
 from dbt_artifacts_parser import parser
@@ -36,4 +37,6 @@ class Executor(abc.ABC):
         manifest = self.__read_manifest(
             mp=kwargs["manifest_path"], mv=kwargs["manifest_version"]
         )
-        strategy_func(manifest)
+        result = strategy_func(manifest)
+        with open(kwargs["output"] + f"{result[0]}", "w") as f:
+            f.write(result[1])

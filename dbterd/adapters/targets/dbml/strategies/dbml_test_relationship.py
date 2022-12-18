@@ -1,5 +1,5 @@
-from dbterd.helpers.log import logger
+from dbterd.adapters.targets.dbml.engine import engine
 
 
 def run(manifest):
-    logger.info(manifest)
+    return ("output.dbml", engine.parse(manifest=manifest))
