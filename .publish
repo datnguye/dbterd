@@ -1,2 +1,0 @@
-pip install twine
-poetry build && twine upload dist/*
