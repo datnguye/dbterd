@@ -1,12 +1,27 @@
 [tool.poetry]
 name = "dbterd"
-version = "0.1.4-beta"
+version = "0.1.0"
 description = "dbterd is a Command Line Interface (CLI) to convert dbt manifest.json file to diagram file"
 authors = ["Dat Nguyen <datnguyen.it09@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/datnguye/dbterd"
+repository = "https://github.com/datnguye/dbterd"
+keywords = ["flake8", "markdown", "lint"]
+classifiers = [
+    "Environment :: Console",
+    "Framework :: click",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Software Development :: Quality Assurance",
+]
+include = [
+    "LICENSE",
+]
 packages = [
   {include = "dbterd"},
   {include = "README.md"},
-  {include = "poetry.lock"},
 ]
 
 [tool.poetry.scripts]

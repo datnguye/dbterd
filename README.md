@@ -1,10 +1,10 @@
-# dbterd (BETA)
+# dbterd
 CLI to generate DBML file from dbt manifest.json
 
 ![python-cli](https://img.shields.io/badge/CLI-Python-FFCE3E?style=flat-square&labelColor=14354C&logo=python&logoColor=white)
 
 ```
-pip install dbterd==0.1.4b0
+pip install dbterd==0.1.0
 ```
 
 Verify installed version:
@@ -33,7 +33,12 @@ Commands:
 ## Quick examine command
 ```bash
 # note that no relationship test = no erd relationship
+
+# select all models in dbt_resto 
 dbterd run -mp "./samples/v7-adfacebook" -o "./target"
+# select only models in dbt_resto excluding staging
+dbterd run -mp "./samples/v7-adfacebook" -o "./target" -s model.dbt_resto -ns model.dbt_resto.staging staging ones
+# other samples
 dbterd run -mp "./samples/v7-fivetranlog" -o "./target"
 dbterd run -mp "./samples/v4-dbtresto" -o "./target" 
 ```
@@ -50,7 +55,7 @@ dbt docs generate
 Copy `manifest.json` into a specific folder, and run 
 ```
 dbterd run -mp "/path/to/manifest" -o "/path/to/output"
-# dbterd run -mp "./target" -o "./target"
+# dbterd run -mp "./target/v4-dbtresto" -o "./target" -s model.dbt_resto -ns model.dbt_resto.staging
 ```
 
 File `./target/output.dbml` will be generated as the result
@@ -73,3 +78,6 @@ Your terminal should provide the info as below:
 The site will be looks like:
 
 ![screencapture-dbdocs-io-datnguye-poc-2022-12-18-22_02_28.png](./assets/images/screencapture-dbdocs-io-datnguye-poc-2022-12-18-22_02_28.png)
+
+Result after applied Model Selection:
+![screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png](./assets/images/screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png)

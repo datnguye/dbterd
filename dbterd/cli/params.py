@@ -39,6 +39,21 @@ def common_params(func):
         default=default.deafult_algo(),
         type=click.STRING,
     )
+    @click.option(
+        "--select",
+        "-s",
+        help="Selecttion criteria. Support 'starts with' a string",
+        default=None,
+        type=click.STRING,
+    )
+    @click.option(
+        "--exclude",
+        "-ns",
+        help="Exclusion criteria. Support 'not starts with' a string",
+        default=None,
+        type=click.STRING,
+    )
+
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)
