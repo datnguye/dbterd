@@ -10,7 +10,6 @@ repository = "https://github.com/datnguye/dbterd"
 keywords = ["flake8", "markdown", "lint"]
 classifiers = [
     "Environment :: Console",
-    "Framework :: click",
     "Operating System :: OS Independent",
     "Topic :: Software Development :: Documentation",
     "Topic :: Software Development :: Libraries :: Python Modules",
