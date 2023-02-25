@@ -10,16 +10,14 @@ def parse(**kwargs):
 
     dbml = ""
     for table in tables:
-        dbml += """Table \"{table}\"{{
-            {columns}
-        }}\n
-        """.format(
+        dbml += """Table \"{table}\"{{\n{columns}\n}}\n""".format(
             table=table.name,
-            columns="\n".join([f'"{x.name}" {x.data_type}' for x in table.columns]),
+            columns="\n".join([f'    "{x.name}" {x.data_type}' for x in table.columns]),
         )
+
+    dbml += "//Relationtips are based on the dbt Relationship Tests\n"
     for rel in relationships:
-        dbml += f"""Ref: \"{rel.table_map[1]}\".\"{rel.column_map[1]}\" > \"{rel.table_map[0]}\".\"{rel.column_map[0]}\"
-        """
+        dbml += f"""Ref: \"{rel.table_map[1]}\".\"{rel.column_map[1]}\" > \"{rel.table_map[0]}\".\"{rel.column_map[0]}\"\n"""
 
     return dbml
 
