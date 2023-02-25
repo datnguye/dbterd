@@ -26,17 +26,32 @@ def parse(**kwargs):
 
 def get_tables(manifest):
     tables = [
-        Table(name=x, raw_sql=manifest.nodes[x].compiled_sql, columns=[])
+        Table(
+            name=x,
+            raw_sql=manifest.nodes[x].compiled_sql if hasattr(manifest.nodes[x], 'compiled_sql') else manifest.nodes[x].compiled_code,
+            columns=[]
+        )
         for x in manifest.nodes
         if x.startswith("model")
     ]
     for table in tables:
         parser = Parser(table.raw_sql)
-        columns = parser.columns_aliases_names
-        for column in columns:
+        try:
+            column_names = parser.columns_aliases_names
+        except:
+            pass
+        
+        if column_names:
+            for column in column_names:
+                table.columns.append(
+                    Column(
+                        name=column,
+                    )
+                )
+        else:
             table.columns.append(
                 Column(
-                    name=column,
+                    name="(*)",
                 )
             )
 
