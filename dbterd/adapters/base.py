@@ -38,7 +38,7 @@ class Executor(abc.ABC):
         manifest = self.__read_manifest(
             mp=kwargs["manifest_path"], mv=kwargs["manifest_version"]
         )
-        result = strategy_func(manifest)
+        result = strategy_func(manifest=manifest, **kwargs)
         path = kwargs["output"] + f"/{result[0]}"
         with open(path, "w") as f:
             logger.info(path)

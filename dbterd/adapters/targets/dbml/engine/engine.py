@@ -2,11 +2,14 @@ from dbterd.adapters.targets.dbml.engine.meta import Ref, Table, Column
 from sql_metadata import Parser
 
 
-def parse(**kwargs):
-    manifest = kwargs.get("manifest")
-
+def parse(manifest, **kwargs):
     tables = get_tables(manifest)
+    tables = [x for x in tables if x.name.startswith(kwargs.get('select',''))]
+    tables = [x for x in tables if kwargs.get('exclude','') and not x.name.startswith(kwargs.get('exclude',''))]
+
     relationships = get_relationships(manifest)
+    table_names = [x.name for x in tables]
+    relationships = [x for x in relationships if x.table_map[0] in table_names or x.table_map[1] in table_names]
 
     dbml = ""
     for table in tables:
