@@ -4,6 +4,9 @@ from dbterd.cli import params
 from dbterd.adapters.worker import DbtWorker
 from dbterd.helpers.log import logger
 
+import importlib.metadata
+__version__ = importlib.metadata.version("dbterd")
+
 
 # dbterd
 @click.group(
@@ -12,7 +15,7 @@ from dbterd.helpers.log import logger
     no_args_is_help=True,
     epilog="Specify one of these sub-commands and you can find more help from there.",
 )
-@click.version_option()
+@click.version_option(__version__)
 @click.pass_context
 def dbterd(ctx, **kwargs):
     """Tools for producing diagram-as-code"""

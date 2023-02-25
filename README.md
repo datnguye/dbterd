@@ -24,6 +24,14 @@ Commands:
   Specify one of these sub-commands and you can find more help from there.
 ```
 
+## Quick examine command
+```bash
+# note that no relationship test = no erd relationship
+dbterd run -mp "./samples/v7-adfacebook" -o "./target"
+dbterd run -mp "./samples/v7-fivetranlog" -o "./target"
+dbterd run -mp "./samples/v4-dbtresto" -o "./target" 
+```
+
 ## Quick DEMO
 #### 1. Produce your manifest json
 
