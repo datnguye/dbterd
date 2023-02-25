@@ -78,3 +78,6 @@ Your terminal should provide the info as below:
 The site will be looks like:
 
 ![screencapture-dbdocs-io-datnguye-poc-2022-12-18-22_02_28.png](./assets/images/screencapture-dbdocs-io-datnguye-poc-2022-12-18-22_02_28.png)
+
+Result after applied Model Selection:
+![screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png](./assets/images/screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png)
