@@ -4,8 +4,8 @@ from sql_metadata import Parser
 
 def parse(manifest, **kwargs):
     tables = get_tables(manifest)
-    tables = [x for x in tables if x.name.startswith(kwargs.get('select',''))]
-    tables = [x for x in tables if kwargs.get('exclude','') and not x.name.startswith(kwargs.get('exclude',''))]
+    tables = [x for x in tables if x.name.startswith(kwargs.get('select') or '')]
+    tables = [x for x in tables if kwargs.get('exclude') is None or not x.name.startswith(kwargs.get('exclude'))]
 
     relationships = get_relationships(manifest)
     table_names = [x.name for x in tables]
