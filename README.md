@@ -4,7 +4,7 @@ CLI to generate DBML file from dbt manifest.json
 ![python-cli](https://img.shields.io/badge/CLI-Python-FFCE3E?style=flat-square&labelColor=14354C&logo=python&logoColor=white)
 
 ```
-pip install dbterd==0.1.4b0
+pip install dbterd==0.1.0
 ```
 
 Verify installed version:
@@ -34,8 +34,11 @@ Commands:
 ```bash
 # note that no relationship test = no erd relationship
 
+# select all models in dbt_resto 
 dbterd run -mp "./samples/v7-adfacebook" -o "./target"
-dbterd run -mp "./samples/v7-adfacebook" -o "./target" -s model.dbt_resto -ns model.dbt_resto.staging # select only models in dbt_resto excluding staging ones
+# select only models in dbt_resto excluding staging
+dbterd run -mp "./samples/v7-adfacebook" -o "./target" -s model.dbt_resto -ns model.dbt_resto.staging staging ones
+# other samples
 dbterd run -mp "./samples/v7-fivetranlog" -o "./target"
 dbterd run -mp "./samples/v4-dbtresto" -o "./target" 
 ```
