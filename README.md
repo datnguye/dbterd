@@ -38,7 +38,7 @@ Commands:
 # select all models in dbt_resto 
 dbterd run -mp "./samples/v7-adfacebook" -o "./target"
 # select only models in dbt_resto excluding staging
-dbterd run -mp "./samples/v7-adfacebook" -o "./target" -s model.dbt_resto -ns model.dbt_resto.staging staging ones
+dbterd run -mp "./samples/v7-adfacebook" -o "./target" -s model.dbt_resto -ns model.dbt_resto.staging
 # other samples
 dbterd run -mp "./samples/v7-fivetranlog" -o "./target"
 dbterd run -mp "./samples/v4-dbtresto" -o "./target" 
