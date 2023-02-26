@@ -1,7 +1,7 @@
 # dbterd
 CLI to generate DBML file from dbt manifest.json
 
-[![PyPI version](https://badge.fury.io/py/dbterd.svg)](https://badge.fury.io/py/dbterd)
+[![PyPI version](https://badge.fury.io/py/dbterd.svg)](https://pypi.org/project/dbterd/)
 ![python-cli](https://img.shields.io/badge/CLI-Python-FFCE3E?labelColor=14354C&logo=python&logoColor=white)
 
 ```
