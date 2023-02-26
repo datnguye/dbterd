@@ -5,7 +5,7 @@ from typing import List, Optional
 @dataclass
 class Column:
     """
-    Sample: id varchar [primary key]
+    Sample DBML: id varchar [primary key]
     """
 
     name: str
@@ -15,7 +15,7 @@ class Column:
 @dataclass
 class Table:
     """
-    Sample:
+    Sample DBML:
     Table posts {
         id varchar [primary key]
     }
@@ -30,7 +30,7 @@ class Table:
 
 @dataclass
 class Ref:
-    """Sample: posts.user_id > users.id"""
+    """Sample DBML: Ref: posts.user_id > users.id"""
 
     name: str
     table_map: List[str]

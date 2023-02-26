@@ -39,6 +39,10 @@ Commands:
 dbterd run -mp "./samples/v4-dbtresto" -o "./target"
 # select only models in dbt_resto excluding staging
 dbterd run -mp "./samples/v4-dbtresto" -o "./target" -s model.dbt_resto -ns model.dbt_resto.staging
+# select only models in schema name "dbo" excluding staging
+dbterd run -mp "./samples/v4-dbtresto" -o "./target" -s schema:dbo -ns model.dbt_resto.staging
+# select only models in schema full name "dbt.dbo" excluding staging
+dbterd run -mp "./samples/v4-dbtresto" -o "./target" -s schema:dbt.dbo -ns model.dbt_resto.staging
 # other samples
 dbterd run -mp "./samples/v7-fivetranlog" -o "./target"
 dbterd run -mp "./samples/v7-adfacebook" -o "./target"
@@ -78,7 +82,7 @@ Your terminal should provide the info as below:
 
 The site will be looks like:
 
-![screencapture-dbdocs-io-datnguye-poc-2022-12-18-22_02_28.png](./assets/images/screencapture-dbdocs-io-datnguye-poc-2022-12-18-22_02_28.png)
+![screencapture-dbdocs-io-datnguye-poc-2022-12-18-22_02_28.png](https://github.com/datnguye/dbterd/blob/main/assets/images/screencapture-dbdocs-io-datnguye-poc-2022-12-18-22_02_28.png)
 
 Result after applied Model Selection:
-![screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png](./assets/images/screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png)
+![screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png](https://github.com/datnguye/dbterd/blob/main/assets/images/screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png)

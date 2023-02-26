@@ -7,8 +7,8 @@ def parse(manifest, **kwargs):
     tables = get_tables(manifest)
     # -- apply selection
     select_rule = (kwargs.get("select") or "").lower().split(":")
-    if select_rule[-1].startswith("schema"):
-        select_rule = select_rule[1]
+    if select_rule[0].startswith("schema"):
+        select_rule = select_rule[-1]
         tables = [
             x
             for x in tables
@@ -18,7 +18,7 @@ def parse(manifest, **kwargs):
             )  # --select schema:db.analytics
         ]
     else:
-        select_rule = select_rule[-1] # only take care of name
+        select_rule = select_rule[-1]  # only take care of name
         tables = [x for x in tables if x.name.startswith(select_rule)]
 
     # -- apply exclusion (take care of name only)
@@ -28,14 +28,29 @@ def parse(manifest, **kwargs):
         if kwargs.get("exclude") is None or not x.name.startswith(kwargs.get("exclude"))
     ]
 
-    # Parse Rel
+    # Parse Ref
     relationships = get_relationships(manifest)
     table_names = [x.name for x in tables]
     relationships = [
         x
         for x in relationships
-        if x.table_map[0] in table_names or x.table_map[1] in table_names
+        if x.table_map[0] in table_names and x.table_map[1] in table_names
     ]
+
+    # Fullfill columns in Tables (due to `select *`)
+    for relationship in relationships:
+        for table in tables:
+            table_columns = [x.name for x in table.columns]
+            if (
+                table.name == relationship.table_map[0]
+                and relationship.column_map[0] not in table_columns
+            ):
+                table.columns.append(Column(name=relationship.column_map[0]))
+            if (
+                table.name == relationship.table_map[1]
+                and relationship.column_map[1] not in table_columns
+            ):
+                table.columns.append(Column(name=relationship.column_map[1]))
 
     # Build DBML content
     dbml = "//Tables (based on the selection criteria)\n"
@@ -45,7 +60,7 @@ def parse(manifest, **kwargs):
             columns="\n".join([f'    "{x.name}" {x.data_type}' for x in table.columns]),
         )
 
-    dbml += "//Rels (based on the DBT Relationship Tests)\n"
+    dbml += "//Refs (based on the DBT Relationship Tests)\n"
     for rel in relationships:
         dbml += f"""Ref: \"{rel.table_map[1]}\".\"{rel.column_map[1]}\" > \"{rel.table_map[0]}\".\"{rel.column_map[0]}\"\n"""
 
