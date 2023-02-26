@@ -53,7 +53,6 @@ def common_params(func):
         default=None,
         type=click.STRING,
     )
-
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)

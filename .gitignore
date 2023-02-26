@@ -1,6 +1,7 @@
 # custom
 poetry.lock
 /target
+/samples/local
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

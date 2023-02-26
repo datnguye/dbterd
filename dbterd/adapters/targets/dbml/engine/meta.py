@@ -1,11 +1,11 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 
 @dataclass
 class Column:
     """
-    Sample: id varchar [primary key]
+    Sample DBML: id varchar [primary key]
     """
 
     name: str
@@ -15,21 +15,23 @@ class Column:
 @dataclass
 class Table:
     """
-    Sample:
+    Sample DBML:
     Table posts {
         id varchar [primary key]
     }
     """
 
     name: str
+    database: str
+    schema: str
     columns: Optional[List[Column]] = None
     raw_sql: Optional[str] = None
 
 
 @dataclass
 class Ref:
-    """Sample: posts.user_id > users.id"""
+    """Sample DBML: Ref: posts.user_id > users.id"""
 
     name: str
-    table_map: List[str]
-    column_map: List[str]
+    table_map: Tuple[str, str]
+    column_map: Tuple[str, str]
