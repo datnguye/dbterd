@@ -39,10 +39,10 @@ Commands:
 dbterd run -mp "./samples/v4-dbtresto" -o "./target"
 # select only models in dbt_resto excluding staging
 dbterd run -mp "./samples/v4-dbtresto" -o "./target" -s model.dbt_resto -ns model.dbt_resto.staging
-# select only models in schema name "dbo" excluding staging
-dbterd run -mp "./samples/v4-dbtresto" -o "./target" -s schema:dbo -ns model.dbt_resto.staging
+# select only models in schema name "mart" excluding staging
+dbterd run -mp "./samples/v4-dbtresto" -o "./target" -s schema:mart -ns model.dbt_resto.staging
 # select only models in schema full name "dbt.dbo" excluding staging
-dbterd run -mp "./samples/v4-dbtresto" -o "./target" -s schema:dbt.dbo -ns model.dbt_resto.staging
+dbterd run -mp "./samples/v4-dbtresto" -o "./target" -s schema:dbt.mart -ns model.dbt_resto.staging
 # other samples
 dbterd run -mp "./samples/v7-fivetranlog" -o "./target"
 dbterd run -mp "./samples/v7-adfacebook" -o "./target"
@@ -86,3 +86,20 @@ The site will be looks like:
 
 Result after applied Model Selection:
 ![screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png](https://github.com/datnguye/dbterd/blob/main/assets/images/screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png)
+
+## Decide to exclude Relationship Tests from ERD generated
+Add `ignore_in_erd` attribute into your test's meta:
+```yml
+version: 2
+
+models:
+  - name: your_model
+    columns:
+      - name: your_column
+        tests:
+          - relationships_test:
+              to: ref('your_other_model')
+              field: your_other_column
+              meta:
+                ignore_in_erd: 1
+```

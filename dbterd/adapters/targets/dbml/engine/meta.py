@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 
 @dataclass
@@ -33,5 +33,5 @@ class Ref:
     """Sample DBML: Ref: posts.user_id > users.id"""
 
     name: str
-    table_map: List[str]
-    column_map: List[str]
+    table_map: Tuple[str, str]
+    column_map: Tuple[str, str]

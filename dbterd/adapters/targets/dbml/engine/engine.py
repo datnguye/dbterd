@@ -55,6 +55,7 @@ def parse(manifest, **kwargs):
     # Build DBML content
     dbml = "//Tables (based on the selection criteria)\n"
     for table in tables:
+        dbml += f"//--configured at schema: {table.database}.{table.schema}\n"
         dbml += """Table \"{table}\"{{\n{columns}\n}}\n""".format(
             table=table.name,
             columns="\n".join([f'    "{x.name}" {x.data_type}' for x in table.columns]),
@@ -104,7 +105,7 @@ def get_tables(manifest):
 
 
 def get_relationships(manifest):
-    return [
+    refs = [
         Ref(
             name=x,
             table_map=manifest.parent_map[x],
@@ -114,8 +115,24 @@ def get_relationships(manifest):
             ],
         )
         for x in manifest.nodes
-        if x.startswith("test") and "relationship" in x.lower()
+        if (
+            x.startswith("test")
+            and "relationship" in x.lower()
+            and manifest.nodes[x].meta.get("ignore_in_erd", "0") == "0"
+        )
     ]
+
+    # remove duplicates
+    if refs:
+        distinct_list = [refs[0]]
+        for ref in refs:
+            distinct_maps = [str((x.table_map,x.column_map)) for x in distinct_list]
+            if str((ref.table_map,ref.column_map)) not in distinct_maps:
+                distinct_list.append(ref)
+
+        return distinct_list
+    
+    return []
 
 
 def get_compiled_sql(manifest_node):
