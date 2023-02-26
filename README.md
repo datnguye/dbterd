@@ -36,12 +36,12 @@ Commands:
 # note that no relationship test = no erd relationship
 
 # select all models in dbt_resto 
-dbterd run -mp "./samples/v7-adfacebook" -o "./target"
+dbterd run -mp "./samples/v4-dbtresto" -o "./target"
 # select only models in dbt_resto excluding staging
-dbterd run -mp "./samples/v7-adfacebook" -o "./target" -s model.dbt_resto -ns model.dbt_resto.staging
+dbterd run -mp "./samples/v4-dbtresto" -o "./target" -s model.dbt_resto -ns model.dbt_resto.staging
 # other samples
 dbterd run -mp "./samples/v7-fivetranlog" -o "./target"
-dbterd run -mp "./samples/v4-dbtresto" -o "./target" 
+dbterd run -mp "./samples/v7-adfacebook" -o "./target"
 ```
 
 ## Quick DEMO
