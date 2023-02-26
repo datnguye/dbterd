@@ -5,6 +5,7 @@ from dbterd.adapters.worker import DbtWorker
 from dbterd.helpers.log import logger
 
 import importlib.metadata
+
 __version__ = importlib.metadata.version("dbterd")
 
 

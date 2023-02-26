@@ -22,6 +22,8 @@ class Table:
     """
 
     name: str
+    database: str
+    schema: str
     columns: Optional[List[Column]] = None
     raw_sql: Optional[str] = None
 
