@@ -1,7 +1,5 @@
-import os
 from dbterd.adapters.targets.dbml.contants import Strategies
-from dbterd.adapters.targets.dbml.strategies import default
-from dbterd.adapters.targets.dbml.strategies import dbml_test_relationship
+from dbterd.adapters.targets.dbml.strategies import dbml_test_relationship, default
 
 operation_default = default.default
 run_operation_dispatcher = {

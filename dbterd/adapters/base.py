@@ -1,10 +1,11 @@
 import abc
-from asyncio.log import logger
 import json
-from pathlib import Path
+from asyncio.log import logger
+
 from click import Context
-from dbterd.adapters import factory
 from dbt_artifacts_parser import parser
+
+from dbterd.adapters import factory
 
 
 class Executor(abc.ABC):

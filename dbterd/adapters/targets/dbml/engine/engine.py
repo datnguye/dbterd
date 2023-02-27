@@ -1,5 +1,6 @@
-from dbterd.adapters.targets.dbml.engine.meta import Ref, Table, Column
 from sql_metadata import Parser
+
+from dbterd.adapters.targets.dbml.engine.meta import Column, Ref, Table
 
 
 def parse(manifest, **kwargs):
@@ -63,7 +64,9 @@ def parse(manifest, **kwargs):
 
     dbml += "//Refs (based on the DBT Relationship Tests)\n"
     for rel in relationships:
-        dbml += f"""Ref: \"{rel.table_map[1]}\".\"{rel.column_map[1]}\" > \"{rel.table_map[0]}\".\"{rel.column_map[0]}\"\n"""
+        key_from = f'"{rel.table_map[1]}"."{rel.column_map[1]}"'
+        key_to = f'"{rel.table_map[0]}"."{rel.column_map[0]}"'
+        dbml += f"Ref: {key_from} > {key_to}\n"
 
     return dbml
 
@@ -84,7 +87,8 @@ def get_tables(manifest):
         parser = Parser(table.raw_sql)
         try:
             column_names = parser.columns_aliases_names
-        except:
+        except AttributeError:
+            # Object has no associated column names, continue to next object
             pass
 
         if column_names:
@@ -126,12 +130,12 @@ def get_relationships(manifest):
     if refs:
         distinct_list = [refs[0]]
         for ref in refs:
-            distinct_maps = [str((x.table_map,x.column_map)) for x in distinct_list]
-            if str((ref.table_map,ref.column_map)) not in distinct_maps:
+            distinct_maps = [str((x.table_map, x.column_map)) for x in distinct_list]
+            if str((ref.table_map, ref.column_map)) not in distinct_maps:
                 distinct_list.append(ref)
 
         return distinct_list
-    
+
     return []
 
 
@@ -145,7 +149,7 @@ def get_compiled_sql(manifest_node):
     if hasattr(
         manifest_node, "columns"
     ):  # nodes having no compiled but just list of columns
-        return """select 
+        return """select
             {columns}
         from {table}
         """.format(
