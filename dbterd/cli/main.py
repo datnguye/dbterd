@@ -1,10 +1,11 @@
-import click
-from dbterd.helpers import jsonify
-from dbterd.cli import params
-from dbterd.adapters.worker import DbtWorker
-from dbterd.helpers.log import logger
-
 import importlib.metadata
+
+import click
+
+from dbterd.adapters.worker import DbtWorker
+from dbterd.cli import params
+from dbterd.helpers import jsonify
+from dbterd.helpers.log import logger
 
 __version__ = importlib.metadata.version("dbterd")
 

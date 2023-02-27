@@ -6,3 +6,13 @@ repos:
       - id: commitizen
         name: Check Commit Message
         stages: [commit-msg]
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.2.1
+    hooks:
+    - id: trailing-whitespace
+    - id: end-of-file-fixer
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: 5.0.4
+    hooks:
+    - id: flake8
+      args: ['--config=.flake8']
