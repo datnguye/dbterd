@@ -41,9 +41,18 @@ coverage = {version = "^6.5.0", extras = ["toml"]}
 poethepoet = "^0.16.4"
 pre-commit = "^2.20.0"
 
+[tool.poetry.group.dev.dependencies]
+flake8 = "^6.0.0"
+isort = "^5.12.0"
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poe.tasks]
-git-hooks = { "shell" = "pre-commit install --install-hooks && pre-commit install --hook-type commit-msg" }
+git-hooks = { shell = "pre-commit install --install-hooks && pre-commit install --hook-type commit-msg" }
+
+
+[tool.isort]
+multi_line_output = 3
+force_to_top = ["os"]
