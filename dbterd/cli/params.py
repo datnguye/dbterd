@@ -1,5 +1,7 @@
 import functools
+
 import click
+
 from dbterd import default
 
 
