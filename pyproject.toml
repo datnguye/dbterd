@@ -61,6 +61,7 @@ lint = [
   {cmd = "black --check ."},
   {cmd = "isort --check-only ."},
   {cmd = "flake8 ."},
+
 ]
 
 [tool.isort]
@@ -68,7 +69,6 @@ multi_line_output = 3
 force_to_top = ["os"]
 profile = "black"
 skip_gitignore = true
-ignore-pass-statements = true
 
 [tool.autoflake]
 recursive = true
@@ -76,3 +76,4 @@ in-place = true
 remove-all-unused-imports = true
 ignore-init-module-imports = true
 remove-unused-variables = true
+ignore-pass-statements = true
