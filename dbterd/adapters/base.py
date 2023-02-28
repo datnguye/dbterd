@@ -1,34 +1,11 @@
 import abc
-import contextlib
-import json
 from asyncio.log import logger
-from pathlib import Path
 
 import click
 
 from dbterd.adapters import factory
-from dbterd.adapters.sources.file_io import read_catalog, read_manifest
-
-
-@contextlib.contextmanager
-def handle_read_errors(filename, conditional_msg: str = ""):
-    try:
-        yield
-    except (json.JSONDecodeError, ValueError):
-        raise click.FileError(
-            filename,
-            f"File {filename} is corrupted{conditional_msg}, please rebuild",
-        )
-
-
-def check_existence(path_str: str, filename: str) -> None:
-    path = Path(path_str)
-    if not path.is_dir():
-        raise click.FileError(filename, f"Path {path_str} does not exist")
-    elif not (path / filename).is_file():
-        raise click.FileError(
-            filename, f"File {filename} does not exist in directory {path_str}"
-        )
+from dbterd.helpers import cli_messaging
+from dbterd.helpers import file as file_handlers
 
 
 class Executor(abc.ABC):
@@ -45,15 +22,15 @@ class Executor(abc.ABC):
         self.__run_by_strategy(**kwargs)
 
     def __read_manifest(self, mp: str, mv: int = None):
-        check_existence(mp, self.filename_manifest)
+        cli_messaging.check_existence(mp, self.filename_manifest)
         conditional = f" or provided version {mv} is incorrect" if mv else ""
-        with handle_read_errors(self.filename_manifest, conditional):
-            return read_manifest(mp, mv)
+        with cli_messaging.handle_read_errors(self.filename_manifest, conditional):
+            return file_handlers.read_manifest(mp, mv)
 
     def __read_catalog(self, cp: str):
-        check_existence(cp, self.filename_catalog)
-        with handle_read_errors(self.filename_catalog):
-            return read_catalog(cp)
+        cli_messaging.check_existence(cp, self.filename_catalog)
+        with cli_messaging.handle_read_errors(self.filename_catalog):
+            return file_handlers.read_catalog(cp)
 
     def __run_by_strategy(self, **kwargs):
         target_module = factory.load_executor(name=kwargs["target"])
