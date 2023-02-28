@@ -1,4 +1,4 @@
-from dbterd.adapters.targets.dbml.contants import Strategies
+from dbterd.adapters.targets.dbml.constants import Strategies
 from dbterd.adapters.targets.dbml.strategies import dbml_test_relationship, default
 
 operation_default = default.default
