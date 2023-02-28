@@ -1,11 +1,9 @@
-from sql_metadata import Parser
-
 from dbterd.adapters.targets.dbml.engine.meta import Column, Ref, Table
 
 
-def parse(manifest, **kwargs):
+def parse(manifest, catalog, **kwargs):
     # Parse Table
-    tables = get_tables(manifest)
+    tables = get_tables(manifest, catalog)
     # -- apply selection
     select_rule = (kwargs.get("select") or "").lower().split(":")
     if select_rule[0].startswith("schema"):
@@ -71,7 +69,8 @@ def parse(manifest, **kwargs):
     return dbml
 
 
-def get_tables(manifest):
+def get_tables(manifest, catalog):
+
     tables = [
         Table(
             name=x,
@@ -83,15 +82,20 @@ def get_tables(manifest):
         for x in manifest.nodes
         if x.startswith("model")
     ]
-    for table in tables:
-        parser = Parser(table.raw_sql)
 
-        column_names = getattr(parser, "columns_aliases_names", None)
-        if column_names:
-            for column in column_names:
-                table.columns.append(Column(name=column))
-        else:
-            table.columns.append(Column(name="(*)"))
+    for table in tables:
+        # Pull columns from the catalog and use the data types declared there
+        # Catalog is our primary source of information about the target db
+        cat_columns = catalog.nodes[table.name].columns
+        for column, metadata in cat_columns.items():
+            table.columns.append(Column(name=column, data_type=metadata.type))
+        # Handle cases where columns don't exist yet, but are in manifest
+        man_columns = manifest.nodes[table.name].columns
+        for column in man_columns:
+            if column in cat_columns:
+                # Already exists in the remote
+                continue
+            table.columns.append(Column(name=column, data_type="UNKNOWN"))
 
     return tables
 
