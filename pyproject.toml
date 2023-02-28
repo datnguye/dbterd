@@ -76,4 +76,4 @@ in-place = true
 remove-all-unused-imports = true
 ignore-init-module-imports = true
 remove-unused-variables = true
-ignore-pass-statements = true
+ignore-pass-statements = false
