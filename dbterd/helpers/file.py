@@ -1,5 +1,8 @@
 import os
+import json
 import sys
+
+from dbt_artifacts_parser import parser
 
 if sys.platform == "win32":
     from ctypes import WinDLL, c_bool
@@ -17,6 +20,11 @@ def load_file_contents(path: str, strip: bool = True) -> str:
         to_return = to_return.strip()
 
     return to_return
+
+
+def open_json(fp):
+    """Json loading utility, leveraging long path fixes"""
+    return json.loads(load_file_contents(fp))
 
 
 def convert_path(path: str) -> str:
@@ -89,3 +97,20 @@ def _win_prepare_path(path: str) -> str:
         path = os.path.join(os.getcwd(), path)
 
     return path
+
+
+def read_manifest(manifest_path: str, manifest_version: int):
+    """Reads in the manifest file, with optional version specification"""
+    manifest_dict = open_json(f"{manifest_path}/manifest.json")
+    parser_version = (
+        f"parse_manifest_v{manifest_version}" if manifest_version else "parse_manifest"
+    )
+    parse_func = getattr(parser, parser_version)
+    manifest_obj = parse_func(manifest=manifest_dict)
+    return manifest_obj
+
+
+def read_catalog(catalog_path):
+    """reads and parses the catalog file"""
+    catalog_dict = open_json(f"{catalog_path}/catalog.json")
+    return parser.parse_catalog(catalog=catalog_dict)

@@ -85,25 +85,13 @@ def get_tables(manifest):
     ]
     for table in tables:
         parser = Parser(table.raw_sql)
-        try:
-            column_names = parser.columns_aliases_names
-        except AttributeError:
-            # Object has no associated column names, continue to next object
-            pass
 
+        column_names = getattr(parser, "columns_aliases_names", None)
         if column_names:
             for column in column_names:
-                table.columns.append(
-                    Column(
-                        name=column,
-                    )
-                )
+                table.columns.append(Column(name=column))
         else:
-            table.columns.append(
-                Column(
-                    name="(*)",
-                )
-            )
+            table.columns.append(Column(name="(*)"))
 
     return tables
 
