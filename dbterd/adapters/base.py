@@ -42,12 +42,12 @@ class Executor(abc.ABC):
         manifest = self.__read_manifest(
             mp=kwargs["manifest_path"], mv=kwargs["manifest_version"]
         )
-        _ = self.__read_catalog(
+        catalog = self.__read_catalog(
             # TODO: Find a cleaner way to pass these args
             cp=kwargs.get("catalog_path", kwargs["manifest_path"])
         )
 
-        result = strategy_func(manifest=manifest, **kwargs)
+        result = strategy_func(manifest=manifest, catalog=catalog, **kwargs)
         path = kwargs["output"] + f"/{result[0]}"
         with open(path, "w") as f:
             logger.info(path)
