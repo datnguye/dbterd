@@ -4,6 +4,8 @@ CLI to generate DBML file from dbt artifact files (required: `manifest.json`, `c
 
 [![PyPI version](https://badge.fury.io/py/dbterd.svg)](https://pypi.org/project/dbterd/)
 ![python-cli](https://img.shields.io/badge/CLI-Python-FFCE3E?labelColor=14354C&logo=python&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 
 ```
 pip install dbterd --upgrade
@@ -106,3 +108,10 @@ The site will be looks like:
 
 Result after applied Model Selection:
 ![screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png](https://raw.githubusercontent.com/datnguye/dbterd/main/assets/images/screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png)
+
+
+## Contributing ✨
+If you've ever wanted to contribute to this tool, and a great cause, now is your chance!
+
+See the contributing docs (_to be updated_) for more information
+
