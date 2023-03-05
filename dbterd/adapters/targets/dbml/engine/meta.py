@@ -8,8 +8,8 @@ class Column:
     Sample DBML: id varchar [primary key]
     """
 
-    name: str
-    data_type: str = "varchar"
+    name: str = "unknown"
+    data_type: str = "unknown"
 
 
 @dataclass

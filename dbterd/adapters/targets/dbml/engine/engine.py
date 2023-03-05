@@ -39,15 +39,15 @@ def parse(manifest, catalog, **kwargs):
     # Fullfill columns in Tables (due to `select *`)
     for relationship in relationships:
         for table in tables:
-            table_columns = [x.name for x in table.columns]
+            table_columns = [x.name.lower() for x in table.columns]
             if (
                 table.name == relationship.table_map[0]
-                and relationship.column_map[0] not in table_columns
+                and relationship.column_map[0].lower() not in table_columns
             ):
                 table.columns.append(Column(name=relationship.column_map[0]))
             if (
                 table.name == relationship.table_map[1]
-                and relationship.column_map[1] not in table_columns
+                and relationship.column_map[1].lower() not in table_columns
             ):
                 table.columns.append(Column(name=relationship.column_map[1]))
 
@@ -86,16 +86,34 @@ def get_tables(manifest, catalog):
     for table in tables:
         # Pull columns from the catalog and use the data types declared there
         # Catalog is our primary source of information about the target db
-        cat_columns = catalog.nodes[table.name].columns
-        for column, metadata in cat_columns.items():
-            table.columns.append(Column(name=column, data_type=metadata.type))
+        if table.name in catalog.nodes:  # table might not live yet
+            cat_columns = catalog.nodes[table.name].columns
+            for column, metadata in cat_columns.items():
+                table.columns.append(
+                    Column(
+                        name=str(column).lower(), data_type=str(metadata.type).lower()
+                    )
+                )
+
         # Handle cases where columns don't exist yet, but are in manifest
         man_columns = manifest.nodes[table.name].columns
         for column in man_columns:
-            if column in cat_columns:
+            column_name = str(column).strip(
+                '"'
+            )  # remove double quotes from column name if any
+            if column_name.lower() in [x.name for x in table.columns]:
                 # Already exists in the remote
                 continue
-            table.columns.append(Column(name=column, data_type="UNKNOWN"))
+            table.columns.append(
+                Column(
+                    name=column_name.lower(),
+                    data_type=str(man_columns[column].data_type or "unknown").lower(),
+                )
+            )
+
+        # Fallback: add dummy column if cannot find any info
+        if not table.columns:
+            table.columns.append(Column())
 
     return tables
 
@@ -106,8 +124,12 @@ def get_relationships(manifest):
             name=x,
             table_map=manifest.parent_map[x],
             column_map=[
-                manifest.nodes[x].test_metadata.kwargs.get("field", "unknown"),
-                manifest.nodes[x].test_metadata.kwargs.get("column_name", "unknown"),
+                str(
+                    manifest.nodes[x].test_metadata.kwargs.get("field", "unknown")
+                ).lower(),
+                str(
+                    manifest.nodes[x].test_metadata.kwargs.get("column_name", "unknown")
+                ).lower(),
             ],
         )
         for x in manifest.nodes
