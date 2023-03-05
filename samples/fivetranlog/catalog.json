@@ -1,0 +1,2914 @@
+{
+    "metadata": {
+        "dbt_schema_version": "https://schemas.getdbt.com/dbt/catalog/v1.json",
+        "dbt_version": "1.3.1",
+        "generated_at": "2023-02-16T17:18:25.319987Z",
+        "invocation_id": "d9b532a2-77f2-4945-b785-03da19d802dd",
+        "env": {}
+    },
+    "nodes": {
+        "seed.fivetran_log_integration_tests.account": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "account",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "country": {
+                    "type": "integer",
+                    "index": 3,
+                    "name": "country",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "name",
+                    "comment": null
+                },
+                "status": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "status",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.fivetran_log_integration_tests.account"
+        },
+        "seed.fivetran_log_integration_tests.account_membership": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "account_membership",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "account_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "user_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "user_id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "activated_at": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "activated_at",
+                    "comment": null
+                },
+                "joined_at": {
+                    "type": "timestamp without time zone",
+                    "index": 5,
+                    "name": "joined_at",
+                    "comment": null
+                },
+                "role": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "role",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.fivetran_log_integration_tests.account_membership"
+        },
+        "seed.fivetran_log_integration_tests.connector": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "connector",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "connector_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "connector_id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "connecting_user_id": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "connecting_user_id",
+                    "comment": null
+                },
+                "connector_name": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "connector_name",
+                    "comment": null
+                },
+                "connector_type": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "connector_type",
+                    "comment": null
+                },
+                "destination_id": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "paused": {
+                    "type": "boolean",
+                    "index": 7,
+                    "name": "paused",
+                    "comment": null
+                },
+                "signed_up": {
+                    "type": "timestamp without time zone",
+                    "index": 8,
+                    "name": "signed_up",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.fivetran_log_integration_tests.connector"
+        },
+        "seed.fivetran_log_integration_tests.credits_used": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "credits_used",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "destination_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "measured_month": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "measured_month",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "credits_consumed": {
+                    "type": "bigint",
+                    "index": 4,
+                    "name": "credits_consumed",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.fivetran_log_integration_tests.credits_used"
+        },
+        "seed.fivetran_log_integration_tests.destination": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "destination",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "character varying",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "name",
+                    "comment": null
+                },
+                "region": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "region",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.fivetran_log_integration_tests.destination"
+        },
+        "seed.fivetran_log_integration_tests.destination_membership": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "destination_membership",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "destination_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "user_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "user_id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "activated_at": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "activated_at",
+                    "comment": null
+                },
+                "joined_at": {
+                    "type": "timestamp without time zone",
+                    "index": 5,
+                    "name": "joined_at",
+                    "comment": null
+                },
+                "role": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "role",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.fivetran_log_integration_tests.destination_membership"
+        },
+        "seed.fivetran_log_integration_tests.incremental_mar": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "incremental_mar",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "connector_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "connector_id",
+                    "comment": null
+                },
+                "destination_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "free_type": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "free_type",
+                    "comment": null
+                },
+                "measured_date": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "measured_date",
+                    "comment": null
+                },
+                "schema_name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "schema_name",
+                    "comment": null
+                },
+                "sync_type": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "sync_type",
+                    "comment": null
+                },
+                "table_name": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "table_name",
+                    "comment": null
+                },
+                "updated_at": {
+                    "type": "timestamp without time zone",
+                    "index": 8,
+                    "name": "updated_at",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 9,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "incremental_rows": {
+                    "type": "bigint",
+                    "index": 10,
+                    "name": "incremental_rows",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.fivetran_log_integration_tests.incremental_mar"
+        },
+        "seed.fivetran_log_integration_tests.log": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "log",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "time_stamp": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "time_stamp",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "connector_id": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "connector_id",
+                    "comment": null
+                },
+                "event": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "event",
+                    "comment": null
+                },
+                "message_data": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "message_data",
+                    "comment": null
+                },
+                "message_event": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "message_event",
+                    "comment": null
+                },
+                "transformation_id": {
+                    "type": "character varying",
+                    "index": 8,
+                    "name": "transformation_id",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.fivetran_log_integration_tests.log"
+        },
+        "seed.fivetran_log_integration_tests.transformation": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "transformation",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "character varying",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "created_by_id": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "created_by_id",
+                    "comment": null
+                },
+                "destination_id": {
+                    "type": "character varying",
+                    "index": 5,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "name",
+                    "comment": null
+                },
+                "paused": {
+                    "type": "boolean",
+                    "index": 7,
+                    "name": "paused",
+                    "comment": null
+                },
+                "script": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "script",
+                    "comment": null
+                },
+                "trigger_delay": {
+                    "type": "integer",
+                    "index": 9,
+                    "name": "trigger_delay",
+                    "comment": null
+                },
+                "trigger_interval": {
+                    "type": "integer",
+                    "index": 10,
+                    "name": "trigger_interval",
+                    "comment": null
+                },
+                "trigger_type": {
+                    "type": "text",
+                    "index": 11,
+                    "name": "trigger_type",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.fivetran_log_integration_tests.transformation"
+        },
+        "seed.fivetran_log_integration_tests.trigger_table": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "trigger_table",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "table": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "table",
+                    "comment": null
+                },
+                "transformation_id": {
+                    "type": "character varying",
+                    "index": 2,
+                    "name": "transformation_id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.fivetran_log_integration_tests.trigger_table"
+        },
+        "seed.fivetran_log_integration_tests.usage_cost": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "usage_cost",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "destination_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "measured_month": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "measured_month",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "amount": {
+                    "type": "double precision",
+                    "index": 4,
+                    "name": "amount",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.fivetran_log_integration_tests.usage_cost"
+        },
+        "seed.fivetran_log_integration_tests.user": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "user",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "email": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "email",
+                    "comment": null
+                },
+                "email_disabled": {
+                    "type": "boolean",
+                    "index": 5,
+                    "name": "email_disabled",
+                    "comment": null
+                },
+                "family_name": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "family_name",
+                    "comment": null
+                },
+                "given_name": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "given_name",
+                    "comment": null
+                },
+                "phone": {
+                    "type": "integer",
+                    "index": 8,
+                    "name": "phone",
+                    "comment": null
+                },
+                "verified": {
+                    "type": "boolean",
+                    "index": 9,
+                    "name": "verified",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.fivetran_log_integration_tests.user"
+        },
+        "model.fivetran_log.fivetran_log__audit_table": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "fivetran_log__audit_table",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "connector_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "connector_id",
+                    "comment": null
+                },
+                "connector_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "connector_name",
+                    "comment": null
+                },
+                "table_name": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "table_name",
+                    "comment": null
+                },
+                "destination_id": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "destination_name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "destination_name",
+                    "comment": null
+                },
+                "write_to_table_start": {
+                    "type": "timestamp without time zone",
+                    "index": 6,
+                    "name": "write_to_table_start",
+                    "comment": null
+                },
+                "write_to_table_end": {
+                    "type": "timestamp without time zone",
+                    "index": 7,
+                    "name": "write_to_table_end",
+                    "comment": null
+                },
+                "sync_start": {
+                    "type": "timestamp without time zone",
+                    "index": 8,
+                    "name": "sync_start",
+                    "comment": null
+                },
+                "sync_end": {
+                    "type": "timestamp without time zone",
+                    "index": 9,
+                    "name": "sync_end",
+                    "comment": null
+                },
+                "sum_rows_replaced_or_inserted": {
+                    "type": "bigint",
+                    "index": 10,
+                    "name": "sum_rows_replaced_or_inserted",
+                    "comment": null
+                },
+                "sum_rows_updated": {
+                    "type": "bigint",
+                    "index": 11,
+                    "name": "sum_rows_updated",
+                    "comment": null
+                },
+                "sum_rows_deleted": {
+                    "type": "bigint",
+                    "index": 12,
+                    "name": "sum_rows_deleted",
+                    "comment": null
+                },
+                "unique_table_sync_key": {
+                    "type": "text",
+                    "index": 13,
+                    "name": "unique_table_sync_key",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.fivetran_log__audit_table"
+        },
+        "model.fivetran_log.fivetran_log__connector_daily_events": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "fivetran_log__connector_daily_events",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "date_day": {
+                    "type": "timestamp without time zone",
+                    "index": 1,
+                    "name": "date_day",
+                    "comment": null
+                },
+                "connector_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "connector_name",
+                    "comment": null
+                },
+                "connector_id": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "connector_id",
+                    "comment": null
+                },
+                "connector_type": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "connector_type",
+                    "comment": null
+                },
+                "destination_name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "destination_name",
+                    "comment": null
+                },
+                "destination_id": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "count_api_calls": {
+                    "type": "bigint",
+                    "index": 7,
+                    "name": "count_api_calls",
+                    "comment": null
+                },
+                "count_record_modifications": {
+                    "type": "bigint",
+                    "index": 8,
+                    "name": "count_record_modifications",
+                    "comment": null
+                },
+                "count_schema_changes": {
+                    "type": "bigint",
+                    "index": 9,
+                    "name": "count_schema_changes",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.fivetran_log__connector_daily_events"
+        },
+        "model.fivetran_log.fivetran_log__connector_status": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "fivetran_log__connector_status",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "connector_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "connector_id",
+                    "comment": null
+                },
+                "connector_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "connector_name",
+                    "comment": null
+                },
+                "connector_type": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "connector_type",
+                    "comment": null
+                },
+                "destination_id": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "destination_name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "destination_name",
+                    "comment": null
+                },
+                "connector_health": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "connector_health",
+                    "comment": null
+                },
+                "last_successful_sync_completed_at": {
+                    "type": "timestamp without time zone",
+                    "index": 7,
+                    "name": "last_successful_sync_completed_at",
+                    "comment": null
+                },
+                "last_sync_started_at": {
+                    "type": "timestamp without time zone",
+                    "index": 8,
+                    "name": "last_sync_started_at",
+                    "comment": null
+                },
+                "last_sync_completed_at": {
+                    "type": "timestamp without time zone",
+                    "index": 9,
+                    "name": "last_sync_completed_at",
+                    "comment": null
+                },
+                "set_up_at": {
+                    "type": "timestamp without time zone",
+                    "index": 10,
+                    "name": "set_up_at",
+                    "comment": null
+                },
+                "number_of_schema_changes_last_month": {
+                    "type": "bigint",
+                    "index": 11,
+                    "name": "number_of_schema_changes_last_month",
+                    "comment": null
+                },
+                "errors_since_last_completed_sync": {
+                    "type": "text",
+                    "index": 12,
+                    "name": "errors_since_last_completed_sync",
+                    "comment": null
+                },
+                "warnings_since_last_completed_sync": {
+                    "type": "text",
+                    "index": 13,
+                    "name": "warnings_since_last_completed_sync",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.fivetran_log__connector_status"
+        },
+        "model.fivetran_log.fivetran_log__mar_table_history": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "fivetran_log__mar_table_history",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "connector_name": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "connector_name",
+                    "comment": null
+                },
+                "schema_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "schema_name",
+                    "comment": null
+                },
+                "table_name": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "table_name",
+                    "comment": null
+                },
+                "destination_id": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "measured_month": {
+                    "type": "timestamp without time zone",
+                    "index": 5,
+                    "name": "measured_month",
+                    "comment": null
+                },
+                "last_measured_at": {
+                    "type": "date",
+                    "index": 6,
+                    "name": "last_measured_at",
+                    "comment": null
+                },
+                "free_monthly_active_rows": {
+                    "type": "numeric",
+                    "index": 7,
+                    "name": "free_monthly_active_rows",
+                    "comment": null
+                },
+                "paid_monthly_active_rows": {
+                    "type": "numeric",
+                    "index": 8,
+                    "name": "paid_monthly_active_rows",
+                    "comment": null
+                },
+                "total_monthly_active_rows": {
+                    "type": "numeric",
+                    "index": 9,
+                    "name": "total_monthly_active_rows",
+                    "comment": null
+                },
+                "connector_type": {
+                    "type": "text",
+                    "index": 10,
+                    "name": "connector_type",
+                    "comment": null
+                },
+                "connector_id": {
+                    "type": "text",
+                    "index": 11,
+                    "name": "connector_id",
+                    "comment": null
+                },
+                "destination_name": {
+                    "type": "text",
+                    "index": 12,
+                    "name": "destination_name",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.fivetran_log__mar_table_history"
+        },
+        "model.fivetran_log.fivetran_log__schema_changelog": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "fivetran_log__schema_changelog",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "connector_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "connector_id",
+                    "comment": null
+                },
+                "connector_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "connector_name",
+                    "comment": null
+                },
+                "destination_id": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "destination_name": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "destination_name",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "timestamp without time zone",
+                    "index": 5,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "event_subtype": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "event_subtype",
+                    "comment": null
+                },
+                "message_data": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "message_data",
+                    "comment": null
+                },
+                "table_name": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "table_name",
+                    "comment": null
+                },
+                "schema_name": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "schema_name",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.fivetran_log__schema_changelog"
+        },
+        "model.fivetran_log.fivetran_log__transformation_status": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "fivetran_log__transformation_status",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "transformation_id": {
+                    "type": "character varying",
+                    "index": 1,
+                    "name": "transformation_id",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "created_by_user_id": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "created_by_user_id",
+                    "comment": null
+                },
+                "destination_id": {
+                    "type": "character varying",
+                    "index": 4,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "transformation_name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "transformation_name",
+                    "comment": null
+                },
+                "is_paused": {
+                    "type": "boolean",
+                    "index": 6,
+                    "name": "is_paused",
+                    "comment": null
+                },
+                "script": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "script",
+                    "comment": null
+                },
+                "trigger_delay": {
+                    "type": "integer",
+                    "index": 8,
+                    "name": "trigger_delay",
+                    "comment": null
+                },
+                "trigger_interval": {
+                    "type": "integer",
+                    "index": 9,
+                    "name": "trigger_interval",
+                    "comment": null
+                },
+                "trigger_type": {
+                    "type": "text",
+                    "index": 10,
+                    "name": "trigger_type",
+                    "comment": null
+                },
+                "destination_name": {
+                    "type": "text",
+                    "index": 11,
+                    "name": "destination_name",
+                    "comment": null
+                },
+                "last_successful_run_at": {
+                    "type": "timestamp without time zone",
+                    "index": 12,
+                    "name": "last_successful_run_at",
+                    "comment": null
+                },
+                "last_run_attempt": {
+                    "type": "text",
+                    "index": 13,
+                    "name": "last_run_attempt",
+                    "comment": null
+                },
+                "trigger_tables": {
+                    "type": "text",
+                    "index": 14,
+                    "name": "trigger_tables",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.fivetran_log__transformation_status"
+        },
+        "model.fivetran_log.fivetran_log__usage_mar_destination_history": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "fivetran_log__usage_mar_destination_history",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "measured_month": {
+                    "type": "timestamp without time zone",
+                    "index": 1,
+                    "name": "measured_month",
+                    "comment": null
+                },
+                "destination_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "destination_name": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "destination_name",
+                    "comment": null
+                },
+                "credits_spent": {
+                    "type": "bigint",
+                    "index": 4,
+                    "name": "credits_spent",
+                    "comment": null
+                },
+                "dollars_spent": {
+                    "type": "double precision",
+                    "index": 5,
+                    "name": "dollars_spent",
+                    "comment": null
+                },
+                "free_monthly_active_rows": {
+                    "type": "numeric",
+                    "index": 6,
+                    "name": "free_monthly_active_rows",
+                    "comment": null
+                },
+                "paid_monthly_active_rows": {
+                    "type": "numeric",
+                    "index": 7,
+                    "name": "paid_monthly_active_rows",
+                    "comment": null
+                },
+                "total_monthly_active_rows": {
+                    "type": "numeric",
+                    "index": 8,
+                    "name": "total_monthly_active_rows",
+                    "comment": null
+                },
+                "credits_spent_per_million_mar": {
+                    "type": "numeric",
+                    "index": 9,
+                    "name": "credits_spent_per_million_mar",
+                    "comment": null
+                },
+                "mar_per_credit_spent": {
+                    "type": "numeric",
+                    "index": 10,
+                    "name": "mar_per_credit_spent",
+                    "comment": null
+                },
+                "amount_spent_per_million_mar": {
+                    "type": "numeric",
+                    "index": 11,
+                    "name": "amount_spent_per_million_mar",
+                    "comment": null
+                },
+                "mar_per_amount_spent": {
+                    "type": "numeric",
+                    "index": 12,
+                    "name": "mar_per_amount_spent",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.fivetran_log__usage_mar_destination_history"
+        },
+        "model.fivetran_log.stg_fivetran_log__account": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "stg_fivetran_log__account",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "account_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "country": {
+                    "type": "integer",
+                    "index": 2,
+                    "name": "country",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "account_name": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "account_name",
+                    "comment": null
+                },
+                "status": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "status",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.stg_fivetran_log__account"
+        },
+        "model.fivetran_log.stg_fivetran_log__account_membership": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "stg_fivetran_log__account_membership",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "account_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "user_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "user_id",
+                    "comment": null
+                },
+                "activated_at": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "activated_at",
+                    "comment": null
+                },
+                "joined_at": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "joined_at",
+                    "comment": null
+                },
+                "account_role": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "account_role",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.stg_fivetran_log__account_membership"
+        },
+        "model.fivetran_log.stg_fivetran_log__connector": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "stg_fivetran_log__connector",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "connector_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "connector_id",
+                    "comment": null
+                },
+                "connector_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "connector_name",
+                    "comment": null
+                },
+                "connector_type": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "connector_type",
+                    "comment": null
+                },
+                "destination_id": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "connecting_user_id": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "connecting_user_id",
+                    "comment": null
+                },
+                "is_paused": {
+                    "type": "boolean",
+                    "index": 6,
+                    "name": "is_paused",
+                    "comment": null
+                },
+                "set_up_at": {
+                    "type": "timestamp without time zone",
+                    "index": 7,
+                    "name": "set_up_at",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.stg_fivetran_log__connector"
+        },
+        "model.fivetran_log.stg_fivetran_log__connector_tmp": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "stg_fivetran_log__connector_tmp",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "connector_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "connector_id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "connecting_user_id": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "connecting_user_id",
+                    "comment": null
+                },
+                "connector_name": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "connector_name",
+                    "comment": null
+                },
+                "connector_type": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "connector_type",
+                    "comment": null
+                },
+                "destination_id": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "paused": {
+                    "type": "boolean",
+                    "index": 7,
+                    "name": "paused",
+                    "comment": null
+                },
+                "signed_up": {
+                    "type": "timestamp without time zone",
+                    "index": 8,
+                    "name": "signed_up",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.stg_fivetran_log__connector_tmp"
+        },
+        "model.fivetran_log.stg_fivetran_log__credits_used": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "stg_fivetran_log__credits_used",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "destination_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "measured_month": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "measured_month",
+                    "comment": null
+                },
+                "credits_spent": {
+                    "type": "bigint",
+                    "index": 3,
+                    "name": "credits_spent",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.stg_fivetran_log__credits_used"
+        },
+        "model.fivetran_log.stg_fivetran_log__destination": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "stg_fivetran_log__destination",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "destination_id": {
+                    "type": "character varying",
+                    "index": 1,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "destination_name": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "destination_name",
+                    "comment": null
+                },
+                "region": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "region",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.stg_fivetran_log__destination"
+        },
+        "model.fivetran_log.stg_fivetran_log__destination_membership": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "stg_fivetran_log__destination_membership",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "destination_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "user_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "user_id",
+                    "comment": null
+                },
+                "activated_at": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "activated_at",
+                    "comment": null
+                },
+                "joined_at": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "joined_at",
+                    "comment": null
+                },
+                "destination_role": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "destination_role",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.stg_fivetran_log__destination_membership"
+        },
+        "model.fivetran_log.stg_fivetran_log__incremental_mar": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "stg_fivetran_log__incremental_mar",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "connector_name": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "connector_name",
+                    "comment": null
+                },
+                "destination_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "free_type": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "free_type",
+                    "comment": null
+                },
+                "measured_date": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "measured_date",
+                    "comment": null
+                },
+                "schema_name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "schema_name",
+                    "comment": null
+                },
+                "sync_type": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "sync_type",
+                    "comment": null
+                },
+                "table_name": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "table_name",
+                    "comment": null
+                },
+                "updated_at": {
+                    "type": "timestamp without time zone",
+                    "index": 8,
+                    "name": "updated_at",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 9,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "incremental_rows": {
+                    "type": "bigint",
+                    "index": 10,
+                    "name": "incremental_rows",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.stg_fivetran_log__incremental_mar"
+        },
+        "model.fivetran_log.stg_fivetran_log__log": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "stg_fivetran_log__log",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "log_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "log_id",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "connector_id": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "connector_id",
+                    "comment": null
+                },
+                "event_type": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "event_type",
+                    "comment": null
+                },
+                "message_data": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "message_data",
+                    "comment": null
+                },
+                "event_subtype": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "event_subtype",
+                    "comment": null
+                },
+                "transformation_id": {
+                    "type": "character varying",
+                    "index": 7,
+                    "name": "transformation_id",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.stg_fivetran_log__log"
+        },
+        "model.fivetran_log.stg_fivetran_log__transformation": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "stg_fivetran_log__transformation",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "transformation_id": {
+                    "type": "character varying",
+                    "index": 1,
+                    "name": "transformation_id",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "created_by_user_id": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "created_by_user_id",
+                    "comment": null
+                },
+                "destination_id": {
+                    "type": "character varying",
+                    "index": 4,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "transformation_name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "transformation_name",
+                    "comment": null
+                },
+                "is_paused": {
+                    "type": "boolean",
+                    "index": 6,
+                    "name": "is_paused",
+                    "comment": null
+                },
+                "script": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "script",
+                    "comment": null
+                },
+                "trigger_delay": {
+                    "type": "integer",
+                    "index": 8,
+                    "name": "trigger_delay",
+                    "comment": null
+                },
+                "trigger_interval": {
+                    "type": "integer",
+                    "index": 9,
+                    "name": "trigger_interval",
+                    "comment": null
+                },
+                "trigger_type": {
+                    "type": "text",
+                    "index": 10,
+                    "name": "trigger_type",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.stg_fivetran_log__transformation"
+        },
+        "model.fivetran_log.stg_fivetran_log__trigger_table": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "stg_fivetran_log__trigger_table",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "trigger_table": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "trigger_table",
+                    "comment": null
+                },
+                "transformation_id": {
+                    "type": "character varying",
+                    "index": 2,
+                    "name": "transformation_id",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.stg_fivetran_log__trigger_table"
+        },
+        "model.fivetran_log.stg_fivetran_log__usage_cost": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "stg_fivetran_log__usage_cost",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "destination_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "measured_month": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "measured_month",
+                    "comment": null
+                },
+                "dollars_spent": {
+                    "type": "double precision",
+                    "index": 3,
+                    "name": "dollars_spent",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.stg_fivetran_log__usage_cost"
+        },
+        "model.fivetran_log.stg_fivetran_log__user": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests_fivetran_log",
+                "name": "stg_fivetran_log__user",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "user_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "user_id",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "email": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "email",
+                    "comment": null
+                },
+                "has_disabled_email_notifications": {
+                    "type": "boolean",
+                    "index": 4,
+                    "name": "has_disabled_email_notifications",
+                    "comment": null
+                },
+                "last_name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "last_name",
+                    "comment": null
+                },
+                "first_name": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "first_name",
+                    "comment": null
+                },
+                "phone": {
+                    "type": "integer",
+                    "index": 7,
+                    "name": "phone",
+                    "comment": null
+                },
+                "is_verified": {
+                    "type": "boolean",
+                    "index": 8,
+                    "name": "is_verified",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.fivetran_log.stg_fivetran_log__user"
+        }
+    },
+    "sources": {
+        "source.fivetran_log.fivetran_log.account": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "account",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "country": {
+                    "type": "integer",
+                    "index": 3,
+                    "name": "country",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "name",
+                    "comment": null
+                },
+                "status": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "status",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.fivetran_log.fivetran_log.account"
+        },
+        "source.fivetran_log.fivetran_log.account_membership": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "account_membership",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "account_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "user_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "user_id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "activated_at": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "activated_at",
+                    "comment": null
+                },
+                "joined_at": {
+                    "type": "timestamp without time zone",
+                    "index": 5,
+                    "name": "joined_at",
+                    "comment": null
+                },
+                "role": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "role",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.fivetran_log.fivetran_log.account_membership"
+        },
+        "source.fivetran_log.fivetran_log.connector": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "connector",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "connector_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "connector_id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "connecting_user_id": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "connecting_user_id",
+                    "comment": null
+                },
+                "connector_name": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "connector_name",
+                    "comment": null
+                },
+                "connector_type": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "connector_type",
+                    "comment": null
+                },
+                "destination_id": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "paused": {
+                    "type": "boolean",
+                    "index": 7,
+                    "name": "paused",
+                    "comment": null
+                },
+                "signed_up": {
+                    "type": "timestamp without time zone",
+                    "index": 8,
+                    "name": "signed_up",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.fivetran_log.fivetran_log.connector"
+        },
+        "source.fivetran_log.fivetran_log.credits_used": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "credits_used",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "destination_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "measured_month": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "measured_month",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "credits_consumed": {
+                    "type": "bigint",
+                    "index": 4,
+                    "name": "credits_consumed",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.fivetran_log.fivetran_log.credits_used"
+        },
+        "source.fivetran_log.fivetran_log.destination": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "destination",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "character varying",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "name",
+                    "comment": null
+                },
+                "region": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "region",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.fivetran_log.fivetran_log.destination"
+        },
+        "source.fivetran_log.fivetran_log.destination_membership": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "destination_membership",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "destination_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "user_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "user_id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "activated_at": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "activated_at",
+                    "comment": null
+                },
+                "joined_at": {
+                    "type": "timestamp without time zone",
+                    "index": 5,
+                    "name": "joined_at",
+                    "comment": null
+                },
+                "role": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "role",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.fivetran_log.fivetran_log.destination_membership"
+        },
+        "source.fivetran_log.fivetran_log.incremental_mar": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "incremental_mar",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "connector_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "connector_id",
+                    "comment": null
+                },
+                "destination_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "free_type": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "free_type",
+                    "comment": null
+                },
+                "measured_date": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "measured_date",
+                    "comment": null
+                },
+                "schema_name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "schema_name",
+                    "comment": null
+                },
+                "sync_type": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "sync_type",
+                    "comment": null
+                },
+                "table_name": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "table_name",
+                    "comment": null
+                },
+                "updated_at": {
+                    "type": "timestamp without time zone",
+                    "index": 8,
+                    "name": "updated_at",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 9,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "incremental_rows": {
+                    "type": "bigint",
+                    "index": 10,
+                    "name": "incremental_rows",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.fivetran_log.fivetran_log.incremental_mar"
+        },
+        "source.fivetran_log.fivetran_log.log": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "log",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "time_stamp": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "time_stamp",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "connector_id": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "connector_id",
+                    "comment": null
+                },
+                "event": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "event",
+                    "comment": null
+                },
+                "message_data": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "message_data",
+                    "comment": null
+                },
+                "message_event": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "message_event",
+                    "comment": null
+                },
+                "transformation_id": {
+                    "type": "character varying",
+                    "index": 8,
+                    "name": "transformation_id",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.fivetran_log.fivetran_log.log"
+        },
+        "source.fivetran_log.fivetran_log.transformation": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "transformation",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "character varying",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "created_by_id": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "created_by_id",
+                    "comment": null
+                },
+                "destination_id": {
+                    "type": "character varying",
+                    "index": 5,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "name",
+                    "comment": null
+                },
+                "paused": {
+                    "type": "boolean",
+                    "index": 7,
+                    "name": "paused",
+                    "comment": null
+                },
+                "script": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "script",
+                    "comment": null
+                },
+                "trigger_delay": {
+                    "type": "integer",
+                    "index": 9,
+                    "name": "trigger_delay",
+                    "comment": null
+                },
+                "trigger_interval": {
+                    "type": "integer",
+                    "index": 10,
+                    "name": "trigger_interval",
+                    "comment": null
+                },
+                "trigger_type": {
+                    "type": "text",
+                    "index": 11,
+                    "name": "trigger_type",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.fivetran_log.fivetran_log.transformation"
+        },
+        "source.fivetran_log.fivetran_log.trigger_table": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "trigger_table",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "table": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "table",
+                    "comment": null
+                },
+                "transformation_id": {
+                    "type": "character varying",
+                    "index": 2,
+                    "name": "transformation_id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.fivetran_log.fivetran_log.trigger_table"
+        },
+        "source.fivetran_log.fivetran_log.usage_cost": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "usage_cost",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "destination_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "destination_id",
+                    "comment": null
+                },
+                "measured_month": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "measured_month",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "amount": {
+                    "type": "double precision",
+                    "index": 4,
+                    "name": "amount",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.fivetran_log.fivetran_log.usage_cost"
+        },
+        "source.fivetran_log.fivetran_log.user": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "fivetrans_logs_integration_tests",
+                "name": "user",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "email": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "email",
+                    "comment": null
+                },
+                "email_disabled": {
+                    "type": "boolean",
+                    "index": 5,
+                    "name": "email_disabled",
+                    "comment": null
+                },
+                "family_name": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "family_name",
+                    "comment": null
+                },
+                "given_name": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "given_name",
+                    "comment": null
+                },
+                "phone": {
+                    "type": "integer",
+                    "index": 8,
+                    "name": "phone",
+                    "comment": null
+                },
+                "verified": {
+                    "type": "boolean",
+                    "index": 9,
+                    "name": "verified",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.fivetran_log.fivetran_log.user"
+        }
+    },
+    "errors": null
+}

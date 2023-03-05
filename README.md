@@ -1,11 +1,12 @@
 # dbterd
-CLI to generate DBML file from dbt manifest.json
+CLI to generate DBML file from dbt artifact files (required: `manifest.json`, `catalog.json`)
+> Version 0.1: only required `manifest.json`
 
 [![PyPI version](https://badge.fury.io/py/dbterd.svg)](https://pypi.org/project/dbterd/)
 ![python-cli](https://img.shields.io/badge/CLI-Python-FFCE3E?labelColor=14354C&logo=python&logoColor=white)
 
 ```
-pip install dbterd==0.1.1 --upgrade
+pip install dbterd==0.2.0 --upgrade
 ```
 
 Verify installed version:
@@ -36,16 +37,16 @@ Commands:
 # note that no relationship test = no erd relationship
 
 # select all models in dbt_resto 
-dbterd run -mp "./samples/v4-dbtresto" -o "./target"
+dbterd run -mp "samples/dbtresto" -o "target"
 # select only models in dbt_resto excluding staging
-dbterd run -mp "./samples/v4-dbtresto" -o "./target" -s model.dbt_resto -ns model.dbt_resto.staging
+dbterd run -mp "samples/dbtresto" -o "target" -s model.dbt_resto -ns model.dbt_resto.staging
 # select only models in schema name "mart" excluding staging
-dbterd run -mp "./samples/v4-dbtresto" -o "./target" -s schema:mart -ns model.dbt_resto.staging
-# select only models in schema full name "dbt.dbo" excluding staging
-dbterd run -mp "./samples/v4-dbtresto" -o "./target" -s schema:dbt.mart -ns model.dbt_resto.staging
+dbterd run -mp "samples/dbtresto" -o "target" -s schema:mart -ns model.dbt_resto.staging
+# select only models in schema full name "dbt.mart" excluding staging
+dbterd run -mp "samples/v4-dbtresto" -o "target" -s schema:dbt.mart -ns model.dbt_resto.staging
 # other samples
-dbterd run -mp "./samples/v7-fivetranlog" -o "./target"
-dbterd run -mp "./samples/v7-adfacebook" -o "./target"
+dbterd run -mp "samples/fivetranlog" -o "target"
+dbterd run -mp "samples/facebookad" -o "target"
 ```
 
 ## Quick DEMO

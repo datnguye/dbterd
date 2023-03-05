@@ -1,0 +1,2442 @@
+{
+    "metadata": {
+        "dbt_schema_version": "https://schemas.getdbt.com/dbt/catalog/v1.json",
+        "dbt_version": "1.3.0",
+        "generated_at": "2022-12-20T02:59:28.973647Z",
+        "invocation_id": "1be48695-e084-4dcc-9b9b-f71193bff422",
+        "env": {}
+    },
+    "nodes": {
+        "seed.facebook_ads_integration_tests.facebook_ads_account_history_data": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests",
+                "name": "facebook_ads_account_history_data",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "bigint",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "name",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.facebook_ads_integration_tests.facebook_ads_account_history_data"
+        },
+        "seed.facebook_ads_integration_tests.facebook_ads_ad_history_data": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests",
+                "name": "facebook_ads_ad_history_data",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "bigint",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "ad_set_id": {
+                    "type": "bigint",
+                    "index": 3,
+                    "name": "ad_set_id",
+                    "comment": null
+                },
+                "campaign_id": {
+                    "type": "bigint",
+                    "index": 4,
+                    "name": "campaign_id",
+                    "comment": null
+                },
+                "creative_id": {
+                    "type": "bigint",
+                    "index": 5,
+                    "name": "creative_id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "name",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 7,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "updated_time": {
+                    "type": "timestamp without time zone",
+                    "index": 8,
+                    "name": "updated_time",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.facebook_ads_integration_tests.facebook_ads_ad_history_data"
+        },
+        "seed.facebook_ads_integration_tests.facebook_ads_ad_set_history_data": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests",
+                "name": "facebook_ads_ad_set_history_data",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "bigint",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "campaign_id": {
+                    "type": "bigint",
+                    "index": 3,
+                    "name": "campaign_id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "name",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 5,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "updated_time": {
+                    "type": "timestamp without time zone",
+                    "index": 6,
+                    "name": "updated_time",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.facebook_ads_integration_tests.facebook_ads_ad_set_history_data"
+        },
+        "seed.facebook_ads_integration_tests.facebook_ads_basic_ad_data": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests",
+                "name": "facebook_ads_basic_ad_data",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "ad_id": {
+                    "type": "bigint",
+                    "index": 1,
+                    "name": "ad_id",
+                    "comment": null
+                },
+                "date": {
+                    "type": "date",
+                    "index": 2,
+                    "name": "date",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 3,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "impressions": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "impressions",
+                    "comment": null
+                },
+                "inline_link_clicks": {
+                    "type": "integer",
+                    "index": 5,
+                    "name": "inline_link_clicks",
+                    "comment": null
+                },
+                "spend": {
+                    "type": "double precision",
+                    "index": 6,
+                    "name": "spend",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.facebook_ads_integration_tests.facebook_ads_basic_ad_data"
+        },
+        "seed.facebook_ads_integration_tests.facebook_ads_campaign_history_data": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests",
+                "name": "facebook_ads_campaign_history_data",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "bigint",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "name",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "updated_time": {
+                    "type": "timestamp without time zone",
+                    "index": 5,
+                    "name": "updated_time",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.facebook_ads_integration_tests.facebook_ads_campaign_history_data"
+        },
+        "seed.facebook_ads_integration_tests.facebook_ads_creative_history_data": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests",
+                "name": "facebook_ads_creative_history_data",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "page_link": {
+                    "type": "character varying",
+                    "index": 1,
+                    "name": "page_link",
+                    "comment": null
+                },
+                "template_page_link": {
+                    "type": "character varying",
+                    "index": 2,
+                    "name": "template_page_link",
+                    "comment": null
+                },
+                "id": {
+                    "type": "bigint",
+                    "index": 3,
+                    "name": "id",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 4,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "name",
+                    "comment": null
+                },
+                "url_tags": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "url_tags",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 7,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "asset_feed_spec_link_urls": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "asset_feed_spec_link_urls",
+                    "comment": null
+                },
+                "object_story_link_data_child_attachments": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "object_story_link_data_child_attachments",
+                    "comment": null
+                },
+                "object_story_link_data_caption": {
+                    "type": "text",
+                    "index": 10,
+                    "name": "object_story_link_data_caption",
+                    "comment": null
+                },
+                "object_story_link_data_description": {
+                    "type": "text",
+                    "index": 11,
+                    "name": "object_story_link_data_description",
+                    "comment": null
+                },
+                "object_story_link_data_link": {
+                    "type": "text",
+                    "index": 12,
+                    "name": "object_story_link_data_link",
+                    "comment": null
+                },
+                "object_story_link_data_message": {
+                    "type": "text",
+                    "index": 13,
+                    "name": "object_story_link_data_message",
+                    "comment": null
+                },
+                "template_app_link_spec_ios": {
+                    "type": "text",
+                    "index": 14,
+                    "name": "template_app_link_spec_ios",
+                    "comment": null
+                },
+                "_fivetran_id": {
+                    "type": "text",
+                    "index": 15,
+                    "name": "_fivetran_id",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.facebook_ads_integration_tests.facebook_ads_creative_history_data"
+        },
+        "model.facebook_ads.facebook_ads__account_report": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests_facebook_ads",
+                "name": "facebook_ads__account_report",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "date_day": {
+                    "type": "date",
+                    "index": 1,
+                    "name": "date_day",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "account_name": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "account_name",
+                    "comment": null
+                },
+                "account_status": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "account_status",
+                    "comment": null
+                },
+                "business_country_code": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "business_country_code",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "timestamp without time zone",
+                    "index": 6,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "currency": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "currency",
+                    "comment": null
+                },
+                "timezone_name": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "timezone_name",
+                    "comment": null
+                },
+                "clicks": {
+                    "type": "bigint",
+                    "index": 9,
+                    "name": "clicks",
+                    "comment": null
+                },
+                "impressions": {
+                    "type": "bigint",
+                    "index": 10,
+                    "name": "impressions",
+                    "comment": null
+                },
+                "spend": {
+                    "type": "double precision",
+                    "index": 11,
+                    "name": "spend",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads.facebook_ads__account_report"
+        },
+        "model.facebook_ads.facebook_ads__ad_report": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests_facebook_ads",
+                "name": "facebook_ads__ad_report",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "date_day": {
+                    "type": "date",
+                    "index": 1,
+                    "name": "date_day",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "account_name": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "account_name",
+                    "comment": null
+                },
+                "campaign_id": {
+                    "type": "bigint",
+                    "index": 4,
+                    "name": "campaign_id",
+                    "comment": null
+                },
+                "campaign_name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "campaign_name",
+                    "comment": null
+                },
+                "ad_set_id": {
+                    "type": "bigint",
+                    "index": 6,
+                    "name": "ad_set_id",
+                    "comment": null
+                },
+                "ad_set_name": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "ad_set_name",
+                    "comment": null
+                },
+                "ad_id": {
+                    "type": "bigint",
+                    "index": 8,
+                    "name": "ad_id",
+                    "comment": null
+                },
+                "ad_name": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "ad_name",
+                    "comment": null
+                },
+                "clicks": {
+                    "type": "bigint",
+                    "index": 10,
+                    "name": "clicks",
+                    "comment": null
+                },
+                "impressions": {
+                    "type": "bigint",
+                    "index": 11,
+                    "name": "impressions",
+                    "comment": null
+                },
+                "spend": {
+                    "type": "double precision",
+                    "index": 12,
+                    "name": "spend",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads.facebook_ads__ad_report"
+        },
+        "model.facebook_ads.facebook_ads__ad_set_report": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests_facebook_ads",
+                "name": "facebook_ads__ad_set_report",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "date_day": {
+                    "type": "date",
+                    "index": 1,
+                    "name": "date_day",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "account_name": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "account_name",
+                    "comment": null
+                },
+                "campaign_id": {
+                    "type": "bigint",
+                    "index": 4,
+                    "name": "campaign_id",
+                    "comment": null
+                },
+                "campaign_name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "campaign_name",
+                    "comment": null
+                },
+                "ad_set_id": {
+                    "type": "bigint",
+                    "index": 6,
+                    "name": "ad_set_id",
+                    "comment": null
+                },
+                "ad_set_name": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "ad_set_name",
+                    "comment": null
+                },
+                "start_at": {
+                    "type": "timestamp without time zone",
+                    "index": 8,
+                    "name": "start_at",
+                    "comment": null
+                },
+                "end_at": {
+                    "type": "timestamp without time zone",
+                    "index": 9,
+                    "name": "end_at",
+                    "comment": null
+                },
+                "bid_strategy": {
+                    "type": "text",
+                    "index": 10,
+                    "name": "bid_strategy",
+                    "comment": null
+                },
+                "daily_budget": {
+                    "type": "integer",
+                    "index": 11,
+                    "name": "daily_budget",
+                    "comment": null
+                },
+                "budget_remaining": {
+                    "type": "integer",
+                    "index": 12,
+                    "name": "budget_remaining",
+                    "comment": null
+                },
+                "clicks": {
+                    "type": "bigint",
+                    "index": 13,
+                    "name": "clicks",
+                    "comment": null
+                },
+                "impressions": {
+                    "type": "bigint",
+                    "index": 14,
+                    "name": "impressions",
+                    "comment": null
+                },
+                "spend": {
+                    "type": "double precision",
+                    "index": 15,
+                    "name": "spend",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads.facebook_ads__ad_set_report"
+        },
+        "model.facebook_ads.facebook_ads__campaign_report": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests_facebook_ads",
+                "name": "facebook_ads__campaign_report",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "date_day": {
+                    "type": "date",
+                    "index": 1,
+                    "name": "date_day",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "account_name": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "account_name",
+                    "comment": null
+                },
+                "campaign_id": {
+                    "type": "bigint",
+                    "index": 4,
+                    "name": "campaign_id",
+                    "comment": null
+                },
+                "campaign_name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "campaign_name",
+                    "comment": null
+                },
+                "start_at": {
+                    "type": "timestamp without time zone",
+                    "index": 6,
+                    "name": "start_at",
+                    "comment": null
+                },
+                "end_at": {
+                    "type": "timestamp without time zone",
+                    "index": 7,
+                    "name": "end_at",
+                    "comment": null
+                },
+                "status": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "status",
+                    "comment": null
+                },
+                "daily_budget": {
+                    "type": "integer",
+                    "index": 9,
+                    "name": "daily_budget",
+                    "comment": null
+                },
+                "lifetime_budget": {
+                    "type": "integer",
+                    "index": 10,
+                    "name": "lifetime_budget",
+                    "comment": null
+                },
+                "budget_remaining": {
+                    "type": "double precision",
+                    "index": 11,
+                    "name": "budget_remaining",
+                    "comment": null
+                },
+                "clicks": {
+                    "type": "bigint",
+                    "index": 12,
+                    "name": "clicks",
+                    "comment": null
+                },
+                "impressions": {
+                    "type": "bigint",
+                    "index": 13,
+                    "name": "impressions",
+                    "comment": null
+                },
+                "spend": {
+                    "type": "double precision",
+                    "index": 14,
+                    "name": "spend",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads.facebook_ads__campaign_report"
+        },
+        "model.facebook_ads.facebook_ads__url_report": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests_facebook_ads",
+                "name": "facebook_ads__url_report",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "date_day": {
+                    "type": "date",
+                    "index": 1,
+                    "name": "date_day",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "account_name": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "account_name",
+                    "comment": null
+                },
+                "campaign_id": {
+                    "type": "bigint",
+                    "index": 4,
+                    "name": "campaign_id",
+                    "comment": null
+                },
+                "campaign_name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "campaign_name",
+                    "comment": null
+                },
+                "ad_set_id": {
+                    "type": "bigint",
+                    "index": 6,
+                    "name": "ad_set_id",
+                    "comment": null
+                },
+                "ad_set_name": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "ad_set_name",
+                    "comment": null
+                },
+                "ad_id": {
+                    "type": "bigint",
+                    "index": 8,
+                    "name": "ad_id",
+                    "comment": null
+                },
+                "ad_name": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "ad_name",
+                    "comment": null
+                },
+                "creative_id": {
+                    "type": "bigint",
+                    "index": 10,
+                    "name": "creative_id",
+                    "comment": null
+                },
+                "creative_name": {
+                    "type": "text",
+                    "index": 11,
+                    "name": "creative_name",
+                    "comment": null
+                },
+                "base_url": {
+                    "type": "text",
+                    "index": 12,
+                    "name": "base_url",
+                    "comment": null
+                },
+                "url_host": {
+                    "type": "text",
+                    "index": 13,
+                    "name": "url_host",
+                    "comment": null
+                },
+                "url_path": {
+                    "type": "text",
+                    "index": 14,
+                    "name": "url_path",
+                    "comment": null
+                },
+                "utm_source": {
+                    "type": "text",
+                    "index": 15,
+                    "name": "utm_source",
+                    "comment": null
+                },
+                "utm_medium": {
+                    "type": "text",
+                    "index": 16,
+                    "name": "utm_medium",
+                    "comment": null
+                },
+                "utm_campaign": {
+                    "type": "text",
+                    "index": 17,
+                    "name": "utm_campaign",
+                    "comment": null
+                },
+                "utm_content": {
+                    "type": "text",
+                    "index": 18,
+                    "name": "utm_content",
+                    "comment": null
+                },
+                "utm_term": {
+                    "type": "text",
+                    "index": 19,
+                    "name": "utm_term",
+                    "comment": null
+                },
+                "clicks": {
+                    "type": "bigint",
+                    "index": 20,
+                    "name": "clicks",
+                    "comment": null
+                },
+                "impressions": {
+                    "type": "bigint",
+                    "index": 21,
+                    "name": "impressions",
+                    "comment": null
+                },
+                "spend": {
+                    "type": "double precision",
+                    "index": 22,
+                    "name": "spend",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads.facebook_ads__url_report"
+        },
+        "model.facebook_ads.facebook_ads__url_tags": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests_facebook_ads",
+                "name": "facebook_ads__url_tags",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "_fivetran_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "_fivetran_id",
+                    "comment": null
+                },
+                "creative_id": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "creative_id",
+                    "comment": null
+                },
+                "key": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "key",
+                    "comment": null
+                },
+                "value": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "value",
+                    "comment": null
+                },
+                "type": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "type",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads.facebook_ads__url_tags"
+        },
+        "model.facebook_ads.int_facebook_ads__creative_history": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "facebook_ads_integration_tests_facebook_ads",
+                "name": "int_facebook_ads__creative_history",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "_fivetran_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "_fivetran_id",
+                    "comment": null
+                },
+                "creative_id": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "creative_id",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 3,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "creative_name": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "creative_name",
+                    "comment": null
+                },
+                "url": {
+                    "type": "character varying",
+                    "index": 5,
+                    "name": "url",
+                    "comment": null
+                },
+                "base_url": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "base_url",
+                    "comment": null
+                },
+                "url_host": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "url_host",
+                    "comment": null
+                },
+                "url_path": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "url_path",
+                    "comment": null
+                },
+                "utm_source": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "utm_source",
+                    "comment": null
+                },
+                "utm_medium": {
+                    "type": "text",
+                    "index": 10,
+                    "name": "utm_medium",
+                    "comment": null
+                },
+                "utm_campaign": {
+                    "type": "text",
+                    "index": 11,
+                    "name": "utm_campaign",
+                    "comment": null
+                },
+                "utm_content": {
+                    "type": "text",
+                    "index": 12,
+                    "name": "utm_content",
+                    "comment": null
+                },
+                "utm_term": {
+                    "type": "text",
+                    "index": 13,
+                    "name": "utm_term",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads.int_facebook_ads__creative_history"
+        },
+        "model.facebook_ads_source.stg_facebook_ads__account_history": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests_facebook_ads_source",
+                "name": "stg_facebook_ads__account_history",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "account_id": {
+                    "type": "bigint",
+                    "index": 1,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "account_name": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "account_name",
+                    "comment": null
+                },
+                "account_status": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "account_status",
+                    "comment": null
+                },
+                "business_country_code": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "business_country_code",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "timestamp without time zone",
+                    "index": 6,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "currency": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "currency",
+                    "comment": null
+                },
+                "timezone_name": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "timezone_name",
+                    "comment": null
+                },
+                "is_most_recent_record": {
+                    "type": "boolean",
+                    "index": 9,
+                    "name": "is_most_recent_record",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads_source.stg_facebook_ads__account_history"
+        },
+        "model.facebook_ads_source.stg_facebook_ads__account_history_tmp": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "facebook_ads_integration_tests_facebook_ads_source",
+                "name": "stg_facebook_ads__account_history_tmp",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "bigint",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "name",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads_source.stg_facebook_ads__account_history_tmp"
+        },
+        "model.facebook_ads_source.stg_facebook_ads__ad_history": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests_facebook_ads_source",
+                "name": "stg_facebook_ads__ad_history",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "updated_at": {
+                    "type": "timestamp without time zone",
+                    "index": 1,
+                    "name": "updated_at",
+                    "comment": null
+                },
+                "ad_id": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "ad_id",
+                    "comment": null
+                },
+                "ad_name": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "ad_name",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 4,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "ad_set_id": {
+                    "type": "bigint",
+                    "index": 5,
+                    "name": "ad_set_id",
+                    "comment": null
+                },
+                "campaign_id": {
+                    "type": "bigint",
+                    "index": 6,
+                    "name": "campaign_id",
+                    "comment": null
+                },
+                "creative_id": {
+                    "type": "bigint",
+                    "index": 7,
+                    "name": "creative_id",
+                    "comment": null
+                },
+                "is_most_recent_record": {
+                    "type": "boolean",
+                    "index": 8,
+                    "name": "is_most_recent_record",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads_source.stg_facebook_ads__ad_history"
+        },
+        "model.facebook_ads_source.stg_facebook_ads__ad_history_tmp": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "facebook_ads_integration_tests_facebook_ads_source",
+                "name": "stg_facebook_ads__ad_history_tmp",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "bigint",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "ad_set_id": {
+                    "type": "bigint",
+                    "index": 3,
+                    "name": "ad_set_id",
+                    "comment": null
+                },
+                "campaign_id": {
+                    "type": "bigint",
+                    "index": 4,
+                    "name": "campaign_id",
+                    "comment": null
+                },
+                "creative_id": {
+                    "type": "bigint",
+                    "index": 5,
+                    "name": "creative_id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "name",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 7,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "updated_time": {
+                    "type": "timestamp without time zone",
+                    "index": 8,
+                    "name": "updated_time",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads_source.stg_facebook_ads__ad_history_tmp"
+        },
+        "model.facebook_ads_source.stg_facebook_ads__ad_set_history": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests_facebook_ads_source",
+                "name": "stg_facebook_ads__ad_set_history",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "updated_at": {
+                    "type": "timestamp without time zone",
+                    "index": 1,
+                    "name": "updated_at",
+                    "comment": null
+                },
+                "ad_set_id": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "ad_set_id",
+                    "comment": null
+                },
+                "ad_set_name": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "ad_set_name",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 4,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "campaign_id": {
+                    "type": "bigint",
+                    "index": 5,
+                    "name": "campaign_id",
+                    "comment": null
+                },
+                "start_at": {
+                    "type": "timestamp without time zone",
+                    "index": 6,
+                    "name": "start_at",
+                    "comment": null
+                },
+                "end_at": {
+                    "type": "timestamp without time zone",
+                    "index": 7,
+                    "name": "end_at",
+                    "comment": null
+                },
+                "bid_strategy": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "bid_strategy",
+                    "comment": null
+                },
+                "daily_budget": {
+                    "type": "integer",
+                    "index": 9,
+                    "name": "daily_budget",
+                    "comment": null
+                },
+                "budget_remaining": {
+                    "type": "integer",
+                    "index": 10,
+                    "name": "budget_remaining",
+                    "comment": null
+                },
+                "status": {
+                    "type": "text",
+                    "index": 11,
+                    "name": "status",
+                    "comment": null
+                },
+                "is_most_recent_record": {
+                    "type": "boolean",
+                    "index": 12,
+                    "name": "is_most_recent_record",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads_source.stg_facebook_ads__ad_set_history"
+        },
+        "model.facebook_ads_source.stg_facebook_ads__ad_set_history_tmp": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "facebook_ads_integration_tests_facebook_ads_source",
+                "name": "stg_facebook_ads__ad_set_history_tmp",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "bigint",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "campaign_id": {
+                    "type": "bigint",
+                    "index": 3,
+                    "name": "campaign_id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "name",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 5,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "updated_time": {
+                    "type": "timestamp without time zone",
+                    "index": 6,
+                    "name": "updated_time",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads_source.stg_facebook_ads__ad_set_history_tmp"
+        },
+        "model.facebook_ads_source.stg_facebook_ads__basic_ad": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests_facebook_ads_source",
+                "name": "stg_facebook_ads__basic_ad",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "ad_id": {
+                    "type": "bigint",
+                    "index": 1,
+                    "name": "ad_id",
+                    "comment": null
+                },
+                "ad_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "ad_name",
+                    "comment": null
+                },
+                "ad_set_name": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "ad_set_name",
+                    "comment": null
+                },
+                "date_day": {
+                    "type": "date",
+                    "index": 4,
+                    "name": "date_day",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 5,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "impressions": {
+                    "type": "integer",
+                    "index": 6,
+                    "name": "impressions",
+                    "comment": null
+                },
+                "clicks": {
+                    "type": "integer",
+                    "index": 7,
+                    "name": "clicks",
+                    "comment": null
+                },
+                "spend": {
+                    "type": "double precision",
+                    "index": 8,
+                    "name": "spend",
+                    "comment": null
+                },
+                "reach": {
+                    "type": "integer",
+                    "index": 9,
+                    "name": "reach",
+                    "comment": null
+                },
+                "frequency": {
+                    "type": "double precision",
+                    "index": 10,
+                    "name": "frequency",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads_source.stg_facebook_ads__basic_ad"
+        },
+        "model.facebook_ads_source.stg_facebook_ads__basic_ad_tmp": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "facebook_ads_integration_tests_facebook_ads_source",
+                "name": "stg_facebook_ads__basic_ad_tmp",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "ad_id": {
+                    "type": "bigint",
+                    "index": 1,
+                    "name": "ad_id",
+                    "comment": null
+                },
+                "date": {
+                    "type": "date",
+                    "index": 2,
+                    "name": "date",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 3,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "impressions": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "impressions",
+                    "comment": null
+                },
+                "inline_link_clicks": {
+                    "type": "integer",
+                    "index": 5,
+                    "name": "inline_link_clicks",
+                    "comment": null
+                },
+                "spend": {
+                    "type": "double precision",
+                    "index": 6,
+                    "name": "spend",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads_source.stg_facebook_ads__basic_ad_tmp"
+        },
+        "model.facebook_ads_source.stg_facebook_ads__campaign_history": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests_facebook_ads_source",
+                "name": "stg_facebook_ads__campaign_history",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "updated_at": {
+                    "type": "timestamp without time zone",
+                    "index": 1,
+                    "name": "updated_at",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 3,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "campaign_id": {
+                    "type": "bigint",
+                    "index": 4,
+                    "name": "campaign_id",
+                    "comment": null
+                },
+                "campaign_name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "campaign_name",
+                    "comment": null
+                },
+                "start_at": {
+                    "type": "timestamp without time zone",
+                    "index": 6,
+                    "name": "start_at",
+                    "comment": null
+                },
+                "end_at": {
+                    "type": "timestamp without time zone",
+                    "index": 7,
+                    "name": "end_at",
+                    "comment": null
+                },
+                "status": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "status",
+                    "comment": null
+                },
+                "daily_budget": {
+                    "type": "integer",
+                    "index": 9,
+                    "name": "daily_budget",
+                    "comment": null
+                },
+                "lifetime_budget": {
+                    "type": "integer",
+                    "index": 10,
+                    "name": "lifetime_budget",
+                    "comment": null
+                },
+                "budget_remaining": {
+                    "type": "double precision",
+                    "index": 11,
+                    "name": "budget_remaining",
+                    "comment": null
+                },
+                "is_most_recent_record": {
+                    "type": "boolean",
+                    "index": 12,
+                    "name": "is_most_recent_record",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads_source.stg_facebook_ads__campaign_history"
+        },
+        "model.facebook_ads_source.stg_facebook_ads__campaign_history_tmp": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "facebook_ads_integration_tests_facebook_ads_source",
+                "name": "stg_facebook_ads__campaign_history_tmp",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "bigint",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "name",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "updated_time": {
+                    "type": "timestamp without time zone",
+                    "index": 5,
+                    "name": "updated_time",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads_source.stg_facebook_ads__campaign_history_tmp"
+        },
+        "model.facebook_ads_source.stg_facebook_ads__creative_history": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests_facebook_ads_source",
+                "name": "stg_facebook_ads__creative_history",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "_fivetran_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "_fivetran_id",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 2,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "creative_id": {
+                    "type": "bigint",
+                    "index": 3,
+                    "name": "creative_id",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 4,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "creative_name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "creative_name",
+                    "comment": null
+                },
+                "page_link": {
+                    "type": "character varying",
+                    "index": 6,
+                    "name": "page_link",
+                    "comment": null
+                },
+                "template_page_link": {
+                    "type": "character varying",
+                    "index": 7,
+                    "name": "template_page_link",
+                    "comment": null
+                },
+                "url_tags": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "url_tags",
+                    "comment": null
+                },
+                "asset_feed_spec_link_urls": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "asset_feed_spec_link_urls",
+                    "comment": null
+                },
+                "object_story_link_data_child_attachments": {
+                    "type": "text",
+                    "index": 10,
+                    "name": "object_story_link_data_child_attachments",
+                    "comment": null
+                },
+                "object_story_link_data_caption": {
+                    "type": "text",
+                    "index": 11,
+                    "name": "object_story_link_data_caption",
+                    "comment": null
+                },
+                "object_story_link_data_description": {
+                    "type": "text",
+                    "index": 12,
+                    "name": "object_story_link_data_description",
+                    "comment": null
+                },
+                "object_story_link_data_link": {
+                    "type": "text",
+                    "index": 13,
+                    "name": "object_story_link_data_link",
+                    "comment": null
+                },
+                "object_story_link_data_message": {
+                    "type": "text",
+                    "index": 14,
+                    "name": "object_story_link_data_message",
+                    "comment": null
+                },
+                "template_app_link_spec_ios": {
+                    "type": "text",
+                    "index": 15,
+                    "name": "template_app_link_spec_ios",
+                    "comment": null
+                },
+                "template_app_link_spec_ipad": {
+                    "type": "text",
+                    "index": 16,
+                    "name": "template_app_link_spec_ipad",
+                    "comment": null
+                },
+                "template_app_link_spec_android": {
+                    "type": "text",
+                    "index": 17,
+                    "name": "template_app_link_spec_android",
+                    "comment": null
+                },
+                "template_app_link_spec_iphone": {
+                    "type": "text",
+                    "index": 18,
+                    "name": "template_app_link_spec_iphone",
+                    "comment": null
+                },
+                "is_most_recent_record": {
+                    "type": "boolean",
+                    "index": 19,
+                    "name": "is_most_recent_record",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads_source.stg_facebook_ads__creative_history"
+        },
+        "model.facebook_ads_source.stg_facebook_ads__creative_history_tmp": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "facebook_ads_integration_tests_facebook_ads_source",
+                "name": "stg_facebook_ads__creative_history_tmp",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "page_link": {
+                    "type": "character varying",
+                    "index": 1,
+                    "name": "page_link",
+                    "comment": null
+                },
+                "template_page_link": {
+                    "type": "character varying",
+                    "index": 2,
+                    "name": "template_page_link",
+                    "comment": null
+                },
+                "id": {
+                    "type": "bigint",
+                    "index": 3,
+                    "name": "id",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 4,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "name",
+                    "comment": null
+                },
+                "url_tags": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "url_tags",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 7,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "asset_feed_spec_link_urls": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "asset_feed_spec_link_urls",
+                    "comment": null
+                },
+                "object_story_link_data_child_attachments": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "object_story_link_data_child_attachments",
+                    "comment": null
+                },
+                "object_story_link_data_caption": {
+                    "type": "text",
+                    "index": 10,
+                    "name": "object_story_link_data_caption",
+                    "comment": null
+                },
+                "object_story_link_data_description": {
+                    "type": "text",
+                    "index": 11,
+                    "name": "object_story_link_data_description",
+                    "comment": null
+                },
+                "object_story_link_data_link": {
+                    "type": "text",
+                    "index": 12,
+                    "name": "object_story_link_data_link",
+                    "comment": null
+                },
+                "object_story_link_data_message": {
+                    "type": "text",
+                    "index": 13,
+                    "name": "object_story_link_data_message",
+                    "comment": null
+                },
+                "template_app_link_spec_ios": {
+                    "type": "text",
+                    "index": 14,
+                    "name": "template_app_link_spec_ios",
+                    "comment": null
+                },
+                "_fivetran_id": {
+                    "type": "text",
+                    "index": 15,
+                    "name": "_fivetran_id",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.facebook_ads_source.stg_facebook_ads__creative_history_tmp"
+        }
+    },
+    "sources": {
+        "source.facebook_ads_source.facebook_ads.account_history": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests",
+                "name": "facebook_ads_account_history_data",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "bigint",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "name",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.facebook_ads_source.facebook_ads.account_history"
+        },
+        "source.facebook_ads_source.facebook_ads.ad_history": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests",
+                "name": "facebook_ads_ad_history_data",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "bigint",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "ad_set_id": {
+                    "type": "bigint",
+                    "index": 3,
+                    "name": "ad_set_id",
+                    "comment": null
+                },
+                "campaign_id": {
+                    "type": "bigint",
+                    "index": 4,
+                    "name": "campaign_id",
+                    "comment": null
+                },
+                "creative_id": {
+                    "type": "bigint",
+                    "index": 5,
+                    "name": "creative_id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "name",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 7,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "updated_time": {
+                    "type": "timestamp without time zone",
+                    "index": 8,
+                    "name": "updated_time",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.facebook_ads_source.facebook_ads.ad_history"
+        },
+        "source.facebook_ads_source.facebook_ads.ad_set_history": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests",
+                "name": "facebook_ads_ad_set_history_data",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "bigint",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "campaign_id": {
+                    "type": "bigint",
+                    "index": 3,
+                    "name": "campaign_id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "name",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 5,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "updated_time": {
+                    "type": "timestamp without time zone",
+                    "index": 6,
+                    "name": "updated_time",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.facebook_ads_source.facebook_ads.ad_set_history"
+        },
+        "source.facebook_ads_source.facebook_ads.basic_ad": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests",
+                "name": "facebook_ads_basic_ad_data",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "ad_id": {
+                    "type": "bigint",
+                    "index": 1,
+                    "name": "ad_id",
+                    "comment": null
+                },
+                "date": {
+                    "type": "date",
+                    "index": 2,
+                    "name": "date",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 3,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "impressions": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "impressions",
+                    "comment": null
+                },
+                "inline_link_clicks": {
+                    "type": "integer",
+                    "index": 5,
+                    "name": "inline_link_clicks",
+                    "comment": null
+                },
+                "spend": {
+                    "type": "double precision",
+                    "index": 6,
+                    "name": "spend",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.facebook_ads_source.facebook_ads.basic_ad"
+        },
+        "source.facebook_ads_source.facebook_ads.campaign_history": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests",
+                "name": "facebook_ads_campaign_history_data",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "id": {
+                    "type": "bigint",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "name",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "updated_time": {
+                    "type": "timestamp without time zone",
+                    "index": 5,
+                    "name": "updated_time",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.facebook_ads_source.facebook_ads.campaign_history"
+        },
+        "source.facebook_ads_source.facebook_ads.creative_history": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "facebook_ads_integration_tests",
+                "name": "facebook_ads_creative_history_data",
+                "database": "postgres",
+                "comment": null,
+                "owner": "pguser"
+            },
+            "columns": {
+                "page_link": {
+                    "type": "character varying",
+                    "index": 1,
+                    "name": "page_link",
+                    "comment": null
+                },
+                "template_page_link": {
+                    "type": "character varying",
+                    "index": 2,
+                    "name": "template_page_link",
+                    "comment": null
+                },
+                "id": {
+                    "type": "bigint",
+                    "index": 3,
+                    "name": "id",
+                    "comment": null
+                },
+                "account_id": {
+                    "type": "bigint",
+                    "index": 4,
+                    "name": "account_id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "name",
+                    "comment": null
+                },
+                "url_tags": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "url_tags",
+                    "comment": null
+                },
+                "_fivetran_synced": {
+                    "type": "timestamp without time zone",
+                    "index": 7,
+                    "name": "_fivetran_synced",
+                    "comment": null
+                },
+                "asset_feed_spec_link_urls": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "asset_feed_spec_link_urls",
+                    "comment": null
+                },
+                "object_story_link_data_child_attachments": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "object_story_link_data_child_attachments",
+                    "comment": null
+                },
+                "object_story_link_data_caption": {
+                    "type": "text",
+                    "index": 10,
+                    "name": "object_story_link_data_caption",
+                    "comment": null
+                },
+                "object_story_link_data_description": {
+                    "type": "text",
+                    "index": 11,
+                    "name": "object_story_link_data_description",
+                    "comment": null
+                },
+                "object_story_link_data_link": {
+                    "type": "text",
+                    "index": 12,
+                    "name": "object_story_link_data_link",
+                    "comment": null
+                },
+                "object_story_link_data_message": {
+                    "type": "text",
+                    "index": 13,
+                    "name": "object_story_link_data_message",
+                    "comment": null
+                },
+                "template_app_link_spec_ios": {
+                    "type": "text",
+                    "index": 14,
+                    "name": "template_app_link_spec_ios",
+                    "comment": null
+                },
+                "_fivetran_id": {
+                    "type": "text",
+                    "index": 15,
+                    "name": "_fivetran_id",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.facebook_ads_source.facebook_ads.creative_history"
+        }
+    },
+    "errors": null
+}
