@@ -114,5 +114,5 @@ Result after applied Model Selection:
 ## Contributing ✨
 If you've ever wanted to contribute to this tool, and a great cause, now is your chance!
 
-See the contributing docs [here](https://raw.githubusercontent.com/datnguye/dbterd/main/CONTRIBUTING.md) for more information
+See the contributing docs [CONTRIBUTING.md](https://github.com/datnguye/dbterd/blob/main/CONTRIBUTING.md) for more information
 
