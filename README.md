@@ -37,17 +37,18 @@ Commands:
 ## Quick examine with existing samples
 ```bash
 # select all models in dbt_resto 
-dbterd run -mp "samples/dbtresto" -o "target"
+dbterd run -ad "samples/dbtresto" -o "target"
 # select only models in dbt_resto excluding staging
-dbterd run -mp "samples/dbtresto" -o "target" -s model.dbt_resto -ns model.dbt_resto.staging
+dbterd run -ad "samples/dbtresto" -o "target" -s model.dbt_resto -ns model.dbt_resto.staging
 # select only models in schema name "mart" excluding staging
-dbterd run -mp "samples/dbtresto" -o "target" -s schema:mart -ns model.dbt_resto.staging
+dbterd run -ad "samples/dbtresto" -o "target" -s schema:mart -ns model.dbt_resto.staging
 # select only models in schema full name "dbt.mart" excluding staging
-dbterd run -mp "samples/v4-dbtresto" -o "target" -s schema:dbt.mart -ns model.dbt_resto.staging
+dbterd run -ad "samples/v4-dbtresto" -o "target" -s schema:dbt.mart -ns model.dbt_resto.staging
 
 # other samples
-dbterd run -mp "samples/fivetranlog" -o "target"
-dbterd run -mp "samples/facebookad" -o "target"
+dbterd run -ad "samples/fivetranlog" -o "target"
+dbterd run -ad "samples/facebookad" -o "target"
+dbterd run -ad "samples/shopify" -o "target"
 
 # your own sample without commiting to repo
 dbterd run -mp "samples/local" -o "target"
@@ -113,5 +114,5 @@ Result after applied Model Selection:
 ## Contributing ✨
 If you've ever wanted to contribute to this tool, and a great cause, now is your chance!
 
-See the contributing docs (_to be updated_) for more information
+See the contributing docs [here](https://raw.githubusercontent.com/datnguye/dbterd/main/CONTRIBUTING.md) for more information
 

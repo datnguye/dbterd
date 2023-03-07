@@ -40,11 +40,11 @@ class Executor(abc.ABC):
             getattr(target_module, "operation_default"),
         )
         manifest = self.__read_manifest(
-            mp=kwargs["manifest_path"], mv=kwargs["manifest_version"]
+            mp=kwargs.get("manifest_path") or kwargs["artifacts_dir"],
+            mv=kwargs["manifest_version"],
         )
         catalog = self.__read_catalog(
-            # TODO: Find a cleaner way to pass these args
-            cp=kwargs.get("catalog_path", kwargs["manifest_path"])
+            cp=kwargs.get("manifest_path") or kwargs["artifacts_dir"]
         )
 
         result = strategy_func(manifest=manifest, catalog=catalog, **kwargs)
