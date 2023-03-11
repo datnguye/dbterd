@@ -8,6 +8,7 @@ class TestCLI:
             for command in commands.values():
                 if type(command) is click.Command:
                     assert command.__doc__ is not None
+
         run_test(dbterd.commands)
 
     def test_unhidden_params_have_help_texts(self):
@@ -19,4 +20,5 @@ class TestCLI:
             if type(command) is click.Group:
                 for command in command.commands.values():
                     run_test(command)
+
         run_test(dbterd)
