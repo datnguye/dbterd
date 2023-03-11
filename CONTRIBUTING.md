@@ -71,6 +71,11 @@ Finally, you can also run a specific test or group of tests using [`pytest`](htt
 pytest .
 ```
 
+Run test with coverage report:
+```bash
+coverage run -m pytest . && coverage report --show-missing
+```
+
 > See [pytest usage docs](https://docs.pytest.org/en/6.2.x/usage.html) for an overview of useful command-line options.
 
 ## Submitting a Pull Request

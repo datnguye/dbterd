@@ -1,16 +1,22 @@
-import os
-import importlib.metadata
+import click
+from dbterd.cli.main import dbterd
 
 
-def test_entrypoint():
-    exit_status = os.system("dbterd -h")
-    assert exit_status == 0
-    exit_status = os.system("dbterd --help")
-    assert exit_status == 0
+class TestCLI:
+    def test_commands_have_docstrings(self):
+        def run_test(commands):
+            for command in commands.values():
+                if type(command) is click.Command:
+                    assert command.__doc__ is not None
+        run_test(dbterd.commands)
 
-
-def test_version(capfd):
-    exit_status = os.system("dbterd --version")
-    cap = capfd.readouterr()
-    assert exit_status == 0
-    assert cap.out.strip() == f"dbterd, version {importlib.metadata.version('dbterd')}"
+    def test_unhidden_params_have_help_texts(self):
+        def run_test(command):
+            for param in command.params:
+                # arguments can't have help text
+                if not isinstance(param, click.Argument) and not param.hidden:
+                    assert param.help is not None
+            if type(command) is click.Group:
+                for command in command.commands.values():
+                    run_test(command)
+        run_test(dbterd)
