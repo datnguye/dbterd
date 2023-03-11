@@ -21,6 +21,7 @@ __version__ = importlib.metadata.version("dbterd")
 @click.pass_context
 def dbterd(ctx, **kwargs):
     """Tools for producing diagram-as-code"""
+    logger.info(f"Run with dbterd=={__version__}")
 
 
 # dbterd debug
@@ -31,7 +32,7 @@ def debug(ctx, **kwargs):
     """Inspect the hidden magics"""
     logger.info("**Arguments used**")
     logger.debug(jsonify.to_json(kwargs))
-    logger.info("**Arguments used**")
+    logger.info("**Context used**")
     logger.debug(jsonify.to_json(ctx.obj))
 
 

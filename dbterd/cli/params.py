@@ -1,30 +1,22 @@
 import functools
-
 import click
-
 from dbterd import default
 
 
 def common_params(func):
     @click.option(
+        "--artifacts-dir",
+        "-ad",
+        help="Specified the full path to dbt artifacts path which known as /target directory",
+        default=default.default_artifact_path(),
+        show_default=True,
+        type=click.STRING,
+    )
+    @click.option(
         "--manifest-path",
         "-mp",
-        help="Specified the full path to dbt manifest.json file",
-        default=default.default_manifest_path(),
-        type=click.STRING,
-    )
-    @click.option(
-        "--manifest-version",
-        "-mv",
-        help="Specified dbt manifest.json version",
+        help="__DEPRECATED_WARNING__: Specified the full directory path to dbt manifest.json file. Use --artifacts-dir instead.",
         default=None,
-        type=click.STRING,
-    )
-    @click.option(
-        "--target",
-        "-t",
-        help="Target to the diagram-as-code platform",
-        default=default.default_target(),
         type=click.STRING,
     )
     @click.option(
@@ -32,13 +24,7 @@ def common_params(func):
         "-o",
         help="Output the result file. Default to the same target dir",
         default=default.default_output_path(),
-        type=click.STRING,
-    )
-    @click.option(
-        "--algo",
-        "-a",
-        help="Specified algorithm in the way to detect diagram connectors",
-        default=default.deafult_algo(),
+        show_default=True,
         type=click.STRING,
     )
     @click.option(
@@ -52,6 +38,29 @@ def common_params(func):
         "--exclude",
         "-ns",
         help="Exclusion criteria. Support 'not starts with' a string",
+        default=None,
+        type=click.STRING,
+    )
+    @click.option(
+        "--target",
+        "-t",
+        help="Target to the diagram-as-code platform",
+        default=default.default_target(),
+        show_default=True,
+        type=click.STRING,
+    )
+    @click.option(
+        "--algo",
+        "-a",
+        help="Specified algorithm in the way to detect diagram connectors",
+        default=default.deafult_algo(),
+        show_default=True,
+        type=click.STRING,
+    )
+    @click.option(
+        "--manifest-version",
+        "-mv",
+        help="Specified dbt manifest.json version",
         default=None,
         type=click.STRING,
     )
