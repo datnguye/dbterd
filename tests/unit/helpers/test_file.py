@@ -79,9 +79,7 @@ class TestFile:
 
     @pytest.mark.parametrize("platform", [("win32")])
     def test_ctype_import(self, platform):
-        with mock.patch(
-            "dbterd.helpers.file.get_sys_platform", return_value=platform
-        ) as mock_platform:
+        with mock.patch("dbterd.helpers.file.get_sys_platform", return_value=platform):
             from dbterd.helpers import file as test_file
 
             assert test_file.c_bool is not None

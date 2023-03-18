@@ -40,7 +40,7 @@ There are some tools that will be helpful to you in developing locally. While th
 
 ### Tools
 
-We will buy `poertry` in `dbterd` development and testing.
+We will buy `poetry` in `dbterd` development and testing.
 
 So first install poetry via pip:
 ```bash
@@ -51,6 +51,7 @@ then, start installing the local environment:
 ```bash
 python3 -m poetry install
 python3 -m poetry shell
+poe git-hooks
 pip install -e .
 dbterd -h
 ```
