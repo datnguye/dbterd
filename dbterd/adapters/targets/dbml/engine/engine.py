@@ -167,12 +167,7 @@ def get_compiled_sql(manifest_node):
             {columns}
         from {table}
         """.format(
-            columns="\n".join(
-                [
-                    f"{x} as {manifest_node.columns[x].data_type or 'varchar'},"
-                    for x in manifest_node.columns
-                ]
-            ),
+            columns=",\n".join([f"{x}" for x in manifest_node.columns]),
             table=f"{manifest_node.database}.{manifest_node.schema}.undefined",
         )
 

@@ -1,9 +1,11 @@
 from pathlib import Path
-from dbterd.helpers import cli_messaging, file
-from dbt_artifacts_parser import parser
-import pytest
-import click
 from unittest import mock
+
+import click
+import pytest
+from dbt_artifacts_parser import parser
+
+from dbterd.helpers import cli_messaging, file
 
 
 class TestCliMessaging:
@@ -20,5 +22,4 @@ class TestCliMessaging:
         mock_file_open_json.return_value = "not json"
         with pytest.raises(click.FileError):
             with cli_messaging.handle_read_errors("dummy-file", "dummy-message"):
-                _dict = file.open_json("dummy-path")
-                parser.parse_catalog(catalog=_dict)
+                parser.parse_catalog(catalog=file.open_json("dummy-path"))

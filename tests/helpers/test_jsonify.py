@@ -1,5 +1,8 @@
 import dataclasses
 import json
+
+import pytest
+
 from dbterd.helpers import jsonify
 
 
@@ -16,13 +19,18 @@ class DummyData:
 
 
 class TestFile:
-    def test_mask(self):
-        json_str = '{"data":"dummy"}'
-        assert jsonify.mask(obj=json_str) == dict({"data": "dummy"})
-
-    def test_mask_has_masked(self):
-        json_str = '{"password":"this is a secret password"}'
-        assert jsonify.mask(obj=json_str) == dict({"password": "this " + "*" * 10})
+    @pytest.mark.parametrize(
+        "input, ouput",
+        [
+            ('{"data":"dummy"}', dict({"data": "dummy"})),
+            (
+                '{"password":"this is a secret password"}',
+                dict({"password": "this " + "*" * 10}),
+            ),
+        ],
+    )
+    def test_mask(self, input, ouput):
+        assert jsonify.mask(obj=input) == ouput
 
     def test_mask_with_class(self):
         obj = Dummy(str="dummy", secret_str="this is a secret")
@@ -33,10 +41,17 @@ class TestFile:
     def test_to_json_none(self):
         assert jsonify.to_json(obj=None) == {}
 
-    def test_to_json(self):
-        dummy = dict({"data": "dummy"})
-        assert jsonify.to_json(obj=dummy) == json.dumps(
-            dummy,
+    @pytest.mark.parametrize(
+        "input",
+        [
+            (dict({"data": {"child_data": "dummy"}})),
+            (dict({"data": "dummy"})),
+            (dict({"data": {}})),
+        ],
+    )
+    def test_to_json_has_pretty_format(self, input):
+        assert jsonify.to_json(obj=input) == json.dumps(
+            input,
             indent=4,
             cls=jsonify.EnhancedJSONEncoder,
         )

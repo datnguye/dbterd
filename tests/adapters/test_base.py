@@ -1,6 +1,8 @@
 from pathlib import Path
 from unittest import mock
+
 import click
+
 from dbterd.adapters.worker import DbtWorker
 
 

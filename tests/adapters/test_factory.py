@@ -1,6 +1,7 @@
+import pytest
+
 from dbterd.adapters import factory
 from dbterd.adapters.targets import dbml
-import pytest
 
 
 class TestFactory:

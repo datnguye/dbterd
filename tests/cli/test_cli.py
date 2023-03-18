@@ -1,4 +1,5 @@
 import click
+
 from dbterd.cli.main import dbterd
 
 
