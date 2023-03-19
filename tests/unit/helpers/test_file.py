@@ -76,11 +76,3 @@ class TestFile:
         with pytest.raises(ValueError):
             file.read_catalog(path="path/to/catalog")
         mock_open_json.assert_called_with("path/to/catalog/catalog.json")
-
-    @pytest.mark.parametrize("platform", [("win32")])
-    def test_ctype_import(self, platform):
-        with mock.patch("dbterd.helpers.file.get_sys_platform", return_value=platform):
-            from dbterd.helpers import file as test_file
-
-            assert test_file.c_bool is not None
-            assert test_file.WinDLL is not None

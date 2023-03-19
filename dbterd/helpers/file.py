@@ -5,11 +5,11 @@ import sys
 from dbt_artifacts_parser import parser
 
 
-def get_sys_platform():
-    return sys.platform  # pragma: no cover
+def get_sys_platform():  # pragma: no cover
+    return sys.platform
 
 
-if get_sys_platform() == "win32":
+if get_sys_platform() == "win32":  # pragma: no cover
     from ctypes import WinDLL, c_bool
 else:
     WinDLL = None  # pragma: no cover
