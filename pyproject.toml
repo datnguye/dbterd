@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dbterd"
-version = "0.2.0"
+version = "0.2.1"
 description = "dbterd is a Command Line Interface (CLI) to convert dbt manifest.json file to diagram file"
 authors = ["Dat Nguyen <datnguyen.it09@gmail.com>"]
 license = "MIT"
