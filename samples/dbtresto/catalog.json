@@ -1,1 +1,1517 @@
-{"metadata": {"dbt_schema_version": "https://schemas.getdbt.com/dbt/catalog/v1.json", "dbt_version": "1.0.3", "generated_at": "2023-03-05T07:12:00.527271Z", "invocation_id": "16e5c041-bc83-4128-b29a-18f05de6ffdf", "env": {}}, "nodes": {"model.integration_tests.verify_get_base_times_hour": {"metadata": {"type": "VIEW", "schema": "dbo", "name": "verify_get_base_times_hour", "database": "dbt", "comment": null, "owner": "dbo"}, "columns": {"time_value": {"type": "datetime", "index": 1, "name": "time_value", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.integration_tests.verify_get_base_times_hour"}, "model.integration_tests.verify_get_base_times_second": {"metadata": {"type": "VIEW", "schema": "dbo", "name": "verify_get_base_times_second", "database": "dbt", "comment": null, "owner": "dbo"}, "columns": {"time_value": {"type": "datetime", "index": 1, "name": "time_value", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.integration_tests.verify_get_base_times_second"}, "model.integration_tests.verify_get_time_dimension_hour": {"metadata": {"type": "VIEW", "schema": "dbo", "name": "verify_get_time_dimension_hour", "database": "dbt", "comment": null, "owner": "dbo"}, "columns": {"time_value": {"type": "datetime", "index": 1, "name": "time_value", "comment": null}, "time_string": {"type": "nvarchar", "index": 2, "name": "time_string", "comment": null}, "time24_string": {"type": "nvarchar", "index": 3, "name": "time24_string", "comment": null}, "hour_number": {"type": "int", "index": 4, "name": "hour_number", "comment": null}, "hour_name": {"type": "nvarchar", "index": 5, "name": "hour_name", "comment": null}, "hour24_number": {"type": "int", "index": 6, "name": "hour24_number", "comment": null}, "hour24_name": {"type": "nvarchar", "index": 7, "name": "hour24_name", "comment": null}, "time_key": {"type": "bigint", "index": 8, "name": "time_key", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.integration_tests.verify_get_time_dimension_hour"}, "model.integration_tests.verify_datepart": {"metadata": {"type": "BASE TABLE", "schema": "dbo", "name": "verify_datepart", "database": "dbt", "comment": null, "owner": "dbo"}, "columns": {"input": {"type": "datetime", "index": 1, "name": "input", "comment": null}, "date_part": {"type": "varchar", "index": 2, "name": "date_part", "comment": null}, "actual": {"type": "int", "index": 3, "name": "actual", "comment": null}, "expected": {"type": "int", "index": 4, "name": "expected", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.integration_tests.verify_datepart"}, "model.integration_tests.verify_generate_schema_name": {"metadata": {"type": "VIEW", "schema": "dbo", "name": "verify_generate_schema_name", "database": "dbt", "comment": null, "owner": "dbo"}, "columns": {"actual": {"type": "varchar", "index": 1, "name": "actual", "comment": null}, "expected": {"type": "varchar", "index": 2, "name": "expected", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.integration_tests.verify_generate_schema_name"}, "model.integration_tests.verify_get_time_key": {"metadata": {"type": "VIEW", "schema": "dbo", "name": "verify_get_time_key", "database": "dbt", "comment": null, "owner": "dbo"}, "columns": {"actual": {"type": "nvarchar", "index": 1, "name": "actual", "comment": null}, "expected": {"type": "varchar", "index": 2, "name": "expected", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.integration_tests.verify_get_time_key"}, "model.integration_tests.verify_get_time_dimension_second": {"metadata": {"type": "BASE TABLE", "schema": "dbo", "name": "verify_get_time_dimension_second", "database": "dbt", "comment": null, "owner": "dbo"}, "columns": {"time_value": {"type": "datetime", "index": 1, "name": "time_value", "comment": null}, "time_string": {"type": "nvarchar", "index": 2, "name": "time_string", "comment": null}, "time24_string": {"type": "nvarchar", "index": 3, "name": "time24_string", "comment": null}, "hour_number": {"type": "int", "index": 4, "name": "hour_number", "comment": null}, "hour_name": {"type": "nvarchar", "index": 5, "name": "hour_name", "comment": null}, "hour24_number": {"type": "int", "index": 6, "name": "hour24_number", "comment": null}, "hour24_name": {"type": "nvarchar", "index": 7, "name": "hour24_name", "comment": null}, "minute_number": {"type": "int", "index": 8, "name": "minute_number", "comment": null}, "hour_minute_name": {"type": "nvarchar", "index": 9, "name": "hour_minute_name", "comment": null}, "hour24_minute_name": {"type": "nvarchar", "index": 10, "name": "hour24_minute_name", "comment": null}, "second_number": {"type": "int", "index": 11, "name": "second_number", "comment": null}, "time_key": {"type": "bigint", "index": 12, "name": "time_key", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.integration_tests.verify_get_time_dimension_second"}, "model.integration_tests.verify_get_base_times_minute": {"metadata": {"type": "VIEW", "schema": "dbo", "name": "verify_get_base_times_minute", "database": "dbt", "comment": null, "owner": "dbo"}, "columns": {"time_value": {"type": "datetime", "index": 1, "name": "time_value", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.integration_tests.verify_get_base_times_minute"}, "model.integration_tests.verify_get_time_dimension_minute": {"metadata": {"type": "VIEW", "schema": "dbo", "name": "verify_get_time_dimension_minute", "database": "dbt", "comment": null, "owner": "dbo"}, "columns": {"time_value": {"type": "datetime", "index": 1, "name": "time_value", "comment": null}, "time_string": {"type": "nvarchar", "index": 2, "name": "time_string", "comment": null}, "time24_string": {"type": "nvarchar", "index": 3, "name": "time24_string", "comment": null}, "hour_number": {"type": "int", "index": 4, "name": "hour_number", "comment": null}, "hour_name": {"type": "nvarchar", "index": 5, "name": "hour_name", "comment": null}, "hour24_number": {"type": "int", "index": 6, "name": "hour24_number", "comment": null}, "hour24_name": {"type": "nvarchar", "index": 7, "name": "hour24_name", "comment": null}, "minute_number": {"type": "int", "index": 8, "name": "minute_number", "comment": null}, "hour_minute_name": {"type": "nvarchar", "index": 9, "name": "hour_minute_name", "comment": null}, "hour24_minute_name": {"type": "nvarchar", "index": 10, "name": "hour24_minute_name", "comment": null}, "time_key": {"type": "bigint", "index": 11, "name": "time_key", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.integration_tests.verify_get_time_dimension_minute"}, "model.integration_tests.verify_get_table_alias": {"metadata": {"type": "VIEW", "schema": "dbo", "name": "verify_get_table_alias_dat", "database": "dbt", "comment": null, "owner": "dbo"}, "columns": {"actual": {"type": "varchar", "index": 1, "name": "actual", "comment": null}, "expected": {"type": "varchar", "index": 2, "name": "expected", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.integration_tests.verify_get_table_alias"}, "model.integration_tests.verify_if_column_value_to_match_regex": {"metadata": {"type": "VIEW", "schema": "dbo", "name": "verify_if_column_value_to_match_regex", "database": "dbt", "comment": null, "owner": "dbo"}, "columns": {"text_only": {"type": "varchar", "index": 1, "name": "text_only", "comment": null}, "number_only": {"type": "varchar", "index": 2, "name": "number_only", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.integration_tests.verify_if_column_value_to_match_regex"}, "model.integration_tests.verify_materialized_view": {"metadata": {"type": "VIEW", "schema": "dbo", "name": "verify_materialized_view", "database": "dbt", "comment": null, "owner": "dbo"}, "columns": {"time_key": {"type": "int", "index": 1, "name": "time_key", "comment": null}, "time_value": {"type": "int", "index": 2, "name": "time_value", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.integration_tests.verify_materialized_view"}, "model.integration_tests.verify_money_to_words_en": {"metadata": {"type": "VIEW", "schema": "dbo", "name": "verify_money_to_words_en", "database": "dbt", "comment": null, "owner": "dbo"}, "columns": {"actual": {"type": "nvarchar", "index": 1, "name": "actual", "comment": null}, "input": {"type": "numeric", "index": 2, "name": "input", "comment": null}, "expected": {"type": "varchar", "index": 3, "name": "expected", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.integration_tests.verify_money_to_words_en"}, "model.dbt_resto.fact_number_scoring": {"metadata": {"type": "BASE TABLE", "schema": "mart", "name": "fact_number_scoring", "database": "dbt", "comment": null, "owner": "mart"}, "columns": {"fact_key": {"type": "varchar", "index": 1, "name": "fact_key", "comment": null}, "forecast_date": {"type": "date", "index": 2, "name": "forecast_date", "comment": null}, "number_value": {"type": "int", "index": 3, "name": "number_value", "comment": null}, "score_1": {"type": "int", "index": 4, "name": "score_1", "comment": null}, "score_2": {"type": "int", "index": 5, "name": "score_2", "comment": null}, "score_3": {"type": "int", "index": 6, "name": "score_3", "comment": null}, "score_4": {"type": "int", "index": 7, "name": "score_4", "comment": null}, "score_5": {"type": "int", "index": 8, "name": "score_5", "comment": null}, "score_6": {"type": "int", "index": 9, "name": "score_6", "comment": null}, "rank_pos_1": {"type": "float", "index": 10, "name": "rank_pos_1", "comment": null}, "rank_pos_2": {"type": "float", "index": 11, "name": "rank_pos_2", "comment": null}, "rank_pos_3": {"type": "float", "index": 12, "name": "rank_pos_3", "comment": null}, "rank_pos_4": {"type": "float", "index": 13, "name": "rank_pos_4", "comment": null}, "rank_pos_5": {"type": "float", "index": 14, "name": "rank_pos_5", "comment": null}, "rank_pos_6": {"type": "float", "index": 15, "name": "rank_pos_6", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.dbt_resto.fact_number_scoring"}, "model.dbt_resto.staging_power655_box": {"metadata": {"type": "BASE TABLE", "schema": "staging", "name": "staging_power655_box", "database": "dbt", "comment": null, "owner": "staging"}, "columns": {"sk_box": {"type": "varchar", "index": 1, "name": "sk_box", "comment": null}, "box_date": {"type": "date", "index": 2, "name": "box_date", "comment": null}, "box_id": {"type": "varchar", "index": 3, "name": "box_id", "comment": null}, "box_name": {"type": "nvarchar", "index": 4, "name": "box_name", "comment": null}, "box_result_numbers": {"type": "nvarchar", "index": 5, "name": "box_result_numbers", "comment": null}, "box_result_number_1": {"type": "int", "index": 6, "name": "box_result_number_1", "comment": null}, "box_result_number_2": {"type": "int", "index": 7, "name": "box_result_number_2", "comment": null}, "box_result_number_3": {"type": "int", "index": 8, "name": "box_result_number_3", "comment": null}, "box_result_number_4": {"type": "int", "index": 9, "name": "box_result_number_4", "comment": null}, "box_result_number_5": {"type": "int", "index": 10, "name": "box_result_number_5", "comment": null}, "box_result_number_6": {"type": "int", "index": 11, "name": "box_result_number_6", "comment": null}, "box_result_number_7": {"type": "int", "index": 12, "name": "box_result_number_7", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.dbt_resto.staging_power655_box"}, "seed.dbt_resto.vietlot_power655_data": {"metadata": {"type": "BASE TABLE", "schema": "landing", "name": "power655_data", "database": "dbt", "comment": null, "owner": "landing"}, "columns": {"box_date": {"type": "datetime", "index": 1, "name": "box_date", "comment": null}, "box_id": {"type": "varchar", "index": 2, "name": "box_id", "comment": null}, "box_name": {"type": "nvarchar", "index": 3, "name": "box_name", "comment": null}, "box_result_numbers": {"type": "nvarchar", "index": 4, "name": "box_result_numbers", "comment": null}, "box_results": {"type": "nvarchar", "index": 5, "name": "box_results", "comment": null}, "created_at": {"type": "datetime", "index": 6, "name": "created_at", "comment": null}, "updated_at": {"type": "datetime", "index": 7, "name": "updated_at", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "seed.dbt_resto.vietlot_power655_data"}, "model.dbt_resto.staging_power655_box_detail": {"metadata": {"type": "BASE TABLE", "schema": "staging", "name": "staging_power655_box_detail", "database": "dbt", "comment": null, "owner": "staging"}, "columns": {"sk_box_detail": {"type": "varchar", "index": 1, "name": "sk_box_detail", "comment": null}, "box_id": {"type": "varchar", "index": 2, "name": "box_id", "comment": null}, "prize_name_raw": {"type": "nvarchar", "index": 3, "name": "prize_name_raw", "comment": null}, "prize_name": {"type": "nvarchar", "index": 4, "name": "prize_name", "comment": null}, "prize_won": {"type": "int", "index": 5, "name": "prize_won", "comment": null}, "prize_value_raw": {"type": "nvarchar", "index": 6, "name": "prize_value_raw", "comment": null}, "prize_value": {"type": "float", "index": 7, "name": "prize_value", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.dbt_resto.staging_power655_box_detail"}, "model.dbt_resto.fact_result": {"metadata": {"type": "BASE TABLE", "schema": "mart", "name": "fact_result", "database": "dbt", "comment": null, "owner": "mart"}, "columns": {"fact_result_key": {"type": "varchar", "index": 1, "name": "fact_result_key", "comment": null}, "box_key": {"type": "varchar", "index": 2, "name": "box_key", "comment": null}, "prize_key": {"type": "varchar", "index": 3, "name": "prize_key", "comment": null}, "date_key": {"type": "date", "index": 4, "name": "date_key", "comment": null}, "no_of_won": {"type": "int", "index": 5, "name": "no_of_won", "comment": null}, "prize_value": {"type": "float", "index": 6, "name": "prize_value", "comment": null}, "prize_paid": {"type": "float", "index": 7, "name": "prize_paid", "comment": null}, "is_prize_taken": {"type": "int", "index": 8, "name": "is_prize_taken", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.dbt_resto.fact_result"}, "model.dbt_resto.dim_date": {"metadata": {"type": "BASE TABLE", "schema": "mart", "name": "dim_date", "database": "dbt", "comment": null, "owner": "mart"}, "columns": {"date_key": {"type": "date", "index": 1, "name": "date_key", "comment": null}, "box_date": {"type": "date", "index": 2, "name": "box_date", "comment": null}, "box_day": {"type": "int", "index": 3, "name": "box_day", "comment": null}, "box_week": {"type": "int", "index": 4, "name": "box_week", "comment": null}, "box_month": {"type": "int", "index": 5, "name": "box_month", "comment": null}, "box_month_name": {"type": "varchar", "index": 6, "name": "box_month_name", "comment": null}, "box_year": {"type": "int", "index": 7, "name": "box_year", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.dbt_resto.dim_date"}, "model.dbt_resto.dim_box": {"metadata": {"type": "BASE TABLE", "schema": "mart", "name": "dim_box", "database": "dbt", "comment": null, "owner": "mart"}, "columns": {"box_key": {"type": "varchar", "index": 1, "name": "box_key", "comment": null}, "box_id": {"type": "varchar", "index": 2, "name": "box_id", "comment": null}, "box_date": {"type": "date", "index": 3, "name": "box_date", "comment": null}, "box_result_numbers": {"type": "nvarchar", "index": 4, "name": "box_result_numbers", "comment": null}, "box_result_number_1": {"type": "int", "index": 5, "name": "box_result_number_1", "comment": null}, "box_result_number_2": {"type": "int", "index": 6, "name": "box_result_number_2", "comment": null}, "box_result_number_3": {"type": "int", "index": 7, "name": "box_result_number_3", "comment": null}, "box_result_number_4": {"type": "int", "index": 8, "name": "box_result_number_4", "comment": null}, "box_result_number_5": {"type": "int", "index": 9, "name": "box_result_number_5", "comment": null}, "box_result_number_6": {"type": "int", "index": 10, "name": "box_result_number_6", "comment": null}, "box_result_number_7": {"type": "int", "index": 11, "name": "box_result_number_7", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.dbt_resto.dim_box"}, "model.dbt_resto.fact_number_forecast": {"metadata": {"type": "BASE TABLE", "schema": "mart", "name": "fact_number_forecast", "database": "dbt", "comment": null, "owner": "mart"}, "columns": {"forecast_date": {"type": "date", "index": 1, "name": "forecast_date", "comment": null}, "last_box_date": {"type": "date", "index": 2, "name": "last_box_date", "comment": null}, "forecast_numbers": {"type": "varchar", "index": 3, "name": "forecast_numbers", "comment": null}, "last_box_result_numbers": {"type": "nvarchar", "index": 4, "name": "last_box_result_numbers", "comment": null}, "forecast_1": {"type": "int", "index": 5, "name": "forecast_1", "comment": null}, "last_box_result_number_1": {"type": "int", "index": 6, "name": "last_box_result_number_1", "comment": null}, "forecast_2": {"type": "int", "index": 7, "name": "forecast_2", "comment": null}, "last_box_result_number_2": {"type": "int", "index": 8, "name": "last_box_result_number_2", "comment": null}, "forecast_3": {"type": "int", "index": 9, "name": "forecast_3", "comment": null}, "last_box_result_number_3": {"type": "int", "index": 10, "name": "last_box_result_number_3", "comment": null}, "forecast_4": {"type": "int", "index": 11, "name": "forecast_4", "comment": null}, "last_box_result_number_4": {"type": "int", "index": 12, "name": "last_box_result_number_4", "comment": null}, "forecast_5": {"type": "int", "index": 13, "name": "forecast_5", "comment": null}, "last_box_result_number_5": {"type": "int", "index": 14, "name": "last_box_result_number_5", "comment": null}, "forecast_6": {"type": "int", "index": 15, "name": "forecast_6", "comment": null}, "last_box_result_number_6": {"type": "int", "index": 16, "name": "last_box_result_number_6", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.dbt_resto.fact_number_forecast"}, "model.dbt_resto.fact_number": {"metadata": {"type": "BASE TABLE", "schema": "mart", "name": "fact_number", "database": "dbt", "comment": null, "owner": "mart"}, "columns": {"number_value": {"type": "int", "index": 1, "name": "number_value", "comment": null}, "occurrence": {"type": "int", "index": 2, "name": "occurrence", "comment": null}, "occurrence_pos_1": {"type": "int", "index": 3, "name": "occurrence_pos_1", "comment": null}, "occurrence_pos_2": {"type": "int", "index": 4, "name": "occurrence_pos_2", "comment": null}, "occurrence_pos_3": {"type": "int", "index": 5, "name": "occurrence_pos_3", "comment": null}, "occurrence_pos_4": {"type": "int", "index": 6, "name": "occurrence_pos_4", "comment": null}, "occurrence_pos_5": {"type": "int", "index": 7, "name": "occurrence_pos_5", "comment": null}, "occurrence_pos_6": {"type": "int", "index": 8, "name": "occurrence_pos_6", "comment": null}, "occurrence_pos_7": {"type": "int", "index": 9, "name": "occurrence_pos_7", "comment": null}, "last_appearance": {"type": "date", "index": 10, "name": "last_appearance", "comment": null}, "last_appearance_pos_1": {"type": "date", "index": 11, "name": "last_appearance_pos_1", "comment": null}, "last_appearance_pos_2": {"type": "date", "index": 12, "name": "last_appearance_pos_2", "comment": null}, "last_appearance_pos_3": {"type": "date", "index": 13, "name": "last_appearance_pos_3", "comment": null}, "last_appearance_pos_4": {"type": "date", "index": 14, "name": "last_appearance_pos_4", "comment": null}, "last_appearance_pos_5": {"type": "date", "index": 15, "name": "last_appearance_pos_5", "comment": null}, "last_appearance_pos_6": {"type": "date", "index": 16, "name": "last_appearance_pos_6", "comment": null}, "last_appearance_pos_7": {"type": "date", "index": 17, "name": "last_appearance_pos_7", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.dbt_resto.fact_number"}, "model.integration_tests.verify_str_to_date": {"metadata": {"type": "VIEW", "schema": "dbo", "name": "verify_str_to_date", "database": "dbt", "comment": null, "owner": "dbo"}, "columns": {"actual": {"type": "date", "index": 1, "name": "actual", "comment": null}, "expected": {"type": "date", "index": 2, "name": "expected", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.integration_tests.verify_str_to_date"}, "model.dbt_resto.fact_set_number": {"metadata": {"type": "BASE TABLE", "schema": "mart", "name": "fact_set_number", "database": "dbt", "comment": null, "owner": "mart"}, "columns": {"box_result_numbers": {"type": "nvarchar", "index": 1, "name": "box_result_numbers", "comment": null}, "occurrence": {"type": "int", "index": 2, "name": "occurrence", "comment": null}, "last_appearance": {"type": "date", "index": 3, "name": "last_appearance", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.dbt_resto.fact_set_number"}, "model.dbt_resto.dim_prize": {"metadata": {"type": "BASE TABLE", "schema": "mart", "name": "dim_prize", "database": "dbt", "comment": null, "owner": "mart"}, "columns": {"prize_key": {"type": "varchar", "index": 1, "name": "prize_key", "comment": null}, "prize_name": {"type": "nvarchar", "index": 2, "name": "prize_name", "comment": null}, "prize_order": {"type": "int", "index": 3, "name": "prize_order", "comment": null}}, "stats": {"has_stats": {"id": "has_stats", "label": "Has Stats?", "value": false, "include": false, "description": "Indicates whether there are statistics for this table"}}, "unique_id": "model.dbt_resto.dim_prize"}}, "sources": {}, "errors": null}
+{
+    "metadata": {
+        "dbt_schema_version": "https://schemas.getdbt.com/dbt/catalog/v1.json",
+        "dbt_version": "1.0.3",
+        "generated_at": "2023-03-05T07:12:00.527271Z",
+        "invocation_id": "16e5c041-bc83-4128-b29a-18f05de6ffdf",
+        "env": {}
+    },
+    "nodes": {
+        "model.integration_tests.verify_get_base_times_hour": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "dbo",
+                "name": "verify_get_base_times_hour",
+                "database": "dbt",
+                "comment": null,
+                "owner": "dbo"
+            },
+            "columns": {
+                "time_value": {
+                    "type": "datetime",
+                    "index": 1,
+                    "name": "time_value",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.integration_tests.verify_get_base_times_hour"
+        },
+        "model.integration_tests.verify_get_base_times_second": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "dbo",
+                "name": "verify_get_base_times_second",
+                "database": "dbt",
+                "comment": null,
+                "owner": "dbo"
+            },
+            "columns": {
+                "time_value": {
+                    "type": "datetime",
+                    "index": 1,
+                    "name": "time_value",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.integration_tests.verify_get_base_times_second"
+        },
+        "model.integration_tests.verify_get_time_dimension_hour": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "dbo",
+                "name": "verify_get_time_dimension_hour",
+                "database": "dbt",
+                "comment": null,
+                "owner": "dbo"
+            },
+            "columns": {
+                "time_value": {
+                    "type": "datetime",
+                    "index": 1,
+                    "name": "time_value",
+                    "comment": null
+                },
+                "time_string": {
+                    "type": "nvarchar",
+                    "index": 2,
+                    "name": "time_string",
+                    "comment": null
+                },
+                "time24_string": {
+                    "type": "nvarchar",
+                    "index": 3,
+                    "name": "time24_string",
+                    "comment": null
+                },
+                "hour_number": {
+                    "type": "int",
+                    "index": 4,
+                    "name": "hour_number",
+                    "comment": null
+                },
+                "hour_name": {
+                    "type": "nvarchar",
+                    "index": 5,
+                    "name": "hour_name",
+                    "comment": null
+                },
+                "hour24_number": {
+                    "type": "int",
+                    "index": 6,
+                    "name": "hour24_number",
+                    "comment": null
+                },
+                "hour24_name": {
+                    "type": "nvarchar",
+                    "index": 7,
+                    "name": "hour24_name",
+                    "comment": null
+                },
+                "time_key": {
+                    "type": "bigint",
+                    "index": 8,
+                    "name": "time_key",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.integration_tests.verify_get_time_dimension_hour"
+        },
+        "model.integration_tests.verify_datepart": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbo",
+                "name": "verify_datepart",
+                "database": "dbt",
+                "comment": null,
+                "owner": "dbo"
+            },
+            "columns": {
+                "input": {
+                    "type": "datetime",
+                    "index": 1,
+                    "name": "input",
+                    "comment": null
+                },
+                "date_part": {
+                    "type": "varchar",
+                    "index": 2,
+                    "name": "date_part",
+                    "comment": null
+                },
+                "actual": {
+                    "type": "int",
+                    "index": 3,
+                    "name": "actual",
+                    "comment": null
+                },
+                "expected": {
+                    "type": "int",
+                    "index": 4,
+                    "name": "expected",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.integration_tests.verify_datepart"
+        },
+        "model.integration_tests.verify_generate_schema_name": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "dbo",
+                "name": "verify_generate_schema_name",
+                "database": "dbt",
+                "comment": null,
+                "owner": "dbo"
+            },
+            "columns": {
+                "actual": {
+                    "type": "varchar",
+                    "index": 1,
+                    "name": "actual",
+                    "comment": null
+                },
+                "expected": {
+                    "type": "varchar",
+                    "index": 2,
+                    "name": "expected",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.integration_tests.verify_generate_schema_name"
+        },
+        "model.integration_tests.verify_get_time_key": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "dbo",
+                "name": "verify_get_time_key",
+                "database": "dbt",
+                "comment": null,
+                "owner": "dbo"
+            },
+            "columns": {
+                "actual": {
+                    "type": "nvarchar",
+                    "index": 1,
+                    "name": "actual",
+                    "comment": null
+                },
+                "expected": {
+                    "type": "varchar",
+                    "index": 2,
+                    "name": "expected",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.integration_tests.verify_get_time_key"
+        },
+        "model.integration_tests.verify_get_time_dimension_second": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbo",
+                "name": "verify_get_time_dimension_second",
+                "database": "dbt",
+                "comment": null,
+                "owner": "dbo"
+            },
+            "columns": {
+                "time_value": {
+                    "type": "datetime",
+                    "index": 1,
+                    "name": "time_value",
+                    "comment": null
+                },
+                "time_string": {
+                    "type": "nvarchar",
+                    "index": 2,
+                    "name": "time_string",
+                    "comment": null
+                },
+                "time24_string": {
+                    "type": "nvarchar",
+                    "index": 3,
+                    "name": "time24_string",
+                    "comment": null
+                },
+                "hour_number": {
+                    "type": "int",
+                    "index": 4,
+                    "name": "hour_number",
+                    "comment": null
+                },
+                "hour_name": {
+                    "type": "nvarchar",
+                    "index": 5,
+                    "name": "hour_name",
+                    "comment": null
+                },
+                "hour24_number": {
+                    "type": "int",
+                    "index": 6,
+                    "name": "hour24_number",
+                    "comment": null
+                },
+                "hour24_name": {
+                    "type": "nvarchar",
+                    "index": 7,
+                    "name": "hour24_name",
+                    "comment": null
+                },
+                "minute_number": {
+                    "type": "int",
+                    "index": 8,
+                    "name": "minute_number",
+                    "comment": null
+                },
+                "hour_minute_name": {
+                    "type": "nvarchar",
+                    "index": 9,
+                    "name": "hour_minute_name",
+                    "comment": null
+                },
+                "hour24_minute_name": {
+                    "type": "nvarchar",
+                    "index": 10,
+                    "name": "hour24_minute_name",
+                    "comment": null
+                },
+                "second_number": {
+                    "type": "int",
+                    "index": 11,
+                    "name": "second_number",
+                    "comment": null
+                },
+                "time_key": {
+                    "type": "bigint",
+                    "index": 12,
+                    "name": "time_key",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.integration_tests.verify_get_time_dimension_second"
+        },
+        "model.integration_tests.verify_get_base_times_minute": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "dbo",
+                "name": "verify_get_base_times_minute",
+                "database": "dbt",
+                "comment": null,
+                "owner": "dbo"
+            },
+            "columns": {
+                "time_value": {
+                    "type": "datetime",
+                    "index": 1,
+                    "name": "time_value",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.integration_tests.verify_get_base_times_minute"
+        },
+        "model.integration_tests.verify_get_time_dimension_minute": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "dbo",
+                "name": "verify_get_time_dimension_minute",
+                "database": "dbt",
+                "comment": null,
+                "owner": "dbo"
+            },
+            "columns": {
+                "time_value": {
+                    "type": "datetime",
+                    "index": 1,
+                    "name": "time_value",
+                    "comment": null
+                },
+                "time_string": {
+                    "type": "nvarchar",
+                    "index": 2,
+                    "name": "time_string",
+                    "comment": null
+                },
+                "time24_string": {
+                    "type": "nvarchar",
+                    "index": 3,
+                    "name": "time24_string",
+                    "comment": null
+                },
+                "hour_number": {
+                    "type": "int",
+                    "index": 4,
+                    "name": "hour_number",
+                    "comment": null
+                },
+                "hour_name": {
+                    "type": "nvarchar",
+                    "index": 5,
+                    "name": "hour_name",
+                    "comment": null
+                },
+                "hour24_number": {
+                    "type": "int",
+                    "index": 6,
+                    "name": "hour24_number",
+                    "comment": null
+                },
+                "hour24_name": {
+                    "type": "nvarchar",
+                    "index": 7,
+                    "name": "hour24_name",
+                    "comment": null
+                },
+                "minute_number": {
+                    "type": "int",
+                    "index": 8,
+                    "name": "minute_number",
+                    "comment": null
+                },
+                "hour_minute_name": {
+                    "type": "nvarchar",
+                    "index": 9,
+                    "name": "hour_minute_name",
+                    "comment": null
+                },
+                "hour24_minute_name": {
+                    "type": "nvarchar",
+                    "index": 10,
+                    "name": "hour24_minute_name",
+                    "comment": null
+                },
+                "time_key": {
+                    "type": "bigint",
+                    "index": 11,
+                    "name": "time_key",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.integration_tests.verify_get_time_dimension_minute"
+        },
+        "model.integration_tests.verify_get_table_alias": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "dbo",
+                "name": "verify_get_table_alias_dat",
+                "database": "dbt",
+                "comment": null,
+                "owner": "dbo"
+            },
+            "columns": {
+                "actual": {
+                    "type": "varchar",
+                    "index": 1,
+                    "name": "actual",
+                    "comment": null
+                },
+                "expected": {
+                    "type": "varchar",
+                    "index": 2,
+                    "name": "expected",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.integration_tests.verify_get_table_alias"
+        },
+        "model.integration_tests.verify_if_column_value_to_match_regex": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "dbo",
+                "name": "verify_if_column_value_to_match_regex",
+                "database": "dbt",
+                "comment": null,
+                "owner": "dbo"
+            },
+            "columns": {
+                "text_only": {
+                    "type": "varchar",
+                    "index": 1,
+                    "name": "text_only",
+                    "comment": null
+                },
+                "number_only": {
+                    "type": "varchar",
+                    "index": 2,
+                    "name": "number_only",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.integration_tests.verify_if_column_value_to_match_regex"
+        },
+        "model.integration_tests.verify_materialized_view": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "dbo",
+                "name": "verify_materialized_view",
+                "database": "dbt",
+                "comment": null,
+                "owner": "dbo"
+            },
+            "columns": {
+                "time_key": {
+                    "type": "int",
+                    "index": 1,
+                    "name": "time_key",
+                    "comment": null
+                },
+                "time_value": {
+                    "type": "int",
+                    "index": 2,
+                    "name": "time_value",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.integration_tests.verify_materialized_view"
+        },
+        "model.integration_tests.verify_money_to_words_en": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "dbo",
+                "name": "verify_money_to_words_en",
+                "database": "dbt",
+                "comment": null,
+                "owner": "dbo"
+            },
+            "columns": {
+                "actual": {
+                    "type": "nvarchar",
+                    "index": 1,
+                    "name": "actual",
+                    "comment": null
+                },
+                "input": {
+                    "type": "numeric",
+                    "index": 2,
+                    "name": "input",
+                    "comment": null
+                },
+                "expected": {
+                    "type": "varchar",
+                    "index": 3,
+                    "name": "expected",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.integration_tests.verify_money_to_words_en"
+        },
+        "model.dbt_resto.fact_number_scoring": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "mart",
+                "name": "fact_number_scoring",
+                "database": "dbt",
+                "comment": null,
+                "owner": "mart"
+            },
+            "columns": {
+                "fact_key": {
+                    "type": "varchar",
+                    "index": 1,
+                    "name": "fact_key",
+                    "comment": null
+                },
+                "forecast_date": {
+                    "type": "date",
+                    "index": 2,
+                    "name": "forecast_date",
+                    "comment": null
+                },
+                "number_value": {
+                    "type": "int",
+                    "index": 3,
+                    "name": "number_value",
+                    "comment": null
+                },
+                "score_1": {
+                    "type": "int",
+                    "index": 4,
+                    "name": "score_1",
+                    "comment": null
+                },
+                "score_2": {
+                    "type": "int",
+                    "index": 5,
+                    "name": "score_2",
+                    "comment": null
+                },
+                "score_3": {
+                    "type": "int",
+                    "index": 6,
+                    "name": "score_3",
+                    "comment": null
+                },
+                "score_4": {
+                    "type": "int",
+                    "index": 7,
+                    "name": "score_4",
+                    "comment": null
+                },
+                "score_5": {
+                    "type": "int",
+                    "index": 8,
+                    "name": "score_5",
+                    "comment": null
+                },
+                "score_6": {
+                    "type": "int",
+                    "index": 9,
+                    "name": "score_6",
+                    "comment": null
+                },
+                "rank_pos_1": {
+                    "type": "float",
+                    "index": 10,
+                    "name": "rank_pos_1",
+                    "comment": null
+                },
+                "rank_pos_2": {
+                    "type": "float",
+                    "index": 11,
+                    "name": "rank_pos_2",
+                    "comment": null
+                },
+                "rank_pos_3": {
+                    "type": "float",
+                    "index": 12,
+                    "name": "rank_pos_3",
+                    "comment": null
+                },
+                "rank_pos_4": {
+                    "type": "float",
+                    "index": 13,
+                    "name": "rank_pos_4",
+                    "comment": null
+                },
+                "rank_pos_5": {
+                    "type": "float",
+                    "index": 14,
+                    "name": "rank_pos_5",
+                    "comment": null
+                },
+                "rank_pos_6": {
+                    "type": "float",
+                    "index": 15,
+                    "name": "rank_pos_6",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_resto.fact_number_scoring"
+        },
+        "model.dbt_resto.staging_power655_box": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "staging",
+                "name": "staging_power655_box",
+                "database": "dbt",
+                "comment": null,
+                "owner": "staging"
+            },
+            "columns": {
+                "sk_box": {
+                    "type": "varchar",
+                    "index": 1,
+                    "name": "sk_box",
+                    "comment": null
+                },
+                "box_date": {
+                    "type": "date",
+                    "index": 2,
+                    "name": "box_date",
+                    "comment": null
+                },
+                "box_id": {
+                    "type": "varchar",
+                    "index": 3,
+                    "name": "box_id",
+                    "comment": null
+                },
+                "box_name": {
+                    "type": "nvarchar",
+                    "index": 4,
+                    "name": "box_name",
+                    "comment": null
+                },
+                "box_result_numbers": {
+                    "type": "nvarchar",
+                    "index": 5,
+                    "name": "box_result_numbers",
+                    "comment": null
+                },
+                "box_result_number_1": {
+                    "type": "int",
+                    "index": 6,
+                    "name": "box_result_number_1",
+                    "comment": null
+                },
+                "box_result_number_2": {
+                    "type": "int",
+                    "index": 7,
+                    "name": "box_result_number_2",
+                    "comment": null
+                },
+                "box_result_number_3": {
+                    "type": "int",
+                    "index": 8,
+                    "name": "box_result_number_3",
+                    "comment": null
+                },
+                "box_result_number_4": {
+                    "type": "int",
+                    "index": 9,
+                    "name": "box_result_number_4",
+                    "comment": null
+                },
+                "box_result_number_5": {
+                    "type": "int",
+                    "index": 10,
+                    "name": "box_result_number_5",
+                    "comment": null
+                },
+                "box_result_number_6": {
+                    "type": "int",
+                    "index": 11,
+                    "name": "box_result_number_6",
+                    "comment": null
+                },
+                "box_result_number_7": {
+                    "type": "int",
+                    "index": 12,
+                    "name": "box_result_number_7",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_resto.staging_power655_box"
+        },
+        "seed.dbt_resto.vietlot_power655_data": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "landing",
+                "name": "power655_data",
+                "database": "dbt",
+                "comment": null,
+                "owner": "landing"
+            },
+            "columns": {
+                "box_date": {
+                    "type": "datetime",
+                    "index": 1,
+                    "name": "box_date",
+                    "comment": null
+                },
+                "box_id": {
+                    "type": "varchar",
+                    "index": 2,
+                    "name": "box_id",
+                    "comment": null
+                },
+                "box_name": {
+                    "type": "nvarchar",
+                    "index": 3,
+                    "name": "box_name",
+                    "comment": null
+                },
+                "box_result_numbers": {
+                    "type": "nvarchar",
+                    "index": 4,
+                    "name": "box_result_numbers",
+                    "comment": null
+                },
+                "box_results": {
+                    "type": "nvarchar",
+                    "index": 5,
+                    "name": "box_results",
+                    "comment": null
+                },
+                "created_at": {
+                    "type": "datetime",
+                    "index": 6,
+                    "name": "created_at",
+                    "comment": null
+                },
+                "updated_at": {
+                    "type": "datetime",
+                    "index": 7,
+                    "name": "updated_at",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.dbt_resto.vietlot_power655_data"
+        },
+        "model.dbt_resto.staging_power655_box_detail": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "staging",
+                "name": "staging_power655_box_detail",
+                "database": "dbt",
+                "comment": null,
+                "owner": "staging"
+            },
+            "columns": {
+                "sk_box_detail": {
+                    "type": "varchar",
+                    "index": 1,
+                    "name": "sk_box_detail",
+                    "comment": null
+                },
+                "box_id": {
+                    "type": "varchar",
+                    "index": 2,
+                    "name": "box_id",
+                    "comment": null
+                },
+                "prize_name_raw": {
+                    "type": "nvarchar",
+                    "index": 3,
+                    "name": "prize_name_raw",
+                    "comment": null
+                },
+                "prize_name": {
+                    "type": "nvarchar",
+                    "index": 4,
+                    "name": "prize_name",
+                    "comment": null
+                },
+                "prize_won": {
+                    "type": "int",
+                    "index": 5,
+                    "name": "prize_won",
+                    "comment": null
+                },
+                "prize_value_raw": {
+                    "type": "nvarchar",
+                    "index": 6,
+                    "name": "prize_value_raw",
+                    "comment": null
+                },
+                "prize_value": {
+                    "type": "float",
+                    "index": 7,
+                    "name": "prize_value",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_resto.staging_power655_box_detail"
+        },
+        "model.dbt_resto.fact_result": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "mart",
+                "name": "fact_result",
+                "database": "dbt",
+                "comment": null,
+                "owner": "mart"
+            },
+            "columns": {
+                "fact_result_key": {
+                    "type": "varchar",
+                    "index": 1,
+                    "name": "fact_result_key",
+                    "comment": null
+                },
+                "box_key": {
+                    "type": "varchar",
+                    "index": 2,
+                    "name": "box_key",
+                    "comment": null
+                },
+                "prize_key": {
+                    "type": "varchar",
+                    "index": 3,
+                    "name": "prize_key",
+                    "comment": null
+                },
+                "date_key": {
+                    "type": "date",
+                    "index": 4,
+                    "name": "date_key",
+                    "comment": null
+                },
+                "no_of_won": {
+                    "type": "int",
+                    "index": 5,
+                    "name": "no_of_won",
+                    "comment": null
+                },
+                "prize_value": {
+                    "type": "float",
+                    "index": 6,
+                    "name": "prize_value",
+                    "comment": null
+                },
+                "prize_paid": {
+                    "type": "float",
+                    "index": 7,
+                    "name": "prize_paid",
+                    "comment": null
+                },
+                "is_prize_taken": {
+                    "type": "int",
+                    "index": 8,
+                    "name": "is_prize_taken",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_resto.fact_result"
+        },
+        "model.dbt_resto.dim_date": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "mart",
+                "name": "dim_date",
+                "database": "dbt",
+                "comment": null,
+                "owner": "mart"
+            },
+            "columns": {
+                "date_key": {
+                    "type": "date",
+                    "index": 1,
+                    "name": "date_key",
+                    "comment": null
+                },
+                "box_date": {
+                    "type": "date",
+                    "index": 2,
+                    "name": "box_date",
+                    "comment": null
+                },
+                "box_day": {
+                    "type": "int",
+                    "index": 3,
+                    "name": "box_day",
+                    "comment": null
+                },
+                "box_week": {
+                    "type": "int",
+                    "index": 4,
+                    "name": "box_week",
+                    "comment": null
+                },
+                "box_month": {
+                    "type": "int",
+                    "index": 5,
+                    "name": "box_month",
+                    "comment": null
+                },
+                "box_month_name": {
+                    "type": "varchar",
+                    "index": 6,
+                    "name": "box_month_name",
+                    "comment": null
+                },
+                "box_year": {
+                    "type": "int",
+                    "index": 7,
+                    "name": "box_year",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_resto.dim_date"
+        },
+        "model.dbt_resto.dim_box": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "mart",
+                "name": "dim_box",
+                "database": "dbt",
+                "comment": null,
+                "owner": "mart"
+            },
+            "columns": {
+                "box_key": {
+                    "type": "varchar",
+                    "index": 1,
+                    "name": "box_key",
+                    "comment": null
+                },
+                "box_id": {
+                    "type": "varchar",
+                    "index": 2,
+                    "name": "box_id",
+                    "comment": null
+                },
+                "box_date": {
+                    "type": "date",
+                    "index": 3,
+                    "name": "box_date",
+                    "comment": null
+                },
+                "box_result_numbers": {
+                    "type": "nvarchar",
+                    "index": 4,
+                    "name": "box_result_numbers",
+                    "comment": null
+                },
+                "box_result_number_1": {
+                    "type": "int",
+                    "index": 5,
+                    "name": "box_result_number_1",
+                    "comment": null
+                },
+                "box_result_number_2": {
+                    "type": "int",
+                    "index": 6,
+                    "name": "box_result_number_2",
+                    "comment": null
+                },
+                "box_result_number_3": {
+                    "type": "int",
+                    "index": 7,
+                    "name": "box_result_number_3",
+                    "comment": null
+                },
+                "box_result_number_4": {
+                    "type": "int",
+                    "index": 8,
+                    "name": "box_result_number_4",
+                    "comment": null
+                },
+                "box_result_number_5": {
+                    "type": "int",
+                    "index": 9,
+                    "name": "box_result_number_5",
+                    "comment": null
+                },
+                "box_result_number_6": {
+                    "type": "int",
+                    "index": 10,
+                    "name": "box_result_number_6",
+                    "comment": null
+                },
+                "box_result_number_7": {
+                    "type": "int",
+                    "index": 11,
+                    "name": "box_result_number_7",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_resto.dim_box"
+        },
+        "model.dbt_resto.fact_number_forecast": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "mart",
+                "name": "fact_number_forecast",
+                "database": "dbt",
+                "comment": null,
+                "owner": "mart"
+            },
+            "columns": {
+                "forecast_date": {
+                    "type": "date",
+                    "index": 1,
+                    "name": "forecast_date",
+                    "comment": null
+                },
+                "last_box_date": {
+                    "type": "date",
+                    "index": 2,
+                    "name": "last_box_date",
+                    "comment": null
+                },
+                "forecast_numbers": {
+                    "type": "varchar",
+                    "index": 3,
+                    "name": "forecast_numbers",
+                    "comment": null
+                },
+                "last_box_result_numbers": {
+                    "type": "nvarchar",
+                    "index": 4,
+                    "name": "last_box_result_numbers",
+                    "comment": null
+                },
+                "forecast_1": {
+                    "type": "int",
+                    "index": 5,
+                    "name": "forecast_1",
+                    "comment": null
+                },
+                "last_box_result_number_1": {
+                    "type": "int",
+                    "index": 6,
+                    "name": "last_box_result_number_1",
+                    "comment": null
+                },
+                "forecast_2": {
+                    "type": "int",
+                    "index": 7,
+                    "name": "forecast_2",
+                    "comment": null
+                },
+                "last_box_result_number_2": {
+                    "type": "int",
+                    "index": 8,
+                    "name": "last_box_result_number_2",
+                    "comment": null
+                },
+                "forecast_3": {
+                    "type": "int",
+                    "index": 9,
+                    "name": "forecast_3",
+                    "comment": null
+                },
+                "last_box_result_number_3": {
+                    "type": "int",
+                    "index": 10,
+                    "name": "last_box_result_number_3",
+                    "comment": null
+                },
+                "forecast_4": {
+                    "type": "int",
+                    "index": 11,
+                    "name": "forecast_4",
+                    "comment": null
+                },
+                "last_box_result_number_4": {
+                    "type": "int",
+                    "index": 12,
+                    "name": "last_box_result_number_4",
+                    "comment": null
+                },
+                "forecast_5": {
+                    "type": "int",
+                    "index": 13,
+                    "name": "forecast_5",
+                    "comment": null
+                },
+                "last_box_result_number_5": {
+                    "type": "int",
+                    "index": 14,
+                    "name": "last_box_result_number_5",
+                    "comment": null
+                },
+                "forecast_6": {
+                    "type": "int",
+                    "index": 15,
+                    "name": "forecast_6",
+                    "comment": null
+                },
+                "last_box_result_number_6": {
+                    "type": "int",
+                    "index": 16,
+                    "name": "last_box_result_number_6",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_resto.fact_number_forecast"
+        },
+        "model.dbt_resto.fact_number": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "mart",
+                "name": "fact_number",
+                "database": "dbt",
+                "comment": null,
+                "owner": "mart"
+            },
+            "columns": {
+                "number_value": {
+                    "type": "int",
+                    "index": 1,
+                    "name": "number_value",
+                    "comment": null
+                },
+                "occurrence": {
+                    "type": "int",
+                    "index": 2,
+                    "name": "occurrence",
+                    "comment": null
+                },
+                "occurrence_pos_1": {
+                    "type": "int",
+                    "index": 3,
+                    "name": "occurrence_pos_1",
+                    "comment": null
+                },
+                "occurrence_pos_2": {
+                    "type": "int",
+                    "index": 4,
+                    "name": "occurrence_pos_2",
+                    "comment": null
+                },
+                "occurrence_pos_3": {
+                    "type": "int",
+                    "index": 5,
+                    "name": "occurrence_pos_3",
+                    "comment": null
+                },
+                "occurrence_pos_4": {
+                    "type": "int",
+                    "index": 6,
+                    "name": "occurrence_pos_4",
+                    "comment": null
+                },
+                "occurrence_pos_5": {
+                    "type": "int",
+                    "index": 7,
+                    "name": "occurrence_pos_5",
+                    "comment": null
+                },
+                "occurrence_pos_6": {
+                    "type": "int",
+                    "index": 8,
+                    "name": "occurrence_pos_6",
+                    "comment": null
+                },
+                "occurrence_pos_7": {
+                    "type": "int",
+                    "index": 9,
+                    "name": "occurrence_pos_7",
+                    "comment": null
+                },
+                "last_appearance": {
+                    "type": "date",
+                    "index": 10,
+                    "name": "last_appearance",
+                    "comment": null
+                },
+                "last_appearance_pos_1": {
+                    "type": "date",
+                    "index": 11,
+                    "name": "last_appearance_pos_1",
+                    "comment": null
+                },
+                "last_appearance_pos_2": {
+                    "type": "date",
+                    "index": 12,
+                    "name": "last_appearance_pos_2",
+                    "comment": null
+                },
+                "last_appearance_pos_3": {
+                    "type": "date",
+                    "index": 13,
+                    "name": "last_appearance_pos_3",
+                    "comment": null
+                },
+                "last_appearance_pos_4": {
+                    "type": "date",
+                    "index": 14,
+                    "name": "last_appearance_pos_4",
+                    "comment": null
+                },
+                "last_appearance_pos_5": {
+                    "type": "date",
+                    "index": 15,
+                    "name": "last_appearance_pos_5",
+                    "comment": null
+                },
+                "last_appearance_pos_6": {
+                    "type": "date",
+                    "index": 16,
+                    "name": "last_appearance_pos_6",
+                    "comment": null
+                },
+                "last_appearance_pos_7": {
+                    "type": "date",
+                    "index": 17,
+                    "name": "last_appearance_pos_7",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_resto.fact_number"
+        },
+        "model.integration_tests.verify_str_to_date": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "dbo",
+                "name": "verify_str_to_date",
+                "database": "dbt",
+                "comment": null,
+                "owner": "dbo"
+            },
+            "columns": {
+                "actual": {
+                    "type": "date",
+                    "index": 1,
+                    "name": "actual",
+                    "comment": null
+                },
+                "expected": {
+                    "type": "date",
+                    "index": 2,
+                    "name": "expected",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.integration_tests.verify_str_to_date"
+        },
+        "model.dbt_resto.fact_set_number": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "mart",
+                "name": "fact_set_number",
+                "database": "dbt",
+                "comment": null,
+                "owner": "mart"
+            },
+            "columns": {
+                "box_result_numbers": {
+                    "type": "nvarchar",
+                    "index": 1,
+                    "name": "box_result_numbers",
+                    "comment": null
+                },
+                "occurrence": {
+                    "type": "int",
+                    "index": 2,
+                    "name": "occurrence",
+                    "comment": null
+                },
+                "last_appearance": {
+                    "type": "date",
+                    "index": 3,
+                    "name": "last_appearance",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_resto.fact_set_number"
+        },
+        "model.dbt_resto.dim_prize": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "mart",
+                "name": "dim_prize",
+                "database": "dbt",
+                "comment": null,
+                "owner": "mart"
+            },
+            "columns": {
+                "prize_key": {
+                    "type": "varchar",
+                    "index": 1,
+                    "name": "prize_key",
+                    "comment": null
+                },
+                "prize_name": {
+                    "type": "nvarchar",
+                    "index": 2,
+                    "name": "prize_name",
+                    "comment": null
+                },
+                "prize_order": {
+                    "type": "int",
+                    "index": 3,
+                    "name": "prize_order",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_resto.dim_prize"
+        }
+    },
+    "sources": {},
+    "errors": null
+}

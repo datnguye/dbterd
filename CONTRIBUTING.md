@@ -40,7 +40,7 @@ There are some tools that will be helpful to you in developing locally. While th
 
 ### Tools
 
-We will buy `poertry` in `dbterd` development and testing.
+We will buy `poetry` in `dbterd` development and testing.
 
 So first install poetry via pip:
 ```bash
@@ -51,6 +51,7 @@ then, start installing the local environment:
 ```bash
 python3 -m poetry install
 python3 -m poetry shell
+poe git-hooks
 pip install -e .
 dbterd -h
 ```
@@ -68,7 +69,12 @@ Once you're able to manually test that your code change is working as expected, 
 Finally, you can also run a specific test or group of tests using [`pytest`](https://docs.pytest.org/en/latest/) directly. With a virtualenv active and dev dependencies installed you can do things like:
 
 ```bash
-pytest .
+poe test
+```
+
+Run test with coverage report:
+```bash
+poe test-cov
 ```
 
 > See [pytest usage docs](https://docs.pytest.org/en/6.2.x/usage.html) for an overview of useful command-line options.

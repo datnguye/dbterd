@@ -70,7 +70,7 @@ def parse(manifest, catalog, **kwargs):
 
 
 def get_tables(manifest, catalog):
-
+    """Extract tables from dbt artifacts"""
     tables = [
         Table(
             name=x,
@@ -91,7 +91,8 @@ def get_tables(manifest, catalog):
             for column, metadata in cat_columns.items():
                 table.columns.append(
                     Column(
-                        name=str(column).lower(), data_type=str(metadata.type).lower()
+                        name=str(column).lower(),
+                        data_type=str(metadata.type).lower(),
                     )
                 )
 
@@ -119,6 +120,7 @@ def get_tables(manifest, catalog):
 
 
 def get_relationships(manifest):
+    """Extract relationships from dbt artifacts based on test relationship"""
     refs = [
         Ref(
             name=x,
@@ -167,12 +169,7 @@ def get_compiled_sql(manifest_node):
             {columns}
         from {table}
         """.format(
-            columns="\n".join(
-                [
-                    f"{x} as {manifest_node.columns[x].data_type or 'varchar'},"
-                    for x in manifest_node.columns
-                ]
-            ),
+            columns=",\n".join([f"{x}" for x in manifest_node.columns]),
             table=f"{manifest_node.database}.{manifest_node.schema}.undefined",
         )
 

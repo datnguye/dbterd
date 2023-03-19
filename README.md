@@ -5,7 +5,8 @@ CLI to generate DBML file from dbt artifact files (required: `manifest.json`, `c
 [![PyPI version](https://badge.fury.io/py/dbterd.svg)](https://pypi.org/project/dbterd/)
 ![python-cli](https://img.shields.io/badge/CLI-Python-FFCE3E?labelColor=14354C&logo=python&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
+[![python](https://img.shields.io/badge/Python-3.9|3.10|3.11-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
+[![codecov](https://codecov.io/gh/datnguye/dbterd/branch/main/graph/badge.svg?token=N7DMQBLH4P)](https://codecov.io/gh/datnguye/dbterd)
 
 ```
 pip install dbterd --upgrade
@@ -36,14 +37,14 @@ Commands:
 
 ## Quick examine with existing samples
 ```bash
-# select all models in dbt_resto 
+# select all models in dbt_resto
 dbterd run -ad "samples/dbtresto" -o "target"
 # select only models in dbt_resto excluding staging
 dbterd run -ad "samples/dbtresto" -o "target" -s model.dbt_resto -ns model.dbt_resto.staging
 # select only models in schema name "mart" excluding staging
 dbterd run -ad "samples/dbtresto" -o "target" -s schema:mart -ns model.dbt_resto.staging
 # select only models in schema full name "dbt.mart" excluding staging
-dbterd run -ad "samples/v4-dbtresto" -o "target" -s schema:dbt.mart -ns model.dbt_resto.staging
+dbterd run -ad "samples/dbtresto" -o "target" -s schema:dbt.mart -ns model.dbt_resto.staging
 
 # other samples
 dbterd run -ad "samples/fivetranlog" -o "target"
@@ -78,9 +79,9 @@ In your dbt project (I am using dbt-resto/[integration_tests](https://github.com
 ```bash
 dbt docs generate
 ```
-    
+
 #### 2. Generate DBML
-Copy `manifest.json` into a specific folder, and run 
+Copy `manifest.json` into a specific folder, and run
 ```
 dbterd run -mp "/path/to/dbt/target" -o "/path/to/output"
 # dbterd run -mp "./target/v4-dbtresto" -o "./target" -s model.dbt_resto -ns model.dbt_resto.staging
@@ -115,4 +116,3 @@ Result after applied Model Selection:
 If you've ever wanted to contribute to this tool, and a great cause, now is your chance!
 
 See the contributing docs [CONTRIBUTING.md](https://github.com/datnguye/dbterd/blob/main/CONTRIBUTING.md) for more information
-

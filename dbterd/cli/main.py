@@ -1,4 +1,5 @@
 import importlib.metadata
+from typing import List
 
 import click
 
@@ -8,6 +9,24 @@ from dbterd.helpers import jsonify
 from dbterd.helpers.log import logger
 
 __version__ = importlib.metadata.version("dbterd")
+
+
+# Programmatic invocation
+class dbterdRunner:
+    def __init__(self) -> None:
+        pass
+
+    def invoke(self, args: List[str]):
+        try:
+            dbt_ctx = dbterd.make_context(dbterd.name, args)
+            return dbterd.invoke(dbt_ctx)
+        except click.exceptions.Exit as e:
+            # 0 exit code, expected for --version early exit
+            if str(e) == "0":
+                return [], True
+            raise Exception(f"unhandled exit code {str(e)}")
+        except (click.NoSuchOption, click.UsageError) as e:
+            raise Exception(e.message)
 
 
 # dbterd

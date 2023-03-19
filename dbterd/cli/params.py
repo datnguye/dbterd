@@ -1,5 +1,7 @@
 import functools
+
 import click
+
 from dbterd import default
 
 
@@ -66,6 +68,6 @@ def common_params(func):
     )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
+        return func(*args, **kwargs)  # pragma: no cover
 
     return wrapper

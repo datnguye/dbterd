@@ -4,11 +4,16 @@ import sys
 
 from dbt_artifacts_parser import parser
 
-if sys.platform == "win32":
+
+def get_sys_platform():  # pragma: no cover
+    return sys.platform
+
+
+if get_sys_platform() == "win32":  # pragma: no cover
     from ctypes import WinDLL, c_bool
 else:
-    WinDLL = None
-    c_bool = None
+    WinDLL = None  # pragma: no cover
+    c_bool = None  # pragma: no cover
 
 
 def load_file_contents(path: str, strip: bool = True) -> str:
@@ -36,7 +41,7 @@ def convert_path(path: str) -> str:
     # sorry.
     if len(path) < 250:
         return path
-    if _supports_long_paths():
+    if supports_long_paths():
         return path
 
     prefix = "\\\\?\\"
@@ -44,7 +49,7 @@ def convert_path(path: str) -> str:
     if path.startswith(prefix):
         return path
 
-    path = _win_prepare_path(path)
+    path = win_prepare_path(path)
 
     # add the prefix. The check is just in case os.getcwd() does something
     # unexpected - I believe this if-state should always be True though!
@@ -53,8 +58,8 @@ def convert_path(path: str) -> str:
     return path
 
 
-def _supports_long_paths() -> bool:
-    if sys.platform != "win32":
+def supports_long_paths(windll_name="ntdll") -> bool:  # pragma: no cover
+    if get_sys_platform() != "win32":
         return True
     # Eryk Sun says to use `WinDLL('ntdll')` instead of `windll.ntdll` because
     # of pointer caching in a comment here:
@@ -63,18 +68,18 @@ def _supports_long_paths() -> bool:
     # he's pretty active on Python windows bugs!
     else:
         try:
-            dll = WinDLL("ntdll")
+            dll = WinDLL(windll_name)
         except OSError:  # I don't think this happens? you need ntdll to run python
             return False
         # not all windows versions have it at all
         if not hasattr(dll, "RtlAreLongPathsEnabled"):
-            return False
+            return False  # pragma: no cover
         # tell windows we want to get back a single unsigned byte (a bool).
         dll.RtlAreLongPathsEnabled.restype = c_bool
         return dll.RtlAreLongPathsEnabled()
 
 
-def _win_prepare_path(path: str) -> str:
+def win_prepare_path(path: str) -> str:  # pragma: no cover
     """Given a windows path, prepare it for use by making sure it is absolute
     and normalized.
     """
@@ -99,18 +104,17 @@ def _win_prepare_path(path: str) -> str:
     return path
 
 
-def read_manifest(manifest_path: str, manifest_version: int):
-    """Reads in the manifest file, with optional version specification"""
-    manifest_dict = open_json(f"{manifest_path}/manifest.json")
-    parser_version = (
-        f"parse_manifest_v{manifest_version}" if manifest_version else "parse_manifest"
-    )
+def read_manifest(path: str, version: int = None):
+    """Reads in the manifest.json file, with optional version specification"""
+    _dict = open_json(f"{path}/manifest.json")
+    parser_version = f"parse_manifest_v{version}" if version else "parse_manifest"
     parse_func = getattr(parser, parser_version)
-    manifest_obj = parse_func(manifest=manifest_dict)
-    return manifest_obj
+    return parse_func(manifest=_dict)
 
 
-def read_catalog(catalog_path):
-    """reads and parses the catalog file"""
-    catalog_dict = open_json(f"{catalog_path}/catalog.json")
-    return parser.parse_catalog(catalog=catalog_dict)
+def read_catalog(path: str, version: int = None):
+    """Reads in the catalog.json file, with optional version specification"""
+    _dict = open_json(f"{path}/catalog.json")
+    parser_version = f"parse_catalog_v{version}" if version else "parse_catalog"
+    parse_func = getattr(parser, parser_version)
+    return parse_func(catalog=_dict)

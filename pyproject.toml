@@ -33,7 +33,7 @@ dbt-artifacts-parser = "^0.2.3"
 sqlparse = "^0.4.3"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "^6.2.5"
 pytest-sugar = "^0.9.6"
 black = "^22.10.0"
 coverage = {version = "^6.5.0", extras = ["toml"]}
@@ -49,20 +49,6 @@ autoflake = "^2.0.1"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.poe.tasks]
-git-hooks = { shell = "pre-commit install --install-hooks && pre-commit install --hook-type commit-msg" }
-format = [
-    {cmd = "autoflake ."},
-    {cmd = "black ."},
-    {cmd = "isort ."},
-]
-lint = [
-  {cmd = "black --check ."},
-  {cmd = "isort --check-only ."},
-  {cmd = "flake8 ."},
-
-]
-
 [tool.isort]
 multi_line_output = 3
 force_to_top = ["os"]
@@ -76,3 +62,25 @@ remove-all-unused-imports = true
 ignore-init-module-imports = true
 remove-unused-variables = true
 ignore-pass-statements = false
+
+[tool.poe.tasks]
+git-hooks = { shell = "pre-commit install --install-hooks && pre-commit install --hook-type commit-msg" }
+format = [
+  {cmd = "autoflake ."},
+  {cmd = "black ."},
+  {cmd = "isort ."},
+]
+lint = [
+  {cmd = "black --check ."},
+  {cmd = "isort --check-only ."},
+  {cmd = "flake8 ."},
+]
+test = [
+  {cmd = "pytest ."},
+]
+test-cov = [
+  {cmd = "pytest --version"},
+  {cmd = "coverage run -m pytest ."},
+  {cmd = "coverage report --show-missing"},
+  {cmd = "coverage xml"},
+]
