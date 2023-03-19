@@ -79,6 +79,7 @@ test = [
   {cmd = "pytest ."},
 ]
 test-cov = [
+  {cmd = "pytest --version"},
   {cmd = "coverage run -m pytest ."},
   {cmd = "coverage report --show-missing"},
 ]
