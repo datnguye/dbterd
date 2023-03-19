@@ -49,20 +49,6 @@ autoflake = "^2.0.1"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.poe.tasks]
-git-hooks = { shell = "pre-commit install --install-hooks && pre-commit install --hook-type commit-msg" }
-format = [
-    {cmd = "autoflake ."},
-    {cmd = "black ."},
-    {cmd = "isort ."},
-]
-lint = [
-  {cmd = "black --check ."},
-  {cmd = "isort --check-only ."},
-  {cmd = "flake8 ."},
-
-]
-
 [tool.isort]
 multi_line_output = 3
 force_to_top = ["os"]
@@ -76,3 +62,23 @@ remove-all-unused-imports = true
 ignore-init-module-imports = true
 remove-unused-variables = true
 ignore-pass-statements = false
+
+[tool.poe.tasks]
+git-hooks = { shell = "pre-commit install --install-hooks && pre-commit install --hook-type commit-msg" }
+format = [
+  {cmd = "autoflake ."},
+  {cmd = "black ."},
+  {cmd = "isort ."},
+]
+lint = [
+  {cmd = "black --check ."},
+  {cmd = "isort --check-only ."},
+  {cmd = "flake8 ."},
+]
+test = [
+  {cmd = "pytest ."},
+]
+test-cov = [
+  {cmd = "coverage run -m pytest ."},
+  {cmd = "coverage report --show-missing"},
+]

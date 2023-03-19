@@ -69,12 +69,12 @@ Once you're able to manually test that your code change is working as expected, 
 Finally, you can also run a specific test or group of tests using [`pytest`](https://docs.pytest.org/en/latest/) directly. With a virtualenv active and dev dependencies installed you can do things like:
 
 ```bash
-pytest .
+poe test
 ```
 
 Run test with coverage report:
 ```bash
-coverage run -m pytest . && coverage report --show-missing
+poe test-cov
 ```
 
 > See [pytest usage docs](https://docs.pytest.org/en/6.2.x/usage.html) for an overview of useful command-line options.
