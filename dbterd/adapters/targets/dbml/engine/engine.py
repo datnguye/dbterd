@@ -6,20 +6,21 @@ def parse(manifest, catalog, **kwargs):
     tables = get_tables(manifest, catalog)
     # -- apply selection
     select_rule = (kwargs.get("select") or "").lower().split(":")
+    dbt_resource_type = (kwargs.get("dbt_resource_type") or "")
     if select_rule[0].startswith("schema"):
         select_rule = select_rule[-1]
         tables = [
             x
             for x in tables
-            if x.schema.startswith(select_rule)  # --select schema:analytics
-            or f"{x.database}.{x.schema}".startswith(
+            if (x.schema.startswith(select_rule)  # --select schema:analytics
+                or f"{x.database}.{x.schema}".startswith(
                 select_rule
             )  # --select schema:db.analytics
+            ) and x.dbt_resource_type in dbt_resource_type
         ]
     else:
         select_rule = select_rule[-1]  # only take care of name
-        tables = [x for x in tables if x.name.startswith(select_rule)]
-
+        tables = [x for x in tables if x.name.startswith(select_rule) and x.dbt_resource_type in dbt_resource_type]
     # -- apply exclusion (take care of name only)
     tables = [
         x
@@ -71,52 +72,87 @@ def parse(manifest, catalog, **kwargs):
 
 def get_tables(manifest, catalog):
     """Extract tables from dbt artifacts"""
-    tables = [
-        Table(
-            name=x,
-            raw_sql=get_compiled_sql(manifest.nodes[x]),
-            database=manifest.nodes[x].database.lower(),
-            schema=manifest.nodes[x].schema_.lower(),
-            columns=[],
-        )
-        for x in manifest.nodes
-        if x.startswith("model")
-    ]
 
-    for table in tables:
-        # Pull columns from the catalog and use the data types declared there
-        # Catalog is our primary source of information about the target db
-        if table.name in catalog.nodes:  # table might not live yet
-            cat_columns = catalog.nodes[table.name].columns
-            for column, metadata in cat_columns.items():
-                table.columns.append(
-                    Column(
-                        name=str(column).lower(),
-                        data_type=str(metadata.type).lower(),
-                    )
-                )
+    tables = []
+    source_tables = []
 
-        # Handle cases where columns don't exist yet, but are in manifest
-        man_columns = manifest.nodes[table.name].columns
-        for column in man_columns:
-            column_name = str(column).strip(
-                '"'
-            )  # remove double quotes from column name if any
-            if column_name.lower() in [x.name for x in table.columns]:
-                # Already exists in the remote
-                continue
-            table.columns.append(
-                Column(
-                    name=column_name.lower(),
-                    data_type=str(man_columns[column].data_type or "unknown").lower(),
-                )
+    # Extract tables from manifest.nodes
+    for table_name, node in manifest.nodes.items():
+        if table_name.startswith("model.") or table_name.startswith("seed.") or table_name.startswith("snapshot."):
+            table = Table(
+                name=table_name,
+                raw_sql=get_compiled_sql(node),
+                database=node.database.lower(),
+                schema=node.schema_.lower(),
+                columns=[],
+                dbt_resource_type=table_name.split('.')[0],
             )
+            tables.append(table)
 
-        # Fallback: add dummy column if cannot find any info
-        if not table.columns:
-            table.columns.append(Column())
+            # Pull columns from the catalog and use the data types declared there
+            if table_name in catalog.nodes:
+                for column, metadata in catalog.nodes[table_name].columns.items():
+                    table.columns.append(
+                        Column(
+                            name=str(column).lower(),
+                            data_type=str(metadata.type).lower(),
+                        )
+                    )
 
-    return tables
+            # Handle cases where columns don't exist yet, but are in manifest
+            for column_name, column_metadata in node.columns.items():
+                column_name = column_name.strip('"')
+                if not any(c.name.lower() == column_name.lower() for c in table.columns):
+                    table.columns.append(
+                        Column(
+                            name=column_name.lower(),
+                            data_type=str(column_metadata.data_type or "unknown").lower(),
+                        )
+                    )
+
+            # Fallback: add dummy column if cannot find any info
+            if not table.columns:
+                table.columns.append(Column())
+
+    # Extract tables from manifest.sources
+    for table_name, source in manifest.sources.items():
+        if table_name.startswith("source"):
+            table = Table(
+                name=table_name,
+                raw_sql=get_compiled_sql(source),
+                database=source.database.lower(),
+                schema=source.schema_.lower(),
+                columns=[],
+                dbt_resource_type='source',
+            )
+            source_tables.append(table)
+
+            # Pull columns from the catalog and use the data types declared there
+            if table_name in catalog.sources:
+                for column, metadata in catalog.sources[table_name].columns.items():
+                    table.columns.append(
+                        Column(
+                            name=str(column).lower(),
+                            data_type=str(metadata.type).lower(),
+                        )
+                    )
+
+            # Handle cases where columns don't exist yet, but are in manifest
+            for column_name, column_metadata in source.columns.items():
+                column_name = column_name.strip('"')
+                if not any(c.name.lower() == column_name.lower() for c in table.columns):
+                    table.columns.append(
+                        Column(
+                            name=column_name.lower(),
+                            data_type=str(column_metadata.data_type or "unknown").lower(),
+                        )
+                    )
+
+            # Fallback: add dummy column if cannot find any info
+            if not table.columns:
+                table.columns.append(Column())
+
+    return tables + source_tables
 
 
 def get_relationships(manifest):
