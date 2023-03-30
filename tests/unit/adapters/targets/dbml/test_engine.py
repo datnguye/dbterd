@@ -278,8 +278,8 @@ class TestDbmlEngine:
                 dbml = engine.parse(
                     manifest="--manifest--", catalog="--catalog--", select=select, dbt_resource_type=dbt_resource_type
                 )
-                print("lwy dbml    ", dbml.replace(" ", "").replace("\n", ""))
-                print("lwy expected", expected.replace(" ", "").replace("\n", ""))
+                print("dbml    ", dbml.replace(" ", "").replace("\n", ""))
+                print("expected", expected.replace(" ", "").replace("\n", ""))
                 assert dbml.replace(" ", "").replace("\n", "") == str(expected).replace(
                     " ", ""
                 ).replace("\n", "")
