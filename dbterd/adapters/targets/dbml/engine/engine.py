@@ -4,29 +4,25 @@ from dbterd.adapters.targets.dbml.engine.meta import Column, Ref, Table
 def parse(manifest, catalog, **kwargs):
     # Parse Table
     tables = get_tables(manifest, catalog)
-    # -- apply selection
+    # Apply selection
     select_rule = (kwargs.get("select") or "").lower().split(":")
-    dbt_resource_type = (kwargs.get("dbt_resource_type") or "")
-    if select_rule[0].startswith("schema"):
-        select_rule = select_rule[-1]
-        tables = [
-            x
-            for x in tables
-            if (x.schema.startswith(select_rule)  # --select schema:analytics
-                or f"{x.database}.{x.schema}".startswith(
-                select_rule
-            )  # --select schema:db.analytics
-            ) and x.dbt_resource_type in dbt_resource_type
-        ]
-    else:
-        select_rule = select_rule[-1]  # only take care of name
-        tables = [x for x in tables if x.name.startswith(select_rule) and x.dbt_resource_type in dbt_resource_type]
+    dbt_resource_type_rule = (kwargs.get("dbt_resource_type") or "")
+
+    def filter_table_select(table):
+        if select_rule[0].startswith("schema"):
+            schema = f"{table.database}.{table.schema}"
+            return schema.startswith(select_rule[-1]) or table.schema.startswith(select_rule[-1])
+        else:
+            return table.name.startswith(select_rule[-1])
+
+    tables = [table for table in tables if filter_table_select(table)]
+    tables = [table for table in tables if table.dbt_resource_type in dbt_resource_type_rule]
+
     # -- apply exclusion (take care of name only)
-    tables = [
-        x
-        for x in tables
-        if kwargs.get("exclude") is None or not x.name.startswith(kwargs.get("exclude"))
-    ]
+
+    exclude_rule = kwargs.get("exclude")
+    if exclude_rule:
+        tables = [table for table in tables if not table.name.startswith(exclude_rule)]
 
     # Parse Ref
     relationships = get_relationships(manifest)
@@ -73,86 +69,57 @@ def parse(manifest, catalog, **kwargs):
 def get_tables(manifest, catalog):
     """Extract tables from dbt artifacts"""
 
+    def create_table_and_columns(table_name, resource, catalog_resource=None):
+        table = Table(
+            name=table_name,
+            raw_sql=get_compiled_sql(resource),
+            database=resource.database.lower(),
+            schema=resource.schema_.lower(),
+            columns=[],
+            dbt_resource_type=table_name.split('.')[0],
+        )
+
+        if catalog_resource:
+            for column, metadata in catalog_resource.columns.items():
+                table.columns.append(
+                    Column(
+                        name=str(column).lower(),
+                        data_type=str(metadata.type).lower(),
+                    )
+                )
+
+        for column_name, column_metadata in resource.columns.items():
+            column_name = column_name.strip('"')
+            if not any(c.name.lower() == column_name.lower() for c in table.columns):
+                table.columns.append(
+                    Column(
+                        name=column_name.lower(),
+                        data_type=str(column_metadata.data_type or "unknown").lower(),
+                    )
+                )
+
+        if not table.columns:
+            table.columns.append(Column())
+
+        return table
+
     tables = []
-    source_tables = []
 
-    # Extract tables from manifest.nodes
-    for table_name, node in manifest.nodes.items():
-        if table_name.startswith("model.") or table_name.startswith("seed.") or table_name.startswith("snapshot."):
-            table = Table(
-                name=table_name,
-                raw_sql=get_compiled_sql(node),
-                database=node.database.lower(),
-                schema=node.schema_.lower(),
-                columns=[],
-                dbt_resource_type=table_name.split('.')[0],
-            )
-            tables.append(table)
+    if hasattr(manifest, 'nodes'):
+        for table_name, node in manifest.nodes.items():
+            if table_name.startswith("model.") or table_name.startswith("seed.") or table_name.startswith("snapshot."):
+                catalog_node = catalog.nodes.get(table_name)
+                table = create_table_and_columns(table_name, node, catalog_node)
+                tables.append(table)
 
-            # Pull columns from the catalog and use the data types declared there
-            if table_name in catalog.nodes:
-                for column, metadata in catalog.nodes[table_name].columns.items():
-                    table.columns.append(
-                        Column(
-                            name=str(column).lower(),
-                            data_type=str(metadata.type).lower(),
-                        )
-                    )
+    if hasattr(manifest, 'sources'):
+        for table_name, source in manifest.sources.items():
+            if table_name.startswith("source"):
+                catalog_source = catalog.sources.get(table_name)
+                table = create_table_and_columns(table_name, source, catalog_source)
+                tables.append(table)
 
-            # Handle cases where columns don't exist yet, but are in manifest
-            for column_name, column_metadata in node.columns.items():
-                column_name = column_name.strip('"')
-                if not any(c.name.lower() == column_name.lower() for c in table.columns):
-                    table.columns.append(
-                        Column(
-                            name=column_name.lower(),
-                            data_type=str(column_metadata.data_type or "unknown").lower(),
-                        )
-                    )
-
-            # Fallback: add dummy column if cannot find any info
-            if not table.columns:
-                table.columns.append(Column())
-
-    # Extract tables from manifest.sources
-    for table_name, source in manifest.sources.items():
-        if table_name.startswith("source"):
-            table = Table(
-                name=table_name,
-                raw_sql=get_compiled_sql(source),
-                database=source.database.lower(),
-                schema=source.schema_.lower(),
-                columns=[],
-                dbt_resource_type='source',
-            )
-            source_tables.append(table)
-
-            # Pull columns from the catalog and use the data types declared there
-            if table_name in catalog.sources:
-                for column, metadata in catalog.sources[table_name].columns.items():
-                    table.columns.append(
-                        Column(
-                            name=str(column).lower(),
-                            data_type=str(metadata.type).lower(),
-                        )
-                    )
-
-            # Handle cases where columns don't exist yet, but are in manifest
-            for column_name, column_metadata in source.columns.items():
-                column_name = column_name.strip('"')
-                if not any(c.name.lower() == column_name.lower() for c in table.columns):
-                    table.columns.append(
-                        Column(
-                            name=column_name.lower(),
-                            data_type=str(column_metadata.data_type or "unknown").lower(),
-                        )
-                    )
-
-            # Fallback: add dummy column if cannot find any info
-            if not table.columns:
-                table.columns.append(Column())
-
-    return tables + source_tables
+    return tables
 
 
 def get_relationships(manifest):
