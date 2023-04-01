@@ -47,7 +47,6 @@ autoflake = "^2.0.1"
 mkdocs = "^1.4.2"
 mkdocs-minify-plugin = "^0.6.4"
 mkdocs-material = "^9.1.5"
-gitchangelog = "^3.0.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

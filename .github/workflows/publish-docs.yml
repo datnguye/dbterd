@@ -24,15 +24,13 @@ jobs:
           ref: ${{ github.event.release.tag_name }}
 
       - name: Install dependencies
-        run: pip install mkdocs mkdocs-material mkdocs-minify-plugin gitchangelog
+        run: pip install mkdocs mkdocs-material mkdocs-minify-plugin
 
       - name: Build site
         run: |
           cp -f README.md docs/index.md
           cp -f LICENSE docs/license.md
           cp -f CONTRIBUTING.md docs/nav/development/contributing-guide.md
-          gitchangelog
-          gitchangelog > docs/nav/development/CHANGELOG.md
           mkdocs build --clean
 
       - name: Setup Pages
