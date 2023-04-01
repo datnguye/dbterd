@@ -1,0 +1,51 @@
+name: Build and Deploy MkDocs Site
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout Branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Install dependencies
+        run: pip install mkdocs mkdocs-material mkdocs-minify-plugin
+
+      - uses: rhysd/changelog-from-release/action@v3
+        with:
+          file: CHANGELOG.md
+
+      - name: Build site
+        run: |
+          cp -f README.md docs/index.md
+          cp -f LICENSE docs/license.md
+          cp -f CONTRIBUTING.md docs/nav/development/contributing-guide.md
+          cp -f CHANGELOG.md docs/nav/development/CHANGELOG.md
+          mkdocs build --clean
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v2
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: 'site'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1
