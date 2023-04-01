@@ -24,18 +24,14 @@ jobs:
           ref: ${{ github.event.release.tag_name }}
 
       - name: Install dependencies
-        run: pip install mkdocs mkdocs-material mkdocs-minify-plugin
-
-      - uses: rhysd/changelog-from-release/action@v3
-        with:
-          file: CHANGELOG.md
+        run: pip install mkdocs mkdocs-material mkdocs-minify-plugin gitchangelog
 
       - name: Build site
         run: |
           cp -f README.md docs/index.md
           cp -f LICENSE docs/license.md
           cp -f CONTRIBUTING.md docs/nav/development/contributing-guide.md
-          cp -f CHANGELOG.md docs/nav/development/CHANGELOG.md
+          gitchangelog > docs/nav/development/CHANGELOG.md
           mkdocs build --clean
 
       - name: Setup Pages
