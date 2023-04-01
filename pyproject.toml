@@ -44,6 +44,9 @@ pre-commit = "^2.20.0"
 flake8 = "^6.0.0"
 isort = "^5.12.0"
 autoflake = "^2.0.1"
+mkdocs = "^1.4.2"
+mkdocs-minify-plugin = "^0.6.4"
+mkdocs-material = "^9.1.5"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
