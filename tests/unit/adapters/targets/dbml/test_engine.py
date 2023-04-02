@@ -150,7 +150,7 @@ class DummyCatalogTable:
 
 class TestDbmlEngine:
     @pytest.mark.parametrize(
-        "tables, relationships, select, dbt_resource_type, expected",
+        "tables, relationships, select, resource_type, expected",
         [
             (
                 [
@@ -267,7 +267,7 @@ class TestDbmlEngine:
             ),
         ],
     )
-    def test_parse(self, tables, relationships, select, dbt_resource_type, expected):
+    def test_parse(self, tables, relationships, select, resource_type, expected):
         with mock.patch(
             "dbterd.adapters.targets.dbml.engine.engine.get_tables", return_value=tables
         ) as mock_get_tables:
@@ -276,7 +276,10 @@ class TestDbmlEngine:
                 return_value=relationships,
             ) as mock_get_relationships:
                 dbml = engine.parse(
-                    manifest="--manifest--", catalog="--catalog--", select=select, dbt_resource_type=dbt_resource_type
+                    manifest="--manifest--",
+                    catalog="--catalog--",
+                    select=select,
+                    resource_type=resource_type,
                 )
                 print("dbml    ", dbml.replace(" ", "").replace("\n", ""))
                 print("expected", expected.replace(" ", "").replace("\n", ""))

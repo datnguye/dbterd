@@ -67,10 +67,10 @@ def common_params(func):
         type=click.STRING,
     )
     @click.option(
-        "--dbt-resource-type",
-        "-drt",
-        help="Specified dbt resource type(seed, model, source, snapshot),default:model, use examples, -drt model -drt source",
-        default=['model'],
+        "--resource-type",
+        "-rt",
+        help="Specified dbt resource type(seed, model, source, snapshot),default:model, use examples, -rt model -rt source",
+        default=["model"],
         multiple=True,
         type=click.STRING,
     )

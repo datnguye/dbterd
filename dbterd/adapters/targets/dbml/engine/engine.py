@@ -6,17 +6,19 @@ def parse(manifest, catalog, **kwargs):
     tables = get_tables(manifest, catalog)
     # Apply selection
     select_rule = (kwargs.get("select") or "").lower().split(":")
-    dbt_resource_type_rule = (kwargs.get("dbt_resource_type") or "")
+    resource_type_rule = kwargs.get("resource_type") or ""
 
     def filter_table_select(table):
         if select_rule[0].startswith("schema"):
             schema = f"{table.database}.{table.schema}"
-            return schema.startswith(select_rule[-1]) or table.schema.startswith(select_rule[-1])
+            return schema.startswith(select_rule[-1]) or table.schema.startswith(
+                select_rule[-1]
+            )
         else:
             return table.name.startswith(select_rule[-1])
 
     tables = [table for table in tables if filter_table_select(table)]
-    tables = [table for table in tables if table.dbt_resource_type in dbt_resource_type_rule]
+    tables = [table for table in tables if table.resource_type in resource_type_rule]
 
     # -- apply exclusion (take care of name only)
 
@@ -76,7 +78,7 @@ def get_tables(manifest, catalog):
             database=resource.database.lower(),
             schema=resource.schema_.lower(),
             columns=[],
-            dbt_resource_type=table_name.split('.')[0],
+            resource_type=table_name.split(".")[0],
         )
 
         if catalog_resource:
@@ -105,14 +107,18 @@ def get_tables(manifest, catalog):
 
     tables = []
 
-    if hasattr(manifest, 'nodes'):
+    if hasattr(manifest, "nodes"):
         for table_name, node in manifest.nodes.items():
-            if table_name.startswith("model.") or table_name.startswith("seed.") or table_name.startswith("snapshot."):
+            if (
+                table_name.startswith("model.")
+                or table_name.startswith("seed.")
+                or table_name.startswith("snapshot.")
+            ):
                 catalog_node = catalog.nodes.get(table_name)
                 table = create_table_and_columns(table_name, node, catalog_node)
                 tables.append(table)
 
-    if hasattr(manifest, 'sources'):
+    if hasattr(manifest, "sources"):
         for table_name, source in manifest.sources.items():
             if table_name.startswith("source"):
                 catalog_source = catalog.sources.get(table_name)
