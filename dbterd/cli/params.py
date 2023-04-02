@@ -66,6 +66,14 @@ def common_params(func):
         default=None,
         type=click.STRING,
     )
+    @click.option(
+        "--resource-type",
+        "-rt",
+        help="Specified dbt resource type(seed, model, source, snapshot),default:model, use examples, -rt model -rt source",
+        default=["model"],
+        multiple=True,
+        type=click.STRING,
+    )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)  # pragma: no cover

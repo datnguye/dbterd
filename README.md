@@ -39,6 +39,8 @@ Commands:
 ```bash
 # select all models in dbt_resto
 dbterd run -ad "samples/dbtresto" -o "target"
+# select all models in dbt_resto, Select multiple dbt resources
+dbterd run -ad "samples/dbtresto" -o "target" -rt "model" -rt "source"
 # select only models in dbt_resto excluding staging
 dbterd run -ad "samples/dbtresto" -o "target" -s model.dbt_resto -ns model.dbt_resto.staging
 # select only models in schema name "mart" excluding staging

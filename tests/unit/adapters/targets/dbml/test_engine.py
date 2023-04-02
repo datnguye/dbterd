@@ -150,7 +150,7 @@ class DummyCatalogTable:
 
 class TestDbmlEngine:
     @pytest.mark.parametrize(
-        "tables, relationships, select, expected",
+        "tables, relationships, select, resource_type, expected",
         [
             (
                 [
@@ -164,6 +164,7 @@ class TestDbmlEngine:
                 ],
                 [],
                 "",
+                ["model"],
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table1" {
@@ -188,6 +189,13 @@ class TestDbmlEngine:
                         columns=[Column(name="name2", data_type="--name2-type2--")],
                         raw_sql="--irrelevant--",
                     ),
+                    Table(
+                        name="source.dbt_resto.table3",
+                        database="--database3--",
+                        schema="--schema3--",
+                        columns=[Column(name="name3", data_type="--name3-type3--")],
+                        raw_sql="--irrelevant--",
+                    ),
                 ],
                 [
                     Ref(
@@ -202,6 +210,7 @@ class TestDbmlEngine:
                     ),
                 ],
                 "",
+                ["model", "source"],
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table1" {
@@ -212,6 +221,10 @@ class TestDbmlEngine:
                 Table "model.dbt_resto.table2" {
                     "name2" "--name2-type2--"
                     "name-notexist2" "unknown"
+                }
+                //--configured at schema: --database3--.--schema3--
+                Table "source.dbt_resto.table3" {
+                    "name3" "--name3-type3--"
                 }
                 //Refs (based on the DBT Relationship Tests)
                 Ref: "model.dbt_resto.table1"."name1" > "model.dbt_resto.table2"."name2"
@@ -243,6 +256,7 @@ class TestDbmlEngine:
                     )
                 ],
                 "schema:--schema--",
+                ["model", "source"],
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table1" {
@@ -253,7 +267,7 @@ class TestDbmlEngine:
             ),
         ],
     )
-    def test_parse(self, tables, relationships, select, expected):
+    def test_parse(self, tables, relationships, select, resource_type, expected):
         with mock.patch(
             "dbterd.adapters.targets.dbml.engine.engine.get_tables", return_value=tables
         ) as mock_get_tables:
@@ -262,7 +276,10 @@ class TestDbmlEngine:
                 return_value=relationships,
             ) as mock_get_relationships:
                 dbml = engine.parse(
-                    manifest="--manifest--", catalog="--catalog--", select=select
+                    manifest="--manifest--",
+                    catalog="--catalog--",
+                    select=select,
+                    resource_type=resource_type,
                 )
                 print("dbml    ", dbml.replace(" ", "").replace("\n", ""))
                 print("expected", expected.replace(" ", "").replace("\n", ""))

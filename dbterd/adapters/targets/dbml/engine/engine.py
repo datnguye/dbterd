@@ -4,28 +4,27 @@ from dbterd.adapters.targets.dbml.engine.meta import Column, Ref, Table
 def parse(manifest, catalog, **kwargs):
     # Parse Table
     tables = get_tables(manifest, catalog)
-    # -- apply selection
+    # Apply selection
     select_rule = (kwargs.get("select") or "").lower().split(":")
-    if select_rule[0].startswith("schema"):
-        select_rule = select_rule[-1]
-        tables = [
-            x
-            for x in tables
-            if x.schema.startswith(select_rule)  # --select schema:analytics
-            or f"{x.database}.{x.schema}".startswith(
-                select_rule
-            )  # --select schema:db.analytics
-        ]
-    else:
-        select_rule = select_rule[-1]  # only take care of name
-        tables = [x for x in tables if x.name.startswith(select_rule)]
+    resource_type_rule = kwargs.get("resource_type") or ""
+
+    def filter_table_select(table):
+        if select_rule[0].startswith("schema"):
+            schema = f"{table.database}.{table.schema}"
+            return schema.startswith(select_rule[-1]) or table.schema.startswith(
+                select_rule[-1]
+            )
+        else:
+            return table.name.startswith(select_rule[-1])
+
+    tables = [table for table in tables if filter_table_select(table)]
+    tables = [table for table in tables if table.resource_type in resource_type_rule]
 
     # -- apply exclusion (take care of name only)
-    tables = [
-        x
-        for x in tables
-        if kwargs.get("exclude") is None or not x.name.startswith(kwargs.get("exclude"))
-    ]
+
+    exclude_rule = kwargs.get("exclude")
+    if exclude_rule:
+        tables = [table for table in tables if not table.name.startswith(exclude_rule)]
 
     # Parse Ref
     relationships = get_relationships(manifest)
@@ -71,24 +70,19 @@ def parse(manifest, catalog, **kwargs):
 
 def get_tables(manifest, catalog):
     """Extract tables from dbt artifacts"""
-    tables = [
-        Table(
-            name=x,
-            raw_sql=get_compiled_sql(manifest.nodes[x]),
-            database=manifest.nodes[x].database.lower(),
-            schema=manifest.nodes[x].schema_.lower(),
-            columns=[],
-        )
-        for x in manifest.nodes
-        if x.startswith("model")
-    ]
 
-    for table in tables:
-        # Pull columns from the catalog and use the data types declared there
-        # Catalog is our primary source of information about the target db
-        if table.name in catalog.nodes:  # table might not live yet
-            cat_columns = catalog.nodes[table.name].columns
-            for column, metadata in cat_columns.items():
+    def create_table_and_columns(table_name, resource, catalog_resource=None):
+        table = Table(
+            name=table_name,
+            raw_sql=get_compiled_sql(resource),
+            database=resource.database.lower(),
+            schema=resource.schema_.lower(),
+            columns=[],
+            resource_type=table_name.split(".")[0],
+        )
+
+        if catalog_resource:
+            for column, metadata in catalog_resource.columns.items():
                 table.columns.append(
                     Column(
                         name=str(column).lower(),
@@ -96,25 +90,40 @@ def get_tables(manifest, catalog):
                     )
                 )
 
-        # Handle cases where columns don't exist yet, but are in manifest
-        man_columns = manifest.nodes[table.name].columns
-        for column in man_columns:
-            column_name = str(column).strip(
-                '"'
-            )  # remove double quotes from column name if any
-            if column_name.lower() in [x.name for x in table.columns]:
-                # Already exists in the remote
-                continue
-            table.columns.append(
-                Column(
-                    name=column_name.lower(),
-                    data_type=str(man_columns[column].data_type or "unknown").lower(),
+        for column_name, column_metadata in resource.columns.items():
+            column_name = column_name.strip('"')
+            if not any(c.name.lower() == column_name.lower() for c in table.columns):
+                table.columns.append(
+                    Column(
+                        name=column_name.lower(),
+                        data_type=str(column_metadata.data_type or "unknown").lower(),
+                    )
                 )
-            )
 
-        # Fallback: add dummy column if cannot find any info
         if not table.columns:
             table.columns.append(Column())
+
+        return table
+
+    tables = []
+
+    if hasattr(manifest, "nodes"):
+        for table_name, node in manifest.nodes.items():
+            if (
+                table_name.startswith("model.")
+                or table_name.startswith("seed.")
+                or table_name.startswith("snapshot.")
+            ):
+                catalog_node = catalog.nodes.get(table_name)
+                table = create_table_and_columns(table_name, node, catalog_node)
+                tables.append(table)
+
+    if hasattr(manifest, "sources"):
+        for table_name, source in manifest.sources.items():
+            if table_name.startswith("source"):
+                catalog_source = catalog.sources.get(table_name)
+                table = create_table_and_columns(table_name, source, catalog_source)
+                tables.append(table)
 
     return tables
 

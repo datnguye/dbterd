@@ -26,6 +26,7 @@ class Table:
     schema: str
     columns: Optional[List[Column]] = None
     raw_sql: Optional[str] = None
+    resource_type: str = "model"
 
 
 @dataclass
