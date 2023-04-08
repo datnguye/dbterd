@@ -1,5 +1,5 @@
 from dbterd.adapters.targets.constants import Strategies
-from dbterd.adapters.targets.dbml.strategies import dbml_test_relationship
+from dbterd.adapters.targets.dbml import dbml_test_relationship
 from dbterd.adapters.targets.default import default
 
 run_operation_default = default

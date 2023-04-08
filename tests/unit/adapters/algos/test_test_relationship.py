@@ -4,8 +4,8 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from dbterd.adapters.targets.dbml.engine import engine
-from dbterd.adapters.targets.dbml.engine.meta import Column, Ref, Table
+from dbterd.adapters.algos import test_relationship as algo
+from dbterd.adapters.algos.meta import Column, Ref, Table
 
 
 @dataclass
@@ -165,171 +165,7 @@ class DummyCatalogTable:
     }
 
 
-class TestDbmlEngine:
-    @pytest.mark.parametrize(
-        "tables, relationships, select, exclude, resource_type, expected",
-        [
-            (
-                [
-                    Table(
-                        name="model.dbt_resto.table1",
-                        database="--database--",
-                        schema="--schema--",
-                        columns=[Column(name="name1", data_type="--name1-type--")],
-                        raw_sql="--irrelevant--",
-                    )
-                ],
-                [],
-                "",
-                None,
-                ["model"],
-                """//Tables (based on the selection criteria)
-                //--configured at schema: --database--.--schema--
-                Table "model.dbt_resto.table1" {
-                    "name1" "--name1-type--"
-                }
-                //Refs (based on the DBT Relationship Tests)
-                """,
-            ),
-            (
-                [
-                    Table(
-                        name="model.dbt_resto.table1",
-                        database="--database--",
-                        schema="--schema--",
-                        columns=[Column(name="name1", data_type="--name1-type--")],
-                        raw_sql="--irrelevant--",
-                    ),
-                    Table(
-                        name="model.dbt_resto.table2",
-                        database="--database2--",
-                        schema="--schema2--",
-                        columns=[Column(name="name2", data_type="--name2-type2--")],
-                        raw_sql="--irrelevant--",
-                    ),
-                    Table(
-                        name="source.dbt_resto.table3",
-                        database="--database3--",
-                        schema="--schema3--",
-                        columns=[Column(name="name3", data_type="--name3-type3--")],
-                        raw_sql="--irrelevant--",
-                    ),
-                ],
-                [
-                    Ref(
-                        name="test.dbt_resto.relationships_table1",
-                        table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
-                        column_map=["name2", "name1"],
-                    ),
-                    Ref(
-                        name="test.dbt_resto.relationships_table1",
-                        table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
-                        column_map=["name-notexist2", "name-notexist1"],
-                    ),
-                ],
-                "",
-                None,
-                ["model", "source"],
-                """//Tables (based on the selection criteria)
-                //--configured at schema: --database--.--schema--
-                Table "model.dbt_resto.table1" {
-                    "name1" "--name1-type--"
-                    "name-notexist1" "unknown"
-                }
-                //--configured at schema: --database2--.--schema2--
-                Table "model.dbt_resto.table2" {
-                    "name2" "--name2-type2--"
-                    "name-notexist2" "unknown"
-                }
-                //--configured at schema: --database3--.--schema3--
-                Table "source.dbt_resto.table3" {
-                    "name3" "--name3-type3--"
-                }
-                //Refs (based on the DBT Relationship Tests)
-                Ref: "model.dbt_resto.table1"."name1" > "model.dbt_resto.table2"."name2"
-                Ref: "model.dbt_resto.table1"."name-notexist1" > "model.dbt_resto.table2"."name-notexist2"
-                """,
-            ),
-            (
-                [
-                    Table(
-                        name="model.dbt_resto.table1",
-                        database="--database--",
-                        schema="--schema--",
-                        columns=[Column(name="name1", data_type="--name1-type--")],
-                        raw_sql="--irrelevant--",
-                    ),
-                    Table(
-                        name="model.dbt_resto.table2",
-                        database="--database2--",
-                        schema="--schema2--",
-                        columns=[Column(name="name2", data_type="--name2-type2--")],
-                        raw_sql="--irrelevant--",
-                    ),
-                ],
-                [
-                    Ref(
-                        name="test.dbt_resto.relationships_table1",
-                        table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
-                        column_map=["name2", "name1"],
-                    )
-                ],
-                "schema:--schema--",
-                None,
-                ["model", "source"],
-                """//Tables (based on the selection criteria)
-                //--configured at schema: --database--.--schema--
-                Table "model.dbt_resto.table1" {
-                    "name1" "--name1-type--"
-                }
-                //Refs (based on the DBT Relationship Tests)
-                """,
-            ),
-            (
-                [
-                    Table(
-                        name="model.dbt_resto.table1",
-                        database="--database--",
-                        schema="--schema--",
-                        columns=[Column(name="name1", data_type="--name1-type--")],
-                        raw_sql="--irrelevant--",
-                    )
-                ],
-                [],
-                "",
-                "model.dbt_resto.table1",
-                ["model"],
-                """//Tables (based on the selection criteria)
-                //Refs (based on the DBT Relationship Tests)
-                """,
-            ),
-        ],
-    )
-    def test_parse(
-        self, tables, relationships, select, exclude, resource_type, expected
-    ):
-        with mock.patch(
-            "dbterd.adapters.targets.dbml.engine.engine.get_tables", return_value=tables
-        ) as mock_get_tables:
-            with mock.patch(
-                "dbterd.adapters.targets.dbml.engine.engine.get_relationships",
-                return_value=relationships,
-            ) as mock_get_relationships:
-                dbml = engine.parse(
-                    manifest="--manifest--",
-                    catalog="--catalog--",
-                    select=select,
-                    exclude=exclude,
-                    resource_type=resource_type,
-                )
-                print("dbml    ", dbml.replace(" ", "").replace("\n", ""))
-                print("expected", expected.replace(" ", "").replace("\n", ""))
-                assert dbml.replace(" ", "").replace("\n", "") == str(expected).replace(
-                    " ", ""
-                ).replace("\n", "")
-                mock_get_tables.assert_called_once()
-                mock_get_relationships.assert_called_once()
-
+class TestAlgoTestRelationship:
     @pytest.mark.parametrize(
         "manifest, catalog, expected",
         [
@@ -378,10 +214,10 @@ class TestDbmlEngine:
     )
     def test_get_tables(self, manifest, catalog, expected):
         with mock.patch(
-            "dbterd.adapters.targets.dbml.engine.engine.get_compiled_sql",
+            "dbterd.adapters.algos.test_relationship.get_compiled_sql",
             return_value="--irrelevant--",
         ) as mock_get_compiled_sql:
-            assert engine.get_tables(manifest, catalog) == expected
+            assert algo.get_tables(manifest, catalog) == expected
             mock_get_compiled_sql.assert_called()
 
     @pytest.mark.parametrize(
@@ -401,7 +237,7 @@ class TestDbmlEngine:
         ],
     )
     def test_get_compiled(self, manifest, expected):
-        assert engine.get_compiled_sql(manifest_node=manifest).replace(" ", "").replace(
+        assert algo.get_compiled_sql(manifest_node=manifest).replace(" ", "").replace(
             "\n", ""
         ) == str(expected).replace(" ", "").replace("\n", "")
 
@@ -427,4 +263,4 @@ class TestDbmlEngine:
         ],
     )
     def test_get_relationships(self, manifest, expected):
-        assert engine.get_relationships(manifest) == expected
+        assert algo.get_relationships(manifest) == expected

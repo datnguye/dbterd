@@ -74,7 +74,7 @@ class TestRunner:
                 return_value=None,
             ) as mock_read_c:
                 with mock.patch(
-                    "dbterd.adapters.targets.dbml.engine.engine.parse",
+                    "dbterd.adapters.targets.dbml.dbml_test_relationship.parse",
                     return_value="--irrelevant--",
                 ) as mock_engine_parse:
                     with mock.patch("builtins.open", mock.mock_open()) as mock_open_w:

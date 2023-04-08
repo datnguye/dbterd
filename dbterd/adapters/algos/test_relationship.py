@@ -1,4 +1,4 @@
-from dbterd.adapters.targets.dbml.engine.meta import Column, Ref, Table
+from dbterd.adapters.algos.meta import Column, Ref, Table
 
 
 def parse(manifest, catalog, **kwargs):
@@ -6,7 +6,7 @@ def parse(manifest, catalog, **kwargs):
     tables = get_tables(manifest, catalog)
     # Apply selection
     select_rule = (kwargs.get("select") or "").lower().split(":")
-    resource_type_rule = kwargs.get("resource_type") or ""
+    resource_types = kwargs.get("resource_type") or ""
 
     def filter_table_select(table):
         if select_rule[0].startswith("schema"):
@@ -18,7 +18,7 @@ def parse(manifest, catalog, **kwargs):
             return table.name.startswith(select_rule[-1])
 
     tables = [table for table in tables if filter_table_select(table)]
-    tables = [table for table in tables if table.resource_type in resource_type_rule]
+    tables = [table for table in tables if table.resource_type in resource_types]
 
     # -- apply exclusion (take care of name only)
 
@@ -50,22 +50,7 @@ def parse(manifest, catalog, **kwargs):
             ):
                 table.columns.append(Column(name=relationship.column_map[1]))
 
-    # Build DBML content
-    dbml = "//Tables (based on the selection criteria)\n"
-    for table in tables:
-        dbml += f"//--configured at schema: {table.database}.{table.schema}\n"
-        dbml += """Table \"{table}\" {{\n{columns}\n}}\n""".format(
-            table=table.name,
-            columns="\n".join([f'  "{x.name}" "{x.data_type}"' for x in table.columns]),
-        )
-
-    dbml += "//Refs (based on the DBT Relationship Tests)\n"
-    for rel in relationships:
-        key_from = f'"{rel.table_map[1]}"."{rel.column_map[1]}"'
-        key_to = f'"{rel.table_map[0]}"."{rel.column_map[0]}"'
-        dbml += f"Ref: {key_from} > {key_to}\n"
-
-    return dbml
+    return (tables, relationships)
 
 
 def get_tables(manifest, catalog):
