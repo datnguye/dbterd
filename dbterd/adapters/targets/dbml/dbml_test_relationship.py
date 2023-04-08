@@ -2,7 +2,7 @@ from dbterd.adapters.algos import test_relationship
 
 
 def run(manifest, catalog, **kwargs):
-    return ("output.dbml", parse(manifest, catalog, kwargs))
+    return ("output.dbml", parse(manifest, catalog, **kwargs))
 
 
 def parse(manifest, catalog, **kwargs):
