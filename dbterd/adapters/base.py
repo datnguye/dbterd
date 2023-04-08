@@ -33,11 +33,14 @@ class Executor(abc.ABC):
             return file_handlers.read_catalog(cp)
 
     def __run_by_strategy(self, **kwargs):
-        target_module = factory.load_executor(name=kwargs["target"])
-        operation_dispatcher = getattr(target_module, "run_operation_dispatcher")
-        strategy_func = operation_dispatcher.get(
+        target = factory.load_executor(name=kwargs["target"])  # import dbml
+        run_operation_dispatcher = getattr(target, "run_operation_dispatcher")
+        operation_default = getattr(target, "run_operation_default")
+        operation = run_operation_dispatcher.get(
+            # import dbml.engine.dbml_test_relationship.run as operation
             f"{kwargs['target']}_{kwargs['algo']}",
-            getattr(target_module, "operation_default"),
+            # import dbml.engine.default.run as operation
+            operation_default,
         )
         manifest = self.__read_manifest(
             mp=kwargs.get("manifest_path") or kwargs["artifacts_dir"],
@@ -47,7 +50,7 @@ class Executor(abc.ABC):
             cp=kwargs.get("manifest_path") or kwargs["artifacts_dir"]
         )
 
-        result = strategy_func(manifest=manifest, catalog=catalog, **kwargs)
+        result = operation(manifest=manifest, catalog=catalog, **kwargs)
         path = kwargs["output"] + f"/{result[0]}"
         with open(path, "w") as f:
             logger.info(path)
