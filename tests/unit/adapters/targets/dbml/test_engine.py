@@ -124,6 +124,18 @@ class DummyManifestTable:
             },
         ),
     }
+    sources = {
+        "source.dummy.source_table": ManifestNode(
+            test_metadata=ManifestNodeTestMetaData(kwargs={}),
+            meta={},
+            database="--database--",
+            schema_="--schema--",
+            columns={
+                "name1": ManifestNodeColumn(name="name1"),
+                "name2": ManifestNodeColumn(name="name2"),
+            },
+        ),
+    }
 
 
 @dataclass
@@ -146,11 +158,16 @@ class DummyCatalogTable:
             columns={"name3": CatalogNodeColumn(type="--name3-type--")}
         ),
     }
+    sources = {
+        "source.dummy.source_table": CatalogNode(
+            columns={"name1": CatalogNodeColumn(type="--name1-type--")}
+        ),
+    }
 
 
 class TestDbmlEngine:
     @pytest.mark.parametrize(
-        "tables, relationships, select, resource_type, expected",
+        "tables, relationships, select, exclude, resource_type, expected",
         [
             (
                 [
@@ -164,6 +181,7 @@ class TestDbmlEngine:
                 ],
                 [],
                 "",
+                None,
                 ["model"],
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
@@ -210,6 +228,7 @@ class TestDbmlEngine:
                     ),
                 ],
                 "",
+                None,
                 ["model", "source"],
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
@@ -256,6 +275,7 @@ class TestDbmlEngine:
                     )
                 ],
                 "schema:--schema--",
+                None,
                 ["model", "source"],
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
@@ -265,9 +285,29 @@ class TestDbmlEngine:
                 //Refs (based on the DBT Relationship Tests)
                 """,
             ),
+            (
+                [
+                    Table(
+                        name="model.dbt_resto.table1",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[Column(name="name1", data_type="--name1-type--")],
+                        raw_sql="--irrelevant--",
+                    )
+                ],
+                [],
+                "",
+                "model.dbt_resto.table1",
+                ["model"],
+                """//Tables (based on the selection criteria)
+                //Refs (based on the DBT Relationship Tests)
+                """,
+            ),
         ],
     )
-    def test_parse(self, tables, relationships, select, resource_type, expected):
+    def test_parse(
+        self, tables, relationships, select, exclude, resource_type, expected
+    ):
         with mock.patch(
             "dbterd.adapters.targets.dbml.engine.engine.get_tables", return_value=tables
         ) as mock_get_tables:
@@ -279,6 +319,7 @@ class TestDbmlEngine:
                     manifest="--manifest--",
                     catalog="--catalog--",
                     select=select,
+                    exclude=exclude,
                     resource_type=resource_type,
                 )
                 print("dbml    ", dbml.replace(" ", "").replace("\n", ""))
@@ -320,8 +361,19 @@ class TestDbmlEngine:
                         ],
                         raw_sql="--irrelevant--",
                     ),
+                    Table(
+                        name="source.dummy.source_table",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[
+                            Column(name="name1", data_type="--name1-type--"),
+                            Column(name="name2"),
+                        ],
+                        raw_sql="--irrelevant--",
+                        resource_type="source",
+                    ),
                 ],
-            )
+            ),
         ],
     )
     def test_get_tables(self, manifest, catalog, expected):

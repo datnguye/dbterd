@@ -50,11 +50,16 @@ dbterd run -ad "samples/dbtresto" -o "target" -s schema:dbt.mart -ns model.dbt_r
 
 # other samples
 dbterd run -ad "samples/fivetranlog" -o "target"
+dbterd run -ad "samples/fivetranlog" -o "target" -rt "model" -rt "source"
+
 dbterd run -ad "samples/facebookad" -o "target"
+dbterd run -ad "samples/facebookad" -o "target" -rt "model" -rt "source"
+
 dbterd run -ad "samples/shopify" -o "target"
+dbterd run -ad "samples/shopify" -o "target" -rt "model" -rt "source"
 
 # your own sample without commiting to repo
-dbterd run -mp "samples/local" -o "target"
+dbterd run -mp "samples/local" -o "target" -rt "model" -rt "source"
 ```
 
 ## Decide to exclude Relationship Tests from ERD generated
