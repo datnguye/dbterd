@@ -305,7 +305,9 @@ class TestDbmlEngine:
             ),
         ],
     )
-    def test_parse(self, tables, relationships, select, exclude, resource_type, expected):
+    def test_parse(
+        self, tables, relationships, select, exclude, resource_type, expected
+    ):
         with mock.patch(
             "dbterd.adapters.targets.dbml.engine.engine.get_tables", return_value=tables
         ) as mock_get_tables:
@@ -368,7 +370,7 @@ class TestDbmlEngine:
                             Column(name="name2"),
                         ],
                         raw_sql="--irrelevant--",
-                        resource_type="source"
+                        resource_type="source",
                     ),
                 ],
             ),
