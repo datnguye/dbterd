@@ -1,4 +1,4 @@
-site_name: ✨ Generate Diagram-as-a-code from dbt artifacts ✨
+site_name: DaaC from dbt artifacts
 site_url: https://datnguye.github.io/dbterd/
 site_author: Dat Nguyen
 site_description: Offical documentation of `dbterd` CLI
@@ -17,17 +17,11 @@ theme:
     - content.action.view
     - content.code.annotate
     - content.code.copy
-    # - content.tabs.link
     - content.tooltips
-    # - header.autohide
-    # - navigation.expand
     - navigation.footer
     - navigation.indexes
-    # - navigation.instant
-    # - navigation.prune
     - navigation.sections
-    - navigation.tabs
-    # - navigation.tabs.sticky
+    # - navigation.tabs
     - navigation.top
     - navigation.tracking
     - search.highlight
@@ -35,40 +29,50 @@ theme:
     - search.suggest
     - toc.follow
   palette:
-    - scheme: default
-      primary: indigo
-      accent: indigo
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      primary: black
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      primary: black
+      scheme: default
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-    - scheme: slate
-      primary: indigo
-      accent: indigo
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      primary: black
+      scheme: slate
       toggle:
         icon: material/brightness-4
-        name: Switch to light mode
+        name: Switch to system preference
   font:
     text: Roboto
     code: Roboto Mono
   favicon: assets/favicon.ico
+  logo: assets/favicon.ico
   icon:
-    logo: logo
+    repo: fontawesome/brands/github
 
 plugins:
   - search:
       separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
   - minify:
       minify_html: true
+  - offline
 
 nav:
-    - Home:
+    - dbterd:
       - index.md
-      - USER GUIDE:
+      - User Guide:
         - CLI Reference: nav/guide/cli-references.md
-      - DEVELOPMENT:
+      - Development:
         - nav/development/contributing-guide.md
         - Change Log: nav/development/CHANGELOG.md
-      - ABOUT:
+      - About:
         - license.md
 
 extra:
