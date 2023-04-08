@@ -1,4 +1,4 @@
-site_name: ✨ Generate Diagram-as-a-code from dbt artifacts ✨
+site_name: DaaC from dbt artifacts
 site_url: https://datnguye.github.io/dbterd/
 site_author: Dat Nguyen
 site_description: Offical documentation of `dbterd` CLI
@@ -17,17 +17,11 @@ theme:
     - content.action.view
     - content.code.annotate
     - content.code.copy
-    # - content.tabs.link
     - content.tooltips
-    # - header.autohide
-    # - navigation.expand
     - navigation.footer
     - navigation.indexes
-    # - navigation.instant
-    # - navigation.prune
     - navigation.sections
-    - navigation.tabs
-    # - navigation.tabs.sticky
+    # - navigation.tabs
     - navigation.top
     - navigation.tracking
     - search.highlight
@@ -35,41 +29,51 @@ theme:
     - search.suggest
     - toc.follow
   palette:
-    - scheme: default
-      primary: indigo
-      accent: indigo
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      primary: black
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      primary: black
+      scheme: default
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-    - scheme: slate
-      primary: indigo
-      accent: indigo
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      primary: black
+      scheme: slate
       toggle:
         icon: material/brightness-4
-        name: Switch to light mode
+        name: Switch to system preference
   font:
     text: Roboto
     code: Roboto Mono
   favicon: assets/favicon.ico
+  logo: assets/favicon.ico
   icon:
-    logo: logo
+    repo: fontawesome/brands/github
 
 plugins:
   - search:
       separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
   - minify:
       minify_html: true
+  - offline
 
 nav:
-    - Home:
-      - Introduction:
-        - index.md
-      - User Guide: nav/guide/cli-references.md
-    - Development:
-      - nav/development/contributing-guide.md
-      - nav/development/CHANGELOG.md
-    - About:
-      - license.md
+    - dbterd:
+      - index.md
+      - User Guide:
+        - CLI Reference: nav/guide/cli-references.md
+      - Development:
+        - nav/development/contributing-guide.md
+        - Change Log: nav/development/CHANGELOG.md
+      - About:
+        - license.md
 
 extra:
   annotate:
@@ -82,23 +86,34 @@ extra:
       link: https://github.com/datnguye
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/tuiladat/
+  consent:
+    title: Cookie consent
+    description: >-
+      We use cookies to recognize your repeated visits and preferences, as well
+      as to measure the effectiveness of our documentation and whether users
+      find what they're searching for. With your consent, you're helping us to
+      make our documentation better.
   analytics:
     provider: google
-    property: <TBU>
+    property: G-363926568
     feedback:
       title: Was this page helpful?
       ratings:
-        - icon: material/emoticon-happy-outline
+        - icon: material/heart
           name: This page was helpful
           data: 1
           note: >-
             Thanks for your feedback!
-        - icon: material/emoticon-sad-outline
+        - icon: material/heart-broken
           name: This page could be improved
           data: 0
           note: >-
             Thanks for your feedback! Help us improve this page by
             using our <a href="https://github.com/datnguye/dbterd/issues/new/?title=[Feedback]+{title}+-+{url}" target=_blank>feedback form</a>.
+
+extra_javascript:
+  - assets/js/feedback.js
+
 markdown_extensions:
   - abbr
   - admonition
@@ -139,3 +154,5 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.tilde
+  - codehilite:
+      guess_lang: false

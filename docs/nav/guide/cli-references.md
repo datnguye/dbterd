@@ -1,28 +1,31 @@
 # CLI Reference (dbterd)
 
-Run `--help` or `-h` to see the basic guideline for CLI Reference
+Run `dbterd --help` or `dbterd -h` to see the basic guideline for CLI Reference
 
-Shows the main commands
+=== "Terminal"
 
-```
-Usage: dbterd [OPTIONS] COMMAND [ARGS]...
+    ```
+    Usage: dbterd [OPTIONS] COMMAND [ARGS]...
 
-  Tools for producing diagram-as-code
+    Tools for producing diagram-as-code
 
-Options:
-  --version   Show the version and exit.
-  -h, --help  Show this message and exit.
+    Options:
+    --version   Show the version and exit.
+    -h, --help  Show this message and exit.
 
-Commands:
-  debug  Inspect the hidden magics
-  run    Run the convert
-```
+    Commands:
+    debug  Inspect the hidden magics
+    run    Run the convert
+    ```
 
 
 ## run
-::: dbterd.run
+Generate diagram-as-a-code file
 
-Generate diagram-as-a-code file. Supports: [DBML](https://www.dbml.org/home/)
+Supports:
+
+- [DBML](https://www.dbml.org/home/)
+- Mermaid (comming soon)
 
 **Examples:**
 === "CLI (within dbt project)"
@@ -65,7 +68,6 @@ Generate diagram-as-a-code file. Supports: [DBML](https://www.dbml.org/home/)
     ```
 
 ### --artifacts-dir (-ad)
-::: dbterd.run.--artifacts-dir
 
 Configure the path to directory containing dbt artifact files.
 > Default to `./target`
@@ -95,7 +97,6 @@ Configure the path to directory containing dbt artifact files.
     ```
 
 ### --output (-o)
-::: dbterd.run.--output
 
 Configure the path to directory containing the output diagram file.
 > Default to `./target`
@@ -113,7 +114,6 @@ Configure the path to directory containing the output diagram file.
     ```
 
 ### --select (-s)
-::: dbterd.run.--select
 
 Selecttion criteria. Support 'starts with' a string where string is:
   - table name (or part of it)
@@ -138,25 +138,23 @@ Selecttion criteria. Support 'starts with' a string where string is:
     ```
 
 ### --exclude (-ns)
-::: dbterd.run.todo
 
-Configure todo
-> Default to `todo`
+Exclusion criteria. Support 'not starts with' a string
+> Default to `None`
 
 **Examples:**
 === "CLI"
 
     ```bash
-    dbterd run todo
+    dbterd run --exclude 'model.package_name.table'
     ```
 === "CLI (long style)"
 
     ```bash
-    dbterd run todo
+    dbterd run -ns 'model.package_name.table'
     ```
 
 ### --target (-t)
-::: dbterd.run.--target
 
 Target to the diagram-as-code platform
 > Default to `dbml`, currently only supported option
@@ -174,7 +172,6 @@ Target to the diagram-as-code platform
     ```
 
 ### --algo (-a)
-::: dbterd.run.--algo
 
 Specified algorithm in the way to detect diagram connectors
 > Default to `test_relationship`, currently only supported option
@@ -192,25 +189,23 @@ Specified algorithm in the way to detect diagram connectors
     ```
 
 ### --manifest-version (-mv)
-::: dbterd.run.--manifest-version
 
 Specified dbt manifest.json version
-> Default to `todo`
+> Auto detect if not specified
 
 **Examples:**
 === "CLI"
 
     ```bash
-    dbterd run todo
+    dbterd run --manifest-version 7
     ```
 === "CLI (long style)"
 
     ```bash
-    dbterd run todo
+    dbterd run -mv 7
     ```
 
 ### --resource-type (-rt)
-::: dbterd.run.--resource-type
 
 Specified dbt resource type(seed, model, source, snapshot).
 > Default to `["model"]`, supports mulitple options
@@ -229,15 +224,13 @@ Specified dbt resource type(seed, model, source, snapshot).
 
 ### ⚠ DEPRECATED WARNING
 
-#### --manifest-path (-mp) (DEPRECATED soon)
-::: dbterd.run.DEPRECATED.--manifest-path
+#### --manifest-path (-mp) (Deprecated in v1.?)
 
 Configure the path to directory containing dbt `manifest.json` file.
 > Default to `./target`
 
 
 ## debug
-::: dbterd.debug
 
 Shows hidden configured values
 
