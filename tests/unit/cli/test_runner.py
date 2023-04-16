@@ -65,7 +65,14 @@ class TestRunner:
                 mock_read_m.assert_called_once()
                 mock_read_c.assert_called_once()
 
-    def test_invoke_run_ok(self, dbterd: dbterdRunner) -> None:
+    @pytest.mark.parametrize(
+        "target, output",
+        [
+            ("dbml", "output.dbml"),
+            ("mermaid", "output.md"),
+        ],
+    )
+    def test_invoke_run_ok(self, target, output, dbterd: dbterdRunner) -> None:
         with mock.patch(
             "dbterd.adapters.base.Executor._Executor__read_manifest", return_value=None
         ) as mock_read_m:
@@ -74,17 +81,19 @@ class TestRunner:
                 return_value=None,
             ) as mock_read_c:
                 with mock.patch(
-                    "dbterd.adapters.targets.dbml.dbml_test_relationship.parse",
+                    f"dbterd.adapters.targets.{target}.{target}_test_relationship.parse",
                     return_value="--irrelevant--",
                 ) as mock_engine_parse:
                     with mock.patch("builtins.open", mock.mock_open()) as mock_open_w:
-                        dbterd.invoke(["run"])
+                        dbterd.invoke(["run", "--target", target])
                         mock_read_m.assert_called_once()
                         mock_read_c.assert_called_once()
                         mock_engine_parse.assert_called_once()
                         mock_open_w.assert_called_once_with(
-                            f"{default_output_path()}/output.dbml", "w"
+                            f"{default_output_path()}/{output}", "w"
                         )
 
-                        dbterd.invoke(["run", "--output", "/custom/path"])
-                        mock_open_w.assert_called_with("/custom/path/output.dbml", "w")
+                        dbterd.invoke(
+                            ["run", "--target", target, "--output", "/custom/path"]
+                        )
+                        mock_open_w.assert_called_with(f"/custom/path/{output}", "w")
