@@ -69,7 +69,7 @@ nav:
       - index.md
       - User Guide:
         - CLI Reference: nav/guide/cli-references.md
-        - Generate dbt docs site with mermaid ERD inclusive: nav/guide/generate-mermaid-erd-in-dbt-docs.md
+        - Generate mardown with mermaid ERD inclusive: nav/guide/generate-markdown-mermaid-erd.md
       - Development:
         - nav/development/contributing-guide.md
         - Change Log: nav/development/CHANGELOG.md
