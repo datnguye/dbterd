@@ -25,14 +25,14 @@ Generate diagram-as-a-code file
 Supports:
 
 - [DBML](https://www.dbml.org/home/)
-- Mermaid (comming soon)
+- [Mermaid](https://mermaid.js.org/syntax/entityRelationshipDiagram.html)
 
 **Examples:**
 === "CLI (within dbt project)"
 
     ```bash
     dbt docs generate
-    dbterd run
+    dbterd run [-t dbml or mermaid]
     ```
 
 === "--help (-h)"
@@ -115,9 +115,9 @@ Configure the path to directory containing the output diagram file.
 
 ### --select (-s)
 
-Selecttion criteria. Support 'starts with' a string where string is:
+Selection criteria. Support 'starts with' a string where string is:
   - table name (or part of it)
-  - schema name (or part of it) formed as `schema:<your_schema_name>
+  - schema name (or part of it) formed as `schema:<your_schema_name>`
 > Select all dbt models if not specified
 
 **Examples:**

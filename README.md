@@ -1,5 +1,5 @@
 # dbterd
-CLI to generate DBML file from dbt artifact files (required: `manifest.json`, `catalog.json`)
+CLI to generate Diagram-as-a-code file ([DBML](https://dbdiagram.io/d), [Mermaid](https://mermaid-js.github.io/mermaid-live-editor/)) from dbt artifact files (required: `manifest.json`, `catalog.json`)
 > Version 0.1: only required `manifest.json`
 
 [![PyPI version](https://badge.fury.io/py/dbterd.svg)](https://pypi.org/project/dbterd/)

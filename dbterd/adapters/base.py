@@ -33,13 +33,11 @@ class Executor(abc.ABC):
             return file_handlers.read_catalog(cp)
 
     def __run_by_strategy(self, **kwargs):
-        target = factory.load_executor(name=kwargs["target"])  # import dbml
+        target = factory.load_executor(name=kwargs["target"])  # import {target}
         run_operation_dispatcher = getattr(target, "run_operation_dispatcher")
         operation_default = getattr(target, "run_operation_default")
         operation = run_operation_dispatcher.get(
-            # import dbml.engine.dbml_test_relationship.run as operation
             f"{kwargs['target']}_{kwargs['algo']}",
-            # import dbml.engine.default.run as operation
             operation_default,
         )
         manifest = self.__read_manifest(
