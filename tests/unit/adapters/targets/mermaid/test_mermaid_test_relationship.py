@@ -3,10 +3,10 @@ from unittest import mock
 import pytest
 
 from dbterd.adapters.algos.meta import Column, Ref, Table
-from dbterd.adapters.targets.dbml import dbml_test_relationship as engine
+from dbterd.adapters.targets.mermaid import mermaid_test_relationship as engine
 
 
-class TestDbmlTestRelationship:
+class TestMermaidTestRelationship:
     @pytest.mark.parametrize(
         "tables, relationships, select, exclude, resource_type, expected",
         [
@@ -16,7 +16,7 @@ class TestDbmlTestRelationship:
                         name="model.dbt_resto.table1",
                         database="--database--",
                         schema="--schema--",
-                        columns=[Column(name="name1", data_type="--name1-type--")],
+                        columns=[Column(name="name1", data_type="name1-type")],
                         raw_sql="--irrelevant--",
                     )
                 ],
@@ -24,12 +24,10 @@ class TestDbmlTestRelationship:
                 "",
                 None,
                 ["model"],
-                """//Tables (based on the selection criteria)
-                //--configured at schema: --database--.--schema--
-                Table "model.dbt_resto.table1" {
-                    "name1" "--name1-type--"
-                }
-                //Refs (based on the DBT Relationship Tests)
+                """erDiagram
+                  "MODEL.DBT_RESTO.TABLE1" {
+                      name1-type name1
+                  }
                 """,
             ),
             (
@@ -38,21 +36,21 @@ class TestDbmlTestRelationship:
                         name="model.dbt_resto.table1",
                         database="--database--",
                         schema="--schema--",
-                        columns=[Column(name="name1", data_type="--name1-type--")],
+                        columns=[Column(name="name1", data_type="name1-type")],
                         raw_sql="--irrelevant--",
                     ),
                     Table(
                         name="model.dbt_resto.table2",
                         database="--database2--",
                         schema="--schema2--",
-                        columns=[Column(name="name2", data_type="--name2-type2--")],
+                        columns=[Column(name="name2", data_type="name2-type2")],
                         raw_sql="--irrelevant--",
                     ),
                     Table(
                         name="source.dbt_resto.table3",
                         database="--database3--",
                         schema="--schema3--",
-                        columns=[Column(name="name3", data_type="--name3-type3--")],
+                        columns=[Column(name="name3", data_type="name3-type3")],
                         raw_sql="--irrelevant--",
                     ),
                 ],
@@ -71,24 +69,20 @@ class TestDbmlTestRelationship:
                 "",
                 None,
                 ["model", "source"],
-                """//Tables (based on the selection criteria)
-                //--configured at schema: --database--.--schema--
-                Table "model.dbt_resto.table1" {
-                    "name1" "--name1-type--"
-                    "name-notexist1" "unknown"
-                }
-                //--configured at schema: --database2--.--schema2--
-                Table "model.dbt_resto.table2" {
-                    "name2" "--name2-type2--"
-                    "name-notexist2" "unknown"
-                }
-                //--configured at schema: --database3--.--schema3--
-                Table "source.dbt_resto.table3" {
-                    "name3" "--name3-type3--"
-                }
-                //Refs (based on the DBT Relationship Tests)
-                Ref: "model.dbt_resto.table1"."name1" > "model.dbt_resto.table2"."name2"
-                Ref: "model.dbt_resto.table1"."name-notexist1" > "model.dbt_resto.table2"."name-notexist2"
+                """erDiagram
+                  "MODEL.DBT_RESTO.TABLE1" {
+                      name1-type name1
+                      unknown name-notexist1
+                  }
+                  "MODEL.DBT_RESTO.TABLE2" {
+                    name2-type2 name2
+                    unknown name-notexist2
+                  }
+                  "SOURCE.DBT_RESTO.TABLE3" {
+                    name3-type3 name3
+                  }
+                  "MODEL.DBT_RESTO.TABLE2" ||--o{ "MODEL.DBT_RESTO.TABLE1": name1--name2
+                  "MODEL.DBT_RESTO.TABLE2" ||--o{ "MODEL.DBT_RESTO.TABLE1": name-notexist1--name-notexist2
                 """,
             ),
             (
@@ -97,14 +91,14 @@ class TestDbmlTestRelationship:
                         name="model.dbt_resto.table1",
                         database="--database--",
                         schema="--schema--",
-                        columns=[Column(name="name1", data_type="--name1-type--")],
+                        columns=[Column(name="name1", data_type="name1-type")],
                         raw_sql="--irrelevant--",
                     ),
                     Table(
                         name="model.dbt_resto.table2",
                         database="--database2--",
                         schema="--schema2--",
-                        columns=[Column(name="name2", data_type="--name2-type2--")],
+                        columns=[Column(name="name2", data_type="name2-type2")],
                         raw_sql="--irrelevant--",
                     ),
                 ],
@@ -118,12 +112,10 @@ class TestDbmlTestRelationship:
                 "schema:--schema--",
                 None,
                 ["model", "source"],
-                """//Tables (based on the selection criteria)
-                //--configured at schema: --database--.--schema--
-                Table "model.dbt_resto.table1" {
-                    "name1" "--name1-type--"
-                }
-                //Refs (based on the DBT Relationship Tests)
+                """erDiagram
+                    "MODEL.DBT_RESTO.TABLE1" {
+                        name1-type name1
+                    }
                 """,
             ),
             (
@@ -132,7 +124,7 @@ class TestDbmlTestRelationship:
                         name="model.dbt_resto.table1",
                         database="--database--",
                         schema="--schema--",
-                        columns=[Column(name="name1", data_type="--name1-type--")],
+                        columns=[Column(name="name1", data_type="name1-type")],
                         raw_sql="--irrelevant--",
                     )
                 ],
@@ -140,8 +132,7 @@ class TestDbmlTestRelationship:
                 "",
                 "model.dbt_resto.table1",
                 ["model"],
-                """//Tables (based on the selection criteria)
-                //Refs (based on the DBT Relationship Tests)
+                """erDiagram
                 """,
             ),
         ],
@@ -157,15 +148,17 @@ class TestDbmlTestRelationship:
                 "dbterd.adapters.algos.test_relationship.get_relationships",
                 return_value=relationships,
             ) as mock_get_relationships:
-                dbml = engine.parse(
+                mermaid = engine.parse(
                     manifest="--manifest--",
                     catalog="--catalog--",
                     select=select,
                     exclude=exclude,
                     resource_type=resource_type,
                 )
-                assert dbml.replace(" ", "").replace("\n", "") == str(expected).replace(
-                    " ", ""
-                ).replace("\n", "")
+                print("mermaid ", mermaid.replace(" ", "").replace("\n", ""))
+                print("expected", expected.replace(" ", "").replace("\n", ""))
+                assert mermaid.replace(" ", "").replace("\n", "") == str(
+                    expected
+                ).replace(" ", "").replace("\n", "")
                 mock_get_tables.assert_called_once()
                 mock_get_relationships.assert_called_once()
