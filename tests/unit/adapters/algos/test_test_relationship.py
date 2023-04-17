@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
+from dbterd.adapters.algos import base as base_algo
 from dbterd.adapters.algos import test_relationship as algo
 from dbterd.adapters.algos.meta import Column, Ref, Table
 
@@ -214,10 +215,10 @@ class TestAlgoTestRelationship:
     )
     def test_get_tables(self, manifest, catalog, expected):
         with mock.patch(
-            "dbterd.adapters.algos.test_relationship.get_compiled_sql",
+            "dbterd.adapters.algos.base.get_compiled_sql",
             return_value="--irrelevant--",
         ) as mock_get_compiled_sql:
-            assert algo.get_tables(manifest, catalog) == expected
+            assert base_algo.get_tables(manifest, catalog) == expected
             mock_get_compiled_sql.assert_called()
 
     @pytest.mark.parametrize(
@@ -237,9 +238,9 @@ class TestAlgoTestRelationship:
         ],
     )
     def test_get_compiled(self, manifest, expected):
-        assert algo.get_compiled_sql(manifest_node=manifest).replace(" ", "").replace(
-            "\n", ""
-        ) == str(expected).replace(" ", "").replace("\n", "")
+        assert base_algo.get_compiled_sql(manifest_node=manifest).replace(
+            " ", ""
+        ).replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
 
     @pytest.mark.parametrize(
         "manifest, expected",
