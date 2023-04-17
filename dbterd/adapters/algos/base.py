@@ -3,41 +3,6 @@ from dbterd.adapters.algos.meta import Column, Table
 
 def get_tables(manifest, catalog):
     """Extract tables from dbt artifacts"""
-
-    def create_table_and_columns(table_name, resource, catalog_resource=None):
-        table = Table(
-            name=table_name,
-            raw_sql=get_compiled_sql(resource),
-            database=resource.database.lower(),
-            schema=resource.schema_.lower(),
-            columns=[],
-            resource_type=table_name.split(".")[0],
-        )
-
-        if catalog_resource:
-            for column, metadata in catalog_resource.columns.items():
-                table.columns.append(
-                    Column(
-                        name=str(column).lower(),
-                        data_type=str(metadata.type).lower(),
-                    )
-                )
-
-        for column_name, column_metadata in resource.columns.items():
-            column_name = column_name.strip('"')
-            if not any(c.name.lower() == column_name.lower() for c in table.columns):
-                table.columns.append(
-                    Column(
-                        name=column_name.lower(),
-                        data_type=str(column_metadata.data_type or "unknown").lower(),
-                    )
-                )
-
-        if not table.columns:
-            table.columns.append(Column())
-
-        return table
-
     tables = []
 
     if hasattr(manifest, "nodes"):
@@ -48,17 +13,53 @@ def get_tables(manifest, catalog):
                 or table_name.startswith("snapshot.")
             ):
                 catalog_node = catalog.nodes.get(table_name)
-                table = create_table_and_columns(table_name, node, catalog_node)
+                table = get_table(table_name, node, catalog_node)
                 tables.append(table)
 
     if hasattr(manifest, "sources"):
         for table_name, source in manifest.sources.items():
             if table_name.startswith("source"):
                 catalog_source = catalog.sources.get(table_name)
-                table = create_table_and_columns(table_name, source, catalog_source)
+                table = get_table(table_name, source, catalog_source)
                 tables.append(table)
 
+    # Apply selection & exclusion
     return tables
+
+
+def get_table(table_name, resource, catalog_resource=None):
+    table = Table(
+        name=table_name,
+        raw_sql=get_compiled_sql(resource),
+        database=resource.database.lower(),
+        schema=resource.schema_.lower(),
+        columns=[],
+        resource_type=table_name.split(".")[0],
+    )
+
+    if catalog_resource:
+        for column, metadata in catalog_resource.columns.items():
+            table.columns.append(
+                Column(
+                    name=str(column).lower(),
+                    data_type=str(metadata.type).lower(),
+                )
+            )
+
+    for column_name, column_metadata in resource.columns.items():
+        column_name = column_name.strip('"')
+        if not any(c.name.lower() == column_name.lower() for c in table.columns):
+            table.columns.append(
+                Column(
+                    name=column_name.lower(),
+                    data_type=str(column_metadata.data_type or "unknown").lower(),
+                )
+            )
+
+    if not table.columns:
+        table.columns.append(Column())
+
+    return table
 
 
 def get_compiled_sql(manifest_node):

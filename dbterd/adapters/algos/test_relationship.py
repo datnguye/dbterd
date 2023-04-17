@@ -1,31 +1,23 @@
 from dbterd.adapters.algos.base import get_tables
+from dbterd.adapters.algos.filter import is_selected_table
 from dbterd.adapters.algos.meta import Column, Ref
 
 
 def parse(manifest, catalog, **kwargs):
     # Parse Table
     tables = get_tables(manifest, catalog)
-    # Apply selection
-    select_rule = (kwargs.get("select") or "").lower().split(":")
-    resource_types = kwargs.get("resource_type") or ""
 
-    def filter_table_select(table):
-        if select_rule[0].startswith("schema"):
-            schema = f"{table.database}.{table.schema}"
-            return schema.startswith(select_rule[-1]) or table.schema.startswith(
-                select_rule[-1]
-            )
-        else:
-            return table.name.startswith(select_rule[-1])
-
-    tables = [table for table in tables if filter_table_select(table)]
-    tables = [table for table in tables if table.resource_type in resource_types]
-
-    # -- apply exclusion (take care of name only)
-
-    exclude_rule = kwargs.get("exclude")
-    if exclude_rule:
-        tables = [table for table in tables if not table.name.startswith(exclude_rule)]
+    # Apply selection & exclusion
+    tables = [
+        table
+        for table in tables
+        if is_selected_table(
+            table=table,
+            select_rules=(kwargs.get("select") or "").lower().split(":"),
+            resource_types=kwargs.get("resource_type", []),
+            exclude_rules=kwargs.get("exclude", []),
+        )
+    ]
 
     # Parse Ref
     relationships = get_relationships(manifest)
