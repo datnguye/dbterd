@@ -33,9 +33,14 @@ def open_json(fp):
 
 
 def convert_path(path: str) -> str:
-    """Convert a path which might be >260 characters long, to one
-    that will be writable/readable on Windows.
+    """Convert a path which might be >260 characters long, to one that will be writable/readable on Windows.
     On other platforms, this is a no-op.
+
+    Args:
+        path (str): Path string
+
+    Returns:
+        str: Converted path string
     """
     # some parts of python seem to append '\*.*' to strings, better safe than
     # sorry.
@@ -80,9 +85,7 @@ def supports_long_paths(windll_name="ntdll") -> bool:  # pragma: no cover
 
 
 def win_prepare_path(path: str) -> str:  # pragma: no cover
-    """Given a windows path, prepare it for use by making sure it is absolute
-    and normalized.
-    """
+    """Given a windows path, prepare it for use by making sure it is absolute and normalized."""
     path = os.path.normpath(path)
 
     # if a path starts with '\', splitdrive() on it will return '' for the
@@ -105,7 +108,15 @@ def win_prepare_path(path: str) -> str:  # pragma: no cover
 
 
 def read_manifest(path: str, version: int = None):
-    """Reads in the manifest.json file, with optional version specification"""
+    """Reads in the manifest.json file, with optional version specification
+
+    Args:
+        path (str): manifest.json file path
+        version (int, optional): Manifest version. Defaults to None.
+
+    Returns:
+        dict: Manifest dict
+    """
     _dict = open_json(f"{path}/manifest.json")
     parser_version = f"parse_manifest_v{version}" if version else "parse_manifest"
     parse_func = getattr(parser, parser_version)
@@ -113,7 +124,15 @@ def read_manifest(path: str, version: int = None):
 
 
 def read_catalog(path: str, version: int = None):
-    """Reads in the catalog.json file, with optional version specification"""
+    """Reads in the catalog.json file, with optional version specification
+
+    Args:
+        path (str): catalog.json file path
+        version (int, optional): Catalog version. Defaults to None.
+
+    Returns:
+        dict: Catalog dict
+    """
     _dict = open_json(f"{path}/catalog.json")
     parser_version = f"parse_catalog_v{version}" if version else "parse_catalog"
     parse_func = getattr(parser, parser_version)

@@ -4,6 +4,15 @@ from dbterd.adapters.algos.meta import Ref
 
 
 def parse(manifest, catalog, **kwargs):
+    """Get all information (tables, relationships) needed for building diagram
+
+    Args:
+        manifest (dict): Manifest json
+        catalog (dict): Catalog json
+
+    Returns:
+        Tuple(List[Table], List[Ref]): Info of parsed tables and relationships
+    """
     # Parse Table
     tables = base.get_tables(manifest=manifest, catalog=catalog)
 
@@ -29,13 +38,22 @@ def parse(manifest, catalog, **kwargs):
     ]
 
     # Fullfill columns in Tables (due to `select *`)
-    tables = base.enrich_tables_from_relationships(tables=tables, relationships=relationships)
+    tables = base.enrich_tables_from_relationships(
+        tables=tables, relationships=relationships
+    )
 
     return (tables, relationships)
 
 
 def get_relationships(manifest):
-    """Extract relationships from dbt artifacts based on test relationship"""
+    """Extract relationships from dbt artifacts based on test relationship
+
+    Args:
+        manifest (dict): Manifest json
+
+    Returns:
+        List[Ref]: List of parsed relationship
+    """
     refs = [
         Ref(
             name=x,
