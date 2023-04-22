@@ -30,7 +30,6 @@ dbterd = "dbterd.main:main"
 python = "^3.9"
 click = "^8.1.3"
 dbt-artifacts-parser = "^0.2.3"
-sqlparse = "^0.4.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
