@@ -2,10 +2,28 @@ from dbterd.adapters.algos import test_relationship
 
 
 def run(manifest, catalog, **kwargs):
+    """Parse dbt artifacts and export DBML file
+
+    Args:
+        manifest (dict): Manifest json
+        catalog (dict): Catalog json
+
+    Returns:
+        Tuple(str, str): File name and the DBML content
+    """
     return ("output.dbml", parse(manifest, catalog, **kwargs))
 
 
 def parse(manifest, catalog, **kwargs):
+    """Get the DBML content from dbt artifacts
+
+    Args:
+        manifest (dict): Manifest json
+        catalog (dict): Catalog json
+
+    Returns:
+        str: DBML content
+    """
     tables, relationships = test_relationship.parse(
         manifest=manifest, catalog=catalog, **kwargs
     )

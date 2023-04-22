@@ -13,10 +13,21 @@ __version__ = importlib.metadata.version("dbterd")
 
 # Programmatic invocation
 class dbterdRunner:
+    """Support runner for the programatic call"""
+
     def __init__(self) -> None:
         pass
 
     def invoke(self, args: List[str]):
+        """Invoke a command of dbterd programatically
+
+        Args:
+            args (List[str]): dbterd arguments
+
+        Raises:
+            Exception: Unhandled exception
+            Exception: Not Supported command exception
+        """
         try:
             dbt_ctx = dbterd.make_context(dbterd.name, args)
             return dbterd.invoke(dbt_ctx)
