@@ -102,12 +102,10 @@ Selection criteria.
 > Select all dbt models if not specified, supports mulitple options
 
 Rules:
-- By `name`
-    - model name starts with input string
-- By `schema`
-    - schema name starts with an input string, formed as `schema:<your_schema_name>`
-- By `wildcard`
-    - model name matches to a [wildcard pattern](https://docs.python.org/3/library/fnmatch.html), formed as `wildcard:<your_wildcard>`
+
+- By `name`: model name starts with input string
+- By `schema`: schema name starts with an input string, formed as `schema:<your_schema_name>`
+- By `wildcard`: model name matches to a [wildcard pattern](https://docs.python.org/3/library/fnmatch.html), formed as `wildcard:<your_wildcard>`
 
 **Examples:**
 === "CLI (by name)"
@@ -123,7 +121,7 @@ Rules:
 === "CLI (by wildcard)"
 
     ```bash
-    dbterd run --select "<your-criteria>"
+    dbterd run --select "*xyz"
     ```
 
 #### `AND` and `OR` logic

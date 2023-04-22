@@ -39,6 +39,15 @@ def is_selected_table(
 
 
 def evaluate_rule(table: Table, rule: str):
+    """Evaluate selection/exclusion single rule with AND logic applied
+
+    Args:
+        table (Table): Table object to be evaluated
+        rule (str): Rule defintion
+
+    Returns:
+        bool: True if satisfied all rules
+    """
     and_parts = rule.split(",")
     results = []
     for x in and_parts:
@@ -52,12 +61,30 @@ def evaluate_rule(table: Table, rule: str):
 
 
 def __is_satisfied_by_name(table: Table, rule: str = ""):
+    """Evaulate rule by Name
+
+    Args:
+        table (Table): Table object
+        rule (str, optional): Rule def. Defaults to "".
+
+    Returns:
+        bool: True if satisfied `starts with` logic applied to Table name
+    """
     if not rule:
         return True
     return table.name.startswith(rule)
 
 
 def __is_satisfied_by_schema(table: Table, rule: str = ""):
+    """Evaulate rule by Schema name
+
+    Args:
+        table (Table): Table object
+        rule (str, optional): Rule def. Defaults to "".
+
+    Returns:
+        bool: True if satisfied `starts with` logic applied to Table's schema
+    """
     if not rule:
         return True
 
@@ -70,6 +97,15 @@ def __is_satisfied_by_schema(table: Table, rule: str = ""):
 
 
 def __is_satisfied_by_wildcard(table: Table, rule: str = "*"):
+    """Evaulate rule by Wildcard (Unix Style)
+
+    Args:
+        table (Table): Table object
+        rule (str, optional): Rule def. Defaults to "".
+
+    Returns:
+        bool: True if satisfied table name matched the pattern
+    """
     if not rule:
         return True
     return fnmatch(table.name, rule)
