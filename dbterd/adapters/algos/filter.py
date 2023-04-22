@@ -1,3 +1,5 @@
+import sys
+from fnmatch import fnmatch
 from typing import List
 
 from dbterd.adapters.algos.meta import Table
@@ -20,23 +22,42 @@ def is_selected_table(
     Returns:
         bool: True if Table is selected. False if Tables is excluded
     """
-    selected = True
-    if select_rules:
-        select_rule = select_rules[0].lower().split(":")
-        if len(select_rule) > 1 and select_rule[0].startswith("schema"):
-            schema = f"{table.database}.{table.schema}"
-            selected = schema.startswith(select_rule[1]) or table.schema.startswith(
-                select_rule[1]
-            )
-        else:
-            selected = table.name.startswith(select_rule[0])
-
+    # Selection
+    selected = [evaluate_rule(table=table, rule=rule) for rule in select_rules]
     if resource_types:
-        selected = selected and table.resource_type in resource_types
+        selected.append(table.resource_type in resource_types)
+    # Exclusion
+    excluded = [evaluate_rule(table=table, rule=rule) for rule in exclude_rules]
 
-    excluded = False
-    if exclude_rules:
-        exclude_rule = exclude_rules[0]
-        excluded = table.name.startswith(exclude_rule)
+    return all(selected) and not any(excluded)
 
-    return selected and not excluded
+
+def evaluate_rule(table: Table, rule: str):
+    rule_parts = rule.lower().split(":")
+    type, rule = "name", rule_parts[0]
+    if len(rule_parts) > 1:
+        type, rule = tuple(rule_parts[:2])
+    selected_func = getattr(sys.modules[__name__], f"is_satisfied_by_{type}")
+    return selected_func(table=table, rule=rule)
+
+
+def is_satisfied_by_wildcard(table: Table, rule: str = "*"):
+    return fnmatch(table.name, rule)
+
+
+def is_satisfied_by_schema(table: Table, rule: str = ""):
+    if not rule:
+        return True
+
+    parts = rule.split(".")
+    selected_schema = parts[-1]
+    selected_database = parts[0] if len(parts) > 1 else table.database
+    return f"{table.database}.{table.schema}".startswith(
+        f"{selected_database}.{selected_schema}"
+    )
+
+
+def is_satisfied_by_name(table: Table, rule: str = ""):
+    if not rule:
+        return True
+    return table.name.startswith(rule)
