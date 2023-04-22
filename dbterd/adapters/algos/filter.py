@@ -39,12 +39,16 @@ def is_selected_table(
 
 
 def evaluate_rule(table: Table, rule: str):
-    rule_parts = rule.lower().split(":")
-    type, rule = "name", rule_parts[0]
-    if len(rule_parts) > 1:
-        type, rule = tuple(rule_parts[:2])
-    selected_func = getattr(sys.modules[__name__], f"__is_satisfied_by_{type}")
-    return selected_func(table=table, rule=rule)
+    and_parts = rule.split(",")
+    results = []
+    for x in and_parts:
+        rule_parts = x.lower().split(":")
+        type, rule = "name", rule_parts[0]
+        if len(rule_parts) > 1:
+            type, rule = tuple(rule_parts[:2])
+        selected_func = getattr(sys.modules[__name__], f"__is_satisfied_by_{type}")
+        results.append(selected_func(table=table, rule=rule))
+    return all(results)
 
 
 def __is_satisfied_by_name(table: Table, rule: str = ""):

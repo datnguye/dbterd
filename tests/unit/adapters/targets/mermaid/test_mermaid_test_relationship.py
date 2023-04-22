@@ -182,6 +182,33 @@ class TestMermaidTestRelationship:
                     }
                 """,
             ),
+            (
+                [
+                    Table(
+                        name="model.dbt_resto.table1",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[Column(name="name1", data_type="name1-type")],
+                        raw_sql="--irrelevant--",
+                    ),
+                    Table(
+                        name="model.dbt_resto.table2",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[Column(name="name2", data_type="name2-type")],
+                        raw_sql="--irrelevant--",
+                    ),
+                ],
+                [],
+                ["schema:--schema--,wildcard:*dbt_resto.table*"],
+                ["wildcard:*table2"],
+                ["model"],
+                """erDiagram
+                    "MODEL.DBT_RESTO.TABLE1" {
+                        name1-type name1
+                    }
+                """,
+            ),
         ],
     )
     def test_parse(
