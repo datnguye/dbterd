@@ -32,7 +32,7 @@ Supports:
 
     ```bash
     dbt docs generate
-    dbterd run [-t dbml or mermaid]
+    dbterd run [-t dbml or -t mermaid]
     ```
 
 === "--help (-h)"
@@ -42,29 +42,24 @@ Supports:
     Run the convert
 
     Options:
-    -ad, --artifacts-dir TEXT     Specified the full path to dbt artifacts path
-                                    which known as /target directory  [default:
-                                    C:\Users\DAT\Documents\Sources\dbterd\target]
-    -mp, --manifest-path TEXT     __DEPRECATED_WARNING__: Specified the full
-                                    directory path to dbt manifest.json file. Use
-                                    --artifacts-dir instead.
-    -o, --output TEXT             Output the result file. Default to the same
-                                    target dir  [default:
-                                    C:\Users\DAT\Documents\Sources\dbterd\target]
-    -s, --select TEXT             Selecttion criteria. Support 'starts with' a
-                                    string
-    -ns, --exclude TEXT           Exclusion criteria. Support 'not starts with'
-                                    a string
-    -t, --target TEXT             Target to the diagram-as-code platform
-                                    [default: dbml]
-    -a, --algo TEXT               Specified algorithm in the way to detect
-                                    diagram connectors  [default:
-                                    test_relationship]
-    -mv, --manifest-version TEXT  Specified dbt manifest.json version
-    -rt, --resource-type TEXT     Specified dbt resource type(seed, model,
-                                    source, snapshot),default:model, use examples,
-                                    -rt model -rt source
-    -h, --help                    Show this message and exit.
+        -ad, --artifacts-dir TEXT     Specified the full path to dbt artifacts path
+                                        which known as /target directory  [default:
+                                        C:\Users\DAT\Documents\Sources\dbterd\target]
+        -o, --output TEXT             Output the result file. Default to the same
+                                        target dir  [default:
+                                        C:\Users\DAT\Documents\Sources\dbterd\target]
+        -s, --select TEXT             Selecttion criteria
+        -ns, --exclude TEXT           Exclusion criteria
+        -t, --target TEXT             Target to the diagram-as-code platform
+                                        [default: dbml]
+        -a, --algo TEXT               Specified algorithm in the way to detect
+                                        diagram connectors  [default:
+                                        test_relationship]
+        -mv, --manifest-version TEXT  Specified dbt manifest.json version
+        -rt, --resource-type TEXT     Specified dbt resource type(seed, model,
+                                        source, snapshot),default:model, use examples,
+                                        -rt model -rt source
+        -h, --help                    Show this message and exit.
     ```
 
 ### --artifacts-dir (-ad)
@@ -82,18 +77,6 @@ Configure the path to directory containing dbt artifact files.
 
     ```bash
     dbterd run --artifacts-dir "./target"
-    ```
-
-**Examples:**
-=== "CLI"
-
-    ```bash
-    dbterd run -mp "./target"
-    ```
-=== "CLI (long style)"
-
-    ```bash
-    dbterd run --manifest-path "./target"
     ```
 
 ### --output (-o)
@@ -115,49 +98,75 @@ Configure the path to directory containing the output diagram file.
 
 ### --select (-s)
 
-Selection criteria. Support 'starts with' a string where string is:
-  - table name (or part of it)
-  - schema name (or part of it) formed as `schema:<your_schema_name>`
-> Select all dbt models if not specified
+Selection criteria.
+> Select all dbt models if not specified, supports mulitple options
+
+Rules:
+- By `name`
+    - model name starts with input string
+- By `schema`
+    - schema name starts with an input string, formed as `schema:<your_schema_name>`
+- By `wildcard`
+    - model name matches to a [wildcard pattern](https://docs.python.org/3/library/fnmatch.html), formed as `wildcard:<your_wildcard>`
 
 **Examples:**
-=== "CLI (by table)"
+=== "CLI (by name)"
 
     ```bash
-    dbterd run -s "model.package_name.model_name"
+    dbterd run -s "model.package_name.model_partital_name"
     ```
 === "CLI (by schema)"
 
     ```bash
     dbterd run -s "schema:my_schema_name"
     ```
-=== "CLI (long style)"
+=== "CLI (by wildcard)"
 
     ```bash
     dbterd run --select "<your-criteria>"
     ```
 
+#### `AND` and `OR` logic
+- `AND` logic is applied to a single selection splitted by comma (,)
+- `OR` logic is applied to 2+ selection
+
+**Examples:**
+=== "AND"
+
+    ```bash
+    # All models belong to 'abc' schema AND also need to match the pattern of '*xyz.*'
+    dbterd run -s schema:abc,wildcard:*xyz.*
+    ```
+=== "OR"
+
+    ```bash
+    # All models belong to 'abc' schema, OR match to the pattern of '*xyz.*'
+    dbterd run -s schema:abc -s wildcard:*xyz.*
+    ```
+
+
 ### --exclude (-ns)
 
-Exclusion criteria. Support 'not starts with' a string
-> Default to `None`
+Exclusion criteria. Rules are the same as Selection Criteria.
+> Do not exclude any dbt models if not specified, supports mulitple options
+
 
 **Examples:**
 === "CLI"
 
     ```bash
-    dbterd run --exclude 'model.package_name.table'
+    dbterd run -ns 'model.package_name.table'
     ```
 === "CLI (long style)"
 
     ```bash
-    dbterd run -ns 'model.package_name.table'
+    dbterd run --exclude 'model.package_name.table'
     ```
 
 ### --target (-t)
 
 Target to the diagram-as-code platform
-> Default to `dbml`, currently only supported option
+> Default to `dbml`
 
 **Examples:**
 === "CLI"
@@ -224,7 +233,7 @@ Specified dbt resource type(seed, model, source, snapshot).
 
 ### ⚠ DEPRECATED WARNING
 
-#### --manifest-path (-mp) (Deprecated in v1.?)
+#### --manifest-path (-mp) (Deprecated in v1.1)
 
 Configure the path to directory containing dbt `manifest.json` file.
 > Default to `./target`

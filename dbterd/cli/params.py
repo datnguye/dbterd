@@ -15,13 +15,6 @@ def common_params(func):
         type=click.STRING,
     )
     @click.option(
-        "--manifest-path",
-        "-mp",
-        help="__DEPRECATED_WARNING__: Specified the full directory path to dbt manifest.json file. Use --artifacts-dir instead.",
-        default=None,
-        type=click.STRING,
-    )
-    @click.option(
         "--output",
         "-o",
         help="Output the result file. Default to the same target dir",

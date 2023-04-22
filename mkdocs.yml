@@ -9,6 +9,18 @@ edit_uri: edit/main/docs/
 
 copyright: Copyright &copy; 2023 Dat Nguyen
 
+nav:
+  - dbterd:
+    - index.md
+    - User Guide:
+      - CLI Reference: nav/guide/cli-references.md
+      - Generate markdown with mermaid ERD inclusive: nav/guide/generate-markdown-mermaid-erd.md
+    - Development:
+      - nav/development/contributing-guide.md
+      - Change Log: nav/development/CHANGELOG.md
+    - About:
+      - license.md
+
 theme:
   name: material
   features:
@@ -63,18 +75,6 @@ plugins:
   - minify:
       minify_html: true
   - offline
-
-nav:
-    - dbterd:
-      - index.md
-      - User Guide:
-        - CLI Reference: nav/guide/cli-references.md
-        - Generate mardown with mermaid ERD inclusive: nav/guide/generate-markdown-mermaid-erd.md
-      - Development:
-        - nav/development/contributing-guide.md
-        - Change Log: nav/development/CHANGELOG.md
-      - About:
-        - license.md
 
 extra:
   annotate:
