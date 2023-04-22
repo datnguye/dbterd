@@ -1,3 +1,4 @@
+import copy
 from dbterd.adapters.algos.meta import Column, Table
 
 
@@ -23,8 +24,25 @@ def get_tables(manifest, catalog):
                 table = get_table(table_name, source, catalog_source)
                 tables.append(table)
 
-    # Apply selection & exclusion
     return tables
+
+
+def enrich_tables_from_relationships(tables, relationships):
+    copied_tables = copy.deepcopy(tables)
+    for relationship in relationships:
+        for table in copied_tables:
+            table_columns = [x.name.lower() for x in table.columns]
+            if (
+                table.name == relationship.table_map[0]
+                and relationship.column_map[0].lower() not in table_columns
+            ):
+                table.columns.append(Column(name=relationship.column_map[0]))
+            if (
+                table.name == relationship.table_map[1]
+                and relationship.column_map[1].lower() not in table_columns
+            ):
+                table.columns.append(Column(name=relationship.column_map[1]))
+    return copied_tables
 
 
 def get_table(table_name, resource, catalog_resource=None):
@@ -74,8 +92,7 @@ def get_compiled_sql(manifest_node):
     ):  # nodes having no compiled but just list of columns
         return """select
             {columns}
-        from {table}
-        """.format(
+        from {table}""".format(
             columns=",\n".join([f"{x}" for x in manifest_node.columns]),
             table=f"{manifest_node.database}.{manifest_node.schema}.undefined",
         )

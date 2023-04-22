@@ -1,13 +1,13 @@
-from dbterd.adapters.algos.base import get_tables
+from dbterd.adapters.algos import base
 from dbterd.adapters.algos.filter import is_selected_table
-from dbterd.adapters.algos.meta import Column, Ref
+from dbterd.adapters.algos.meta import Ref
 
 
 def parse(manifest, catalog, **kwargs):
     # Parse Table
-    tables = get_tables(manifest, catalog)
+    tables = base.get_tables(manifest=manifest, catalog=catalog)
 
-    # Apply selection & exclusion
+    # Apply selection
     tables = [
         table
         for table in tables
@@ -20,7 +20,7 @@ def parse(manifest, catalog, **kwargs):
     ]
 
     # Parse Ref
-    relationships = get_relationships(manifest)
+    relationships = get_relationships(manifest=manifest)
     table_names = [x.name for x in tables]
     relationships = [
         x
@@ -29,19 +29,7 @@ def parse(manifest, catalog, **kwargs):
     ]
 
     # Fullfill columns in Tables (due to `select *`)
-    for relationship in relationships:
-        for table in tables:
-            table_columns = [x.name.lower() for x in table.columns]
-            if (
-                table.name == relationship.table_map[0]
-                and relationship.column_map[0].lower() not in table_columns
-            ):
-                table.columns.append(Column(name=relationship.column_map[0]))
-            if (
-                table.name == relationship.table_map[1]
-                and relationship.column_map[1].lower() not in table_columns
-            ):
-                table.columns.append(Column(name=relationship.column_map[1]))
+    tables = base.enrich_tables_from_relationships(tables=tables, relationships=relationships)
 
     return (tables, relationships)
 

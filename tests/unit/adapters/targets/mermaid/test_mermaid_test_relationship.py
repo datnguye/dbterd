@@ -141,7 +141,7 @@ class TestMermaidTestRelationship:
         self, tables, relationships, select, exclude, resource_type, expected
     ):
         with mock.patch(
-            "dbterd.adapters.algos.test_relationship.get_tables",
+            "dbterd.adapters.algos.base.get_tables",
             return_value=tables,
         ) as mock_get_tables:
             with mock.patch(
