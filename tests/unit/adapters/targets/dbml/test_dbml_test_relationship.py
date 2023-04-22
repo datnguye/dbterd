@@ -21,8 +21,8 @@ class TestDbmlTestRelationship:
                     )
                 ],
                 [],
-                "",
-                None,
+                [],
+                [],
                 ["model"],
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
@@ -68,8 +68,8 @@ class TestDbmlTestRelationship:
                         column_map=["name-notexist2", "name-notexist1"],
                     ),
                 ],
-                "",
-                None,
+                [],
+                [],
                 ["model", "source"],
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
@@ -115,8 +115,8 @@ class TestDbmlTestRelationship:
                         column_map=["name2", "name1"],
                     )
                 ],
-                "schema:--schema--",
-                None,
+                ["schema:--schema--"],
+                [],
                 ["model", "source"],
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
@@ -137,10 +137,39 @@ class TestDbmlTestRelationship:
                     )
                 ],
                 [],
-                "",
-                "model.dbt_resto.table1",
+                [],
+                ["model.dbt_resto.table1"],
                 ["model"],
                 """//Tables (based on the selection criteria)
+                //Refs (based on the DBT Relationship Tests)
+                """,
+            ),
+            (
+                [
+                    Table(
+                        name="model.dbt_resto.table1",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[Column(name="name1", data_type="name1-type")],
+                        raw_sql="--irrelevant--",
+                    ),
+                    Table(
+                        name="model.dbt_resto.table2",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[Column(name="name2", data_type="name2-type")],
+                        raw_sql="--irrelevant--",
+                    ),
+                ],
+                [],
+                ["model.dbt_resto"],
+                ["model.dbt_resto.table2"],
+                ["model"],
+                """//Tables (based on the selection criteria)
+                //--configured at schema: --database--.--schema--
+                Table "model.dbt_resto.table1" {
+                    "name1" "name1-type"
+                }
                 //Refs (based on the DBT Relationship Tests)
                 """,
             ),

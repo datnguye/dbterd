@@ -32,15 +32,17 @@ def common_params(func):
     @click.option(
         "--select",
         "-s",
-        help="Selecttion criteria. Support 'starts with' a string",
-        default=None,
+        help="Selecttion criteria",
+        default=[],
+        multiple=True,
         type=click.STRING,
     )
     @click.option(
         "--exclude",
         "-ns",
-        help="Exclusion criteria. Support 'not starts with' a string",
-        default=None,
+        help="Exclusion criteria",
+        default=[],
+        multiple=True,
         type=click.STRING,
     )
     @click.option(

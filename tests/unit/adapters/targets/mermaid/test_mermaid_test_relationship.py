@@ -21,8 +21,8 @@ class TestMermaidTestRelationship:
                     )
                 ],
                 [],
-                "",
-                None,
+                [],
+                [],
                 ["model"],
                 """erDiagram
                   "MODEL.DBT_RESTO.TABLE1" {
@@ -66,8 +66,8 @@ class TestMermaidTestRelationship:
                         column_map=["name-notexist2", "name-notexist1"],
                     ),
                 ],
-                "",
-                None,
+                [],
+                [],
                 ["model", "source"],
                 """erDiagram
                   "MODEL.DBT_RESTO.TABLE1" {
@@ -109,8 +109,8 @@ class TestMermaidTestRelationship:
                         column_map=["name2", "name1"],
                     )
                 ],
-                "schema:--schema--",
-                None,
+                ["schema:--schema--"],
+                [],
                 ["model", "source"],
                 """erDiagram
                     "MODEL.DBT_RESTO.TABLE1" {
@@ -129,10 +129,37 @@ class TestMermaidTestRelationship:
                     )
                 ],
                 [],
-                "",
-                "model.dbt_resto.table1",
+                [],
+                ["model.dbt_resto.table1"],
                 ["model"],
                 """erDiagram
+                """,
+            ),
+            (
+                [
+                    Table(
+                        name="model.dbt_resto.table1",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[Column(name="name1", data_type="name1-type")],
+                        raw_sql="--irrelevant--",
+                    ),
+                    Table(
+                        name="model.dbt_resto.table2",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[Column(name="name2", data_type="name2-type")],
+                        raw_sql="--irrelevant--",
+                    ),
+                ],
+                [],
+                ["model.dbt_resto"],
+                ["model.dbt_resto.table2"],
+                ["model"],
+                """erDiagram
+                    "MODEL.DBT_RESTO.TABLE1" {
+                        name1-type name1
+                    }
                 """,
             ),
         ],

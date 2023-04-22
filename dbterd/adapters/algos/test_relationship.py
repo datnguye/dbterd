@@ -22,7 +22,7 @@ def parse(manifest, catalog, **kwargs):
         for table in tables
         if is_selected_table(
             table=table,
-            select_rules=(kwargs.get("select") or "").lower().split(":"),
+            select_rules=(kwargs.get("select") or []),
             resource_types=kwargs.get("resource_type", []),
             exclude_rules=kwargs.get("exclude", []),
         )
