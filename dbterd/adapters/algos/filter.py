@@ -23,13 +23,19 @@ def is_selected_table(
         bool: True if Table is selected. False if Tables is excluded
     """
     # Selection
-    selected = [evaluate_rule(table=table, rule=rule) for rule in select_rules]
+    selected = True
+    if select_rules:
+        selected = any([evaluate_rule(table=table, rule=rule) for rule in select_rules])
     if resource_types:
-        selected.append(table.resource_type in resource_types)
+        selected = selected and table.resource_type in resource_types
     # Exclusion
-    excluded = [evaluate_rule(table=table, rule=rule) for rule in exclude_rules]
+    excluded = False
+    if exclude_rules:
+        excluded = any(
+            [evaluate_rule(table=table, rule=rule) for rule in exclude_rules]
+        )
 
-    return all(selected) and not any(excluded)
+    return selected and not excluded
 
 
 def evaluate_rule(table: Table, rule: str):
@@ -37,15 +43,17 @@ def evaluate_rule(table: Table, rule: str):
     type, rule = "name", rule_parts[0]
     if len(rule_parts) > 1:
         type, rule = tuple(rule_parts[:2])
-    selected_func = getattr(sys.modules[__name__], f"is_satisfied_by_{type}")
+    selected_func = getattr(sys.modules[__name__], f"__is_satisfied_by_{type}")
     return selected_func(table=table, rule=rule)
 
 
-def is_satisfied_by_wildcard(table: Table, rule: str = "*"):
-    return fnmatch(table.name, rule)
+def __is_satisfied_by_name(table: Table, rule: str = ""):
+    if not rule:
+        return True
+    return table.name.startswith(rule)
 
 
-def is_satisfied_by_schema(table: Table, rule: str = ""):
+def __is_satisfied_by_schema(table: Table, rule: str = ""):
     if not rule:
         return True
 
@@ -57,7 +65,7 @@ def is_satisfied_by_schema(table: Table, rule: str = ""):
     )
 
 
-def is_satisfied_by_name(table: Table, rule: str = ""):
+def __is_satisfied_by_wildcard(table: Table, rule: str = "*"):
     if not rule:
         return True
-    return table.name.startswith(rule)
+    return fnmatch(table.name, rule)

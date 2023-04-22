@@ -173,6 +173,46 @@ class TestDbmlTestRelationship:
                 //Refs (based on the DBT Relationship Tests)
                 """,
             ),
+            (
+                [
+                    Table(
+                        name="model.dbt_resto.table1",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[Column(name="name1", data_type="name1-type")],
+                        raw_sql="--irrelevant--",
+                    ),
+                    Table(
+                        name="model.dbt_resto.view2",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[Column(name="name2", data_type="name2-type")],
+                        raw_sql="--irrelevant--",
+                    ),
+                    Table(
+                        name="source.dbt_resto.table3",
+                        database="--database3--",
+                        schema="--schema3--",
+                        columns=[Column(name="name3", data_type="name3-type3")],
+                        raw_sql="--irrelevant--",
+                    ),
+                ],
+                [],
+                ["wildcard:*.table*"],
+                [],
+                ["model", "source"],
+                """//Tables (based on the selection criteria)
+                //--configured at schema: --database--.--schema--
+                Table "model.dbt_resto.table1" {
+                    "name1" "name1-type"
+                }
+                //--configured at schema: --database3--.--schema3--
+                Table "source.dbt_resto.table3" {
+                    "name3" "name3-type3"
+                }
+                //Refs (based on the DBT Relationship Tests)
+                """,
+            ),
         ],
     )
     def test_parse(
