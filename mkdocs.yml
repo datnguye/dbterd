@@ -96,7 +96,7 @@ extra:
       make our documentation better.
   analytics:
     provider: google
-    property: G-H3B2M9GBRQ
+    property: G-VPLJJL9G2P
     feedback:
       title: Was this page helpful?
       ratings:
