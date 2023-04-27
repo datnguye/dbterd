@@ -17,7 +17,7 @@ jobs:
           path: .cache
 
       - name: Install dependencies
-        run: pip install mkdocs mkdocs-material mkdocs-minify-plugin mike
+        run: pip install mkdocs-material mkdocs-minify-plugin mike
 
       - name: Publish site
         run: |
