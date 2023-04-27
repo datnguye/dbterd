@@ -24,4 +24,4 @@ jobs:
           cp -f README.md docs/index.md
           cp -f LICENSE docs/license.md
           cp -f CONTRIBUTING.md docs/nav/development/contributing-guide.md
-          mkdocs gh-deploy --force
+          mike deploy --push --update-aliases 1.1 latest
