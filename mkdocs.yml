@@ -77,6 +77,8 @@ plugins:
   - offline
 
 extra:
+  version:
+    provider: mike
   annotate:
     json: [.s2]
   # analytics:
