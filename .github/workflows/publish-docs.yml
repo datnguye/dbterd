@@ -1,9 +1,11 @@
 name: Build and Deploy MkDocs Site
 
 on:
-  release:
-    types: [published]
   workflow_dispatch:
+    inputs:
+      version:
+        description: Document version e.g. 1.1, 1.2
+        required: true
 
 jobs:
   build:
@@ -17,11 +19,11 @@ jobs:
           path: .cache
 
       - name: Install dependencies
-        run: pip install mkdocs-material mkdocs-minify-plugin mike
+        run: pip install mkdocs mkdocs-material mkdocs-minify-plugin mike
 
       - name: Publish site
         run: |
           cp -f README.md docs/index.md
           cp -f LICENSE docs/license.md
           cp -f CONTRIBUTING.md docs/nav/development/contributing-guide.md
-          mkdocs gh-deploy --force
+          mike deploy --push --update-aliases ${{ inputs.version }} latest
