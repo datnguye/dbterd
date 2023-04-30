@@ -2,8 +2,8 @@
     "metadata": {
         "dbt_schema_version": "https://schemas.getdbt.com/dbt/catalog/v1.json",
         "dbt_version": "1.0.3",
-        "generated_at": "2023-03-05T07:12:00.527271Z",
-        "invocation_id": "16e5c041-bc83-4128-b29a-18f05de6ffdf",
+        "generated_at": "2023-04-30T11:10:12.556486Z",
+        "invocation_id": "50bcc743-b337-412d-bdcd-4a660cc07980",
         "env": {}
     },
     "nodes": {
@@ -559,31 +559,25 @@
             },
             "unique_id": "model.integration_tests.verify_materialized_view"
         },
-        "model.integration_tests.verify_money_to_words_en": {
+        "model.integration_tests.verify_str_to_date": {
             "metadata": {
                 "type": "VIEW",
                 "schema": "dbo",
-                "name": "verify_money_to_words_en",
+                "name": "verify_str_to_date",
                 "database": "dbt",
                 "comment": null,
                 "owner": "dbo"
             },
             "columns": {
                 "actual": {
-                    "type": "nvarchar",
+                    "type": "date",
                     "index": 1,
                     "name": "actual",
                     "comment": null
                 },
-                "input": {
-                    "type": "numeric",
-                    "index": 2,
-                    "name": "input",
-                    "comment": null
-                },
                 "expected": {
-                    "type": "varchar",
-                    "index": 3,
+                    "type": "date",
+                    "index": 2,
                     "name": "expected",
                     "comment": null
                 }
@@ -597,7 +591,7 @@
                     "description": "Indicates whether there are statistics for this table"
                 }
             },
-            "unique_id": "model.integration_tests.verify_money_to_words_en"
+            "unique_id": "model.integration_tests.verify_str_to_date"
         },
         "model.dbt_resto.fact_number_scoring": {
             "metadata": {
@@ -1397,25 +1391,31 @@
             },
             "unique_id": "model.dbt_resto.fact_number"
         },
-        "model.integration_tests.verify_str_to_date": {
+        "model.integration_tests.verify_money_to_words_en": {
             "metadata": {
                 "type": "VIEW",
                 "schema": "dbo",
-                "name": "verify_str_to_date",
+                "name": "verify_money_to_words_en",
                 "database": "dbt",
                 "comment": null,
                 "owner": "dbo"
             },
             "columns": {
-                "actual": {
-                    "type": "date",
+                "input": {
+                    "type": "numeric",
                     "index": 1,
+                    "name": "input",
+                    "comment": null
+                },
+                "actual": {
+                    "type": "nvarchar",
+                    "index": 2,
                     "name": "actual",
                     "comment": null
                 },
                 "expected": {
-                    "type": "date",
-                    "index": 2,
+                    "type": "varchar",
+                    "index": 3,
                     "name": "expected",
                     "comment": null
                 }
@@ -1429,7 +1429,7 @@
                     "description": "Indicates whether there are statistics for this table"
                 }
             },
-            "unique_id": "model.integration_tests.verify_str_to_date"
+            "unique_id": "model.integration_tests.verify_money_to_words_en"
         },
         "model.dbt_resto.fact_set_number": {
             "metadata": {

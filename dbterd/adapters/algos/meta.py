@@ -8,6 +8,7 @@ class Column:
 
     name: str = "unknown"
     data_type: str = "unknown"
+    description: str = ""
 
 
 @dataclass
