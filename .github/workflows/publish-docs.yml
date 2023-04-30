@@ -11,14 +11,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    permissions:
-      pages: write      # to deploy to Pages
-      id-token: write   # to verify the deployment originates from an appropriate source
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
     steps:
       - uses: actions/checkout@v3
       - uses: actions/cache@v2
@@ -28,6 +20,11 @@ jobs:
 
       - name: Install dependencies
         run: pip install mkdocs mkdocs-material mkdocs-minify-plugin mike
+
+      - name: Configure Git user
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
 
       - name: Publish site
         run: |
