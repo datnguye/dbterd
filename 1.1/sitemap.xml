@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://datnguye.github.io/dbterd/1.1/index.html</loc>
+         <lastmod>2023-04-30</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://datnguye.github.io/dbterd/1.1/license.html</loc>
+         <lastmod>2023-04-30</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://datnguye.github.io/dbterd/1.1/nav/development/CHANGELOG.html</loc>
+         <lastmod>2023-04-30</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://datnguye.github.io/dbterd/1.1/nav/development/contributing-guide.html</loc>
+         <lastmod>2023-04-30</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://datnguye.github.io/dbterd/1.1/nav/guide/cli-references.html</loc>
+         <lastmod>2023-04-30</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://datnguye.github.io/dbterd/1.1/nav/guide/generate-markdown-mermaid-erd.html</loc>
+         <lastmod>2023-04-30</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+</urlset>
