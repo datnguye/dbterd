@@ -16,24 +16,6 @@ Verify installed version:
 dbterd --version
 ```
 
-
-```bash
-dbterd -h
-Usage: dbterd [OPTIONS] COMMAND [ARGS]...
-
-  Tools for producing diagram-as-code
-
-Options:
-  --version   Show the version and exit.
-  -h, --help  Show this message and exit.
-
-Commands:
-  debug  Inspect the hidden magics
-  run    Run the convert
-
-  Specify one of these sub-commands and you can find more help from there.
-```
-
 ## Quick examine with existing samples
 ```bash
 # select all models in dbt_resto
@@ -122,3 +104,12 @@ Result after applied Model Selection:
 If you've ever wanted to contribute to this tool, and a great cause, now is your chance!
 
 See the contributing docs [CONTRIBUTING.md](https://github.com/datnguye/dbterd/blob/main/CONTRIBUTING.md) for more information
+
+
+## Contributors
+
+Thanks for all the great resources! Can't see your avatar? Check the [contribution guide](https://dbterd.datnguyen.de/latest/nav/development/contributing-guide.html) on how you can submit your resources to the community!
+
+<a href="https://github.com/datnguye/dbterd/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=datnguye/dbterd" />
+</a>
