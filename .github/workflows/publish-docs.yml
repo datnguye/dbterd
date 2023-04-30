@@ -32,7 +32,4 @@ jobs:
 
       - name: Publish site
         run: |
-          cp -f README.md docs/index.md
-          cp -f LICENSE docs/license.md
-          cp -f CONTRIBUTING.md docs/nav/development/contributing-guide.md
           mike deploy --push --update-aliases ${{ inputs.version }} latest
