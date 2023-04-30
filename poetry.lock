@@ -2,14 +2,14 @@
 
 [[package]]
 name = "argcomplete"
-version = "3.0.5"
+version = "3.0.8"
 description = "Bash tab completion for argparse"
 category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "argcomplete-3.0.5-py3-none-any.whl", hash = "sha256:e858595eee91732440e7291dbb49ae73d3fb9bfcc073429a16d54b7b374a7a3d"},
-    {file = "argcomplete-3.0.5.tar.gz", hash = "sha256:fe3ce77125f434a0dd1bffe5f4643e64126d5731ce8d173d36f62fa43d6eb6f7"},
+    {file = "argcomplete-3.0.8-py3-none-any.whl", hash = "sha256:e36fd646839933cbec7941c662ecb65338248667358dd3d968405a4506a60d9b"},
+    {file = "argcomplete-3.0.8.tar.gz", hash = "sha256:b9ca96448e14fa459d7450a4ab5a22bbf9cee4ba7adddf03e65c398b5daeea28"},
 ]
 
 [package.extras]
@@ -324,14 +324,14 @@ files = [
 
 [[package]]
 name = "datamodel-code-generator"
-version = "0.18.0"
+version = "0.18.1"
 description = "Datamodel Code Generator"
 category = "main"
 optional = false
 python-versions = ">=3.7,<4.0"
 files = [
-    {file = "datamodel_code_generator-0.18.0-py3-none-any.whl", hash = "sha256:d8a1a2c1fb115e26ac3880d3b373d14c178849f0c842d6b4738a57ee43beeff0"},
-    {file = "datamodel_code_generator-0.18.0.tar.gz", hash = "sha256:5acf69bcf3c440e90a7d0c7b99ca100c8f6ce0348aa4b3da8ee4f9b0242d164c"},
+    {file = "datamodel_code_generator-0.18.1-py3-none-any.whl", hash = "sha256:1555d0a01a3af1d0fe9c6af15d39af86cef45fd1915587c2fd5bb4117b0720b1"},
+    {file = "datamodel_code_generator-0.18.1.tar.gz", hash = "sha256:3b360d7902d682ea011d5711b1037ba4dcf1b3b6b5f56bc39ed7f5aed51facb6"},
 ]
 
 [package.dependencies]
@@ -499,14 +499,14 @@ files = [
 
 [[package]]
 name = "identify"
-version = "2.5.22"
+version = "2.5.23"
 description = "File identification library for Python"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "identify-2.5.22-py2.py3-none-any.whl", hash = "sha256:f0faad595a4687053669c112004178149f6c326db71ee999ae4636685753ad2f"},
-    {file = "identify-2.5.22.tar.gz", hash = "sha256:f7a93d6cf98e29bd07663c60728e7a4057615068d7a639d132dc883b2d54d31e"},
+    {file = "identify-2.5.23-py2.py3-none-any.whl", hash = "sha256:17d9351c028a781456965e781ed2a435755cac655df1ebd930f7186b54399312"},
+    {file = "identify-2.5.23.tar.gz", hash = "sha256:50b01b9d5f73c6b53e5fa2caf9f543d3e657a9d0bbdeb203ebb8d45960ba7433"},
 ]
 
 [package.extras]
@@ -526,14 +526,14 @@ files = [
 
 [[package]]
 name = "importlib-metadata"
-version = "6.5.1"
+version = "6.6.0"
 description = "Read metadata from Python packages"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "importlib_metadata-6.5.1-py3-none-any.whl", hash = "sha256:cd4687a8df60d9aefd424ed9364a8f29def203a9482ec8eb8e8070ef06075f89"},
-    {file = "importlib_metadata-6.5.1.tar.gz", hash = "sha256:b986d197242e4e9960a12743a6ec5a9fc8b3d7054612d90489452170785c98a5"},
+    {file = "importlib_metadata-6.6.0-py3-none-any.whl", hash = "sha256:43dd286a2cd8995d5eaef7fee2066340423b818ed3fd70adf0bad5f1fac53fed"},
+    {file = "importlib_metadata-6.6.0.tar.gz", hash = "sha256:92501cdf9cc66ebd3e612f1b4f0c0765dfa42f0fa38ffb319b6bd84dd675d705"},
 ]
 
 [package.dependencies]
@@ -825,6 +825,28 @@ files = [
 ]
 
 [[package]]
+name = "mike"
+version = "1.1.2"
+description = "Manage multiple versions of your MkDocs-powered documentation"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "mike-1.1.2-py3-none-any.whl", hash = "sha256:4c307c28769834d78df10f834f57f810f04ca27d248f80a75f49c6fa2d1527ca"},
+    {file = "mike-1.1.2.tar.gz", hash = "sha256:56c3f1794c2d0b5fdccfa9b9487beb013ca813de2e3ad0744724e9d34d40b77b"},
+]
+
+[package.dependencies]
+jinja2 = "*"
+mkdocs = ">=1.0"
+pyyaml = ">=5.1"
+verspec = "*"
+
+[package.extras]
+dev = ["coverage", "flake8 (>=3.0)", "shtab"]
+test = ["coverage", "flake8 (>=3.0)", "shtab"]
+
+[[package]]
 name = "mkdocs"
 version = "1.4.2"
 description = "Project documentation with Markdown."
@@ -855,14 +877,14 @@ min-versions = ["babel (==2.9.0)", "click (==7.0)", "colorama (==0.4)", "ghp-imp
 
 [[package]]
 name = "mkdocs-material"
-version = "9.1.6"
+version = "9.1.8"
 description = "Documentation that simply works"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "mkdocs_material-9.1.6-py3-none-any.whl", hash = "sha256:f2eb1d40db89da9922944833c1387207408f8937e1c2b46ab86e0c8f170b71e0"},
-    {file = "mkdocs_material-9.1.6.tar.gz", hash = "sha256:2e555152f9771646bfa62dc78a86052876183eff69ce30db03a33e85702b21fc"},
+    {file = "mkdocs_material-9.1.8-py3-none-any.whl", hash = "sha256:ac76e31bf52b2742c08a9d6629d64878f32dda5c949cd371082e25106c9be7dd"},
+    {file = "mkdocs_material-9.1.8.tar.gz", hash = "sha256:616ef98fc143b3ec8c559e2fec85f32103d2093e9c88333964d93105ea2d670b"},
 ]
 
 [package.dependencies]
@@ -1027,19 +1049,19 @@ files = [
 
 [[package]]
 name = "platformdirs"
-version = "3.2.0"
+version = "3.5.0"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "platformdirs-3.2.0-py3-none-any.whl", hash = "sha256:ebe11c0d7a805086e99506aa331612429a72ca7cd52a1f0d277dc4adc20cb10e"},
-    {file = "platformdirs-3.2.0.tar.gz", hash = "sha256:d5b638ca397f25f979350ff789db335903d7ea010ab28903f57b27e1b16c2b08"},
+    {file = "platformdirs-3.5.0-py3-none-any.whl", hash = "sha256:47692bc24c1958e8b0f13dd727307cff1db103fca36399f457da8e05f222fdc4"},
+    {file = "platformdirs-3.5.0.tar.gz", hash = "sha256:7954a68d0ba23558d753f73437c55f89027cf8f5108c19844d4b82e5af396335"},
 ]
 
 [package.extras]
-docs = ["furo (>=2022.12.7)", "proselint (>=0.13)", "sphinx (>=6.1.3)", "sphinx-autodoc-typehints (>=1.22,!=1.23.4)"]
-test = ["appdirs (==1.4.4)", "covdefaults (>=2.3)", "pytest (>=7.2.2)", "pytest-cov (>=4)", "pytest-mock (>=3.10)"]
+docs = ["furo (>=2023.3.27)", "proselint (>=0.13)", "sphinx (>=6.1.3)", "sphinx-autodoc-typehints (>=1.23,!=1.23.4)"]
+test = ["appdirs (==1.4.4)", "covdefaults (>=2.3)", "pytest (>=7.3.1)", "pytest-cov (>=4)", "pytest-mock (>=3.10)"]
 
 [[package]]
 name = "pluggy"
@@ -1492,14 +1514,14 @@ files = [
 
 [[package]]
 name = "requests"
-version = "2.28.2"
+version = "2.29.0"
 description = "Python HTTP for Humans."
 category = "main"
 optional = false
-python-versions = ">=3.7, <4"
+python-versions = ">=3.7"
 files = [
-    {file = "requests-2.28.2-py3-none-any.whl", hash = "sha256:64299f4909223da747622c030b781c0d7811e359c37124b4bd368fb8c6518baa"},
-    {file = "requests-2.28.2.tar.gz", hash = "sha256:98b1b2782e3c6c4904938b84c0eb932721069dfdb9134313beff7c83c2df24bf"},
+    {file = "requests-2.29.0-py3-none-any.whl", hash = "sha256:e8f3c9be120d3333921d213eef078af392fba3933ab7ed2d1cba3b56f2568c3b"},
+    {file = "requests-2.29.0.tar.gz", hash = "sha256:f2e34a75f4749019bb0e3effb66683630e4ffeaf75819fb51bebef1bf5aef059"},
 ]
 
 [package.dependencies]
@@ -1579,14 +1601,14 @@ files = [
 
 [[package]]
 name = "setuptools"
-version = "67.7.1"
+version = "67.7.2"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "setuptools-67.7.1-py3-none-any.whl", hash = "sha256:6f0839fbdb7e3cfef1fc38d7954f5c1c26bf4eebb155a55c9bf8faf997b9fb67"},
-    {file = "setuptools-67.7.1.tar.gz", hash = "sha256:bb16732e8eb928922eabaa022f881ae2b7cdcfaf9993ef1f5e841a96d32b8e0c"},
+    {file = "setuptools-67.7.2-py3-none-any.whl", hash = "sha256:23aaf86b85ca52ceb801d32703f12d77517b2556af839621c641fca11287952b"},
+    {file = "setuptools-67.7.2.tar.gz", hash = "sha256:f104fa03692a2602fa0fec6c6a9e63b6c8a968de13e17c026957dd1f53d80990"},
 ]
 
 [package.extras]
@@ -1608,14 +1630,14 @@ files = [
 
 [[package]]
 name = "termcolor"
-version = "2.2.0"
+version = "2.3.0"
 description = "ANSI color formatting for output in terminal"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "termcolor-2.2.0-py3-none-any.whl", hash = "sha256:91ddd848e7251200eac969846cbae2dacd7d71c2871e92733289e7e3666f48e7"},
-    {file = "termcolor-2.2.0.tar.gz", hash = "sha256:dfc8ac3f350788f23b2947b3e6cfa5a53b630b612e6cd8965a015a776020b99a"},
+    {file = "termcolor-2.3.0-py3-none-any.whl", hash = "sha256:3afb05607b89aed0ffe25202399ee0867ad4d3cb4180d98aaf8eefa6a5f7d475"},
+    {file = "termcolor-2.3.0.tar.gz", hash = "sha256:b5b08f68937f138fe92f6c089b99f1e2da0ae56c52b78bf7075fd95420fd9a5a"},
 ]
 
 [package.extras]
@@ -1675,15 +1697,30 @@ secure = ["certifi", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "ipaddress", "p
 socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 
 [[package]]
+name = "verspec"
+version = "0.1.0"
+description = "Flexible version handling"
+category = "dev"
+optional = false
+python-versions = "*"
+files = [
+    {file = "verspec-0.1.0-py3-none-any.whl", hash = "sha256:741877d5633cc9464c45a469ae2a31e801e6dbbaa85b9675d481cda100f11c31"},
+    {file = "verspec-0.1.0.tar.gz", hash = "sha256:c4504ca697b2056cdb4bfa7121461f5a0e81809255b41c03dda4ba823637c01e"},
+]
+
+[package.extras]
+test = ["coverage", "flake8 (>=3.7)", "mypy", "pretend", "pytest"]
+
+[[package]]
 name = "virtualenv"
-version = "20.22.0"
+version = "20.23.0"
 description = "Virtual Python Environment builder"
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "virtualenv-20.22.0-py3-none-any.whl", hash = "sha256:48fd3b907b5149c5aab7c23d9790bea4cac6bc6b150af8635febc4cfeab1275a"},
-    {file = "virtualenv-20.22.0.tar.gz", hash = "sha256:278753c47aaef1a0f14e6db8a4c5e1e040e90aea654d0fc1dc7e0d8a42616cc3"},
+    {file = "virtualenv-20.23.0-py3-none-any.whl", hash = "sha256:6abec7670e5802a528357fdc75b26b9f57d5d92f29c5462ba0fbe45feacc685e"},
+    {file = "virtualenv-20.23.0.tar.gz", hash = "sha256:a85caa554ced0c0afbd0d638e7e2d7b5f92d23478d05d17a76daeac8f279f924"},
 ]
 
 [package.dependencies]
@@ -1693,7 +1730,7 @@ platformdirs = ">=3.2,<4"
 
 [package.extras]
 docs = ["furo (>=2023.3.27)", "proselint (>=0.13)", "sphinx (>=6.1.3)", "sphinx-argparse (>=0.4)", "sphinxcontrib-towncrier (>=0.2.1a0)", "towncrier (>=22.12)"]
-test = ["covdefaults (>=2.3)", "coverage (>=7.2.3)", "coverage-enable-subprocess (>=1)", "flaky (>=3.7)", "packaging (>=23.1)", "pytest (>=7.3.1)", "pytest-env (>=0.8.1)", "pytest-freezegun (>=0.4.2)", "pytest-mock (>=3.10)", "pytest-randomly (>=3.12)", "pytest-timeout (>=2.1)"]
+test = ["covdefaults (>=2.3)", "coverage (>=7.2.3)", "coverage-enable-subprocess (>=1)", "flaky (>=3.7)", "packaging (>=23.1)", "pytest (>=7.3.1)", "pytest-env (>=0.8.1)", "pytest-freezegun (>=0.4.2)", "pytest-mock (>=3.10)", "pytest-randomly (>=3.12)", "pytest-timeout (>=2.1)", "setuptools (>=67.7.1)", "time-machine (>=2.9)"]
 
 [[package]]
 name = "watchdog"
@@ -1754,4 +1791,4 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "b946e55327778edadddf6509abea0ba4b9e5c3f32b04c7f80f00fd79db740a19"
+content-hash = "3b596001659a7f93a3f7b3182be80c171a6cabfaf05bd91b3470bca8e80a8887"
