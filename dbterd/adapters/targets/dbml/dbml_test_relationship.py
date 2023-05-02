@@ -36,7 +36,14 @@ def parse(manifest, catalog, **kwargs):
             table=table.name,
             columns="\n".join(
                 [
-                    f'  "{x.name}" "{x.data_type}" [note: "{x.description}"]'
+                    str.format(
+                        '"{0}" "{1}"{2}',
+                        x.name,
+                        x.data_type,
+                        str.format(" [note: {1}{0}{1}]", x.description, chr(34))
+                        if x.description
+                        else "",
+                    )
                     for x in table.columns
                 ]
             ),
