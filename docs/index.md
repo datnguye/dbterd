@@ -40,7 +40,7 @@ dbterd run -ad "samples/shopify" -o "target"
 dbterd run -ad "samples/shopify" -o "target" -rt "model" -rt "source"
 
 # your own sample without commiting to repo
-dbterd run -mp "samples/local" -o "target" -rt "model" -rt "source"
+dbterd run -ad "samples/local" -o "target" -rt "model" -rt "source"
 ```
 
 ## Decide to exclude Relationship Tests from ERD generated
@@ -71,8 +71,8 @@ dbt docs generate
 #### 2. Generate DBML
 Copy `manifest.json` into a specific folder, and run
 ```
-dbterd run -mp "/path/to/dbt/target" -o "/path/to/output"
-# dbterd run -mp "./target/v4-dbtresto" -o "./target" -s model.dbt_resto -ns model.dbt_resto.staging
+dbterd run -ad "/path/to/dbt/target" -o "/path/to/output"
+# dbterd run -ad "samples/dbtresto" -s model.dbt_resto -ns model.dbt_resto.staging
 ```
 
 File `./target/output.dbml` will be generated as the result

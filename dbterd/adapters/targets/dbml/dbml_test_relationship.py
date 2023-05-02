@@ -34,7 +34,19 @@ def parse(manifest, catalog, **kwargs):
         dbml += f"//--configured at schema: {table.database}.{table.schema}\n"
         dbml += """Table \"{table}\" {{\n{columns}\n}}\n""".format(
             table=table.name,
-            columns="\n".join([f'  "{x.name}" "{x.data_type}"' for x in table.columns]),
+            columns="\n".join(
+                [
+                    str.format(
+                        '"{0}" "{1}"{2}',
+                        x.name,
+                        x.data_type,
+                        str.format(" [note: {1}{0}{1}]", x.description, chr(34))
+                        if x.description
+                        else "",
+                    )
+                    for x in table.columns
+                ]
+            ),
         )
 
     dbml += "//Refs (based on the DBT Relationship Tests)\n"

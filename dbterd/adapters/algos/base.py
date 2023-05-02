@@ -95,17 +95,28 @@ def get_table(table_name, manifest_node, catalog_node=None):
                 Column(
                     name=str(column).lower(),
                     data_type=str(metadata.type).lower(),
+                    description=metadata.comment or "",  # TODO escape quote
                 )
             )
 
     for column_name, column_metadata in manifest_node.columns.items():
         column_name = column_name.strip('"')
-        if not any(c.name.lower() == column_name.lower() for c in table.columns):
+        find_columns = [
+            c for c in table.columns if c.name.lower() == column_name.lower()
+        ]
+        if not find_columns:
             table.columns.append(
                 Column(
                     name=column_name.lower(),
                     data_type=str(column_metadata.data_type or "unknown").lower(),
+                    description=column_metadata.description or "",  # TODO escape quote
                 )
+            )
+        else:
+            find_columns[0].description = (
+                find_columns[0].description
+                or column_metadata.description
+                or ""  # TODO escape quote
             )
 
     if not table.columns:

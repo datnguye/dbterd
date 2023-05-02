@@ -50,6 +50,7 @@ class ManifestNode:
 class ManifestNodeColumn:
     name: str
     data_type: str = "unknown"
+    description: str = ""
 
 
 @dataclass
@@ -147,6 +148,7 @@ class CatalogNode:
 @dataclass
 class CatalogNodeColumn:
     type: str
+    comment: str = ""
 
 
 @dataclass
