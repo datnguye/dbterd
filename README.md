@@ -19,28 +19,30 @@ dbterd --version
 ## Quick examine with existing samples
 ```bash
 # select all models in dbt_resto
-dbterd run -ad "samples/dbtresto" -o "target"
+dbterd run -ad samples/dbtresto -o target
 # select all models in dbt_resto, Select multiple dbt resources
-dbterd run -ad "samples/dbtresto" -o "target" -rt "model" -rt "source"
+dbterd run -ad samples/dbtresto -o target -rt model -rt source
 # select only models in dbt_resto excluding staging
-dbterd run -ad "samples/dbtresto" -o "target" -s model.dbt_resto -ns model.dbt_resto.staging
-# select only models in schema name "mart" excluding staging
-dbterd run -ad "samples/dbtresto" -o "target" -s schema:mart -ns model.dbt_resto.staging
-# select only models in schema full name "dbt.mart" excluding staging
-dbterd run -ad "samples/dbtresto" -o "target" -s schema:dbt.mart -ns model.dbt_resto.staging
+dbterd run -ad samples/dbtresto -o target -s model.dbt_resto -ns model.dbt_resto.staging
+# select only models in schema name mart excluding staging
+dbterd run -ad samples/dbtresto -o target -s schema:mart -ns model.dbt_resto.staging
+# select only models in schema full name dbt.mart excluding staging
+dbterd run -ad samples/dbtresto -o target -s schema:dbt.mart -ns model.dbt_resto.staging
 
 # other samples
-dbterd run -ad "samples/fivetranlog" -o "target"
-dbterd run -ad "samples/fivetranlog" -o "target" -rt "model" -rt "source"
+dbterd run -ad samples/fivetranlog -o target
+dbterd run -ad samples/fivetranlog -o target -rt model -rt source
 
-dbterd run -ad "samples/facebookad" -o "target"
-dbterd run -ad "samples/facebookad" -o "target" -rt "model" -rt "source"
+dbterd run -ad samples/facebookad -o target
+dbterd run -ad samples/facebookad -o target -rt model -rt source
 
-dbterd run -ad "samples/shopify" -o "target"
-dbterd run -ad "samples/shopify" -o "target" -rt "model" -rt "source"
+dbterd run -ad samples/shopify -o target
+dbterd run -ad samples/shopify -o target -rt model -rt source
+
+dbterd run -ad samples/dbt-constraints -a "test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)"
 
 # your own sample without commiting to repo
-dbterd run -ad "samples/local" -o "target" -rt "model" -rt "source"
+dbterd run -ad samples/local -o target -rt model -rt source
 ```
 
 ## Decide to exclude Relationship Tests from ERD generated

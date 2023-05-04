@@ -1,0 +1,1898 @@
+{
+    "metadata": {
+        "dbt_schema_version": "https://schemas.getdbt.com/dbt/catalog/v1.json",
+        "dbt_version": "1.3.4",
+        "generated_at": "2023-05-04T04:30:26.268203Z",
+        "invocation_id": "0bc83f16-1771-48d6-8f8c-59577c7069f9",
+        "env": {}
+    },
+    "nodes": {
+        "seed.dbt_constraints_integration_tests.customer": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "customer",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "c_custkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "c_custkey",
+                    "comment": null
+                },
+                "c_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "c_name",
+                    "comment": null
+                },
+                "c_address": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "c_address",
+                    "comment": null
+                },
+                "c_nationkey": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "c_nationkey",
+                    "comment": null
+                },
+                "c_phone": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "c_phone",
+                    "comment": null
+                },
+                "c_acctbal": {
+                    "type": "double precision",
+                    "index": 6,
+                    "name": "c_acctbal",
+                    "comment": null
+                },
+                "c_mktsegment": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "c_mktsegment",
+                    "comment": null
+                },
+                "c_comment": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "c_comment",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.dbt_constraints_integration_tests.customer"
+        },
+        "model.dbt_constraints_integration_tests.dim_customers": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "dim_customer",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "c_custkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "c_custkey",
+                    "comment": null
+                },
+                "c_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "c_name",
+                    "comment": null
+                },
+                "c_address": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "c_address",
+                    "comment": null
+                },
+                "c_nationkey": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "c_nationkey",
+                    "comment": null
+                },
+                "c_phone": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "c_phone",
+                    "comment": null
+                },
+                "c_acctbal": {
+                    "type": "double precision",
+                    "index": 6,
+                    "name": "c_acctbal",
+                    "comment": null
+                },
+                "c_mktsegment": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "c_mktsegment",
+                    "comment": null
+                },
+                "c_comment": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "c_comment",
+                    "comment": null
+                },
+                "c_custkey_seq": {
+                    "type": "bigint",
+                    "index": 9,
+                    "name": "c_custkey_seq",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_constraints_integration_tests.dim_customers"
+        },
+        "model.dbt_constraints_integration_tests.dim_customers_view": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "dbt_dat",
+                "name": "dim_customers_view",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "c_custkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "c_custkey",
+                    "comment": null
+                },
+                "c_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "c_name",
+                    "comment": null
+                },
+                "c_address": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "c_address",
+                    "comment": null
+                },
+                "c_nationkey": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "c_nationkey",
+                    "comment": null
+                },
+                "c_phone": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "c_phone",
+                    "comment": null
+                },
+                "c_acctbal": {
+                    "type": "double precision",
+                    "index": 6,
+                    "name": "c_acctbal",
+                    "comment": null
+                },
+                "c_mktsegment": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "c_mktsegment",
+                    "comment": null
+                },
+                "c_comment": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "c_comment",
+                    "comment": null
+                },
+                "c_custkey_seq": {
+                    "type": "bigint",
+                    "index": 9,
+                    "name": "c_custkey_seq",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_constraints_integration_tests.dim_customers_view"
+        },
+        "model.dbt_constraints_integration_tests.dim_duplicate_orders": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "dim_duplicate_orders",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "o_orderkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "o_orderkey",
+                    "comment": null
+                },
+                "o_custkey": {
+                    "type": "integer",
+                    "index": 2,
+                    "name": "o_custkey",
+                    "comment": null
+                },
+                "o_orderstatus": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "o_orderstatus",
+                    "comment": null
+                },
+                "o_totalprice": {
+                    "type": "double precision",
+                    "index": 4,
+                    "name": "o_totalprice",
+                    "comment": null
+                },
+                "o_orderdate": {
+                    "type": "date",
+                    "index": 5,
+                    "name": "o_orderdate",
+                    "comment": null
+                },
+                "o_order_priority": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "o_order_priority",
+                    "comment": null
+                },
+                "o_clerk": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "o_clerk",
+                    "comment": null
+                },
+                "o_shippriority": {
+                    "type": "integer",
+                    "index": 8,
+                    "name": "o_shippriority",
+                    "comment": null
+                },
+                "o_comment": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "o_comment",
+                    "comment": null
+                },
+                "o_orderkey_seq": {
+                    "type": "bigint",
+                    "index": 10,
+                    "name": "o_orderkey_seq",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_constraints_integration_tests.dim_duplicate_orders"
+        },
+        "model.dbt_constraints_integration_tests.dim_missing_orders": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "dim_missing_orders",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "o_orderkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "o_orderkey",
+                    "comment": null
+                },
+                "o_custkey": {
+                    "type": "integer",
+                    "index": 2,
+                    "name": "o_custkey",
+                    "comment": null
+                },
+                "o_orderstatus": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "o_orderstatus",
+                    "comment": null
+                },
+                "o_totalprice": {
+                    "type": "double precision",
+                    "index": 4,
+                    "name": "o_totalprice",
+                    "comment": null
+                },
+                "o_orderdate": {
+                    "type": "date",
+                    "index": 5,
+                    "name": "o_orderdate",
+                    "comment": null
+                },
+                "o_order_priority": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "o_order_priority",
+                    "comment": null
+                },
+                "o_clerk": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "o_clerk",
+                    "comment": null
+                },
+                "o_shippriority": {
+                    "type": "integer",
+                    "index": 8,
+                    "name": "o_shippriority",
+                    "comment": null
+                },
+                "o_comment": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "o_comment",
+                    "comment": null
+                },
+                "o_orderkey_seq": {
+                    "type": "bigint",
+                    "index": 10,
+                    "name": "o_orderkey_seq",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_constraints_integration_tests.dim_missing_orders"
+        },
+        "model.dbt_constraints_integration_tests.dim_orders": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "dim_orders",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "o_orderkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "o_orderkey",
+                    "comment": null
+                },
+                "o_custkey": {
+                    "type": "integer",
+                    "index": 2,
+                    "name": "o_custkey",
+                    "comment": null
+                },
+                "o_orderstatus": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "o_orderstatus",
+                    "comment": null
+                },
+                "o_totalprice": {
+                    "type": "double precision",
+                    "index": 4,
+                    "name": "o_totalprice",
+                    "comment": null
+                },
+                "o_orderdate": {
+                    "type": "date",
+                    "index": 5,
+                    "name": "o_orderdate",
+                    "comment": null
+                },
+                "o_order_priority": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "o_order_priority",
+                    "comment": null
+                },
+                "o_clerk": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "o_clerk",
+                    "comment": null
+                },
+                "o_shippriority": {
+                    "type": "integer",
+                    "index": 8,
+                    "name": "o_shippriority",
+                    "comment": null
+                },
+                "o_comment": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "o_comment",
+                    "comment": null
+                },
+                "o_orderkey_seq": {
+                    "type": "bigint",
+                    "index": 10,
+                    "name": "o_orderkey_seq",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_constraints_integration_tests.dim_orders"
+        },
+        "model.dbt_constraints_integration_tests.dim_orders_null_keys": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "dim_orders_null_keys",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "o_orderkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "o_orderkey",
+                    "comment": null
+                },
+                "o_orderkey_seq": {
+                    "type": "bigint",
+                    "index": 2,
+                    "name": "o_orderkey_seq",
+                    "comment": null
+                },
+                "o_custkey": {
+                    "type": "integer",
+                    "index": 3,
+                    "name": "o_custkey",
+                    "comment": null
+                },
+                "o_orderstatus": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "o_orderstatus",
+                    "comment": null
+                },
+                "o_totalprice": {
+                    "type": "double precision",
+                    "index": 5,
+                    "name": "o_totalprice",
+                    "comment": null
+                },
+                "o_orderdate": {
+                    "type": "date",
+                    "index": 6,
+                    "name": "o_orderdate",
+                    "comment": null
+                },
+                "o_order_priority": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "o_order_priority",
+                    "comment": null
+                },
+                "o_clerk": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "o_clerk",
+                    "comment": null
+                },
+                "o_shippriority": {
+                    "type": "integer",
+                    "index": 9,
+                    "name": "o_shippriority",
+                    "comment": null
+                },
+                "o_comment": {
+                    "type": "text",
+                    "index": 10,
+                    "name": "o_comment",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_constraints_integration_tests.dim_orders_null_keys"
+        },
+        "model.dbt_constraints_integration_tests.dim_part": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "dim_part",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "p_partkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "p_partkey",
+                    "comment": null
+                },
+                "p_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "p_name",
+                    "comment": null
+                },
+                "p_mfgr": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "p_mfgr",
+                    "comment": null
+                },
+                "p_brand": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "p_brand",
+                    "comment": null
+                },
+                "p_type": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "p_type",
+                    "comment": null
+                },
+                "p_size": {
+                    "type": "integer",
+                    "index": 6,
+                    "name": "p_size",
+                    "comment": null
+                },
+                "p_container": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "p_container",
+                    "comment": null
+                },
+                "p_retailprice": {
+                    "type": "double precision",
+                    "index": 8,
+                    "name": "p_retailprice",
+                    "comment": null
+                },
+                "p_comment": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "p_comment",
+                    "comment": null
+                },
+                "p_partkey_seq": {
+                    "type": "bigint",
+                    "index": 10,
+                    "name": "p_partkey_seq",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_constraints_integration_tests.dim_part"
+        },
+        "model.dbt_constraints_integration_tests.dim_part_supplier": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "dim_part_supplier",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "ps_partkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "ps_partkey",
+                    "comment": null
+                },
+                "ps_suppkey": {
+                    "type": "integer",
+                    "index": 2,
+                    "name": "ps_suppkey",
+                    "comment": null
+                },
+                "ps_availqty": {
+                    "type": "integer",
+                    "index": 3,
+                    "name": "ps_availqty",
+                    "comment": null
+                },
+                "ps_supplycost": {
+                    "type": "double precision",
+                    "index": 4,
+                    "name": "ps_supplycost",
+                    "comment": null
+                },
+                "ps_comment": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "ps_comment",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_constraints_integration_tests.dim_part_supplier"
+        },
+        "model.dbt_constraints_integration_tests.dim_part_supplier_missing_con": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "dim_part_supplier_missing_con",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "ps_partkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "ps_partkey",
+                    "comment": null
+                },
+                "ps_suppkey": {
+                    "type": "integer",
+                    "index": 2,
+                    "name": "ps_suppkey",
+                    "comment": null
+                },
+                "ps_availqty": {
+                    "type": "integer",
+                    "index": 3,
+                    "name": "ps_availqty",
+                    "comment": null
+                },
+                "ps_supplycost": {
+                    "type": "double precision",
+                    "index": 4,
+                    "name": "ps_supplycost",
+                    "comment": null
+                },
+                "ps_comment": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "ps_comment",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_constraints_integration_tests.dim_part_supplier_missing_con"
+        },
+        "model.dbt_constraints_integration_tests.fact_order_line": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "fact_order_line",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "l_orderkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "l_orderkey",
+                    "comment": null
+                },
+                "l_partkey": {
+                    "type": "integer",
+                    "index": 2,
+                    "name": "l_partkey",
+                    "comment": null
+                },
+                "l_suppkey": {
+                    "type": "integer",
+                    "index": 3,
+                    "name": "l_suppkey",
+                    "comment": null
+                },
+                "l_linenumber": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "l_linenumber",
+                    "comment": null
+                },
+                "l_quantity": {
+                    "type": "integer",
+                    "index": 5,
+                    "name": "l_quantity",
+                    "comment": null
+                },
+                "l_extendedprice": {
+                    "type": "double precision",
+                    "index": 6,
+                    "name": "l_extendedprice",
+                    "comment": null
+                },
+                "l_discount": {
+                    "type": "double precision",
+                    "index": 7,
+                    "name": "l_discount",
+                    "comment": null
+                },
+                "l_tax": {
+                    "type": "double precision",
+                    "index": 8,
+                    "name": "l_tax",
+                    "comment": null
+                },
+                "l_returnflag": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "l_returnflag",
+                    "comment": null
+                },
+                "l_linestatus": {
+                    "type": "text",
+                    "index": 10,
+                    "name": "l_linestatus",
+                    "comment": null
+                },
+                "l_shipdate": {
+                    "type": "date",
+                    "index": 11,
+                    "name": "l_shipdate",
+                    "comment": null
+                },
+                "l_commitdate": {
+                    "type": "date",
+                    "index": 12,
+                    "name": "l_commitdate",
+                    "comment": null
+                },
+                "l_receiptdate": {
+                    "type": "date",
+                    "index": 13,
+                    "name": "l_receiptdate",
+                    "comment": null
+                },
+                "l_shipinstruct": {
+                    "type": "text",
+                    "index": 14,
+                    "name": "l_shipinstruct",
+                    "comment": null
+                },
+                "l_shipmode": {
+                    "type": "text",
+                    "index": 15,
+                    "name": "l_shipmode",
+                    "comment": null
+                },
+                "l_comment": {
+                    "type": "text",
+                    "index": 16,
+                    "name": "l_comment",
+                    "comment": null
+                },
+                "o_orderdate_key": {
+                    "type": "integer",
+                    "index": 17,
+                    "name": "o_orderdate_key",
+                    "comment": null
+                },
+                "integration_id": {
+                    "type": "text",
+                    "index": 18,
+                    "name": "integration_id",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_constraints_integration_tests.fact_order_line"
+        },
+        "model.dbt_constraints_integration_tests.fact_order_line_longcol": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "fact_order_line_longcol",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "l_____________________orderkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "l_____________________orderkey",
+                    "comment": null
+                },
+                "l___________________linenumber": {
+                    "type": "integer",
+                    "index": 2,
+                    "name": "l___________________linenumber",
+                    "comment": null
+                },
+                "l______________________partkey": {
+                    "type": "integer",
+                    "index": 3,
+                    "name": "l______________________partkey",
+                    "comment": null
+                },
+                "l______________________suppkey": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "l______________________suppkey",
+                    "comment": null
+                },
+                "l_______________integration_id": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "l_______________integration_id",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_constraints_integration_tests.fact_order_line_longcol"
+        },
+        "model.dbt_constraints_integration_tests.fact_order_line_missing_orders": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "fact_order_line_missing_orders",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "l_orderkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "l_orderkey",
+                    "comment": null
+                },
+                "l_partkey": {
+                    "type": "integer",
+                    "index": 2,
+                    "name": "l_partkey",
+                    "comment": null
+                },
+                "l_suppkey": {
+                    "type": "integer",
+                    "index": 3,
+                    "name": "l_suppkey",
+                    "comment": null
+                },
+                "l_linenumber": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "l_linenumber",
+                    "comment": null
+                },
+                "l_quantity": {
+                    "type": "integer",
+                    "index": 5,
+                    "name": "l_quantity",
+                    "comment": null
+                },
+                "l_extendedprice": {
+                    "type": "double precision",
+                    "index": 6,
+                    "name": "l_extendedprice",
+                    "comment": null
+                },
+                "l_discount": {
+                    "type": "double precision",
+                    "index": 7,
+                    "name": "l_discount",
+                    "comment": null
+                },
+                "l_tax": {
+                    "type": "double precision",
+                    "index": 8,
+                    "name": "l_tax",
+                    "comment": null
+                },
+                "l_returnflag": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "l_returnflag",
+                    "comment": null
+                },
+                "l_linestatus": {
+                    "type": "text",
+                    "index": 10,
+                    "name": "l_linestatus",
+                    "comment": null
+                },
+                "l_shipdate": {
+                    "type": "date",
+                    "index": 11,
+                    "name": "l_shipdate",
+                    "comment": null
+                },
+                "l_commitdate": {
+                    "type": "date",
+                    "index": 12,
+                    "name": "l_commitdate",
+                    "comment": null
+                },
+                "l_receiptdate": {
+                    "type": "date",
+                    "index": 13,
+                    "name": "l_receiptdate",
+                    "comment": null
+                },
+                "l_shipinstruct": {
+                    "type": "text",
+                    "index": 14,
+                    "name": "l_shipinstruct",
+                    "comment": null
+                },
+                "l_shipmode": {
+                    "type": "text",
+                    "index": 15,
+                    "name": "l_shipmode",
+                    "comment": null
+                },
+                "l_comment": {
+                    "type": "text",
+                    "index": 16,
+                    "name": "l_comment",
+                    "comment": null
+                },
+                "integration_id": {
+                    "type": "text",
+                    "index": 17,
+                    "name": "integration_id",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.dbt_constraints_integration_tests.fact_order_line_missing_orders"
+        },
+        "seed.dbt_constraints_integration_tests.lineitem": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "lineitem",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "l_orderkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "l_orderkey",
+                    "comment": null
+                },
+                "l_partkey": {
+                    "type": "integer",
+                    "index": 2,
+                    "name": "l_partkey",
+                    "comment": null
+                },
+                "l_suppkey": {
+                    "type": "integer",
+                    "index": 3,
+                    "name": "l_suppkey",
+                    "comment": null
+                },
+                "l_linenumber": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "l_linenumber",
+                    "comment": null
+                },
+                "l_quantity": {
+                    "type": "integer",
+                    "index": 5,
+                    "name": "l_quantity",
+                    "comment": null
+                },
+                "l_extendedprice": {
+                    "type": "double precision",
+                    "index": 6,
+                    "name": "l_extendedprice",
+                    "comment": null
+                },
+                "l_discount": {
+                    "type": "double precision",
+                    "index": 7,
+                    "name": "l_discount",
+                    "comment": null
+                },
+                "l_tax": {
+                    "type": "double precision",
+                    "index": 8,
+                    "name": "l_tax",
+                    "comment": null
+                },
+                "l_returnflag": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "l_returnflag",
+                    "comment": null
+                },
+                "l_linestatus": {
+                    "type": "text",
+                    "index": 10,
+                    "name": "l_linestatus",
+                    "comment": null
+                },
+                "l_shipdate": {
+                    "type": "date",
+                    "index": 11,
+                    "name": "l_shipdate",
+                    "comment": null
+                },
+                "l_commitdate": {
+                    "type": "date",
+                    "index": 12,
+                    "name": "l_commitdate",
+                    "comment": null
+                },
+                "l_receiptdate": {
+                    "type": "date",
+                    "index": 13,
+                    "name": "l_receiptdate",
+                    "comment": null
+                },
+                "l_shipinstruct": {
+                    "type": "text",
+                    "index": 14,
+                    "name": "l_shipinstruct",
+                    "comment": null
+                },
+                "l_shipmode": {
+                    "type": "text",
+                    "index": 15,
+                    "name": "l_shipmode",
+                    "comment": null
+                },
+                "l_comment": {
+                    "type": "text",
+                    "index": 16,
+                    "name": "l_comment",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.dbt_constraints_integration_tests.lineitem"
+        },
+        "seed.dbt_constraints_integration_tests.orders": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "orders",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "o_orderkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "o_orderkey",
+                    "comment": null
+                },
+                "o_custkey": {
+                    "type": "integer",
+                    "index": 2,
+                    "name": "o_custkey",
+                    "comment": null
+                },
+                "o_orderstatus": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "o_orderstatus",
+                    "comment": null
+                },
+                "o_totalprice": {
+                    "type": "double precision",
+                    "index": 4,
+                    "name": "o_totalprice",
+                    "comment": null
+                },
+                "o_orderdate": {
+                    "type": "date",
+                    "index": 5,
+                    "name": "o_orderdate",
+                    "comment": null
+                },
+                "o_order_priority": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "o_order_priority",
+                    "comment": null
+                },
+                "o_clerk": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "o_clerk",
+                    "comment": null
+                },
+                "o_shippriority": {
+                    "type": "integer",
+                    "index": 8,
+                    "name": "o_shippriority",
+                    "comment": null
+                },
+                "o_comment": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "o_comment",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.dbt_constraints_integration_tests.orders"
+        },
+        "seed.dbt_constraints_integration_tests.part": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "part",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "p_partkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "p_partkey",
+                    "comment": null
+                },
+                "p_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "p_name",
+                    "comment": null
+                },
+                "p_mfgr": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "p_mfgr",
+                    "comment": null
+                },
+                "p_brand": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "p_brand",
+                    "comment": null
+                },
+                "p_type": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "p_type",
+                    "comment": null
+                },
+                "p_size": {
+                    "type": "integer",
+                    "index": 6,
+                    "name": "p_size",
+                    "comment": null
+                },
+                "p_container": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "p_container",
+                    "comment": null
+                },
+                "p_retailprice": {
+                    "type": "double precision",
+                    "index": 8,
+                    "name": "p_retailprice",
+                    "comment": null
+                },
+                "p_comment": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "p_comment",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.dbt_constraints_integration_tests.part"
+        },
+        "seed.dbt_constraints_integration_tests.partsupp": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "partsupp",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "ps_partkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "ps_partkey",
+                    "comment": null
+                },
+                "ps_suppkey": {
+                    "type": "integer",
+                    "index": 2,
+                    "name": "ps_suppkey",
+                    "comment": null
+                },
+                "ps_availqty": {
+                    "type": "integer",
+                    "index": 3,
+                    "name": "ps_availqty",
+                    "comment": null
+                },
+                "ps_supplycost": {
+                    "type": "double precision",
+                    "index": 4,
+                    "name": "ps_supplycost",
+                    "comment": null
+                },
+                "ps_comment": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "ps_comment",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.dbt_constraints_integration_tests.partsupp"
+        },
+        "seed.dbt_constraints_integration_tests.supplier": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "supplier",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "s_suppkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "s_suppkey",
+                    "comment": null
+                },
+                "s_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "s_name",
+                    "comment": null
+                },
+                "s_address": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "s_address",
+                    "comment": null
+                },
+                "s_nationkey": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "s_nationkey",
+                    "comment": null
+                },
+                "s_phone": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "s_phone",
+                    "comment": null
+                },
+                "s_acctbal": {
+                    "type": "double precision",
+                    "index": 6,
+                    "name": "s_acctbal",
+                    "comment": null
+                },
+                "s_comment": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "s_comment",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.dbt_constraints_integration_tests.supplier"
+        }
+    },
+    "sources": {
+        "source.dbt_constraints_integration_tests.tpc_h.source_customer": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "source_customer",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "c_custkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "c_custkey",
+                    "comment": null
+                },
+                "c_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "c_name",
+                    "comment": null
+                },
+                "c_address": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "c_address",
+                    "comment": null
+                },
+                "c_nationkey": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "c_nationkey",
+                    "comment": null
+                },
+                "c_phone": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "c_phone",
+                    "comment": null
+                },
+                "c_acctbal": {
+                    "type": "double precision",
+                    "index": 6,
+                    "name": "c_acctbal",
+                    "comment": null
+                },
+                "c_mktsegment": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "c_mktsegment",
+                    "comment": null
+                },
+                "c_comment": {
+                    "type": "text",
+                    "index": 8,
+                    "name": "c_comment",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.dbt_constraints_integration_tests.tpc_h.source_customer"
+        },
+        "source.dbt_constraints_integration_tests.tpc_h.source_lineitem": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "source_lineitem",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "l_orderkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "l_orderkey",
+                    "comment": null
+                },
+                "l_partkey": {
+                    "type": "integer",
+                    "index": 2,
+                    "name": "l_partkey",
+                    "comment": null
+                },
+                "l_suppkey": {
+                    "type": "integer",
+                    "index": 3,
+                    "name": "l_suppkey",
+                    "comment": null
+                },
+                "l_linenumber": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "l_linenumber",
+                    "comment": null
+                },
+                "l_quantity": {
+                    "type": "integer",
+                    "index": 5,
+                    "name": "l_quantity",
+                    "comment": null
+                },
+                "l_extendedprice": {
+                    "type": "double precision",
+                    "index": 6,
+                    "name": "l_extendedprice",
+                    "comment": null
+                },
+                "l_discount": {
+                    "type": "double precision",
+                    "index": 7,
+                    "name": "l_discount",
+                    "comment": null
+                },
+                "l_tax": {
+                    "type": "double precision",
+                    "index": 8,
+                    "name": "l_tax",
+                    "comment": null
+                },
+                "l_returnflag": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "l_returnflag",
+                    "comment": null
+                },
+                "l_linestatus": {
+                    "type": "text",
+                    "index": 10,
+                    "name": "l_linestatus",
+                    "comment": null
+                },
+                "l_shipdate": {
+                    "type": "date",
+                    "index": 11,
+                    "name": "l_shipdate",
+                    "comment": null
+                },
+                "l_commitdate": {
+                    "type": "date",
+                    "index": 12,
+                    "name": "l_commitdate",
+                    "comment": null
+                },
+                "l_receiptdate": {
+                    "type": "date",
+                    "index": 13,
+                    "name": "l_receiptdate",
+                    "comment": null
+                },
+                "l_shipinstruct": {
+                    "type": "text",
+                    "index": 14,
+                    "name": "l_shipinstruct",
+                    "comment": null
+                },
+                "l_shipmode": {
+                    "type": "text",
+                    "index": 15,
+                    "name": "l_shipmode",
+                    "comment": null
+                },
+                "l_comment": {
+                    "type": "text",
+                    "index": 16,
+                    "name": "l_comment",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.dbt_constraints_integration_tests.tpc_h.source_lineitem"
+        },
+        "source.dbt_constraints_integration_tests.tpc_h.source_orders": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "source_orders",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "o_orderkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "o_orderkey",
+                    "comment": null
+                },
+                "o_custkey": {
+                    "type": "integer",
+                    "index": 2,
+                    "name": "o_custkey",
+                    "comment": null
+                },
+                "o_orderstatus": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "o_orderstatus",
+                    "comment": null
+                },
+                "o_totalprice": {
+                    "type": "double precision",
+                    "index": 4,
+                    "name": "o_totalprice",
+                    "comment": null
+                },
+                "o_orderdate": {
+                    "type": "date",
+                    "index": 5,
+                    "name": "o_orderdate",
+                    "comment": null
+                },
+                "o_order_priority": {
+                    "type": "text",
+                    "index": 6,
+                    "name": "o_order_priority",
+                    "comment": null
+                },
+                "o_clerk": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "o_clerk",
+                    "comment": null
+                },
+                "o_shippriority": {
+                    "type": "integer",
+                    "index": 8,
+                    "name": "o_shippriority",
+                    "comment": null
+                },
+                "o_comment": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "o_comment",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.dbt_constraints_integration_tests.tpc_h.source_orders"
+        },
+        "source.dbt_constraints_integration_tests.tpc_h.source_part": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "source_part",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "p_partkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "p_partkey",
+                    "comment": null
+                },
+                "p_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "p_name",
+                    "comment": null
+                },
+                "p_mfgr": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "p_mfgr",
+                    "comment": null
+                },
+                "p_brand": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "p_brand",
+                    "comment": null
+                },
+                "p_type": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "p_type",
+                    "comment": null
+                },
+                "p_size": {
+                    "type": "integer",
+                    "index": 6,
+                    "name": "p_size",
+                    "comment": null
+                },
+                "p_container": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "p_container",
+                    "comment": null
+                },
+                "p_retailprice": {
+                    "type": "double precision",
+                    "index": 8,
+                    "name": "p_retailprice",
+                    "comment": null
+                },
+                "p_comment": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "p_comment",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.dbt_constraints_integration_tests.tpc_h.source_part"
+        },
+        "source.dbt_constraints_integration_tests.tpc_h.source_partsupp": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "source_partsupp",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "ps_partkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "ps_partkey",
+                    "comment": null
+                },
+                "ps_suppkey": {
+                    "type": "integer",
+                    "index": 2,
+                    "name": "ps_suppkey",
+                    "comment": null
+                },
+                "ps_availqty": {
+                    "type": "integer",
+                    "index": 3,
+                    "name": "ps_availqty",
+                    "comment": null
+                },
+                "ps_supplycost": {
+                    "type": "double precision",
+                    "index": 4,
+                    "name": "ps_supplycost",
+                    "comment": null
+                },
+                "ps_comment": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "ps_comment",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.dbt_constraints_integration_tests.tpc_h.source_partsupp"
+        },
+        "source.dbt_constraints_integration_tests.tpc_h.source_supplier": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "dbt_dat",
+                "name": "source_supplier",
+                "database": "dbt_constraints",
+                "comment": null,
+                "owner": "demo_user"
+            },
+            "columns": {
+                "s_suppkey": {
+                    "type": "integer",
+                    "index": 1,
+                    "name": "s_suppkey",
+                    "comment": null
+                },
+                "s_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "s_name",
+                    "comment": null
+                },
+                "s_address": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "s_address",
+                    "comment": null
+                },
+                "s_nationkey": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "s_nationkey",
+                    "comment": null
+                },
+                "s_phone": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "s_phone",
+                    "comment": null
+                },
+                "s_acctbal": {
+                    "type": "double precision",
+                    "index": 6,
+                    "name": "s_acctbal",
+                    "comment": null
+                },
+                "s_comment": {
+                    "type": "text",
+                    "index": 7,
+                    "name": "s_comment",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.dbt_constraints_integration_tests.tpc_h.source_supplier"
+        }
+    },
+    "errors": null
+}
