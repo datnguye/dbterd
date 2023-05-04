@@ -1,5 +1,6 @@
 # dbterd
-CLI to generate Diagram-as-a-code file ([DBML](https://dbdiagram.io/d), [Mermaid](https://mermaid-js.github.io/mermaid-live-editor/)) from dbt artifact files (required: `manifest.json`, `catalog.json`)
+
+CLI to generate Diagram-as-a-code file ([DBML](https://dbdiagram.io/d), [Mermaid](https://mermaid-js.github.io/mermaid-live-editor/), [PlantUML](https://plantuml.com/ie-diagram)) from dbt artifact files (required: `manifest.json`, `catalog.json`)
 
 [![PyPI version](https://badge.fury.io/py/dbterd.svg)](https://pypi.org/project/dbterd/)
 ![python-cli](https://img.shields.io/badge/CLI-Python-FFCE3E?labelColor=14354C&logo=python&logoColor=white)
@@ -14,11 +15,13 @@ CLI to generate Diagram-as-a-code file ([DBML](https://dbdiagram.io/d), [Mermaid
 </div>
 
 Verify installed version:
-```
+
+```bash
 dbterd --version
 ```
 
 ## Quick examine with existing samples
+
 ```bash
 # select all models in dbt_resto
 dbterd run -ad samples/dbtresto -o target
@@ -49,12 +52,14 @@ dbterd run -ad samples/local -o target -rt model -rt source
 ```
 
 ## Quick DEMO
+
 Check [Quick Demo](https://dbterd.datnguyen.de/latest/nav/guide/generate-dbml.html) out! And, following is the sample result using `dbdocs`:
 
 ![screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png](https://raw.githubusercontent.com/datnguye/dbterd/main/assets/images/screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png)
 
 
 ## Contributing ✨
+
 If you've ever wanted to contribute to this tool, and a great cause, now is your chance!
 
 See the contributing docs [CONTRIBUTING](https://dbterd.datnguyen.de/latest/nav/development/contributing-guide.html) for more information.
