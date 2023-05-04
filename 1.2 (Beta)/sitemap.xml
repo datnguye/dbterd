@@ -36,6 +36,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://datnguye.github.io/dbterd/1.2 (Beta)/nav/guide/generate-plantuml.html</loc>
+         <lastmod>2023-05-04</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://datnguye.github.io/dbterd/1.2 (Beta)/nav/metadata/ignore_in_erd.html</loc>
          <lastmod>2023-05-04</lastmod>
          <changefreq>daily</changefreq>
