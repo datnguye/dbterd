@@ -2,21 +2,22 @@
 
 Run `dbterd --help` or `dbterd -h` to see the basic guideline for CLI Reference
 
-=== "Terminal"
+<div id="termynal" data-termynal data-termynal class="use-termynal" data-ty-typeDelay="40" data-ty-lineDelay="700">
+    <span data-ty="input">dbterd -h</span>
+    <span data-ty="progress"></span>
+    <span data-ty>Usage: dbterd [OPTIONS] COMMAND [ARGS]...
 
-    ```
-    Usage: dbterd [OPTIONS] COMMAND [ARGS]...
-
-    Tools for producing diagram-as-code
-
-    Options:
-    --version   Show the version and exit.
-    -h, --help  Show this message and exit.
-
-    Commands:
-    debug  Inspect the hidden magics
-    run    Run the convert
-    ```
+Tools for producing diagram-as-code<br />
+<br />
+Options:<br />
+--version   Show the version and exit.<br />
+-h, --help  Show this message and exit.<br />
+<br />
+Commands:<br />
+debug  Inspect the hidden magics<br />
+run    Run the convert<br />
+    </span>
+</div>
 
 
 ## run
@@ -188,12 +189,14 @@ In the advanced use case, the test name can be configurable by following syntax:
 ```
 {algorithm_name}:(name:{contains_test_name}|c_from:{referencing_column_name}|c_to:{referenced_column_name})
 ```
+
 In the above:
-- `algorithm_name`: `test_relationship` (only supported value now)
-- `contains_test_name`: Configure the test name (detected with `contains` logic). Default to `relationship`
-- `c_from`: Configure the test metadata attribute (1) for the foreign key column name(s). If (1)'s value is multiple columns, it will concat them all with `_and` wording
-    > NOTE: It always looking at the `column_name` attribute firstly
-- `c_to`: Configure the test metadata attribute (2) for the referenced column name(s). If (2)'s value is multiple columns, it will concat them all with `_and` wording. Default to `field`
+
+  - `algorithm_name`: `test_relationship` (only supported value now)
+  - `contains_test_name`: Configure the test name (detected with `contains` logic). Default to `relationship`
+  - `c_from`: Configure the test metadata attribute (1) for the foreign key column name(s). If (1)'s value is multiple columns, it will concat them all   with `_and` wording
+      > NOTE: It always looking at the `column_name` attribute firstly
+  - `c_to`: Configure the test metadata attribute (2) for the referenced column name(s). If (2)'s value is multiple columns, it will concat them all with `_and` wording. Default to `field`
 
 
 **Examples:**

@@ -121,6 +121,7 @@ extra_css:
 extra_javascript:
   - assets/js/feedback.js
   - assets/js/termynal.js
+  - assets/js/custom.js
 
 markdown_extensions:
   - abbr
