@@ -19,8 +19,8 @@ run    Run the convert<br />
     </span>
 </div>
 
-
 ## run
+
 Command to generate diagram-as-a-code file
 
 **Examples:**
@@ -121,6 +121,7 @@ Rules:
     ```
 
 #### `AND` and `OR` logic
+
 - `AND` logic is applied to a single selection splitted by comma (,)
 - `OR` logic is applied to 2+ selection
 
@@ -138,12 +139,10 @@ Rules:
     dbterd run -s schema:abc -s wildcard:*xyz.*
     ```
 
-
 ### --exclude (-ns)
 
 Exclusion criteria. Rules are the same as Selection Criteria.
 > Do not exclude any dbt models if not specified, supports mulitple options
-
 
 **Examples:**
 === "CLI"
@@ -166,7 +165,7 @@ Supports:
 
 - [`dbml`](https://www.dbml.org/home/)
 - [`mermaid`](https://mermaid.js.org/syntax/entityRelationshipDiagram.html)
-- [`planuml`](https://plantuml.com/ie-diagram) (comming soon)
+- [`plantuml`](https://plantuml.com/ie-diagram)
 
 **Examples:**
 === "CLI"
@@ -186,18 +185,16 @@ Specified algorithm in the way to detect diagram connectors
 > Default to `test_relationship`
 
 In the advanced use case, the test name can be configurable by following syntax:
-```
-{algorithm_name}:(name:{contains_test_name}|c_from:{referencing_column_name}|c_to:{referenced_column_name})
-```
+
+`{algorithm_name}:(name:{contains_test_name}|c_from:{referencing_column_name}|c_to:{referenced_column_name})`
 
 In the above:
 
-  - `algorithm_name`: `test_relationship` (only supported value now)
-  - `contains_test_name`: Configure the test name (detected with `contains` logic). Default to `relationship`
-  - `c_from`: Configure the test metadata attribute (1) for the foreign key column name(s). If (1)'s value is multiple columns, it will concat them all   with `_and` wording
+- `algorithm_name`: `test_relationship` (only supported value now)
+- `contains_test_name`: Configure the test name (detected with `contains` logic). Default to `relationship`
+- `c_from`: Configure the test metadata attribute (1) for the foreign key column name(s). If (1)'s value is multiple columns, it will concat them all   with `_and` wording
       > NOTE: It always looking at the `column_name` attribute firstly
-  - `c_to`: Configure the test metadata attribute (2) for the referenced column name(s). If (2)'s value is multiple columns, it will concat them all with `_and` wording. Default to `field`
-
+- `c_to`: Configure the test metadata attribute (2) for the referenced column name(s). If (2)'s value is multiple columns, it will concat them all with `_and` wording. Default to `field`
 
 **Examples:**
 === "CLI"
@@ -249,7 +246,6 @@ Specified dbt resource type(seed, model, source, snapshot).
     ```bash
     dbterd run --resource-type model
     ```
-
 
 ## debug
 
