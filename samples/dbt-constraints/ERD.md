@@ -1,3 +1,5 @@
+# Sample Mermaid ERD
+
 ```mermaid
 ---
 title: Sample ERD
