@@ -95,7 +95,7 @@ def get_table(table_name, manifest_node, catalog_node=None):
                 Column(
                     name=str(column).lower(),
                     data_type=str(metadata.type).lower(),
-                    description=metadata.comment or "",  # TODO escape quote
+                    description=metadata.comment or "",
                 )
             )
 
@@ -109,14 +109,12 @@ def get_table(table_name, manifest_node, catalog_node=None):
                 Column(
                     name=column_name.lower(),
                     data_type=str(column_metadata.data_type or "unknown").lower(),
-                    description=column_metadata.description or "",  # TODO escape quote
+                    description=column_metadata.description or "",
                 )
             )
         else:
             find_columns[0].description = (
-                find_columns[0].description
-                or column_metadata.description
-                or ""  # TODO escape quote
+                find_columns[0].description or column_metadata.description or ""
             )
 
     if not table.columns:

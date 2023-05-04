@@ -1,6 +1,7 @@
 from dbterd.adapters.algos import base
 from dbterd.adapters.algos.filter import is_selected_table
 from dbterd.adapters.algos.meta import Ref
+from dbterd.constants import DEFAULT_ALGO_RULE, TEST_META_IGNORE_IN_ERD
 
 
 def parse(manifest, catalog, **kwargs):
@@ -29,7 +30,7 @@ def parse(manifest, catalog, **kwargs):
     ]
 
     # Parse Ref
-    relationships = get_relationships(manifest=manifest)
+    relationships = get_relationships(manifest=manifest, **kwargs)
     table_names = [x.name for x in tables]
     relationships = [
         x
@@ -45,33 +46,58 @@ def parse(manifest, catalog, **kwargs):
     return (tables, relationships)
 
 
-def get_relationships(manifest):
+def get_relationships(manifest, **kwargs):
     """Extract relationships from dbt artifacts based on test relationship
 
     Args:
         manifest (dict): Manifest json
+        kwargs.algo (str): |
+            Algorithm name and optional rules.
+            Smaples:
+            - test_relationship
+            - test_relationship:(name:relationship|c_from:column_name|c_to:field)
+            - test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)
 
     Returns:
         List[Ref]: List of parsed relationship
     """
+    algo_parts = (kwargs.get("algo") or "").replace(" ", "").split(":", 1)
+    rules, _ = (
+        algo_parts[1] if len(algo_parts) > 1 else DEFAULT_ALGO_RULE,
+        algo_parts[0],
+    )
+    rules = rules[1:-1]  # remove brackets
+    rules = dict(arg.split(":") for arg in rules.split("|"))
+
     refs = [
         Ref(
             name=x,
             table_map=manifest.parent_map[x],
             column_map=[
                 str(
-                    manifest.nodes[x].test_metadata.kwargs.get("field", "unknown")
+                    manifest.nodes[x].test_metadata.kwargs.get(rules.get("c_to"))
+                    or "_and_".join(
+                        manifest.nodes[x].test_metadata.kwargs.get(
+                            f'{rules.get("c_to")}s', "unknown"
+                        )
+                    )
                 ).lower(),
                 str(
-                    manifest.nodes[x].test_metadata.kwargs.get("column_name", "unknown")
+                    manifest.nodes[x].test_metadata.kwargs.get("column_name")
+                    or manifest.nodes[x].test_metadata.kwargs.get(rules.get("c_from"))
+                    or "_and_".join(
+                        manifest.nodes[x].test_metadata.kwargs.get(
+                            f'{rules.get("c_from")}s', "unknown"
+                        )
+                    )
                 ).lower(),
             ],
         )
         for x in manifest.nodes
         if (
             x.startswith("test")
-            and "relationship" in x.lower()
-            and manifest.nodes[x].meta.get("ignore_in_erd", "0") == "0"
+            and rules.get("name").lower() in x.lower()
+            and manifest.nodes[x].meta.get(TEST_META_IGNORE_IN_ERD, "0") == "0"
         )
     ]
 

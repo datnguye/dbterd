@@ -14,10 +14,13 @@ nav:
     - index.md
     - User Guide:
       - CLI Reference: nav/guide/cli-references.md
-      - Generate markdown with mermaid ERD inclusive: nav/guide/generate-markdown-mermaid-erd.md
+      - Generate DBML: nav/guide/generate-dbml.md
+      - Generate Mermaid in Markdown: nav/guide/generate-markdown-mermaid-erd.md
     - Development:
-      - nav/development/contributing-guide.md
+      - Contribution Guideline: nav/development/contributing-guide.md
       - Change Log: nav/development/CHANGELOG.md
+    - Metadata:
+      - Ignore Tests: nav/metadata/ignore_in_erd.md
     - About:
       - license.md
 
@@ -112,8 +115,13 @@ extra:
             Thanks for your feedback! Help us improve this page by
             using our <a href="https://github.com/datnguye/dbterd/issues/new/?title=[Feedback]+{title}+-+{url}" target=_blank>feedback form</a>.
 
+extra_css:
+  - assets/css/termynal.css
+
 extra_javascript:
   - assets/js/feedback.js
+  - assets/js/termynal.js
+  - assets/js/custom.js
 
 markdown_extensions:
   - abbr

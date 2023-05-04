@@ -61,6 +61,7 @@ class DummyManifestRel:
             "test.dbt_resto.relationships_table2": ["table2", "table1"],
             "test.dbt_resto.relationships_table3": ["tabley", "tablex"],
             "test.dbt_resto.relationships_tablex": ["y", "x"],
+            "test.dbt_resto.foreign_key_table1": ["table2", "table1"],
         }
     )
     nodes = {
@@ -90,6 +91,13 @@ class DummyManifestRel:
                 kwargs={"column_name": "x", "field": "y"}
             ),
             meta={"ignore_in_erd": 1},
+            columns={},
+        ),
+        "test.dbt_resto.foreign_key_table1": ManifestNode(
+            test_metadata=ManifestNodeTestMetaData(
+                kwargs={"column_name": "f1", "pk_column_name": "f2"}
+            ),
+            meta={},
             columns={},
         ),
     }
@@ -245,10 +253,11 @@ class TestAlgoTestRelationship:
         ).replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
 
     @pytest.mark.parametrize(
-        "manifest, expected",
+        "manifest, algorithm, expected",
         [
             (
                 DummyManifestRel(),
+                None,
                 [
                     Ref(
                         name="test.dbt_resto.relationships_table1",
@@ -262,8 +271,19 @@ class TestAlgoTestRelationship:
                     ),
                 ],
             ),
-            (MagicMock(return_value={"parent_map": [], "nodes": {}}), []),
+            (
+                DummyManifestRel(),
+                "test_relationship:(name:foreign_key|c_from:column_name|c_to:pk_column_name)",
+                [
+                    Ref(
+                        name="test.dbt_resto.foreign_key_table1",
+                        table_map=["table2", "table1"],
+                        column_map=["f2", "f1"],
+                    ),
+                ],
+            ),
+            (MagicMock(return_value={"parent_map": [], "nodes": {}}), None, []),
         ],
     )
-    def test_get_relationships(self, manifest, expected):
-        assert algo.get_relationships(manifest) == expected
+    def test_get_relationships(self, manifest, algorithm, expected):
+        assert algo.get_relationships(manifest=manifest, algo=algorithm) == expected

@@ -58,7 +58,7 @@ class Executor(abc.ABC):
         run_operation_dispatcher = getattr(target, "run_operation_dispatcher")
         operation_default = getattr(target, "run_operation_default")
         operation = run_operation_dispatcher.get(
-            f"{kwargs['target']}_{kwargs['algo']}",
+            f"{kwargs['target']}_{kwargs['algo'].split(':')[0]}",
             operation_default,
         )
         manifest = self.__read_manifest(
