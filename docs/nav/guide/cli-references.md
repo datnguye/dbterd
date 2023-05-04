@@ -20,12 +20,7 @@ Run `dbterd --help` or `dbterd -h` to see the basic guideline for CLI Reference
 
 
 ## run
-Generate diagram-as-a-code file
-
-Supports:
-
-- [DBML](https://www.dbml.org/home/)
-- [Mermaid](https://mermaid.js.org/syntax/entityRelationshipDiagram.html)
+Command to generate diagram-as-a-code file
 
 **Examples:**
 === "CLI (within dbt project)"
@@ -166,6 +161,12 @@ Exclusion criteria. Rules are the same as Selection Criteria.
 Target to the diagram-as-code platform
 > Default to `dbml`
 
+Supports:
+
+- [`dbml`](https://www.dbml.org/home/)
+- [`mermaid`](https://mermaid.js.org/syntax/entityRelationshipDiagram.html)
+- [`planuml`](https://plantuml.com/ie-diagram) (comming soon)
+
 **Examples:**
 === "CLI"
 
@@ -181,7 +182,19 @@ Target to the diagram-as-code platform
 ### --algo (-a)
 
 Specified algorithm in the way to detect diagram connectors
-> Default to `test_relationship`, currently only supported option
+> Default to `test_relationship`
+
+In the advanced use case, the test name can be configurable by following syntax:
+```
+{algorithm_name}:(name:{contains_test_name}|c_from:{referencing_column_name}|c_to:{referenced_column_name})
+```
+In the above:
+- `algorithm_name`: `test_relationship` (only supported value now)
+- `contains_test_name`: Configure the test name (detected with `contains` logic). Default to `relationship`
+- `c_from`: Configure the test metadata attribute (1) for the foreign key column name(s). If (1)'s value is multiple columns, it will concat them all with `_and` wording
+    > NOTE: It always looking at the `column_name` attribute firstly
+- `c_to`: Configure the test metadata attribute (2) for the referenced column name(s). If (2)'s value is multiple columns, it will concat them all with `_and` wording. Default to `field`
+
 
 **Examples:**
 === "CLI"
@@ -193,6 +206,11 @@ Specified algorithm in the way to detect diagram connectors
 
     ```bash
     dbterd run --algo test_relationship
+    ```
+=== "Use `foreign_key` test"
+
+    ```bash
+    dbterd run --algo "test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)"
     ```
 
 ### --manifest-version (-mv)
@@ -228,13 +246,6 @@ Specified dbt resource type(seed, model, source, snapshot).
     ```bash
     dbterd run --resource-type model
     ```
-
-### ⚠ DEPRECATED WARNING
-
-#### --manifest-path (-mp) (Deprecated in v1.1)
-
-Configure the path to directory containing dbt `manifest.json` file.
-> Default to `./target`
 
 
 ## debug
