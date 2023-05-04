@@ -1,12 +1,14 @@
-# Generate markdown with mermaid ERD inclusive
+# Generate Markdown with Mermaid ERD inclusive
 
-### 1. Generate mermaid ERD content
-```
+## 1. Generate mermaid ERD content
+
+```bash
 dbterd run -t mermaid -ad "samples/dbtresto" -o "target" -s schema:dbt.mart -ns model.dbt_resto.staging
 # Expected: ./target/output.md
 ```
 
-### 2. Copy mermaid to ERD.md
+## 2. Copy mermaid to ERD.md
+
 ```bash
 echo \`\`\`mermaid          >  ./samples/dbtresto/ERD.md
 echo ---                    >> ./samples/dbtresto/ERD.md

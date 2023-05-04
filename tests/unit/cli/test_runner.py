@@ -70,6 +70,7 @@ class TestRunner:
         [
             ("dbml", "output.dbml"),
             ("mermaid", "output.md"),
+            ("plantuml", "output.plantuml"),
         ],
     )
     def test_invoke_run_ok(self, target, output, dbterd: dbterdRunner) -> None:
