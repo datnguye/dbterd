@@ -53,5 +53,23 @@ def parse(manifest, catalog, **kwargs):
     for rel in relationships:
         key_from = f'"{rel.table_map[1]}"."{rel.column_map[1]}"'
         key_to = f'"{rel.table_map[0]}"."{rel.column_map[0]}"'
-        dbml += f"Ref: {key_from} > {key_to}\n"
+        dbml += f"Ref: {key_from} {get_rel_symbol(rel.type)} {key_to}\n"
     return dbml
+
+
+def get_rel_symbol(relationship_type: str) -> str:
+    """Get DBML relationship symbol
+
+    Args:
+        relationship_type (str): relationship type
+
+    Returns:
+        str: Relation symbol supported in DBML
+    """
+    if relationship_type in ["01", "11"]:
+        return "-"
+    if relationship_type in ["0n", "1n"]:
+        return "<"
+    if relationship_type in ["nn"]:
+        return "<>"
+    return ">"  # n1

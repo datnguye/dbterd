@@ -1,7 +1,11 @@
 from dbterd.adapters.algos import base
 from dbterd.adapters.algos.filter import is_selected_table
 from dbterd.adapters.algos.meta import Ref
-from dbterd.constants import DEFAULT_ALGO_RULE, TEST_META_IGNORE_IN_ERD
+from dbterd.constants import (
+    DEFAULT_ALGO_RULE,
+    TEST_META_IGNORE_IN_ERD,
+    TEST_META_RELATIONSHIP_TYPE,
+)
 
 
 def parse(manifest, catalog, **kwargs):
@@ -92,6 +96,9 @@ def get_relationships(manifest, **kwargs):
                     )
                 ).lower(),
             ],
+            type=get_relationship_type(
+                manifest.nodes[x].meta.get(TEST_META_RELATIONSHIP_TYPE, "")
+            ),
         )
         for x in manifest.nodes
         if (
@@ -112,3 +119,27 @@ def get_relationships(manifest, **kwargs):
         return distinct_list
 
     return []
+
+
+def get_relationship_type(meta: str) -> str:
+    """Get short form of the relationship type configured in test meta
+
+    Args:
+        meta (str): meta value
+
+    Returns:
+        str: |
+            Short relationship type. Accepted values: '0n','01','11','nn','n1' and '1n'.
+            And `1n` is default/fallback value
+    """
+    if meta.lower() == "zero-to-many":
+        return "0n"
+    if meta.lower() == "zero-to-one":
+        return "01"
+    if meta.lower() == "one-to-one":
+        return "11"
+    if meta.lower() == "many-to-many":
+        return "nn"
+    if meta.lower() == "one-to-many":
+        return "1n"
+    return "n1"  # "many-to-one"

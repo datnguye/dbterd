@@ -82,7 +82,7 @@ class TestPlantUMLTestRelationship:
                     entity "source.dbt_resto.table3" {
                         name3 : name3-type3
                     }
-                    "model.dbt_resto.table1" }|..|| "model.dbt_resto.table2"
+                    "model.dbt_resto.table1" }|--|| "model.dbt_resto.table2"
                 @enduml
                 """,
             ),

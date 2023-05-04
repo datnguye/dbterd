@@ -41,10 +41,32 @@ def parse(manifest, catalog, **kwargs):
         key_from = f'"{rel.table_map[1]}"'
         key_to = f'"{rel.table_map[0]}"'
         # NOTE: plant uml doesn't have columns defined in the connector
-        new_rel = f"  {key_from} }}|..|| {key_to}\n"
+        new_rel = f"  {key_from} {get_rel_symbol(rel.type)} {key_to}\n"
         if new_rel not in plantuml:
             plantuml += new_rel
 
     plantuml += "@enduml"
 
     return plantuml
+
+
+def get_rel_symbol(relationship_type: str) -> str:
+    """Get PlantUML relationship symbol
+
+    Args:
+        relationship_type (str): relationship type
+
+    Returns:
+        str: Relation symbol supported in PlantUML
+    """
+    if relationship_type in ["01"]:
+        return "}o--||"
+    if relationship_type in ["11"]:
+        return "||--||"
+    if relationship_type in ["0n"]:
+        return "}o--|{"
+    if relationship_type in ["1n"]:
+        return "||--|{"
+    if relationship_type in ["nn"]:
+        return "}|--|{"
+    return "}|--||"  # n1

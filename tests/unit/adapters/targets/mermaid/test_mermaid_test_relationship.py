@@ -81,8 +81,8 @@ class TestMermaidTestRelationship:
                   "SOURCE.DBT_RESTO.TABLE3" {
                     name3-type3 name3
                   }
-                  "MODEL.DBT_RESTO.TABLE2" ||--o{ "MODEL.DBT_RESTO.TABLE1": name1--name2
-                  "MODEL.DBT_RESTO.TABLE2" ||--o{ "MODEL.DBT_RESTO.TABLE1": name-notexist1--name-notexist2
+                  "MODEL.DBT_RESTO.TABLE1" }|--|| "MODEL.DBT_RESTO.TABLE2": name2--name1
+                  "MODEL.DBT_RESTO.TABLE1" }|--|| "MODEL.DBT_RESTO.TABLE2": name-notexist2--name-notexist1
                 """,
             ),
             (
