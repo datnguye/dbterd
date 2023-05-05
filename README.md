@@ -50,7 +50,7 @@ dbterd run -ad samples/local -rt model -rt source
 
 ## Quick DEMO
 
-Check [Quick Demo](https://dbterd.datnguyen.de/latest/nav/guide/generate-dbml.html) out! And, following is the sample result using `dbdocs`:
+Check [Quick Demo](https://dbterd.datnguyen.de/latest/nav/guide/targets/generate-dbml.html) out! And, following is the sample result using `dbdocs`:
 
 ![screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png](https://raw.githubusercontent.com/datnguye/dbterd/main/assets/images/screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png)
 
