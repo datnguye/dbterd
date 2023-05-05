@@ -35,4 +35,4 @@ d2 -w ./target/output.d2 ./target/output.svg
 
 Sample Output:
 
-![d2](https://github.com/datnguye/dbterd/blob/main/samples/dbtresto/d2.svg)
+![d2](https://raw.githubusercontent.com/datnguye/dbterd/main/samples/dbtresto/d2.svg)

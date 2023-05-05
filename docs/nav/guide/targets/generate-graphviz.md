@@ -31,4 +31,4 @@ dot -Tpng ./target/output.d2 > ./target/output.png
 
 Sample Output:
 
-![graphviz](https://github.com/datnguye/dbterd/blob/main/samples/dbtresto/graphviz.png)
+![graphviz](https://raw.githubusercontent.com/datnguye/dbterd/main/samples/dbtresto/graphviz.png)
