@@ -15,9 +15,11 @@ nav:
     - User Guide:
       - CLI Reference: nav/guide/cli-references.md
       - Generate the Targets:
-        - Generate DBML: nav/guide/targets/generate-dbml.md
-        - Generate Mermaid: nav/guide/targets/generate-markdown-mermaid-erd.md
-        - Generate PlantUML: nav/guide/targets/generate-plantuml.md
+        - DBML: nav/guide/targets/generate-dbml.md
+        - Mermaid: nav/guide/targets/generate-markdown-mermaid-erd.md
+        - PlantUML: nav/guide/targets/generate-plantuml.md
+        - D2: nav/guide/targets/generate-d2.md
+        - GraphViz: nav/guide/targets/generate-graphviz.md
       - Metadata:
         - Ignore Tests: nav/metadata/ignore_in_erd.md
         - Relationship Types: nav/metadata/relationship_type.md
