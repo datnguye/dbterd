@@ -26,7 +26,17 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://datnguye.github.io/dbterd/1.2 (Beta)/nav/guide/targets/generate-d2.html</loc>
+         <lastmod>2023-05-05</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://datnguye.github.io/dbterd/1.2 (Beta)/nav/guide/targets/generate-dbml.html</loc>
+         <lastmod>2023-05-05</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://datnguye.github.io/dbterd/1.2 (Beta)/nav/guide/targets/generate-graphviz.html</loc>
          <lastmod>2023-05-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
