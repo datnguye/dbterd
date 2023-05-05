@@ -2,9 +2,8 @@
 
 Run `dbterd --help` or `dbterd -h` to see the basic guideline for CLI Reference
 
-<div id="termynal" data-termynal data-termynal class="use-termynal" data-ty-typeDelay="40" data-ty-lineDelay="700">
+<div class="termynal" data-termynal data-ty-typeDelay="40" data-ty-lineDelay="700">
     <span data-ty="input">dbterd -h</span>
-    <span data-ty="progress"></span>
     <span data-ty>Usage: dbterd [OPTIONS] COMMAND [ARGS]...
 
 Tools for producing diagram-as-code<br />
@@ -17,6 +16,7 @@ Commands:<br />
 debug  Inspect the hidden magics<br />
 run    Run the convert<br />
     </span>
+    <a href="#" data-terminal-control="">restart ↻</a>
 </div>
 
 ## run

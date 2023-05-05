@@ -8,10 +8,11 @@ CLI to generate Diagram-as-a-code file ([DBML](https://dbdiagram.io/d), [Mermaid
 [![python](https://img.shields.io/badge/Python-3.9|3.10|3.11-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![codecov](https://codecov.io/gh/datnguye/dbterd/branch/main/graph/badge.svg?token=N7DMQBLH4P)](https://codecov.io/gh/datnguye/dbterd)
 
-<div id="termynal" data-termynal data-termynal class="use-termynal" data-ty-typeDelay="40" data-ty-lineDelay="700">
+<div class="termynal" data-termynal data-ty-typeDelay="40" data-ty-lineDelay="700">
     <span data-ty="input">pip install dbterd --upgrade</span>
     <span data-ty="progress"></span>
     <span data-ty>Successfully installed dbterd</span>
+    <a href="#" data-terminal-control="">restart ↻</a>
 </div>
 
 Verify installed version:
