@@ -62,6 +62,7 @@ class DummyManifestRel:
             "test.dbt_resto.relationships_table3": ["tabley", "tablex"],
             "test.dbt_resto.relationships_tablex": ["y", "x"],
             "test.dbt_resto.foreign_key_table1": ["table2", "table1"],
+            "test.dbt_resto.relationships_table4": ["table-m2", "table-m1"],
         }
     )
     nodes = {
@@ -98,6 +99,13 @@ class DummyManifestRel:
                 kwargs={"column_name": "f1", "pk_column_name": "f2"}
             ),
             meta={},
+            columns={},
+        ),
+        "test.dbt_resto.relationships_table4": ManifestNode(
+            test_metadata=ManifestNodeTestMetaData(
+                kwargs={"column_name": "f1", "field": "f2"}
+            ),
+            meta={"relationship_type": "one-to-one"},
             columns={},
         ),
     }
@@ -269,6 +277,12 @@ class TestAlgoTestRelationship:
                         table_map=["tabley", "tablex"],
                         column_map=["f2", "f1"],
                     ),
+                    Ref(
+                        name="test.dbt_resto.relationships_table4",
+                        table_map=["table-m2", "table-m1"],
+                        column_map=["f2", "f1"],
+                        type="11",
+                    ),
                 ],
             ),
             (
@@ -287,3 +301,18 @@ class TestAlgoTestRelationship:
     )
     def test_get_relationships(self, manifest, algorithm, expected):
         assert algo.get_relationships(manifest=manifest, algo=algorithm) == expected
+
+    @pytest.mark.parametrize(
+        "meta, type",
+        [
+            ("zero-to-many", "0n"),
+            ("one-to-many", "1n"),
+            ("zero-to-one", "01"),
+            ("one-to-one", "11"),
+            ("many-to-many", "nn"),
+            ("many-to-one", "n1"),
+            ("--irrelevant--", "n1"),
+        ],
+    )
+    def test_get_relationship_type(self, meta, type):
+        assert algo.get_relationship_type(meta=meta) == type

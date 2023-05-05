@@ -117,7 +117,7 @@ Rules:
 === "CLI (by wildcard)"
 
     ```bash
-    dbterd run --select "*xyz"
+    dbterd run --select "wildcard:*xyz"
     ```
 
 #### `AND` and `OR` logic

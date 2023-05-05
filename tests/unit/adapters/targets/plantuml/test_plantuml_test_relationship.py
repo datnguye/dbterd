@@ -82,7 +82,7 @@ class TestPlantUMLTestRelationship:
                     entity "source.dbt_resto.table3" {
                         name3 : name3-type3
                     }
-                    "model.dbt_resto.table1" }|..|| "model.dbt_resto.table2"
+                    "model.dbt_resto.table1" }|--|| "model.dbt_resto.table2"
                 @enduml
                 """,
             ),
@@ -242,3 +242,18 @@ class TestPlantUMLTestRelationship:
                 ).replace(" ", "").replace("\n", "")
                 mock_get_tables.assert_called_once()
                 mock_get_relationships.assert_called_once()
+
+    @pytest.mark.parametrize(
+        "relationship_type, symbol",
+        [
+            ("0n", "}o--|{"),
+            ("1n", "||--|{"),
+            ("01", "}o--||"),
+            ("11", "||--||"),
+            ("nn", "}|--|{"),
+            ("n1", "}|--||"),
+            ("--irrelevant--", "}|--||"),
+        ],
+    )
+    def test_get_rel_symbol(self, relationship_type, symbol):
+        assert engine.get_rel_symbol(relationship_type=relationship_type) == symbol

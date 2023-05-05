@@ -14,11 +14,13 @@ nav:
     - index.md
     - User Guide:
       - CLI Reference: nav/guide/cli-references.md
-      - Generate DBML: nav/guide/generate-dbml.md
-      - Generate Mermaid in Markdown: nav/guide/generate-markdown-mermaid-erd.md
-      - Generate PlantUML: nav/guide/generate-plantuml.md
+      - Generate the Targets:
+        - Generate DBML: nav/guide/targets/generate-dbml.md
+        - Generate Mermaid: nav/guide/targets/generate-markdown-mermaid-erd.md
+        - Generate PlantUML: nav/guide/targets/generate-plantuml.md
       - Metadata:
         - Ignore Tests: nav/metadata/ignore_in_erd.md
+        - Relationship Types: nav/metadata/relationship_type.md
     - Development:
       - Contribution Guideline: nav/development/contributing-guide.md
       - Change Log: nav/development/CHANGELOG.md
@@ -49,20 +51,20 @@ theme:
     # Palette toggle for automatic mode
     - media: "(prefers-color-scheme)"
       primary: black
+      scheme: slate
       toggle:
         icon: material/brightness-auto
         name: Switch to light mode
     # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       primary: black
-      scheme: default
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     # Palette toggle for dark mode
     - media: "(prefers-color-scheme: dark)"
       primary: black
-      scheme: slate
+      scheme: default
       toggle:
         icon: material/brightness-4
         name: Switch to system preference

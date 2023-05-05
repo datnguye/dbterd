@@ -30,3 +30,4 @@ class Ref:
     name: str
     table_map: Tuple[str, str]
     column_map: Tuple[str, str]
+    type: str = "n1"

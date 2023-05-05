@@ -81,8 +81,8 @@ class TestMermaidTestRelationship:
                   "SOURCE.DBT_RESTO.TABLE3" {
                     name3-type3 name3
                   }
-                  "MODEL.DBT_RESTO.TABLE2" ||--o{ "MODEL.DBT_RESTO.TABLE1": name1--name2
-                  "MODEL.DBT_RESTO.TABLE2" ||--o{ "MODEL.DBT_RESTO.TABLE1": name-notexist1--name-notexist2
+                  "MODEL.DBT_RESTO.TABLE1" }|--|| "MODEL.DBT_RESTO.TABLE2": name2--name1
+                  "MODEL.DBT_RESTO.TABLE1" }|--|| "MODEL.DBT_RESTO.TABLE2": name-notexist2--name-notexist1
                 """,
             ),
             (
@@ -236,3 +236,18 @@ class TestMermaidTestRelationship:
                 ).replace(" ", "").replace("\n", "")
                 mock_get_tables.assert_called_once()
                 mock_get_relationships.assert_called_once()
+
+    @pytest.mark.parametrize(
+        "relationship_type, symbol",
+        [
+            ("0n", "}o--|{"),
+            ("1n", "||--|{"),
+            ("01", "}o--||"),
+            ("11", "||--||"),
+            ("nn", "}|--|{"),
+            ("n1", "}|--||"),
+            ("--irrelevant--", "}|--||"),
+        ],
+    )
+    def test_get_rel_symbol(self, relationship_type, symbol):
+        assert engine.get_rel_symbol(relationship_type=relationship_type) == symbol

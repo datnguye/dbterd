@@ -43,11 +43,33 @@ def parse(manifest, catalog, **kwargs):
         )
 
     for rel in relationships:
-        key_from = f'"{rel.table_map[0]}"'
-        key_to = f'"{rel.table_map[1]}"'
-        reference_text = rel.column_map[1].replace(" ", "-")
-        if rel.column_map[1] != rel.column_map[0]:
-            reference_text += f"--{ rel.column_map[0].replace(' ','-')}"
-        mermaid += f"  {key_from.upper()} ||--o{{ {key_to.upper()}: {reference_text}\n"
+        key_from = f'"{rel.table_map[1]}"'
+        key_to = f'"{rel.table_map[0]}"'
+        reference_text = rel.column_map[0].replace(" ", "-")
+        if rel.column_map[0] != rel.column_map[1]:
+            reference_text += f"--{ rel.column_map[1].replace(' ','-')}"
+        mermaid += f"  {key_from.upper()} {get_rel_symbol(rel.type)} {key_to.upper()}: {reference_text}\n"
 
     return mermaid
+
+
+def get_rel_symbol(relationship_type: str) -> str:
+    """Get Mermaid relationship symbol
+
+    Args:
+        relationship_type (str): relationship type
+
+    Returns:
+        str: Relation symbol supported in Mermaid
+    """
+    if relationship_type in ["01"]:
+        return "}o--||"
+    if relationship_type in ["11"]:
+        return "||--||"
+    if relationship_type in ["0n"]:
+        return "}o--|{"
+    if relationship_type in ["1n"]:
+        return "||--|{"
+    if relationship_type in ["nn"]:
+        return "}|--|{"
+    return "}|--||"  # n1
