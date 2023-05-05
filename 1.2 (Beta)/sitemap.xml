@@ -2,47 +2,52 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://datnguye.github.io/dbterd/1.2 (Beta)/index.html</loc>
-         <lastmod>2023-05-04</lastmod>
+         <lastmod>2023-05-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://datnguye.github.io/dbterd/1.2 (Beta)/license.html</loc>
-         <lastmod>2023-05-04</lastmod>
+         <lastmod>2023-05-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://datnguye.github.io/dbterd/1.2 (Beta)/nav/development/CHANGELOG.html</loc>
-         <lastmod>2023-05-04</lastmod>
+         <lastmod>2023-05-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://datnguye.github.io/dbterd/1.2 (Beta)/nav/development/contributing-guide.html</loc>
-         <lastmod>2023-05-04</lastmod>
+         <lastmod>2023-05-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://datnguye.github.io/dbterd/1.2 (Beta)/nav/guide/cli-references.html</loc>
-         <lastmod>2023-05-04</lastmod>
+         <lastmod>2023-05-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://datnguye.github.io/dbterd/1.2 (Beta)/nav/guide/generate-dbml.html</loc>
-         <lastmod>2023-05-04</lastmod>
+         <loc>https://datnguye.github.io/dbterd/1.2 (Beta)/nav/guide/targets/generate-dbml.html</loc>
+         <lastmod>2023-05-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://datnguye.github.io/dbterd/1.2 (Beta)/nav/guide/generate-markdown-mermaid-erd.html</loc>
-         <lastmod>2023-05-04</lastmod>
+         <loc>https://datnguye.github.io/dbterd/1.2 (Beta)/nav/guide/targets/generate-markdown-mermaid-erd.html</loc>
+         <lastmod>2023-05-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://datnguye.github.io/dbterd/1.2 (Beta)/nav/guide/generate-plantuml.html</loc>
-         <lastmod>2023-05-04</lastmod>
+         <loc>https://datnguye.github.io/dbterd/1.2 (Beta)/nav/guide/targets/generate-plantuml.html</loc>
+         <lastmod>2023-05-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://datnguye.github.io/dbterd/1.2 (Beta)/nav/metadata/ignore_in_erd.html</loc>
-         <lastmod>2023-05-04</lastmod>
+         <lastmod>2023-05-05</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://datnguye.github.io/dbterd/1.2 (Beta)/nav/metadata/relationship_type.html</loc>
+         <lastmod>2023-05-05</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
