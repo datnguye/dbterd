@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "dbterd"
 version = "1.0.0"
-description = "dbterd is a Command Line Interface (CLI) to convert dbt manifest.json file to diagram file"
+description = "CLI to generate ERD Diagram file from dbt artifact files"
 authors = ["Dat Nguyen <datnguyen.it09@gmail.com>"]
 license = "MIT"
 readme = "README.md"
