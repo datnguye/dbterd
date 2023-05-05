@@ -32,7 +32,7 @@ def parse(manifest, catalog, **kwargs):
     # https://mermaid.js.org/syntax/entityRelationshipDiagram.html
     mermaid = "erDiagram\n"
     for table in tables:
-        mermaid += """  \"{table}\" {{\n{columns}\n  }}\n""".format(
+        mermaid += '  "{table}" {{\n{columns}\n  }}\n'.format(
             table=table.name.upper(),
             columns="\n".join(
                 [

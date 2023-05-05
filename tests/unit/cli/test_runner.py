@@ -71,6 +71,8 @@ class TestRunner:
             ("dbml", "output.dbml"),
             ("mermaid", "output.md"),
             ("plantuml", "output.plantuml"),
+            ("graphviz", "output.graphviz"),
+            ("d2", "output.d2"),
         ],
     )
     def test_invoke_run_ok(self, target, output, dbterd: dbterdRunner) -> None:

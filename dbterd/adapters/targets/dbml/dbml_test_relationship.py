@@ -32,7 +32,7 @@ def parse(manifest, catalog, **kwargs):
     dbml = "//Tables (based on the selection criteria)\n"
     for table in tables:
         dbml += f"//--configured at schema: {table.database}.{table.schema}\n"
-        dbml += """Table \"{table}\" {{\n{columns}\n}}\n""".format(
+        dbml += 'Table "{table}" {{\n{columns}\n}}\n'.format(
             table=table.name,
             columns="\n".join(
                 [
