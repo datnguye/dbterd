@@ -14,16 +14,18 @@ curl -fsSL https://d2lang.com/install.sh | sh -s --
 
 ## 2. Generate D2 ERD content
 
-```bash
-dbterd run -t d2 -ad "samples/dbtresto" -o "target" -s schema:dbt.mart
-# Expected: ./target/output.d2
-```
+<div class="termynal" data-ty-startDelay="600">
+    <span data-ty="input" data-ty-prompt="$ ~/repo>">dbterd run -t d2 -ad "samples/dbtresto" -o "target" -s schema:dbt.mart</span>
+    <span data-ty>2023-05-06 08:17:54,413 - dbterd - INFO - Run with dbterd==?.?.? (main.py:54)</span>
+    <span data-ty>2023-05-06 08:17:54,715 - dbterd - INFO - target/output.d2 (base.py:75)</span>
+</div>
 
 ## 2. Export to SVG
 
-```bash
-d2 -w ./target/output.d2 ./target/output.svg
-```
+<div class="termynal" data-ty-startDelay="600">
+    <span data-ty="input" data-ty-prompt="$ ~/repo>">d2 -w ./target/output.d2 ./target/output.svg</span>
+    <span data-ty data-ty-prompt="$ ~/repo>"></span>
+</div>
 
 ### 3. Embeded into Markdown
 

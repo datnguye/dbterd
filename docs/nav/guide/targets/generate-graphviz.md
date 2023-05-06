@@ -10,16 +10,18 @@ sudo apt install graphviz
 
 ## 2. Generate GraphViz ERD content
 
-```bash
-dbterd run -t graphviz -ad "samples/dbtresto" -o "target" -s schema:dbt.mart
-# Expected: ./target/output.graphviz
-```
+<div class="termynal" data-ty-startDelay="600">
+    <span data-ty="input" data-ty-prompt="$ ~/repo>">dbterd run -t graphviz -ad "samples/dbtresto" -s schema:dbt.mart</span>
+    <span data-ty>2023-05-06 08:17:54,413 - dbterd - INFO - Run with dbterd==?.?.? (main.py:54)</span>
+    <span data-ty>2023-05-06 08:17:54,715 - dbterd - INFO - target/output.graphviz (base.py:75)</span>
+</div>
 
 ## 2. Export to PNG
 
-```bash
-dot -Tpng ./target/output.d2 > ./target/output.png
-```
+<div class="termynal" data-ty-startDelay="600">
+    <span data-ty="input" data-ty-prompt="$ ~/repo>">dot -Tpng ./target/output.d2 > ./target/output.png</span>
+    <span data-ty data-ty-prompt="$ ~/repo>"></span>
+</div>
 
 ### 3. Embeded into Markdown
 

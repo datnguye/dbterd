@@ -3,9 +3,9 @@
 Run `dbterd --help` or `dbterd -h` to see the basic guideline for CLI Reference
 
 <div class="termynal" data-termynal data-ty-typeDelay="40" data-ty-lineDelay="700">
-    <span data-ty="input">dbterd -h</span>
-    <span data-ty>Usage: dbterd [OPTIONS] COMMAND [ARGS]...
-
+    <span data-ty="input" data-ty-prompt="$ ~/repo>">dbterd -h</span>
+    <span data-ty>Usage: dbterd [OPTIONS] COMMAND [ARGS]...<br />
+<br />
 Tools for producing diagram-as-code<br />
 <br />
 Options:<br />
@@ -16,7 +16,6 @@ Commands:<br />
 debug  Inspect the hidden magics<br />
 run    Run the convert<br />
     </span>
-    <a href="#" data-terminal-control="">restart ↻</a>
 </div>
 
 ## run
