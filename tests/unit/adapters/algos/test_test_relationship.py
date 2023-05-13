@@ -111,6 +111,16 @@ class DummyManifestRel:
                 nodes=["model.dbt_resto.table-m2", "model.dbt_resto.table-m1"]
             ),
         ),
+        "test.dbt_resto.relationships_table1_reverse": ManifestNode(
+            test_metadata=ManifestNodeTestMetaData(
+                kwargs={"column_name": "f1", "field": "f2", "to": "ref('table-r2')"}
+            ),
+            meta={},
+            columns={},
+            depends_on=dict(
+                nodes=["model.dbt_resto.table-r1", "model.dbt_resto.table-r2"]
+            ),
+        ),
     }
 
 
@@ -288,6 +298,14 @@ class TestAlgoTestRelationship:
                         ],
                         column_map=["f2", "f1"],
                         type="11",
+                    ),
+                    Ref(
+                        name="test.dbt_resto.relationships_table1_reverse",
+                        table_map=[
+                            "model.dbt_resto.table-r2",
+                            "model.dbt_resto.table-r1",
+                        ],
+                        column_map=["f2", "f1"],
                     ),
                 ],
             ),

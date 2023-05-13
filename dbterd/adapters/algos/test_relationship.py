@@ -118,9 +118,20 @@ def get_algo_rule(**kwargs):
             - test_relationship
             - test_relationship:(name:relationship|c_from:column_name|c_to:field)
             - test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)
+            - test_relationship:(
+                name:foreign_key|
+                c_from:fk_column_name|
+                c_to:pk_column_name|
+                t_to:pk_table_name
+            )
 
     Returns:
-        dict: Rule object (name, c_from, c_to)
+        dict: Rule object (
+            name [default 'relationship', use contains],
+            c_from [default 'column_name'],
+            c_to [default 'field'],
+            t_to [default 'to']
+        )
     """
     algo_parts = (kwargs.get("algo") or "").replace(" ", "").split(":", 1)
     rules, _ = (
@@ -133,9 +144,19 @@ def get_algo_rule(**kwargs):
 
 
 def get_table_map(test_node, **kwargs):
-    get_algo_rule(**kwargs)
+    """Get the table map with order of [to, from] guaranteed
+
+    Args:
+        test_node (dict): Manifest Test node
+
+    Returns:
+        list: [to model, from model]
+    """
     map = test_node.depends_on.get("nodes", [])
-    # manifest.nodes[test_node].test_metadata.kwargs.get(rule.get("c_to"))
+    rule = get_algo_rule(**kwargs)
+    to_model = str(test_node.test_metadata.kwargs.get(rule.get("t_to", "to"), {}))
+    if f'("{map[1].split(".")[-1]}")'.lower() in to_model.replace("'", '"').lower():
+        return [map[1], map[0]]
 
     return map
 
