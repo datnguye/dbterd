@@ -1,4 +1,4 @@
-name: Build and Deploy MkDocs Site
+name: Build and Deploy Docs Site
 
 on:
   workflow_dispatch:
