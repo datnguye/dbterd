@@ -16,9 +16,15 @@ class TestDbmlTestRelationship:
                         name="model.dbt_resto.table1",
                         database="--database--",
                         schema="--schema--",
-                        columns=[Column(name="name1", data_type="--name1-type--")],
+                        columns=[
+                            Column(
+                                name="name1",
+                                data_type="--name1-type--",
+                                description="column name 1",
+                            )
+                        ],
                         raw_sql="--irrelevant--",
-                    )
+                    ),
                 ],
                 [],
                 [],
@@ -27,7 +33,7 @@ class TestDbmlTestRelationship:
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table1" {
-                    "name1" "--name1-type--"
+                    "name1" "--name1-type--" [note: "column name 1"]
                 }
                 //Refs (based on the DBT Relationship Tests)
                 """,

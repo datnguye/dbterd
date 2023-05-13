@@ -37,6 +37,11 @@ class ManifestNodeTestMetaData:
 
 
 @dataclass
+class ManifestNodeDependsOn:
+    nodes: list = field(default_factory=list)
+
+
+@dataclass
 class ManifestNode:
     test_metadata: ManifestNodeTestMetaData
     meta: dict
@@ -44,7 +49,7 @@ class ManifestNode:
     raw_sql: str = ""
     database: str = ""
     schema_: str = ""
-    depends_on: dict = field(default_factory=dict)
+    depends_on: ManifestNodeDependsOn = field(default_factory=ManifestNodeDependsOn)
 
 
 @dataclass
@@ -63,7 +68,9 @@ class DummyManifestRel:
             ),
             meta={},
             columns={},
-            depends_on=dict(nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]),
+            depends_on=ManifestNodeDependsOn(
+                nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]
+            ),
         ),
         "test.dbt_resto.relationships_table2": ManifestNode(
             test_metadata=ManifestNodeTestMetaData(
@@ -71,7 +78,9 @@ class DummyManifestRel:
             ),
             meta={},
             columns={},
-            depends_on=dict(nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]),
+            depends_on=ManifestNodeDependsOn(
+                nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]
+            ),
         ),
         "test.dbt_resto.relationships_table3": ManifestNode(
             test_metadata=ManifestNodeTestMetaData(
@@ -79,7 +88,9 @@ class DummyManifestRel:
             ),
             meta={},
             columns={},
-            depends_on=dict(nodes=["model.dbt_resto.tabley", "model.dbt_resto.tablex"]),
+            depends_on=ManifestNodeDependsOn(
+                nodes=["model.dbt_resto.tabley", "model.dbt_resto.tablex"]
+            ),
         ),
         "test.dbt_resto.relationships_tablex": ManifestNode(
             test_metadata=ManifestNodeTestMetaData(
@@ -87,7 +98,9 @@ class DummyManifestRel:
             ),
             meta={"ignore_in_erd": 1},
             columns={},
-            depends_on=dict(nodes=["model.dbt_resto.y", "model.dbt_resto.x"]),
+            depends_on=ManifestNodeDependsOn(
+                nodes=["model.dbt_resto.y", "model.dbt_resto.x"]
+            ),
         ),
         "test.dbt_resto.foreign_key_table1": ManifestNode(
             test_metadata=ManifestNodeTestMetaData(
@@ -99,7 +112,9 @@ class DummyManifestRel:
             ),
             meta={},
             columns={},
-            depends_on=dict(nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]),
+            depends_on=ManifestNodeDependsOn(
+                nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]
+            ),
         ),
         "test.dbt_resto.relationships_table4": ManifestNode(
             test_metadata=ManifestNodeTestMetaData(
@@ -107,7 +122,7 @@ class DummyManifestRel:
             ),
             meta={"relationship_type": "one-to-one"},
             columns={},
-            depends_on=dict(
+            depends_on=ManifestNodeDependsOn(
                 nodes=["model.dbt_resto.table-m2", "model.dbt_resto.table-m1"]
             ),
         ),
@@ -117,7 +132,7 @@ class DummyManifestRel:
             ),
             meta={},
             columns={},
-            depends_on=dict(
+            depends_on=ManifestNodeDependsOn(
                 nodes=["model.dbt_resto.table-r1", "model.dbt_resto.table-r2"]
             ),
         ),
