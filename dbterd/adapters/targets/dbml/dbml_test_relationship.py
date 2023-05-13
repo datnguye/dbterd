@@ -1,3 +1,5 @@
+import json
+
 from dbterd.adapters.algos import test_relationship
 
 
@@ -37,10 +39,10 @@ def parse(manifest, catalog, **kwargs):
             columns="\n".join(
                 [
                     str.format(
-                        '"{0}" "{1}"{2}',
+                        '  "{0}" "{1}"{2}',
                         x.name,
                         x.data_type,
-                        str.format(" [note: {1}{0}{1}]", x.description, chr(34))
+                        str.format(" [note: {0}]", json.dumps(x.description))
                         if x.description
                         else "",
                     )
