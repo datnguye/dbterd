@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from unittest import mock
 from unittest.mock import MagicMock
 
@@ -44,6 +44,7 @@ class ManifestNode:
     raw_sql: str = ""
     database: str = ""
     schema_: str = ""
+    depends_on: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -55,58 +56,70 @@ class ManifestNodeColumn:
 
 @dataclass
 class DummyManifestRel:
-    parent_map = dict(
-        {
-            "test.dbt_resto.relationships_table1": ["table2", "table1"],
-            "test.dbt_resto.relationships_table2": ["table2", "table1"],
-            "test.dbt_resto.relationships_table3": ["tabley", "tablex"],
-            "test.dbt_resto.relationships_tablex": ["y", "x"],
-            "test.dbt_resto.foreign_key_table1": ["table2", "table1"],
-            "test.dbt_resto.relationships_table4": ["table-m2", "table-m1"],
-        }
-    )
     nodes = {
         "test.dbt_resto.relationships_table1": ManifestNode(
             test_metadata=ManifestNodeTestMetaData(
-                kwargs={"column_name": "f1", "field": "f2"}
+                kwargs={"column_name": "f1", "field": "f2", "to": "ref('table2')"}
             ),
             meta={},
             columns={},
+            depends_on=dict(nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]),
         ),
         "test.dbt_resto.relationships_table2": ManifestNode(
             test_metadata=ManifestNodeTestMetaData(
-                kwargs={"column_name": "f1", "field": "f2"}
+                kwargs={"column_name": "f1", "field": "f2", "to": "ref('table2')"}
             ),
             meta={},
             columns={},
+            depends_on=dict(nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]),
         ),
         "test.dbt_resto.relationships_table3": ManifestNode(
             test_metadata=ManifestNodeTestMetaData(
-                kwargs={"column_name": "f1", "field": "f2"}
+                kwargs={"column_name": "f1", "field": "f2", "to": "ref('tabley')"}
             ),
             meta={},
             columns={},
+            depends_on=dict(nodes=["model.dbt_resto.tabley", "model.dbt_resto.tablex"]),
         ),
         "test.dbt_resto.relationships_tablex": ManifestNode(
             test_metadata=ManifestNodeTestMetaData(
-                kwargs={"column_name": "x", "field": "y"}
+                kwargs={"column_name": "x", "field": "y", "to": "ref('y')"}
             ),
             meta={"ignore_in_erd": 1},
             columns={},
+            depends_on=dict(nodes=["model.dbt_resto.y", "model.dbt_resto.x"]),
         ),
         "test.dbt_resto.foreign_key_table1": ManifestNode(
             test_metadata=ManifestNodeTestMetaData(
-                kwargs={"column_name": "f1", "pk_column_name": "f2"}
+                kwargs={
+                    "column_name": "f1",
+                    "pk_column_name": "f2",
+                    "pk_table_name": "ref('table2')",
+                }
             ),
             meta={},
             columns={},
+            depends_on=dict(nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]),
         ),
         "test.dbt_resto.relationships_table4": ManifestNode(
             test_metadata=ManifestNodeTestMetaData(
-                kwargs={"column_name": "f1", "field": "f2"}
+                kwargs={"column_name": "f1", "field": "f2", "to": "ref('table-m2')"}
             ),
             meta={"relationship_type": "one-to-one"},
             columns={},
+            depends_on=dict(
+                nodes=["model.dbt_resto.table-m2", "model.dbt_resto.table-m1"]
+            ),
+        ),
+        "test.dbt_resto.relationships_table1_reverse": ManifestNode(
+            test_metadata=ManifestNodeTestMetaData(
+                kwargs={"column_name": "f1", "field": "f2", "to": "ref('table-r2')"}
+            ),
+            meta={},
+            columns={},
+            depends_on=dict(
+                nodes=["model.dbt_resto.table-r1", "model.dbt_resto.table-r2"]
+            ),
         ),
     }
 
@@ -269,19 +282,30 @@ class TestAlgoTestRelationship:
                 [
                     Ref(
                         name="test.dbt_resto.relationships_table1",
-                        table_map=["table2", "table1"],
+                        table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
                         column_map=["f2", "f1"],
                     ),
                     Ref(
                         name="test.dbt_resto.relationships_table3",
-                        table_map=["tabley", "tablex"],
+                        table_map=["model.dbt_resto.tabley", "model.dbt_resto.tablex"],
                         column_map=["f2", "f1"],
                     ),
                     Ref(
                         name="test.dbt_resto.relationships_table4",
-                        table_map=["table-m2", "table-m1"],
+                        table_map=[
+                            "model.dbt_resto.table-m2",
+                            "model.dbt_resto.table-m1",
+                        ],
                         column_map=["f2", "f1"],
                         type="11",
+                    ),
+                    Ref(
+                        name="test.dbt_resto.relationships_table1_reverse",
+                        table_map=[
+                            "model.dbt_resto.table-r2",
+                            "model.dbt_resto.table-r1",
+                        ],
+                        column_map=["f2", "f1"],
                     ),
                 ],
             ),
@@ -291,12 +315,12 @@ class TestAlgoTestRelationship:
                 [
                     Ref(
                         name="test.dbt_resto.foreign_key_table1",
-                        table_map=["table2", "table1"],
+                        table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
                         column_map=["f2", "f1"],
                     ),
                 ],
             ),
-            (MagicMock(return_value={"parent_map": [], "nodes": {}}), None, []),
+            (MagicMock(return_value={"depends_on": {}, "nodes": {}}), None, []),
         ],
     )
     def test_get_relationships(self, manifest, algorithm, expected):

@@ -55,43 +55,30 @@ def get_relationships(manifest, **kwargs):
 
     Args:
         manifest (dict): Manifest json
-        kwargs.algo (str): |
-            Algorithm name and optional rules.
-            Smaples:
-            - test_relationship
-            - test_relationship:(name:relationship|c_from:column_name|c_to:field)
-            - test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)
 
     Returns:
         List[Ref]: List of parsed relationship
     """
-    algo_parts = (kwargs.get("algo") or "").replace(" ", "").split(":", 1)
-    rules, _ = (
-        algo_parts[1] if len(algo_parts) > 1 else DEFAULT_ALGO_RULE,
-        algo_parts[0],
-    )
-    rules = rules[1:-1]  # remove brackets
-    rules = dict(arg.split(":") for arg in rules.split("|"))
-
+    rule = get_algo_rule(**kwargs)
     refs = [
         Ref(
             name=x,
-            table_map=manifest.parent_map[x],
+            table_map=get_table_map(test_node=manifest.nodes[x], **kwargs),
             column_map=[
                 str(
-                    manifest.nodes[x].test_metadata.kwargs.get(rules.get("c_to"))
+                    manifest.nodes[x].test_metadata.kwargs.get(rule.get("c_to"))
                     or "_and_".join(
                         manifest.nodes[x].test_metadata.kwargs.get(
-                            f'{rules.get("c_to")}s', "unknown"
+                            f'{rule.get("c_to")}s', "unknown"
                         )
                     )
                 ).lower(),
                 str(
                     manifest.nodes[x].test_metadata.kwargs.get("column_name")
-                    or manifest.nodes[x].test_metadata.kwargs.get(rules.get("c_from"))
+                    or manifest.nodes[x].test_metadata.kwargs.get(rule.get("c_from"))
                     or "_and_".join(
                         manifest.nodes[x].test_metadata.kwargs.get(
-                            f'{rules.get("c_from")}s', "unknown"
+                            f'{rule.get("c_from")}s', "unknown"
                         )
                     )
                 ).lower(),
@@ -103,7 +90,7 @@ def get_relationships(manifest, **kwargs):
         for x in manifest.nodes
         if (
             x.startswith("test")
-            and rules.get("name").lower() in x.lower()
+            and rule.get("name").lower() in x.lower()
             and manifest.nodes[x].meta.get(TEST_META_IGNORE_IN_ERD, "0") == "0"
         )
     ]
@@ -119,6 +106,59 @@ def get_relationships(manifest, **kwargs):
         return distinct_list
 
     return []
+
+
+def get_algo_rule(**kwargs):
+    """Extract rule from the --algo option
+
+    Args:
+        kwargs.algo (str): |
+            Algorithm name and optional rules.
+            Samples:
+            - test_relationship
+            - test_relationship:(name:relationship|c_from:column_name|c_to:field)
+            - test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)
+            - test_relationship:(
+                name:foreign_key|
+                c_from:fk_column_name|
+                c_to:pk_column_name|
+                t_to:pk_table_name
+            )
+
+    Returns:
+        dict: Rule object (
+            name [default 'relationship', use contains],
+            c_from [default 'column_name'],
+            c_to [default 'field'],
+            t_to [default 'to']
+        )
+    """
+    algo_parts = (kwargs.get("algo") or "").replace(" ", "").split(":", 1)
+    rules, _ = (
+        algo_parts[1] if len(algo_parts) > 1 else DEFAULT_ALGO_RULE,
+        algo_parts[0],
+    )
+    rules = rules[1:-1]  # remove brackets
+    rules = dict(arg.split(":") for arg in rules.split("|"))
+    return rules
+
+
+def get_table_map(test_node, **kwargs):
+    """Get the table map with order of [to, from] guaranteed
+
+    Args:
+        test_node (dict): Manifest Test node
+
+    Returns:
+        list: [to model, from model]
+    """
+    map = test_node.depends_on.get("nodes", [])
+    rule = get_algo_rule(**kwargs)
+    to_model = str(test_node.test_metadata.kwargs.get(rule.get("t_to", "to"), {}))
+    if f'("{map[1].split(".")[-1]}")'.lower() in to_model.replace("'", '"').lower():
+        return [map[1], map[0]]
+
+    return map
 
 
 def get_relationship_type(meta: str) -> str:
