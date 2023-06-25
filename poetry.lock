@@ -896,7 +896,7 @@ mkdocs-material-extensions = ">=1.1"
 pygments = ">=2.14"
 pymdown-extensions = ">=10.0"
 regex = ">=2022.4.24"
-requests = ">=2.31"
+requests = ">=2.31.0"
 
 [[package]]
 name = "mkdocs-material-extensions"
