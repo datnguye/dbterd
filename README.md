@@ -20,33 +20,37 @@ dbterd --version
 
 ## Quick examine with existing samples
 
-```bash
-# select all models in dbt_resto
-dbterd run -ad samples/dbtresto
-# select all models in dbt_resto, Select multiple dbt resources
-dbterd run -ad samples/dbtresto -rt model -rt source
-# select only models in dbt_resto excluding staging
-dbterd run -ad samples/dbtresto -s model.dbt_resto -ns model.dbt_resto.staging
-# select only models in schema name mart excluding staging
-dbterd run -ad samples/dbtresto -s schema:mart -ns model.dbt_resto.staging
-# select only models in schema full name dbt.mart excluding staging
-dbterd run -ad samples/dbtresto -s schema:dbt.mart -ns model.dbt_resto.staging
-
-# other samples
-dbterd run -ad samples/fivetranlog
-dbterd run -ad samples/fivetranlog -rt model -rt source
-
-dbterd run -ad samples/facebookad
-dbterd run -ad samples/facebookad -rt model -rt source
-
-dbterd run -ad samples/shopify -s wildcard:*shopify.shopify__*
-dbterd run -ad samples/shopify -rt model -rt source
-
-dbterd run -ad samples/dbt-constraints -a "test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)"
-
-# your own sample without commiting to repo
-dbterd run -ad samples/local -rt model -rt source
-```
+<details>
+  <summary>Click me</summary>
+  
+  ```bash
+  # select all models in dbt_resto
+  dbterd run -ad samples/dbtresto
+  # select all models in dbt_resto, Select multiple dbt resources
+  dbterd run -ad samples/dbtresto -rt model -rt source
+  # select only models in dbt_resto excluding staging
+  dbterd run -ad samples/dbtresto -s model.dbt_resto -ns model.dbt_resto.staging
+  # select only models in schema name mart excluding staging
+  dbterd run -ad samples/dbtresto -s schema:mart -ns model.dbt_resto.staging
+  # select only models in schema full name dbt.mart excluding staging
+  dbterd run -ad samples/dbtresto -s schema:dbt.mart -ns model.dbt_resto.staging
+  
+  # other samples
+  dbterd run -ad samples/fivetranlog
+  dbterd run -ad samples/fivetranlog -rt model -rt source
+  
+  dbterd run -ad samples/facebookad
+  dbterd run -ad samples/facebookad -rt model -rt source
+  
+  dbterd run -ad samples/shopify -s wildcard:*shopify.shopify__*
+  dbterd run -ad samples/shopify -rt model -rt source
+  
+  dbterd run -ad samples/dbt-constraints -a "test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)"
+  
+  # your own sample without commiting to repo
+  dbterd run -ad samples/local -rt model -rt source
+  ```
+</details>
 
 ## Quick DEMO
 
