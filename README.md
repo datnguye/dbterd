@@ -12,7 +12,7 @@ CLI to generate Diagram-as-a-code file ([DBML](https://dbdiagram.io/d), [Mermaid
 pip install dbterd --upgrade
 ```
 
-Verify instal
+Verify installation:
 ```bash
 dbterd --version
 ```
@@ -49,6 +49,7 @@ dbterd --version
   # your own sample without commiting to repo
   dbterd run -ad samples/local -rt model -rt source
   ```
+
 </details>
 
 ## Quick DEMO
