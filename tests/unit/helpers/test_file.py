@@ -63,16 +63,18 @@ class TestFile:
         mock_supports_long_paths.assert_called_once()
         mock_win_prepare_path.assert_called_with(path_250_noprefix)
 
+    @pytest.mark.parametrize("version", [(-1), (1)])
     @mock.patch("dbterd.helpers.file.open_json")
-    def test_read_manifest_error(self, mock_open_json):
+    def test_read_manifest_error(self, mock_open_json, version):
         mock_open_json.return_value = dict({"data": "dummy"})
         with pytest.raises(ValueError):
-            file.read_manifest(path="path/to/manifest")
+            file.read_manifest(path="path/to/manifest", version=version)
         mock_open_json.assert_called_with("path/to/manifest/manifest.json")
 
+    @pytest.mark.parametrize("version", [(-1), (1)])
     @mock.patch("dbterd.helpers.file.open_json")
-    def test_read_catalog_error(self, mock_open_json):
+    def test_read_catalog_error(self, mock_open_json, version):
         mock_open_json.return_value = dict({"data": "dummy"})
         with pytest.raises(ValueError):
-            file.read_catalog(path="path/to/catalog")
+            file.read_catalog(path="path/to/catalog", version=version)
         mock_open_json.assert_called_with("path/to/catalog/catalog.json")
