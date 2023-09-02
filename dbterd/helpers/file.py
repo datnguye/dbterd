@@ -4,6 +4,8 @@ import sys
 
 from dbt_artifacts_parser import parser
 
+from dbterd.helpers.log import logger
+
 
 def get_sys_platform():  # pragma: no cover
     return sys.platform
@@ -118,7 +120,16 @@ def read_manifest(path: str, version: int = None):
         dict: Manifest dict
     """
     _dict = open_json(f"{path}/manifest.json")
-    parser_version = f"parse_manifest_v{version}" if version else "parse_manifest"
+    default_parser = "parse_manifest"
+    parser_version = f"parse_manifest_v{version}" if version else default_parser
+    if not hasattr(parser, parser_version):
+        logger.warning(
+            "Manifest version is NOT SUPPORTED in current `dbt-artifacts-parser` package. \n"
+            "Please help to try `-mv {version}` option with other value, OR upgrade the package:\n"
+            "\tpip install dbt-artifacts-parser --upgrade\n"
+            "Try falling back to the latest one..."
+        )
+        parser_version = default_parser
     parse_func = getattr(parser, parser_version)
     return parse_func(manifest=_dict)
 
@@ -134,6 +145,15 @@ def read_catalog(path: str, version: int = None):
         dict: Catalog dict
     """
     _dict = open_json(f"{path}/catalog.json")
-    parser_version = f"parse_catalog_v{version}" if version else "parse_catalog"
+    default_parser = "parse_catalog"
+    parser_version = f"parse_catalog_v{version}" if version else default_parser
+    if not hasattr(parser, parser_version):
+        logger.warning(
+            "Catalog version is NOT SUPPORTED in current `dbt-artifacts-parser` package. \n"
+            "Please help to try `-mv {version}` option with other value, OR upgrade the package:\n"
+            "\tpip install dbt-artifacts-parser --upgrade\n"
+            "Try falling back to the latest one..."
+        )
+        parser_version = default_parser
     parse_func = getattr(parser, parser_version)
     return parse_func(catalog=_dict)

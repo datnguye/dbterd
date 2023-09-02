@@ -62,6 +62,13 @@ def common_params(func):
         type=click.STRING,
     )
     @click.option(
+        "--catalog-version",
+        "-cv",
+        help="Specified dbt catalog.json version",
+        default=None,
+        type=click.STRING,
+    )
+    @click.option(
         "--resource-type",
         "-rt",
         help="Specified dbt resource type(seed, model, source, snapshot),default:model, use examples, -rt model -rt source",

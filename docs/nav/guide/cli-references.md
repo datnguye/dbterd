@@ -51,6 +51,7 @@ Command to generate diagram-as-a-code file
                                         diagram connectors  [default:
                                         test_relationship]
         -mv, --manifest-version TEXT  Specified dbt manifest.json version
+        -cv, --catalog-version TEXT   Specified dbt catalog.json version
         -rt, --resource-type TEXT     Specified dbt resource type(seed, model,
                                         source, snapshot),default:model, use examples,
                                         -rt model -rt source
@@ -227,6 +228,23 @@ Specified dbt manifest.json version
 
     ```bash
     dbterd run -mv 7
+    ```
+
+### --catalog-version (-cv)
+
+Specified dbt catalog.json version
+> Auto detect if not specified
+
+**Examples:**
+=== "CLI"
+
+    ```bash
+    dbterd run --catalog-version 7
+    ```
+=== "CLI (long style)"
+
+    ```bash
+    dbterd run -cv 7
     ```
 
 ### --resource-type (-rt)

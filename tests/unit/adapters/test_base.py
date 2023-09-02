@@ -29,7 +29,7 @@ class TestBase:
             ) as mock_check_existence:
                 assert worker._Executor__read_manifest(mp=Path.cwd()) == dict({})
         mock_check_existence.assert_called_once_with(Path.cwd(), "manifest.json")
-        mock_read_manifest.assert_called_once_with(Path.cwd(), None)
+        mock_read_manifest.assert_called_once_with(path=Path.cwd(), version=None)
 
     def test___read_catalog(self):
         worker = DbtWorker(ctx=click.Context(command=click.BaseCommand("dummy")))
@@ -41,4 +41,4 @@ class TestBase:
             ) as mock_check_existence:
                 assert worker._Executor__read_catalog(cp=Path.cwd()) == dict({})
         mock_check_existence.assert_called_once_with(Path.cwd(), "catalog.json")
-        mock_read_catalog.assert_called_once_with(Path.cwd())
+        mock_read_catalog.assert_called_once_with(path=Path.cwd(), version=None)
