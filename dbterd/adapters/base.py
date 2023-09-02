@@ -37,20 +37,21 @@ class Executor(abc.ABC):
         cli_messaging.check_existence(mp, self.filename_manifest)
         conditional = f" or provided version {mv} is incorrect" if mv else ""
         with cli_messaging.handle_read_errors(self.filename_manifest, conditional):
-            return file_handlers.read_manifest(mp, mv)
+            return file_handlers.read_manifest(path=mp, version=mv)
 
-    def __read_catalog(self, cp: str):
+    def __read_catalog(self, cp: str, cv: int = None):
         """Read the Catalog content
 
         Args:
             cp (str): catalog.json file path
+            cv (int, optional): Catalog version. Defaults to None.
 
         Returns:
             dict: Catalog dict
         """
         cli_messaging.check_existence(cp, self.filename_catalog)
         with cli_messaging.handle_read_errors(self.filename_catalog):
-            return file_handlers.read_catalog(cp)
+            return file_handlers.read_catalog(path=cp, version=cv)
 
     def __run_by_strategy(self, **kwargs):
         """Read artifacts and export the diagram file following the target"""
@@ -66,7 +67,8 @@ class Executor(abc.ABC):
             mv=kwargs["manifest_version"],
         )
         catalog = self.__read_catalog(
-            cp=kwargs.get("manifest_path") or kwargs["artifacts_dir"]
+            cp=kwargs.get("manifest_path") or kwargs["artifacts_dir"],
+            cv=kwargs["catalog_version"],
         )
 
         result = operation(manifest=manifest, catalog=catalog, **kwargs)
