@@ -13,6 +13,7 @@ pip install dbterd --upgrade
 ```
 
 Verify installation:
+
 ```bash
 dbterd --version
 ```
