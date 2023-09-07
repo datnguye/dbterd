@@ -61,7 +61,7 @@ def evaluate_rule(table: Table, rule: str):
 
 
 def __is_satisfied_by_name(table: Table, rule: str = ""):
-    """Evaulate rule by Name
+    """Evaluate rule by Name
 
     Args:
         table (Table): Table object
@@ -76,7 +76,7 @@ def __is_satisfied_by_name(table: Table, rule: str = ""):
 
 
 def __is_satisfied_by_schema(table: Table, rule: str = ""):
-    """Evaulate rule by Schema name
+    """Evaluate rule by Schema name
 
     Args:
         table (Table): Table object
@@ -97,7 +97,7 @@ def __is_satisfied_by_schema(table: Table, rule: str = ""):
 
 
 def __is_satisfied_by_wildcard(table: Table, rule: str = "*"):
-    """Evaulate rule by Wildcard (Unix Style)
+    """Evaluate rule by Wildcard (Unix Style)
 
     Args:
         table (Table): Table object
@@ -109,3 +109,18 @@ def __is_satisfied_by_wildcard(table: Table, rule: str = "*"):
     if not rule:
         return True
     return fnmatch(table.name, rule)
+
+
+def __is_satisfied_by_exposure(table: Table, rule: str = ""):
+    """Evaluate rule by dbt Exposure name
+
+    Args:
+        table (Table): Table object
+        rule (str, optional): Rule def. Defaults to "".
+
+    Returns:
+        bool: True if satisfied table name matched the pattern
+    """
+    if not rule:
+        return True
+    return rule in table.exposures

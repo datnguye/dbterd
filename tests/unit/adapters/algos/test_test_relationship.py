@@ -53,6 +53,11 @@ class ManifestNode:
 
 
 @dataclass
+class ManifestExposureNode:
+    depends_on: ManifestNodeDependsOn
+
+
+@dataclass
 class ManifestNodeColumn:
     name: str
     data_type: str = "unknown"
@@ -181,6 +186,17 @@ class DummyManifestTable:
                 "name2": ManifestNodeColumn(name="name2"),
             },
         ),
+    }
+
+
+@dataclass
+class DummyManifestWithExposure:
+    exposures = {
+        "exposure.dbt_resto.dummy": ManifestExposureNode(
+            depends_on=ManifestNodeDependsOn(
+                nodes=["model.dbt_resto.table1", "model.dbt_resto.table2"]
+            ),
+        )
     }
 
 
@@ -355,3 +371,22 @@ class TestAlgoTestRelationship:
     )
     def test_get_relationship_type(self, meta, type):
         assert algo.get_relationship_type(meta=meta) == type
+
+    @pytest.mark.parametrize(
+        "manifest, expected",
+        [
+            (
+                DummyManifestWithExposure(),
+                [
+                    dict(table_name="model.dbt_resto.table1", exposure_name="dummy"),
+                    dict(table_name="model.dbt_resto.table2", exposure_name="dummy"),
+                ],
+            ),
+            (
+                DummyManifestTable(),
+                [],
+            ),
+        ],
+    )
+    def test_get_node_exposures(self, manifest, expected):
+        assert expected == base_algo.get_node_exposures(manifest=manifest)

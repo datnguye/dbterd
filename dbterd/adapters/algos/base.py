@@ -15,6 +15,8 @@ def get_tables(manifest, catalog):
     """
     tables = []
 
+    table_exposures = get_node_exposures(manifest=manifest)
+
     if hasattr(manifest, "nodes"):
         for table_name, node in manifest.nodes.items():
             if (
@@ -24,7 +26,10 @@ def get_tables(manifest, catalog):
             ):
                 catalog_node = catalog.nodes.get(table_name)
                 table = get_table(
-                    table_name=table_name, manifest_node=node, catalog_node=catalog_node
+                    table_name=table_name,
+                    manifest_node=node,
+                    catalog_node=catalog_node,
+                    exposures=table_exposures,
                 )
                 tables.append(table)
 
@@ -36,6 +41,7 @@ def get_tables(manifest, catalog):
                     table_name=table_name,
                     manifest_node=source,
                     catalog_node=catalog_source,
+                    exposures=table_exposures,
                 )
                 tables.append(table)
 
@@ -69,13 +75,14 @@ def enrich_tables_from_relationships(tables, relationships):
     return copied_tables
 
 
-def get_table(table_name, manifest_node, catalog_node=None):
+def get_table(table_name, manifest_node, catalog_node=None, exposures=[]):
     """Construct a single Table object
 
     Args:
         table_name (str): Table name
         manifest_node (dict): Manifest node
         catalog_node (dict, optional): Catalog node. Defaults to None.
+        exposures (List, optional): List of table-exposure mapping. Defaults to [].
 
     Returns:
         Table: Parsed table
@@ -87,6 +94,11 @@ def get_table(table_name, manifest_node, catalog_node=None):
         schema=manifest_node.schema_.lower(),
         columns=[],
         resource_type=table_name.split(".")[0],
+        exposures=[
+            x.get("exposure_name")
+            for x in exposures
+            if x.get("table_name") == table_name
+        ],
     )
 
     if catalog_node:
@@ -149,3 +161,27 @@ def get_compiled_sql(manifest_node):
         )
 
     return manifest_node.raw_sql  # fallback to raw dbt code
+
+
+def get_node_exposures(manifest):
+    """Get the mapping of table name and exposure name
+
+    Args:
+        manifest (dict): dbt manifest json
+
+    Returns:
+        dict: Maping dict {table_name:..., exposure_name=...}
+    """
+    exposures = []
+
+    if hasattr(manifest, "exposures"):
+        for exposure_name, node in manifest.exposures.items():
+            for table_name in node.depends_on.nodes:
+                exposures.append(
+                    dict(
+                        table_name=table_name,
+                        exposure_name=exposure_name.split(".")[-1],
+                    )
+                )
+
+    return exposures

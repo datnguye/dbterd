@@ -219,6 +219,60 @@ class TestDbmlTestRelationship:
                 //Refs (based on the DBT Relationship Tests)
                 """,
             ),
+            (
+                [
+                    Table(
+                        name="model.dbt_resto.table1",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[Column(name="name1", data_type="name1-type")],
+                        raw_sql="--irrelevant--",
+                        exposures=["dummy1"],
+                    )
+                ],
+                [],
+                ["exposure:dummy1", "exposure:"],
+                [],
+                ["model"],
+                """//Tables (based on the selection criteria)
+                //--configured at schema: --database--.--schema--
+                Table "model.dbt_resto.table1" {
+                    "name1" "name1-type"
+                }
+                //Refs (based on the DBT Relationship Tests)
+                """,
+            ),
+            (
+                [
+                    Table(
+                        name="model.dbt_resto.table1",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[Column(name="name1", data_type="name1-type")],
+                        raw_sql="--irrelevant--",
+                        exposures=["dummy1"],
+                    ),
+                    Table(
+                        name="model.dbt_resto.table23",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[Column(name="name23", data_type="name23-type")],
+                        raw_sql="--irrelevant--",
+                        exposures=["dummy2", "dummy3"],
+                    ),
+                ],
+                [],
+                ["exposure:dummy2"],
+                [],
+                ["model"],
+                """//Tables (based on the selection criteria)
+                //--configured at schema: --database--.--schema--
+                Table "model.dbt_resto.table23" {
+                    "name23" "name23-type"
+                }
+                //Refs (based on the DBT Relationship Tests)
+                """,
+            ),
         ],
     )
     def test_parse(
