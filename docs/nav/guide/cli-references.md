@@ -102,6 +102,7 @@ Rules:
 - By `name`: model name starts with input string
 - By `schema`: schema name starts with an input string, formed as `schema:<your_schema_name>`
 - By `wildcard`: model name matches to a [wildcard pattern](https://docs.python.org/3/library/fnmatch.html), formed as `wildcard:<your_wildcard>`
+- By `exposure`: exposure name, exact match
 
 **Examples:**
 === "CLI (by name)"
@@ -118,6 +119,11 @@ Rules:
 
     ```bash
     dbterd run --select "wildcard:*xyz"
+    ```
+=== "CLI (by exposure)"
+
+    ```bash
+    dbterd run --select "exposure:my_exposure_name"
     ```
 
 #### `AND` and `OR` logic
@@ -161,11 +167,7 @@ Exclusion criteria. Rules are the same as Selection Criteria.
 Target to the diagram-as-code platform
 > Default to `dbml`
 
-Supports:
-
-- [`dbml`](https://www.dbml.org/home/)
-- [`mermaid`](https://mermaid.js.org/syntax/entityRelationshipDiagram.html)
-- [`plantuml`](https://plantuml.com/ie-diagram)
+Supported target, please visit [Generate the Targets](https://dbterd.datnguyen.de/latest/nav/guide/targets/generate-dbml.html)
 
 **Examples:**
 === "CLI"
@@ -195,6 +197,14 @@ In the above:
 - `c_from`: Configure the test metadata attribute (1) for the foreign key column name(s). If (1)'s value is multiple columns, it will concat them all   with `_and` wording
       > NOTE: It always looking at the `column_name` attribute firstly
 - `c_to`: Configure the test metadata attribute (2) for the referenced column name(s). If (2)'s value is multiple columns, it will concat them all with `_and` wording. Default to `field`
+
+!!! tip "For example, if you would use `dbt-constraints` package"
+    The [dbt-constraints](https://hub.getdbt.com/snowflake-labs/dbt_constraints/latest/) package is using different name of test which is close to the contraint names, in this case, you would need to customize the input string here:
+
+    ```bash
+    dbterd run \
+    --algo "test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)"
+    ```
 
 **Examples:**
 === "CLI"

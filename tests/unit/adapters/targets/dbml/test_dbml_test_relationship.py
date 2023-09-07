@@ -227,7 +227,7 @@ class TestDbmlTestRelationship:
                         schema="--schema--",
                         columns=[Column(name="name1", data_type="name1-type")],
                         raw_sql="--irrelevant--",
-                        exposures=["dummy1"]
+                        exposures=["dummy1"],
                     )
                 ],
                 [],
@@ -250,7 +250,7 @@ class TestDbmlTestRelationship:
                         schema="--schema--",
                         columns=[Column(name="name1", data_type="name1-type")],
                         raw_sql="--irrelevant--",
-                        exposures=["dummy1"]
+                        exposures=["dummy1"],
                     ),
                     Table(
                         name="model.dbt_resto.table23",
@@ -258,8 +258,8 @@ class TestDbmlTestRelationship:
                         schema="--schema--",
                         columns=[Column(name="name23", data_type="name23-type")],
                         raw_sql="--irrelevant--",
-                        exposures=["dummy2", "dummy3"]
-                    )
+                        exposures=["dummy2", "dummy3"],
+                    ),
                 ],
                 [],
                 ["exposure:dummy2"],
