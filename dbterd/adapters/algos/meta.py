@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Optional, Tuple
 
 
@@ -21,6 +21,7 @@ class Table:
     columns: Optional[List[Column]] = None
     raw_sql: Optional[str] = None
     resource_type: str = "model"
+    exposures: Optional[List[str]] = field(default_factory=lambda: [])
 
 
 @dataclass
