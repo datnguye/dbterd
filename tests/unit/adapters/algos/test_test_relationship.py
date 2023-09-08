@@ -6,7 +6,7 @@ import pytest
 
 from dbterd.adapters.algos import base as base_algo
 from dbterd.adapters.algos import test_relationship as algo
-from dbterd.adapters.algos.meta import Column, Ref, Table
+from dbterd.adapters.meta import Column, Ref, Table
 
 
 @dataclass

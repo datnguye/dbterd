@@ -9,15 +9,14 @@ def common_params(func):
     @click.option(
         "--artifacts-dir",
         "-ad",
-        help="Specified the full path to dbt artifacts path which known as /target directory",
-        default=default.default_artifact_path(),
-        show_default=True,
+        help="Specified the path to dbt artifact directory which known as /target directory",
+        default="",
         type=click.STRING,
     )
     @click.option(
         "--output",
         "-o",
-        help="Output the result file. Default to the same target dir",
+        help="Output the result file. Default to the cwd/target",
         default=default.default_output_path(),
         show_default=True,
         type=click.STRING,
@@ -74,6 +73,28 @@ def common_params(func):
         help="Specified dbt resource type(seed, model, source, snapshot),default:model, use examples, -rt model -rt source",
         default=["model"],
         multiple=True,
+        type=click.STRING,
+    )
+    @click.option(
+        "--dbt",
+        help="Flag to indicate the Selecton to follow dbt's one leveraging Programmatic Invocation",
+        is_flag=True,
+        default=False,
+        show_default=True,
+    )
+    @click.option(
+        "--dbt-project-dir",
+        "-dpd",
+        help="Specified dbt project directory path",
+        default="",
+        show_default=True,
+        type=click.STRING,
+    )
+    @click.option(
+        "--dbt-target",
+        "-dt",
+        help="Specified dbt target name",
+        default=None,
         type=click.STRING,
     )
     @functools.wraps(func)

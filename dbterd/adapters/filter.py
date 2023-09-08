@@ -2,7 +2,29 @@ import sys
 from fnmatch import fnmatch
 from typing import List
 
-from dbterd.adapters.algos.meta import Table
+from dbterd.adapters.meta import Table
+
+RULE_FUNC_PREFIX = "is_satisfied_by_"
+
+
+def has_unsupported_rule(rules: List[str] = []) -> bool:
+    """Verify if existing the unsupported selection rule
+
+    Args:
+        rules (List[str]): Any (selection or/and exclusion) rules
+
+    Returns:
+        bool: True if existing any unsupported one
+    """
+    for rule in rules:
+        type = rule.split(":")
+        if len(type) == 1:
+            continue
+        rule_func = f"{RULE_FUNC_PREFIX}{type[0]}"
+        if not hasattr(sys.modules[__name__], rule_func):
+            return (True, type[0])
+
+    return (False, None)
 
 
 def is_selected_table(
@@ -28,6 +50,7 @@ def is_selected_table(
         selected = any([evaluate_rule(table=table, rule=rule) for rule in select_rules])
     if resource_types:
         selected = selected and table.resource_type in resource_types
+
     # Exclusion
     excluded = False
     if exclude_rules:
@@ -55,12 +78,15 @@ def evaluate_rule(table: Table, rule: str):
         type, rule = "name", rule_parts[0]
         if len(rule_parts) > 1:
             type, rule = tuple(rule_parts[:2])
-        selected_func = getattr(sys.modules[__name__], f"__is_satisfied_by_{type}")
+
+        rule_func = f"{RULE_FUNC_PREFIX}{type}"
+        selected_func = getattr(sys.modules[__name__], rule_func)
         results.append(selected_func(table=table, rule=rule))
+
     return all(results)
 
 
-def __is_satisfied_by_name(table: Table, rule: str = ""):
+def is_satisfied_by_name(table: Table, rule: str = ""):
     """Evaluate rule by Name
 
     Args:
@@ -75,7 +101,22 @@ def __is_satisfied_by_name(table: Table, rule: str = ""):
     return table.name.startswith(rule)
 
 
-def __is_satisfied_by_schema(table: Table, rule: str = ""):
+def is_satisfied_by_exact(table: Table, rule: str = ""):
+    """Evaluate rule by model name with exact match
+
+    Args:
+        table (Table): Table object
+        rule (str, optional): Rule def. Defaults to "".
+
+    Returns:
+        bool: True if satisfied `equal` logic applied to Table name
+    """
+    if not rule:
+        return True
+    return table.name == rule
+
+
+def is_satisfied_by_schema(table: Table, rule: str = ""):
     """Evaluate rule by Schema name
 
     Args:
@@ -96,7 +137,7 @@ def __is_satisfied_by_schema(table: Table, rule: str = ""):
     )
 
 
-def __is_satisfied_by_wildcard(table: Table, rule: str = "*"):
+def is_satisfied_by_wildcard(table: Table, rule: str = "*"):
     """Evaluate rule by Wildcard (Unix Style)
 
     Args:
@@ -111,7 +152,7 @@ def __is_satisfied_by_wildcard(table: Table, rule: str = "*"):
     return fnmatch(table.name, rule)
 
 
-def __is_satisfied_by_exposure(table: Table, rule: str = ""):
+def is_satisfied_by_exposure(table: Table, rule: str = ""):
     """Evaluate rule by dbt Exposure name
 
     Args:
@@ -119,7 +160,7 @@ def __is_satisfied_by_exposure(table: Table, rule: str = ""):
         rule (str, optional): Rule def. Defaults to "".
 
     Returns:
-        bool: True if satisfied table name matched the pattern
+        bool: True if satisfied exposure name exists in the table's exposures
     """
     if not rule:
         return True

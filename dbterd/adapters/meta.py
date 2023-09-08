@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from enum import Enum
 from typing import List, Optional, Tuple
 
 
@@ -32,3 +33,11 @@ class Ref:
     table_map: Tuple[str, str]
     column_map: Tuple[str, str]
     type: str = "n1"
+
+
+class SelectionType(Enum):
+    START_WITH_NAME = ""
+    EXACT_NAME = "exact"
+    SCHEMA = "schema"
+    WILDCARD = "wildcard"
+    EXPOSURE = "exposure"

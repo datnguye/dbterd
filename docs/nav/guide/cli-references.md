@@ -61,7 +61,10 @@ Command to generate diagram-as-a-code file
 ### --artifacts-dir (-ad)
 
 Configure the path to directory containing dbt artifact files.
-> Default to `./target`
+
+It will take the the nested `/target` directory of `--dbt-project-dir` if not specified.
+
+> Default to the current directory's `/target` if both this option and `--dbt-project-dir` option are not specified
 
 **Examples:**
 === "CLI"
@@ -274,6 +277,59 @@ Specified dbt resource type(seed, model, source, snapshot).
     dbterd run --resource-type model
     ```
 
+### --dbt
+
+Flag to indicate the Selecton to follow dbt's one leveraging Programmatic Invocation
+> Default to `False`
+
+**Examples:**
+=== "CLI (use dbt selection)"
+
+    ```bash
+    dbterd run -s +something --dbt
+    # select 'something' and the upstream
+    ```
+=== "CLI (use dbterd selection)"
+
+    ```bash
+    dbterd run -s something
+    # select starts with 'something'
+    ```
+
+### --dbt-project-dir (-dpd)
+
+Specified dbt project directory path
+
+You should specified this option if your CWD is not the dbt project dir, and normally used with `--dbt` enabled. It will take the value of `--artifacts-dir` if not specified.
+
+> Default to the current directory if both this option and `--artifacts-dir` option are not specified
+
+**Examples:**
+=== "CLI"
+
+    ```bash
+    dbterd run -s +something --dbt-project-dir /path/to/dbt/project --dbt
+    # select 'something' and the upstream of the dbt project located at /path/to/dbt/project
+    # the artifacts dir will probably be assumed as: /path/to/dbt/project/target
+    ```
+
+### --dbt-target (-dt)
+
+Specified dbt target name
+
+Probably used with `--dbt` enabled.
+
+> Default to the dbt's profile configuration
+
+**Examples:**
+=== "CLI"
+
+    ```bash
+    dbterd run -s +something --dbt-project-dir /path/to/dbt/project --dbt --dbt-target prod
+    # select 'something' and the upstream of the dbt project located at /path/to/dbt/project using target name 'prod'
+    # the artifacts dir will probably be assumed as: /path/to/dbt/project/target
+    ```
+
 ## debug
 
 Shows hidden configured values
@@ -282,21 +338,41 @@ Shows hidden configured values
 === "Output"
 
     ```
-    2023-04-08 10:15:03,611 - dbterd - INFO - Run with dbterd==0.2.0 (main.py:43)
-    2023-04-08 10:15:03,612 - dbterd - INFO - **Arguments used** (main.py:52)
-    2023-04-08 10:15:03,613 - dbterd - DEBUG - {
-        "artifacts_dir": "C:\\Users\\DAT\\Documents\\Sources\\dbterd\\target",
-        "manifest_path": null,
+    2023-09-08 16:43:45,066 - dbterd - INFO - Run with dbterd==1.0.0 (main.py:54)
+    2023-09-08 16:43:45,071 - dbterd - INFO - **Arguments used** (main.py:63)
+    2023-09-08 16:43:45,073 - dbterd - DEBUG - {
+        "artifacts_dir": "",
         "output": "C:\\Users\\DAT\\Documents\\Sources\\dbterd\\target",
-        "select": null,
-        "exclude": null,
+        "select": [],
+        "exclude": [],
         "target": "dbml",
         "algo": "test_relationship",
         "manifest_version": null,
+        "catalog_version": null,
         "resource_type": [
             "model"
-        ]
-    } (main.py:53)
-    2023-04-08 10:15:03,614 - dbterd - INFO - **Context used** (main.py:54)
-    2023-04-08 10:15:03,614 - dbterd - DEBUG - {} (main.py:55)
+        ],
+        "dbt": false,
+        "dbt_project_dir": "",
+        "dbt_target": null
+    } (main.py:64)
+    2023-09-08 16:43:45,079 - dbterd - INFO - **Arguments evaluated** (main.py:65)
+    2023-09-08 16:43:45,081 - dbterd - INFO - Using dbt artifact dir at: C:\Users\DAT\Documents\Sources\dbterd\target (base.py:41)
+    2023-09-08 16:43:45,082 - dbterd - INFO - Using dbt project  dir at: C:\Users\DAT\Documents\Sources\dbterd (base.py:42)
+    2023-09-08 16:43:45,084 - dbterd - DEBUG - {
+        "artifacts_dir": "C:\\Users\\DAT\\Documents\\Sources\\dbterd\\target",
+        "output": "C:\\Users\\DAT\\Documents\\Sources\\dbterd\\target",
+        "select": [],
+        "exclude": [],
+        "target": "dbml",
+        "algo": "test_relationship",
+        "manifest_version": null,
+        "catalog_version": null,
+        "resource_type": [
+            "model"
+        ],
+        "dbt": false,
+        "dbt_project_dir": "C:\\Users\\DAT\\Documents\\Sources\\dbterd",
+        "dbt_target": null
+    } (main.py:66)
     ```

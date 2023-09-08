@@ -1,11 +1,12 @@
 from dbterd.adapters.algos import base
-from dbterd.adapters.algos.filter import is_selected_table
-from dbterd.adapters.algos.meta import Ref
+from dbterd.adapters.filter import is_selected_table
+from dbterd.adapters.meta import Ref
 from dbterd.constants import (
     DEFAULT_ALGO_RULE,
     TEST_META_IGNORE_IN_ERD,
     TEST_META_RELATIONSHIP_TYPE,
 )
+from dbterd.helpers.log import logger
 
 
 def parse(manifest, catalog, **kwargs):
@@ -27,9 +28,9 @@ def parse(manifest, catalog, **kwargs):
         for table in tables
         if is_selected_table(
             table=table,
-            select_rules=(kwargs.get("select") or []),
+            select_rules=kwargs.get("select") or [],
             resource_types=kwargs.get("resource_type", []),
-            exclude_rules=kwargs.get("exclude", []),
+            exclude_rules=kwargs.get("exclude") or [],
         )
     ]
 
@@ -47,6 +48,9 @@ def parse(manifest, catalog, **kwargs):
         tables=tables, relationships=relationships
     )
 
+    logger.info(
+        f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)"
+    )
     return (tables, relationships)
 
 

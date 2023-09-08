@@ -2,6 +2,7 @@
 /target
 /samples/local
 CHANGELOG.md
+/dbt_packages
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
