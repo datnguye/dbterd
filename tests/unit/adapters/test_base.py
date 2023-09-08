@@ -3,7 +3,7 @@ from unittest import mock
 
 import click
 
-from dbterd.adapters.worker import DbtWorker
+from dbterd.adapters.base import Executor
 
 
 class TestBase:
@@ -15,12 +15,12 @@ class TestBase:
     # )
 
     def test_worker(self):
-        worker = DbtWorker(ctx=click.Context(command=click.BaseCommand("dummy")))
+        worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
         assert worker.filename_manifest == "manifest.json"
         assert worker.filename_catalog == "catalog.json"
 
     def test___read_manifest(self):
-        worker = DbtWorker(ctx=click.Context(command=click.BaseCommand("dummy")))
+        worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
         with mock.patch(
             "dbterd.helpers.file.read_manifest", return_value=dict({})
         ) as mock_read_manifest:
@@ -32,7 +32,7 @@ class TestBase:
         mock_read_manifest.assert_called_once_with(path=Path.cwd(), version=None)
 
     def test___read_catalog(self):
-        worker = DbtWorker(ctx=click.Context(command=click.BaseCommand("dummy")))
+        worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
         with mock.patch(
             "dbterd.helpers.file.read_catalog", return_value=dict({})
         ) as mock_read_catalog:

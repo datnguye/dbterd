@@ -2,7 +2,27 @@ import sys
 from fnmatch import fnmatch
 from typing import List
 
-from dbterd.adapters.algos.meta import Table
+from dbterd.adapters.meta import Table
+
+RULE_FUNC_PREFIX = "__is_satisfied_by_"
+
+
+def has_unsupported_rule(rules: List[str] = []) -> bool:
+    """Verify if existing the unsupported selection rule
+
+    Args:
+        rules (List[str]): Any (selection or/and exclusion) rules
+
+    Returns:
+        bool: True if existing any unsupported one
+    """
+    for rule in rules:
+        type = rule.split(":")[0]
+        rule_func = f"{RULE_FUNC_PREFIX}{type}"
+        if not hasattr(sys.modules[__name__], rule_func):
+            return (True, type)
+
+    return (False, None)
 
 
 def is_selected_table(
@@ -56,8 +76,11 @@ def evaluate_rule(table: Table, rule: str):
         type, rule = "name", rule_parts[0]
         if len(rule_parts) > 1:
             type, rule = tuple(rule_parts[:2])
-        selected_func = getattr(sys.modules[__name__], f"__is_satisfied_by_{type}")
+
+        rule_func = f"{RULE_FUNC_PREFIX}{type}"
+        selected_func = getattr(sys.modules[__name__], rule_func)
         results.append(selected_func(table=table, rule=rule))
+
     return all(results)
 
 
@@ -74,6 +97,21 @@ def __is_satisfied_by_name(table: Table, rule: str = ""):
     if not rule:
         return True
     return table.name.startswith(rule)
+
+
+def __is_satisfied_by_exact(table: Table, rule: str = ""):
+    """Evaluate rule by model name with exact match
+
+    Args:
+        table (Table): Table object
+        rule (str, optional): Rule def. Defaults to "".
+
+    Returns:
+        bool: True if satisfied `equal` logic applied to Table name
+    """
+    if not rule:
+        return True
+    return table.name == rule
 
 
 def __is_satisfied_by_schema(table: Table, rule: str = ""):

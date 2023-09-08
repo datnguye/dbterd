@@ -2,7 +2,7 @@ from unittest import mock
 
 import pytest
 
-from dbterd.adapters.algos.meta import Column, Ref, Table
+from dbterd.adapters.meta import Column, Ref, Table
 from dbterd.adapters.targets.mermaid import mermaid_test_relationship as engine
 
 

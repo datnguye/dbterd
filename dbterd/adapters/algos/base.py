@@ -1,6 +1,6 @@
 import copy
 
-from dbterd.adapters.algos.meta import Column, Table
+from dbterd.adapters.meta import Column, Table
 
 
 def get_tables(manifest, catalog):

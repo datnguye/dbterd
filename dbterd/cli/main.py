@@ -3,7 +3,7 @@ from typing import List
 
 import click
 
-from dbterd.adapters.worker import DbtWorker
+from dbterd.adapters.base import Executor
 from dbterd.cli import params
 from dbterd.helpers import jsonify
 from dbterd.helpers.log import logger
@@ -62,8 +62,8 @@ def debug(ctx, **kwargs):
     """Inspect the hidden magics"""
     logger.info("**Arguments used**")
     logger.debug(jsonify.to_json(kwargs))
-    logger.info("**Context used**")
-    logger.debug(jsonify.to_json(ctx.obj))
+    logger.info("**Arguments evaluated**")
+    logger.debug(jsonify.to_json(Executor(ctx).evaluate_kwargs(**kwargs)))
 
 
 # dbterd run
@@ -72,4 +72,4 @@ def debug(ctx, **kwargs):
 @params.common_params
 def run(ctx, **kwargs):
     """Run the convert"""
-    DbtWorker(ctx).run(**kwargs)
+    Executor(ctx).run(**kwargs)
