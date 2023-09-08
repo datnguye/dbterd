@@ -28,6 +28,7 @@ def is_selected_table(
         selected = any([evaluate_rule(table=table, rule=rule) for rule in select_rules])
     if resource_types:
         selected = selected and table.resource_type in resource_types
+
     # Exclusion
     excluded = False
     if exclude_rules:
@@ -119,7 +120,7 @@ def __is_satisfied_by_exposure(table: Table, rule: str = ""):
         rule (str, optional): Rule def. Defaults to "".
 
     Returns:
-        bool: True if satisfied table name matched the pattern
+        bool: True if satisfied exposure name exists in the table's exposures
     """
     if not rule:
         return True
