@@ -57,10 +57,7 @@ class TestDbtInvocation:
         mock_dbtRunner_invoke.assert_called_once_with(args)
 
     @mock.patch("dbterd.adapters.dbt_invocation.dbtRunner.invoke")
-    def test_get_selection__failed(
-        self,
-        mock_dbtRunner_invoke
-    ):
+    def test_get_selection__failed(self, mock_dbtRunner_invoke):
         mock_dbtRunner_invoke.return_value = dbtRunnerResult(success=False)
         with pytest.raises(click.UsageError):
             DbtInvocation(dbt_target="dummy").get_selection(
