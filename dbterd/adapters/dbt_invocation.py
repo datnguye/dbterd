@@ -4,6 +4,7 @@ from importlib.metadata import version
 from pathlib import Path
 from typing import List
 
+import click
 from dbt.cli.main import dbtRunner, dbtRunnerResult
 
 from dbterd.helpers.log import logger
@@ -34,12 +35,13 @@ class DbtInvocation:
                 f"Found dbt v{version('dbt-core')} installed at {installed_path}"
             )
         else:
-            logger.error(
+            message = (
                 "dbt module is not found or unsupported version, "
                 "please try to install dbt-core v1.5 or later, "
                 "OR let's try again without `--dbt` flag"
             )
-            exit(-1)
+            logger.error(message)
+            raise click.UsageError(message)
 
     def get_selection(
         self, select_rules: List[str] = [], exclude_rules: List[str] = []
@@ -51,7 +53,7 @@ class DbtInvocation:
             exclude_rules (List[str], optional): Model exclusives. Defaults to [].
 
         Returns:
-            List[str]: Selected node names
+            List[str]: Selected node names with 'exact' rule
         """
         args = ["ls", "--project-dir", self.project_dir, "--resource-type", "model"]
         if select_rules:
@@ -66,7 +68,7 @@ class DbtInvocation:
 
         if not r.success:
             logger.error(str(r))
-            exit(-1)
+            raise click.UsageError("str(r)")
 
         return [
             f"exact:model.{str(x).split('.')[0]}.{str(x).split('.')[-1]}"

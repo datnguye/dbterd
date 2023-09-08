@@ -10,7 +10,7 @@ def common_params(func):
         "--artifacts-dir",
         "-ad",
         help="Specified the path to dbt artifact directory which known as /target directory",
-        default=None,
+        default="",
         type=click.STRING,
     )
     @click.option(
@@ -86,7 +86,7 @@ def common_params(func):
         "--dbt-project-dir",
         "-dpd",
         help="Specified dbt project directory path",
-        default=None,
+        default="",
         show_default=True,
         type=click.STRING,
     )

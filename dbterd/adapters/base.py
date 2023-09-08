@@ -26,8 +26,6 @@ class Executor:
     def run(self, **kwargs):
         """Main function helps to run by the target strategy"""
         kwargs = self.evaluate_kwargs(**kwargs)
-        logger.info(f"Using dbt artifact dir at: {kwargs.get('artifacts_dir')}")
-        logger.info(f"Using dbt project  dir at: {kwargs.get('dbt_project_dir')}")
         self.__run_by_strategy(**kwargs)
 
     def evaluate_kwargs(self, **kwargs) -> dict:
@@ -40,6 +38,8 @@ class Executor:
             dict: kwargs dict
         """
         artifacts_dir, dbt_project_dir = self.__get_dir(**kwargs)
+        logger.info(f"Using dbt artifact dir at: {artifacts_dir}")
+        logger.info(f"Using dbt project  dir at: {dbt_project_dir}")
 
         select = list(kwargs.get("select")) or []
         exclude = list(kwargs.get("exclude")) or []
@@ -68,20 +68,25 @@ class Executor:
         Returns:
             tuple(str, str): Path to target directory and dbt project directory
         """
-        artifact_dir = Path(
-            f"{kwargs.get('artifacts_dir') or kwargs.get('dbt_project_dir')}"
-        ).absolute()  # default
-        project_dir = Path(
-            f"{kwargs.get('dbt_project_dir') or kwargs.get('artifacts_dir')}"
-        ).absolute()  # default
+        artifact_dir = (
+            f"{kwargs.get('artifacts_dir') or kwargs.get('dbt_project_dir')}"  # default
+        )
+        project_dir = (
+            f"{kwargs.get('dbt_project_dir') or kwargs.get('artifacts_dir')}"  # default
+        )
+
+        if not artifact_dir:
+            print("returned")
+            return (
+                default.default_artifact_path(),
+                str(Path(default.default_artifact_path()).parent.absolute()),
+            )
+
+        artifact_dir = Path(artifact_dir).absolute()
+        project_dir = Path(project_dir).absolute()
 
         if not os.path.isfile(f"{artifact_dir}/{self.filename_manifest}"):
             artifact_dir = f"{project_dir}/target"  # try child target
-        if not os.path.isfile(f"{artifact_dir}/{self.filename_manifest}"):
-            artifact_dir = default.default_artifact_path()  # fallback to CWD
-        if not os.path.isfile(f"{project_dir}/dbt_project.yml"):
-            # fallback to CWD
-            project_dir = Path(default.default_artifact_path()).parent.absolute()
 
         return (str(artifact_dir), str(project_dir))
 

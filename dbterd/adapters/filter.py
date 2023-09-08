@@ -4,7 +4,7 @@ from typing import List
 
 from dbterd.adapters.meta import Table
 
-RULE_FUNC_PREFIX = "__is_satisfied_by_"
+RULE_FUNC_PREFIX = "is_satisfied_by_"
 
 
 def has_unsupported_rule(rules: List[str] = []) -> bool:
@@ -17,10 +17,12 @@ def has_unsupported_rule(rules: List[str] = []) -> bool:
         bool: True if existing any unsupported one
     """
     for rule in rules:
-        type = rule.split(":")[0]
-        rule_func = f"{RULE_FUNC_PREFIX}{type}"
+        type = rule.split(":")
+        if len(type) == 1:
+            continue
+        rule_func = f"{RULE_FUNC_PREFIX}{type[0]}"
         if not hasattr(sys.modules[__name__], rule_func):
-            return (True, type)
+            return (True, type[0])
 
     return (False, None)
 
@@ -84,7 +86,7 @@ def evaluate_rule(table: Table, rule: str):
     return all(results)
 
 
-def __is_satisfied_by_name(table: Table, rule: str = ""):
+def is_satisfied_by_name(table: Table, rule: str = ""):
     """Evaluate rule by Name
 
     Args:
@@ -99,7 +101,7 @@ def __is_satisfied_by_name(table: Table, rule: str = ""):
     return table.name.startswith(rule)
 
 
-def __is_satisfied_by_exact(table: Table, rule: str = ""):
+def is_satisfied_by_exact(table: Table, rule: str = ""):
     """Evaluate rule by model name with exact match
 
     Args:
@@ -114,7 +116,7 @@ def __is_satisfied_by_exact(table: Table, rule: str = ""):
     return table.name == rule
 
 
-def __is_satisfied_by_schema(table: Table, rule: str = ""):
+def is_satisfied_by_schema(table: Table, rule: str = ""):
     """Evaluate rule by Schema name
 
     Args:
@@ -135,7 +137,7 @@ def __is_satisfied_by_schema(table: Table, rule: str = ""):
     )
 
 
-def __is_satisfied_by_wildcard(table: Table, rule: str = "*"):
+def is_satisfied_by_wildcard(table: Table, rule: str = "*"):
     """Evaluate rule by Wildcard (Unix Style)
 
     Args:
@@ -150,7 +152,7 @@ def __is_satisfied_by_wildcard(table: Table, rule: str = "*"):
     return fnmatch(table.name, rule)
 
 
-def __is_satisfied_by_exposure(table: Table, rule: str = ""):
+def is_satisfied_by_exposure(table: Table, rule: str = ""):
     """Evaluate rule by dbt Exposure name
 
     Args:

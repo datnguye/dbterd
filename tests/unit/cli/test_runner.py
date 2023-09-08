@@ -100,3 +100,37 @@ class TestRunner:
                             ["run", "--target", target, "--output", "/custom/path"]
                         )
                         mock_open_w.assert_called_with(f"/custom/path/{output}", "w")
+
+    def test_command_invalid_selection_rule(self, dbterd: dbterdRunner) -> None:
+        with pytest.raises(Exception):
+            dbterd.invoke(["run", "--select", "notexist:dummy"])
+
+    @pytest.mark.parametrize(
+        "target, output",
+        [
+            ("dbml", "output.dbml"),
+        ],
+    )
+    def test_invoke_run_failed_to_write_output(
+        self, target, output, dbterd: dbterdRunner
+    ) -> None:
+        with mock.patch(
+            "dbterd.adapters.base.Executor._Executor__read_manifest", return_value=None
+        ) as mock_read_m:
+            with mock.patch(
+                "dbterd.adapters.base.Executor._Executor__read_catalog",
+                return_value=None,
+            ) as mock_read_c:
+                with mock.patch(
+                    f"dbterd.adapters.targets.{target}.{target}_test_relationship.parse",
+                    return_value="--irrelevant--",
+                ) as mock_engine_parse:
+                    with mock.patch(
+                        "builtins.open", return_value=PermissionError()
+                    ) as mock_open_w:
+                        with pytest.raises(click.FileError):
+                            dbterd.invoke(["run", "--target", target])
+                        mock_read_m.assert_called_once()
+                        mock_read_c.assert_called_once()
+                        mock_engine_parse.assert_called_once()
+                        mock_open_w.assert_called_once()
