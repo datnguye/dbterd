@@ -76,7 +76,6 @@ class Executor:
         )
 
         if not artifact_dir:
-            print("returned")
             return (
                 default.default_artifact_path(),
                 str(Path(default.default_artifact_path()).parent.absolute()),
