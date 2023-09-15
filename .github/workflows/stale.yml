@@ -1,0 +1,29 @@
+name: Close stale Issues and PRs
+on:
+  workflow_call:
+  schedule:
+    - cron: 30 1 * * *
+
+permissions:
+  issues: write
+  pull-requests: write
+
+env:
+  STALE_ISSUE_MSG: "This issue has been marked as Stale because it has been open for 180 days with no activity. If you would like the issue to remain open, please comment on the issue or else it will be closed in 7 days."
+  STALE_PR_MSG: "This PR has been marked as Stale because it has been open with no activity as of late. If you would like the PR to remain open, please comment on the PR or else it will be closed in 7 days."
+  CLOSE_ISSUE_MSG: "Although we are closing this issue as stale, it's not gone forever. Issues can be reopened if there is renewed community interest. Just add a comment to notify the maintainers."
+  CLOSE_PR_MSG: "Although we are closing this PR as stale, it can still be reopened to continue development. Just add a comment to notify the maintainers."
+  CLOSE_ISSUE_REASON: "not_planned"
+
+jobs:
+  stale-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v8
+        with:
+          stale-issue-message: ${{ env.STALE_ISSUE_MSG }}
+          stale-pr-message: ${{ env.STALE_PR_MSG }}
+          close-issue-message: ${{ env.CLOSE_ISSUE_MSG }}
+          close-pr-message: ${{ env.CLOSE_PR_MSG }}
+          close-issue-reason: ${{ env.CLOSE_ISSUE_REASON }}
+          days-before-stale: 180
