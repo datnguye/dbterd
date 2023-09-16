@@ -22,6 +22,7 @@ class Executor:
         self.ctx = ctx
         self.filename_manifest = "manifest.json"
         self.filename_catalog = "catalog.json"
+        self.dbt: DbtInvocation = None
 
     def run(self, **kwargs):
         """Main function helps to run by the target strategy"""
@@ -31,6 +32,9 @@ class Executor:
     def evaluate_kwargs(self, **kwargs) -> dict:
         """Re-calculate the options
 
+        - trigger `dbt ls` for re-calculate the Selection if `--dbt` enabled
+        - trigger `dbt docs generate` for re-calculate the artifact direction if `--dbt-atu-artifacts` enabled
+
         Raises:
             click.UsageError: Not Supported exception
 
@@ -38,14 +42,21 @@ class Executor:
             dict: kwargs dict
         """
         artifacts_dir, dbt_project_dir = self.__get_dir(**kwargs)
-        logger.info(f"Using dbt artifact dir at: {artifacts_dir}")
-        logger.info(f"Using dbt project  dir at: {dbt_project_dir}")
+        logger.info(f"Using dbt project dir at: {dbt_project_dir}")
 
         select = list(kwargs.get("select")) or []
         exclude = list(kwargs.get("exclude")) or []
         if kwargs.get("dbt"):
+            self.dbt = DbtInvocation(
+                dbt_project_dir=kwargs.get("dbt_project_dir"),
+                dbt_target=kwargs.get("dbt_target"),
+            )
             select = self.__get_selection(**kwargs)
             exclude = []
+
+            if kwargs.get("dbt_auto_artifacts"):
+                self.dbt.get_artifacts_for_erd()
+                artifacts_dir = f"{dbt_project_dir}/target"
         else:
             unsupported, rule = has_unsupported_rule(
                 rules=select.extend(exclude) if exclude else select
@@ -55,6 +66,7 @@ class Executor:
                 logger.error(message)
                 raise click.UsageError(message)
 
+        logger.info(f"Using dbt artifact dir at: {artifacts_dir}")
         kwargs["artifacts_dir"] = artifacts_dir
         kwargs["dbt_project_dir"] = dbt_project_dir
         kwargs["select"] = select
@@ -91,10 +103,10 @@ class Executor:
 
     def __get_selection(self, **kwargs):
         """Override the Selection using dbt's one with `--dbt`"""
-        return DbtInvocation(
-            dbt_project_dir=kwargs.get("dbt_project_dir"),
-            dbt_target=kwargs.get("dbt_target"),
-        ).get_selection(
+        if not self.dbt:
+            raise click.UsageError("Flag `--dbt` need to be enabled")
+
+        return self.dbt.get_selection(
             select_rules=kwargs.get("select"),
             exclude_rules=kwargs.get("exclude"),
         )

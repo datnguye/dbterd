@@ -49,12 +49,18 @@ class TestDbtInvocation:
         )
         assert actual == expected
 
-        args = ["ls", "--project-dir", invoker.project_dir, "--resource-type", "model"]
+        args = ["ls", "--resource-type", "model"]
         if select_rules:
             args.extend(["--select", " ".join(select_rules)])
         if exclude_rules:
             args.extend(["--exclude", " ".join(exclude_rules)])
-        mock_dbtRunner_invoke.assert_called_once_with(args)
+        mock_dbtRunner_invoke.assert_called_once_with(
+            [
+                *["--quiet", "--log-level", "none"],
+                *args,
+                *["--project-dir", invoker.project_dir],
+            ]
+        )
 
     @mock.patch("dbterd.adapters.dbt_invocation.dbtRunner.invoke")
     def test_get_selection__failed(self, mock_dbtRunner_invoke):
@@ -63,3 +69,17 @@ class TestDbtInvocation:
             DbtInvocation(dbt_target="dummy").get_selection(
                 select_rules=[], exclude_rules=[]
             )
+
+    @mock.patch("dbterd.adapters.dbt_invocation.dbtRunner.invoke")
+    def test_get_artifacts_for_erd(self, mock_dbtRunner_invoke):
+        invoker = DbtInvocation()
+        _ = invoker.get_artifacts_for_erd()
+
+        args = ["docs", "generate"]
+        mock_dbtRunner_invoke.assert_called_once_with(
+            [
+                *["--quiet", "--log-level", "none"],
+                *args,
+                *["--project-dir", invoker.project_dir],
+            ]
+        )
