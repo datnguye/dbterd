@@ -6,6 +6,7 @@ import pytest
 
 from dbterd import default
 from dbterd.adapters.base import Executor
+from dbterd.adapters.dbt_invocation import DbtInvocation
 
 
 class TestBase:
@@ -50,10 +51,19 @@ class TestBase:
     )
     def test__get_selection(self, mock_dbt_invocation):
         worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
+        worker.dbt = DbtInvocation()
         assert "dummy" == worker._Executor__get_selection(
             select_rules=[], exclude_rules=[]
         )
         mock_dbt_invocation.assert_called_once()
+
+    @mock.patch(
+        "dbterd.adapters.base.DbtInvocation.get_selection", return_value="dummy"
+    )
+    def test__get_selection__error(self, mock_dbt_invocation):
+        worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
+        with pytest.raises(click.UsageError):
+            worker._Executor__get_selection()
 
     @pytest.mark.parametrize(
         "kwargs, expected",
@@ -80,16 +90,37 @@ class TestBase:
                     exclude=[],
                 ),
             ),
+            (
+                dict(select=[], exclude=[], dbt=True, dbt_auto_artifacts=True),
+                dict(
+                    dbt=True,
+                    dbt_auto_artifacts=True,
+                    artifacts_dir="/path/dpd/target",
+                    dbt_project_dir="/path/dpd",
+                    select=["yolo"],
+                    exclude=[],
+                ),
+            ),
         ],
     )
     @mock.patch("dbterd.adapters.base.Executor._Executor__get_dir")
     @mock.patch("dbterd.adapters.base.Executor._Executor__get_selection")
-    def test_evaluate_kwargs(self, mock_get_selection, mock_get_dir, kwargs, expected):
+    @mock.patch("dbterd.adapters.base.DbtInvocation.get_artifacts_for_erd")
+    def test_evaluate_kwargs(
+        self,
+        mock_get_artifacts_for_erd,
+        mock_get_selection,
+        mock_get_dir,
+        kwargs,
+        expected,
+    ):
         worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
         mock_get_dir.return_value = ("/path/ad", "/path/dpd")
         mock_get_selection.return_value = ["yolo"]
         assert expected == worker.evaluate_kwargs(**kwargs)
         mock_get_dir.assert_called_once()
+        if kwargs.get("dbt_auto_artifacts"):
+            mock_get_artifacts_for_erd.assert_called_once()
 
     @pytest.mark.parametrize(
         "kwargs, mock_isfile_se, expected",
