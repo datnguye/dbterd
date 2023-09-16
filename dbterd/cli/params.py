@@ -97,6 +97,13 @@ def common_params(func):
         default=None,
         type=click.STRING,
     )
+    @click.option(
+        "--dbt-auto-artifacts",
+        help="Flag to force generating dbt artifact files leveraging Programmatic Invocation",
+        is_flag=True,
+        default=False,
+        show_default=True,
+    )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)  # pragma: no cover

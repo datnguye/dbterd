@@ -18,7 +18,7 @@ run    Run the convert<br />
     </span>
 </div>
 
-## run
+## dbterd run
 
 Command to generate diagram-as-a-code file
 
@@ -58,44 +58,7 @@ Command to generate diagram-as-a-code file
         -h, --help                    Show this message and exit.
     ```
 
-### --artifacts-dir (-ad)
-
-Configure the path to directory containing dbt artifact files.
-
-It will take the the nested `/target` directory of `--dbt-project-dir` if not specified.
-
-> Default to the current directory's `/target` if both this option and `--dbt-project-dir` option are not specified
-
-**Examples:**
-=== "CLI"
-
-    ```bash
-    dbterd run -ad "./target"
-    ```
-=== "CLI (long style)"
-
-    ```bash
-    dbterd run --artifacts-dir "./target"
-    ```
-
-### --output (-o)
-
-Configure the path to directory containing the output diagram file.
-> Default to `./target`
-
-**Examples:**
-=== "CLI"
-
-    ```bash
-    dbterd run -o "./target"
-    ```
-=== "CLI (long style)"
-
-    ```bash
-    dbterd run --output "./target"
-    ```
-
-### --select (-s)
+### dbterd run --select (-s)
 
 Selection criteria.
 > Select all dbt models if not specified, supports mulitple options
@@ -103,6 +66,7 @@ Selection criteria.
 Rules:
 
 - By `name`: model name starts with input string
+- By `exact`: exact model name, formed as `exact:model.package.name`
 - By `schema`: schema name starts with an input string, formed as `schema:<your_schema_name>`
 - By `wildcard`: model name matches to a [wildcard pattern](https://docs.python.org/3/library/fnmatch.html), formed as `wildcard:<your_wildcard>`
 - By `exposure`: exposure name, exact match
@@ -111,7 +75,12 @@ Rules:
 === "CLI (by name)"
 
     ```bash
-    dbterd run -s "model.package_name.model_partital_name"
+    dbterd run -s "model.package.partital_name"
+    ```
+=== "CLI (by exact name)"
+
+    ```bash
+    dbterd run -s "exact:model.package.name"
     ```
 === "CLI (by schema)"
 
@@ -121,12 +90,12 @@ Rules:
 === "CLI (by wildcard)"
 
     ```bash
-    dbterd run --select "wildcard:*xyz"
+    dbterd run -s "wildcard:*xyz"
     ```
 === "CLI (by exposure)"
 
     ```bash
-    dbterd run --select "exposure:my_exposure_name"
+    dbterd run -s "exposure:my_exposure_name"
     ```
 
 #### `AND` and `OR` logic
@@ -148,7 +117,7 @@ Rules:
     dbterd run -s schema:abc -s wildcard:*xyz.*
     ```
 
-### --exclude (-ns)
+### dbterd run --exclude (-ns)
 
 Exclusion criteria. Rules are the same as Selection Criteria.
 > Do not exclude any dbt models if not specified, supports mulitple options
@@ -165,7 +134,44 @@ Exclusion criteria. Rules are the same as Selection Criteria.
     dbterd run --exclude 'model.package_name.table'
     ```
 
-### --target (-t)
+### dbterd run --artifacts-dir (-ad)
+
+Configure the path to directory containing dbt artifact files.
+
+It will take the the nested `/target` directory of `--dbt-project-dir` if not specified.
+
+> Default to the current directory's `/target` if both this option and `--dbt-project-dir` option are not specified
+
+**Examples:**
+=== "CLI"
+
+    ```bash
+    dbterd run -ad "./target"
+    ```
+=== "CLI (long style)"
+
+    ```bash
+    dbterd run --artifacts-dir "./target"
+    ```
+
+### dbterd run --output (-o)
+
+Configure the path to directory containing the output diagram file.
+> Default to `./target`
+
+**Examples:**
+=== "CLI"
+
+    ```bash
+    dbterd run -o "./target"
+    ```
+=== "CLI (long style)"
+
+    ```bash
+    dbterd run --output "./target"
+    ```
+
+### dbterd run --target (-t)
 
 Target to the diagram-as-code platform
 > Default to `dbml`
@@ -184,7 +190,7 @@ Supported target, please visit [Generate the Targets](https://dbterd.datnguyen.d
     dbterd run --target dbml
     ```
 
-### --algo (-a)
+### dbterd run --algo (-a)
 
 Specified algorithm in the way to detect diagram connectors
 > Default to `test_relationship`
@@ -226,7 +232,7 @@ In the above:
     dbterd run --algo "test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)"
     ```
 
-### --manifest-version (-mv)
+### dbterd run --manifest-version (-mv)
 
 Specified dbt manifest.json version
 > Auto detect if not specified
@@ -243,7 +249,7 @@ Specified dbt manifest.json version
     dbterd run -mv 7
     ```
 
-### --catalog-version (-cv)
+### dbterd run --catalog-version (-cv)
 
 Specified dbt catalog.json version
 > Auto detect if not specified
@@ -260,7 +266,7 @@ Specified dbt catalog.json version
     dbterd run -cv 7
     ```
 
-### --resource-type (-rt)
+### dbterd run --resource-type (-rt)
 
 Specified dbt resource type(seed, model, source, snapshot).
 > Default to `["model"]`, supports mulitple options
@@ -277,7 +283,7 @@ Specified dbt resource type(seed, model, source, snapshot).
     dbterd run --resource-type model
     ```
 
-### --dbt
+### dbterd run --dbt
 
 Flag to indicate the Selecton to follow dbt's one leveraging Programmatic Invocation
 > Default to `False`
@@ -296,7 +302,22 @@ Flag to indicate the Selecton to follow dbt's one leveraging Programmatic Invoca
     # select starts with 'something'
     ```
 
-### --dbt-project-dir (-dpd)
+### dbterd run --dbt --dbt-auto-artifact
+
+Flag to indicate force running `dbt docs generate` to the targetted project in order to produce the dbt artifact files.
+
+This option have to be enabled together with `--dbt` option, and will override the value of `--artifacts-dir` to be using the `/target` dir of the value of `--dbt-project-dir`.
+
+> Default to `False`
+
+**Examples:**
+=== "CLI"
+
+    ```bash
+    dbterd run -s +something --dbt --dbt-auto-artifacts
+    ```
+
+### dbterd run --dbt-project-dir (-dpd)
 
 Specified dbt project directory path
 
@@ -313,7 +334,7 @@ You should specified this option if your CWD is not the dbt project dir, and nor
     # the artifacts dir will probably be assumed as: /path/to/dbt/project/target
     ```
 
-### --dbt-target (-dt)
+### dbterd run --dbt-target (-dt)
 
 Specified dbt target name
 
@@ -330,9 +351,9 @@ Probably used with `--dbt` enabled.
     # the artifacts dir will probably be assumed as: /path/to/dbt/project/target
     ```
 
-## debug
+## dbterd debug
 
-Shows hidden configured values
+Shows hidden configured values, which will help us to see what configs are passed into and how they are evaluated to be used.
 
 **Examples:**
 === "Output"
