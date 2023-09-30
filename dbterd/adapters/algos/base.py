@@ -3,7 +3,7 @@ import copy
 from dbterd.adapters.meta import Column, Table
 
 
-def get_tables(manifest, catalog):
+def get_tables(manifest, catalog, **kwargs):
     """Extract tables from dbt artifacts
 
     Args:
@@ -30,6 +30,7 @@ def get_tables(manifest, catalog):
                     manifest_node=node,
                     catalog_node=catalog_node,
                     exposures=table_exposures,
+                    **kwargs,
                 )
                 tables.append(table)
 
@@ -42,6 +43,7 @@ def get_tables(manifest, catalog):
                     manifest_node=source,
                     catalog_node=catalog_source,
                     exposures=table_exposures,
+                    **kwargs,
                 )
                 tables.append(table)
 
@@ -75,7 +77,7 @@ def enrich_tables_from_relationships(tables, relationships):
     return copied_tables
 
 
-def get_table(node_name, manifest_node, catalog_node=None, exposures=[]):
+def get_table(node_name, manifest_node, catalog_node=None, exposures=[], **kwargs):
     """Construct a single Table object
 
     Args:
@@ -87,8 +89,25 @@ def get_table(node_name, manifest_node, catalog_node=None, exposures=[]):
     Returns:
         Table: Parsed table
     """
+    node_name_parts = node_name.split(".")
     table = Table(
-        name=node_name,
+        name=get_table_name(
+            format=kwargs.get("entity_name_format"),
+            **dict(
+                resource=node_name_parts[0],
+                package=node_name_parts[1],
+                model=node_name_parts[2],
+                database=manifest_node.database.lower(),
+                schema=manifest_node.schema_.lower(),
+                table=(
+                    manifest_node.identifier.lower()
+                    if hasattr(manifest_node, "identifier")
+                    else manifest_node.alias.lower()
+                    if hasattr(manifest_node, "alias")
+                    else node_name
+                ),
+            ),
+        ),
         node_name=node_name,
         raw_sql=get_compiled_sql(manifest_node),
         database=manifest_node.database.lower(),
@@ -184,3 +203,15 @@ def get_node_exposures(manifest):
                 )
 
     return exposures
+
+
+def get_table_name(format: str, **kwargs) -> str:
+    """Get table name from the input format
+
+    Args:
+        table_format (str): Table format string e.g. resource.package.model
+
+    Returns:
+        str: Qualified table name
+    """
+    return ".".join([kwargs.get(x.lower()) or "KEYNOTFOUND" for x in format.split(".")])

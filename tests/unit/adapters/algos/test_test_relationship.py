@@ -284,7 +284,14 @@ class TestAlgoTestRelationship:
             "dbterd.adapters.algos.base.get_compiled_sql",
             return_value="--irrelevant--",
         ) as mock_get_compiled_sql:
-            assert base_algo.get_tables(manifest, catalog) == expected
+            assert (
+                base_algo.get_tables(
+                    manifest,
+                    catalog,
+                    **dict(entity_name_format="resource.package.model")
+                )
+                == expected
+            )
             mock_get_compiled_sql.assert_called()
 
     @pytest.mark.parametrize(

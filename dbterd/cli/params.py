@@ -108,7 +108,8 @@ def common_params(func):
         "--entity-name-format",
         "-enf",
         help="Specified the format of the entity node's name",
-        default="None",
+        default="resource.package.model",
+        show_default=True,
         type=click.STRING,
     )
     @functools.wraps(func)
