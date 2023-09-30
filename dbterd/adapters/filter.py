@@ -94,11 +94,11 @@ def is_satisfied_by_name(table: Table, rule: str = ""):
         rule (str, optional): Rule def. Defaults to "".
 
     Returns:
-        bool: True if satisfied `starts with` logic applied to Table name
+        bool: True if satisfied `starts with` logic applied to Node name
     """
     if not rule:
         return True
-    return table.name.startswith(rule)
+    return table.node_name.startswith(rule)
 
 
 def is_satisfied_by_exact(table: Table, rule: str = ""):
@@ -113,7 +113,7 @@ def is_satisfied_by_exact(table: Table, rule: str = ""):
     """
     if not rule:
         return True
-    return table.name == rule
+    return table.node_name == rule
 
 
 def is_satisfied_by_schema(table: Table, rule: str = ""):
@@ -149,7 +149,7 @@ def is_satisfied_by_wildcard(table: Table, rule: str = "*"):
     """
     if not rule:
         return True
-    return fnmatch(table.name, rule)
+    return fnmatch(table.node_name, rule)
 
 
 def is_satisfied_by_exposure(table: Table, rule: str = ""):

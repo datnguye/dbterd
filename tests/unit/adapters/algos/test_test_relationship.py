@@ -238,6 +238,7 @@ class TestAlgoTestRelationship:
                 [
                     Table(
                         name="model.dbt_resto.table1",
+                        node_name="model.dbt_resto.table1",
                         database="--database--",
                         schema="--schema--",
                         columns=[Column(name="name1", data_type="--name1-type--")],
@@ -245,6 +246,7 @@ class TestAlgoTestRelationship:
                     ),
                     Table(
                         name="model.dbt_resto.table_dummy_columns",
+                        node_name="model.dbt_resto.table_dummy_columns",
                         database="--database--",
                         schema="--schema--",
                         columns=[Column()],
@@ -252,6 +254,7 @@ class TestAlgoTestRelationship:
                     ),
                     Table(
                         name="model.dbt_resto.table2",
+                        node_name="model.dbt_resto.table2",
                         database="--database2--",
                         schema="--schema2--",
                         columns=[
@@ -262,6 +265,7 @@ class TestAlgoTestRelationship:
                     ),
                     Table(
                         name="source.dummy.source_table",
+                        node_name="source.dummy.source_table",
                         database="--database--",
                         schema="--schema--",
                         columns=[
@@ -280,7 +284,14 @@ class TestAlgoTestRelationship:
             "dbterd.adapters.algos.base.get_compiled_sql",
             return_value="--irrelevant--",
         ) as mock_get_compiled_sql:
-            assert base_algo.get_tables(manifest, catalog) == expected
+            assert (
+                base_algo.get_tables(
+                    manifest,
+                    catalog,
+                    **dict(entity_name_format="resource.package.model")
+                )
+                == expected
+            )
             mock_get_compiled_sql.assert_called()
 
     @pytest.mark.parametrize(
@@ -378,8 +389,8 @@ class TestAlgoTestRelationship:
             (
                 DummyManifestWithExposure(),
                 [
-                    dict(table_name="model.dbt_resto.table1", exposure_name="dummy"),
-                    dict(table_name="model.dbt_resto.table2", exposure_name="dummy"),
+                    dict(node_name="model.dbt_resto.table1", exposure_name="dummy"),
+                    dict(node_name="model.dbt_resto.table2", exposure_name="dummy"),
                 ],
             ),
             (

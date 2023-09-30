@@ -25,21 +25,30 @@ class TestFilter:
         [
             (
                 Table(
-                    name="model.dummy.table1", database="dummydb", schema="dummyschema"
+                    name="irrelevant",
+                    node_name="model.dummy.table1",
+                    database="dummydb",
+                    schema="dummyschema",
                 ),
                 "",
                 True,
             ),
             (
                 Table(
-                    name="model.dummy.table1", database="dummydb", schema="dummyschema"
+                    name="irrelevant",
+                    node_name="model.dummy.table1",
+                    database="dummydb",
+                    schema="dummyschema",
                 ),
                 "table1",
                 False,
             ),
             (
                 Table(
-                    name="model.dummy.table1", database="dummydb", schema="dummyschema"
+                    name="irrelevant",
+                    node_name="model.dummy.table1",
+                    database="dummydb",
+                    schema="dummyschema",
                 ),
                 "model.dummy.table1",
                 True,

@@ -14,6 +14,7 @@ class TestGraphVizTestRelationship:
                 [
                     Table(
                         name="model.dbt_resto.table1",
+                        node_name="model.dbt_resto.table1",
                         database="--database--",
                         schema="--schema--",
                         columns=[Column(name="name1", data_type="name1-type")],
@@ -49,6 +50,7 @@ class TestGraphVizTestRelationship:
                 [
                     Table(
                         name="model.dbt_resto.table1",
+                        node_name="model.dbt_resto.table1",
                         database="--database--",
                         schema="--schema--",
                         columns=[Column(name="name1", data_type="name1-type")],
@@ -56,6 +58,7 @@ class TestGraphVizTestRelationship:
                     ),
                     Table(
                         name="model.dbt_resto.table2",
+                        node_name="model.dbt_resto.table2",
                         database="--database2--",
                         schema="--schema2--",
                         columns=[Column(name="name2", data_type="name2-type2")],
@@ -63,6 +66,7 @@ class TestGraphVizTestRelationship:
                     ),
                     Table(
                         name="source.dbt_resto.table3",
+                        node_name="source.dbt_resto.table3",
                         database="--database3--",
                         schema="--schema3--",
                         columns=[Column(name="name3", data_type="name3-type3")],
@@ -147,6 +151,7 @@ class TestGraphVizTestRelationship:
                 [
                     Table(
                         name="model.dbt_resto.table1",
+                        node_name="model.dbt_resto.table1",
                         database="--database--",
                         schema="--schema--",
                         columns=[Column(name="name1", data_type="name1-type")],
@@ -154,6 +159,7 @@ class TestGraphVizTestRelationship:
                     ),
                     Table(
                         name="model.dbt_resto.table2",
+                        node_name="model.dbt_resto.table2",
                         database="--database2--",
                         schema="--schema2--",
                         columns=[Column(name="name2", data_type="name2-type2")],
@@ -195,6 +201,7 @@ class TestGraphVizTestRelationship:
                 [
                     Table(
                         name="model.dbt_resto.table1",
+                        node_name="model.dbt_resto.table1",
                         database="--database--",
                         schema="--schema--",
                         columns=[Column(name="name1", data_type="name1-type")],
@@ -218,6 +225,7 @@ class TestGraphVizTestRelationship:
                 [
                     Table(
                         name="model.dbt_resto.table1",
+                        node_name="model.dbt_resto.table1",
                         database="--database--",
                         schema="--schema--",
                         columns=[Column(name="name1", data_type="name1-type")],
@@ -225,6 +233,7 @@ class TestGraphVizTestRelationship:
                     ),
                     Table(
                         name="model.dbt_resto.table2",
+                        node_name="model.dbt_resto.table2",
                         database="--database--",
                         schema="--schema--",
                         columns=[Column(name="name2", data_type="name2-type")],
@@ -260,6 +269,7 @@ class TestGraphVizTestRelationship:
                 [
                     Table(
                         name="model.dbt_resto.table1",
+                        node_name="model.dbt_resto.table1",
                         database="--database--",
                         schema="--schema--",
                         columns=[Column(name="name1", data_type="name1-type")],
@@ -295,6 +305,7 @@ class TestGraphVizTestRelationship:
                 [
                     Table(
                         name="model.dbt_resto.table1",
+                        node_name="model.dbt_resto.table1",
                         database="--database--",
                         schema="--schema--",
                         columns=[Column(name="name1", data_type="name1-type")],
@@ -302,6 +313,7 @@ class TestGraphVizTestRelationship:
                     ),
                     Table(
                         name="model.dbt_resto.table2",
+                        node_name="model.dbt_resto.table2",
                         database="--database--",
                         schema="--schema--",
                         columns=[Column(name="name2", data_type="name2-type")],
