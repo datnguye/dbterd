@@ -351,6 +351,28 @@ Probably used with `--dbt` enabled.
     # the artifacts dir will probably be assumed as: /path/to/dbt/project/target
     ```
 
+### dbterd run --entity-name-format (-enf)
+
+Decide how the table name is generated on the ERD.
+
+By default, the table name is the dbt node name (`resource_type.package_name.model_name`).
+
+Currently, it supports the following keys in the format:
+
+- `resource.package.model` (by default)
+- `database.schema.table`
+- Or any other partial forms e.g. `schema.table`, `resource.model`
+
+**Examples:**
+=== "CLI"
+
+    ```bash
+    dbterd run --entity-name-format resource.package.model # by default
+    dbterd run --entity-name-format database.schema.table # with fqn of the physical tables
+    dbterd run --entity-name-format schema.table # with schema.table only
+    dbterd run --entity-name-format table # with table name only
+    ```
+
 ## dbterd debug
 
 Shows hidden configured values, which will help us to see what configs are passed into and how they are evaluated to be used.
