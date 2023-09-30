@@ -36,11 +36,11 @@ def parse(manifest, catalog, **kwargs):
 
     # Parse Ref
     relationships = get_relationships(manifest=manifest, **kwargs)
-    table_names = [x.name for x in tables]
+    node_names = [x.node_name for x in tables]
     relationships = [
         x
         for x in relationships
-        if x.table_map[0] in table_names and x.table_map[1] in table_names
+        if x.table_map[0] in node_names and x.table_map[1] in node_names
     ]
 
     # Fullfill columns in Tables (due to `select *`)

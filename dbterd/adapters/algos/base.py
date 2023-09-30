@@ -18,15 +18,15 @@ def get_tables(manifest, catalog):
     table_exposures = get_node_exposures(manifest=manifest)
 
     if hasattr(manifest, "nodes"):
-        for table_name, node in manifest.nodes.items():
+        for node_name, node in manifest.nodes.items():
             if (
-                table_name.startswith("model.")
-                or table_name.startswith("seed.")
-                or table_name.startswith("snapshot.")
+                node_name.startswith("model.")
+                or node_name.startswith("seed.")
+                or node_name.startswith("snapshot.")
             ):
-                catalog_node = catalog.nodes.get(table_name)
+                catalog_node = catalog.nodes.get(node_name)
                 table = get_table(
-                    table_name=table_name,
+                    node_name=node_name,
                     manifest_node=node,
                     catalog_node=catalog_node,
                     exposures=table_exposures,
@@ -34,11 +34,11 @@ def get_tables(manifest, catalog):
                 tables.append(table)
 
     if hasattr(manifest, "sources"):
-        for table_name, source in manifest.sources.items():
-            if table_name.startswith("source"):
-                catalog_source = catalog.sources.get(table_name)
+        for node_name, source in manifest.sources.items():
+            if node_name.startswith("source"):
+                catalog_source = catalog.sources.get(node_name)
                 table = get_table(
-                    table_name=table_name,
+                    node_name=node_name,
                     manifest_node=source,
                     catalog_node=catalog_source,
                     exposures=table_exposures,
@@ -75,11 +75,11 @@ def enrich_tables_from_relationships(tables, relationships):
     return copied_tables
 
 
-def get_table(table_name, manifest_node, catalog_node=None, exposures=[]):
+def get_table(node_name, manifest_node, catalog_node=None, exposures=[]):
     """Construct a single Table object
 
     Args:
-        table_name (str): Table name
+        node_name (str): Node name
         manifest_node (dict): Manifest node
         catalog_node (dict, optional): Catalog node. Defaults to None.
         exposures (List, optional): List of table-exposure mapping. Defaults to [].
@@ -88,16 +88,15 @@ def get_table(table_name, manifest_node, catalog_node=None, exposures=[]):
         Table: Parsed table
     """
     table = Table(
-        name=table_name,
+        name=node_name,
+        node_name=node_name,
         raw_sql=get_compiled_sql(manifest_node),
         database=manifest_node.database.lower(),
         schema=manifest_node.schema_.lower(),
         columns=[],
-        resource_type=table_name.split(".")[0],
+        resource_type=node_name.split(".")[0],
         exposures=[
-            x.get("exposure_name")
-            for x in exposures
-            if x.get("table_name") == table_name
+            x.get("exposure_name") for x in exposures if x.get("node_name") == node_name
         ],
     )
 
@@ -176,10 +175,10 @@ def get_node_exposures(manifest):
 
     if hasattr(manifest, "exposures"):
         for exposure_name, node in manifest.exposures.items():
-            for table_name in node.depends_on.nodes:
+            for node_name in node.depends_on.nodes:
                 exposures.append(
                     dict(
-                        table_name=table_name,
+                        node_name=node_name,
                         exposure_name=exposure_name.split(".")[-1],
                     )
                 )

@@ -104,6 +104,13 @@ def common_params(func):
         default=False,
         show_default=True,
     )
+    @click.option(
+        "--entity-name-format",
+        "-enf",
+        help="Specified the format of the entity node's name",
+        default="None",
+        type=click.STRING,
+    )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)  # pragma: no cover

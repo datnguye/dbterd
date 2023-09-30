@@ -23,6 +23,7 @@ class Table:
     raw_sql: Optional[str] = None
     resource_type: str = "model"
     exposures: Optional[List[str]] = field(default_factory=lambda: [])
+    node_name: str = None
 
 
 @dataclass
