@@ -167,8 +167,12 @@ def get_table_map(test_node, **kwargs):
     map = test_node.depends_on.nodes or []
     rule = get_algo_rule(**kwargs)
     to_model = str(test_node.test_metadata.kwargs.get(rule.get("t_to", "to"), {}))
-    if f'("{map[1].split(".")[-1]}")'.lower() in to_model.replace("'", '"').lower():
-        return [map[1], map[0]]
+
+    if len(map) >= 2 and isinstance(map[1], str):
+        if f'("{map[1].split(".")[-1]}")'.lower() in to_model.replace("'", '"').lower():
+            return [map[1], map[0]]
+    else:
+        return None
 
     return map
 
