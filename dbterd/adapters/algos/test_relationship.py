@@ -84,7 +84,7 @@ def get_relationships(manifest, **kwargs):
                             f'{rule.get("c_to")}s', "unknown"
                         )
                     )
-                ).lower(),
+                ).replace("\"","").lower(),
                 str(
                     manifest.nodes[x].test_metadata.kwargs.get("column_name")
                     or manifest.nodes[x].test_metadata.kwargs.get(rule.get("c_from"))
@@ -93,7 +93,7 @@ def get_relationships(manifest, **kwargs):
                             f'{rule.get("c_from")}s', "unknown"
                         )
                     )
-                ).lower(),
+                ).replace("\"","").lower(),
             ],
             type=get_relationship_type(
                 manifest.nodes[x].meta.get(TEST_META_RELATIONSHIP_TYPE, "")
@@ -167,12 +167,8 @@ def get_table_map(test_node, **kwargs):
     map = test_node.depends_on.nodes or []
     rule = get_algo_rule(**kwargs)
     to_model = str(test_node.test_metadata.kwargs.get(rule.get("t_to", "to"), {}))
-
-    if len(map) >= 2 and isinstance(map[1], str):
-        if f'("{map[1].split(".")[-1]}")'.lower() in to_model.replace("'", '"').lower():
-            return [map[1], map[0]]
-    else:
-        return None
+    if f'("{map[1].split(".")[-1]}")'.lower() in to_model.replace("'", '"').lower():
+        return [map[1], map[0]]
 
     return map
 
