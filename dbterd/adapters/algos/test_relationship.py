@@ -84,7 +84,7 @@ def get_relationships(manifest, **kwargs):
                             f'{rule.get("c_to")}s', "unknown"
                         )
                     )
-                ).lower(),
+                ).replace("\"","").lower(),
                 str(
                     manifest.nodes[x].test_metadata.kwargs.get("column_name")
                     or manifest.nodes[x].test_metadata.kwargs.get(rule.get("c_from"))
@@ -93,7 +93,7 @@ def get_relationships(manifest, **kwargs):
                             f'{rule.get("c_from")}s', "unknown"
                         )
                     )
-                ).lower(),
+                ).replace("\"","").lower(),
             ],
             type=get_relationship_type(
                 manifest.nodes[x].meta.get(TEST_META_RELATIONSHIP_TYPE, "")
