@@ -10,7 +10,7 @@ models:
     columns:
       - name: your_column
         tests:
-          - relationships_test:
+          - relationships:
               to: ref('your_other_model')
               field: your_other_column
               meta:
