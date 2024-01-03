@@ -105,6 +105,13 @@ def common_params(func):
         show_default=True,
     )
     @click.option(
+        "--dbt--cloud-auto-artifacts",
+        help="Flag to force downloading dbt artifact files using dbt Cloud API",
+        is_flag=True,
+        default=False,
+        show_default=True,
+    )
+    @click.option(
         "--entity-name-format",
         "-enf",
         help="Specified the format of the entity node's name",
