@@ -308,7 +308,7 @@ class TestDbmlTestRelationship:
                         columns=[Column(name="name23", data_type="name23-type")],
                         raw_sql="--irrelevant--",
                         exposures=["dummy2", "dummy3"],
-                        description="model.dbt_resto.table23 description"
+                        description="model.dbt_resto.table23 description",
                     ),
                 ],
                 [],
