@@ -65,6 +65,9 @@ ignore-init-module-imports = true
 remove-unused-variables = true
 ignore-pass-statements = false
 
+[tool.coverage.run]
+omit = ["tests/*"]
+
 [tool.poe.tasks]
 git-hooks = { shell = "pre-commit install --install-hooks && pre-commit install --hook-type commit-msg" }
 format = [

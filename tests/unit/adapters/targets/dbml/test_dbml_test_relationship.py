@@ -35,6 +35,7 @@ class TestDbmlTestRelationship:
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table1" {
                     "name1" "--name1-type--" [note: "column name 1"]
+                    Note:""
                 }
                 //Refs (based on the DBT Relationship Tests)
                 """,
@@ -86,15 +87,18 @@ class TestDbmlTestRelationship:
                 Table "model.dbt_resto.table1" {
                     "name1" "--name1-type--"
                     "name-notexist1" "unknown"
+                    Note:""
                 }
                 //--configured at schema: --database2--.--schema2--
                 Table "model.dbt_resto.table2" {
                     "name2" "--name2-type2--"
                     "name-notexist2" "unknown"
+                    Note:""
                 }
                 //--configured at schema: --database3--.--schema3--
                 Table "source.dbt_resto.table3" {
                     "name3" "--name3-type3--"
+                    Note:""
                 }
                 //Refs (based on the DBT Relationship Tests)
                 Ref: "model.dbt_resto.table1"."name1" > "model.dbt_resto.table2"."name2"
@@ -134,6 +138,7 @@ class TestDbmlTestRelationship:
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table1" {
                     "name1" "--name1-type--"
+                    Note:""
                 }
                 //Refs (based on the DBT Relationship Tests)
                 """,
@@ -184,6 +189,7 @@ class TestDbmlTestRelationship:
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table1" {
                     "name1" "name1-type"
+                    Note:""
                 }
                 //Refs (based on the DBT Relationship Tests)
                 """,
@@ -223,10 +229,12 @@ class TestDbmlTestRelationship:
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table1" {
                     "name1" "name1-type"
+                    Note:""
                 }
                 //--configured at schema: --database3--.--schema3--
                 Table "source.dbt_resto.table3" {
                     "name3" "name3-type3"
+                    Note:""
                 }
                 //Refs (based on the DBT Relationship Tests)
                 """,
@@ -251,6 +259,7 @@ class TestDbmlTestRelationship:
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table1" {
                     "name1" "name1-type"
+                    Note:""
                 }
                 //Refs (based on the DBT Relationship Tests)
                 """,
@@ -284,6 +293,7 @@ class TestDbmlTestRelationship:
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table23" {
                     "name23" "name23-type"
+                    Note:""
                 }
                 //Refs (based on the DBT Relationship Tests)
                 """,

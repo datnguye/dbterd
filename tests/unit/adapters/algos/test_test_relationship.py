@@ -50,6 +50,7 @@ class ManifestNode:
     database: str = ""
     schema_: str = ""
     depends_on: ManifestNodeDependsOn = field(default_factory=ManifestNodeDependsOn)
+    description: str = ""
 
 
 @dataclass
@@ -243,6 +244,7 @@ class TestAlgoTestRelationship:
                         schema="--schema--",
                         columns=[Column(name="name1", data_type="--name1-type--")],
                         raw_sql="--irrelevant--",
+                        description="",
                     ),
                     Table(
                         name="model.dbt_resto.table_dummy_columns",
@@ -251,6 +253,7 @@ class TestAlgoTestRelationship:
                         schema="--schema--",
                         columns=[Column()],
                         raw_sql="--irrelevant--",
+                        description="",
                     ),
                     Table(
                         name="model.dbt_resto.table2",
@@ -262,6 +265,7 @@ class TestAlgoTestRelationship:
                             Column(name="name2"),
                         ],
                         raw_sql="--irrelevant--",
+                        description="",
                     ),
                     Table(
                         name="source.dummy.source_table",
@@ -274,6 +278,7 @@ class TestAlgoTestRelationship:
                         ],
                         raw_sql="--irrelevant--",
                         resource_type="source",
+                        description="",
                     ),
                 ],
             ),

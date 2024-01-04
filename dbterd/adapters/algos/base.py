@@ -117,6 +117,7 @@ def get_table(node_name, manifest_node, catalog_node=None, exposures=[], **kwarg
         exposures=[
             x.get("exposure_name") for x in exposures if x.get("node_name") == node_name
         ],
+        description=manifest_node.description,
     )
 
     if catalog_node:

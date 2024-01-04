@@ -24,6 +24,7 @@ class Table:
     resource_type: str = "model"
     exposures: Optional[List[str]] = field(default_factory=lambda: [])
     node_name: str = None
+    description: str = ""
 
 
 @dataclass
