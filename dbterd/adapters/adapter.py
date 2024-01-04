@@ -18,4 +18,4 @@ def load_executor(name: str):
     except ModuleNotFoundError as exc:
         if exc.name == "dbterd.adapters.targets." + name:
             raise Exception(f"Could not find adapter target type {name}!")
-        raise
+        raise  # pragma: no cover
