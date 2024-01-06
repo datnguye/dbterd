@@ -160,5 +160,11 @@ def read_catalog(path: str, version: int = None):
 
 
 def write_json(data, path: str):
+    """Persist json data to file
+
+    Args:
+        data (json): Json data
+        path (str): File path
+    """
     with open(path, "w") as file:
         file.write(data)
