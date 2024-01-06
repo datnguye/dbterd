@@ -82,6 +82,8 @@ class DbtCloudArtifact:
             logger.error(f"Error occurred while downloading [error: {str(e)}]")
             return False
 
+        return True
+
     def get(self, artifacts_dir: str = None) -> bool:
         """Download `manifest.json` and `catalog.json` to the local dir
 
