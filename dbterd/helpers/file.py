@@ -157,3 +157,14 @@ def read_catalog(path: str, version: int = None):
         parser_version = default_parser
     parse_func = getattr(parser, parser_version)
     return parse_func(catalog=_dict)
+
+
+def write_json(data, path: str):
+    """Persist json data to file
+
+    Args:
+        data (json): Json data
+        path (str): File path
+    """
+    with open(path, "w") as file:
+        file.write(data)

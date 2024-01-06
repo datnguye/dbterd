@@ -1,3 +1,4 @@
+import os
 import functools
 
 import click
@@ -111,6 +112,64 @@ def common_params(func):
         default="resource.package.model",
         show_default=True,
         type=click.STRING,
+    )
+    @click.option(
+        "--dbt-cloud",
+        help=(
+            "Flag to download dbt artifact files using dbt Cloud API. "
+            "This requires the additional parameters to be able to connection to dbt Cloud API"
+        ),
+        is_flag=True,
+        default=False,
+        show_default=True,
+    )
+    @click.option(
+        "--dbt-cloud-host-url",
+        help=(
+            "Configure dbt Cloud's Host URL. "
+            "Try to get OS environment variable (DBTERD_DBT_CLOUD_HOST_URL) if not specified. "
+            "Sample dbt Cloud Run URL: "
+            "https://<HOST_URL>/deploy/<ACCOUNT_ID>/projects/irrelevant/runs/<RUN_ID>"
+        ),
+        default=os.environ.get("DBTERD_DBT_CLOUD_HOST_URL", "cloud.getdbt.com"),
+        show_default=True,
+    )
+    @click.option(
+        "--dbt-cloud-account-id",
+        help=(
+            "Configure dbt Cloud's Account ID. "
+            "Try to get OS environment variable (DBTERD_DBT_CLOUD_ACCOUNT_ID) if not specified"
+        ),
+        default=os.environ.get("DBTERD_DBT_CLOUD_ACCOUNT_ID"),
+        show_default=True,
+    )
+    @click.option(
+        "--dbt-cloud-run-id",
+        help=(
+            "Configure dbt Cloud's completed Run ID. "
+            "Try to get OS environment variable (DBTERD_DBT_CLOUD_RUN_ID) if not specified"
+        ),
+        default=os.environ.get("DBTERD_DBT_CLOUD_RUN_ID"),
+        show_default=True,
+    )
+    @click.option(
+        "--dbt-cloud-service-token",
+        help=(
+            "Configure dbt Service Token (Permissions: Job Admin). "
+            "Try to get OS environment variable (DBTERD_DBT_CLOUD_SERVICE_TOKEN) if not specified. "
+            "Visit https://docs.getdbt.com/docs/dbt-cloud-apis/service-tokens to see how to generate it. "
+        ),
+        default=os.environ.get("DBTERD_DBT_CLOUD_SERVICE_TOKEN"),
+        show_default=True,
+    )
+    @click.option(
+        "--dbt-cloud-api-version",
+        help=(
+            "Configure dbt Cloud Administrative API version. "
+            "Try to get OS environment variable (DBTERD_DBT_CLOUD_API_VERSION) if not specified."
+        ),
+        default=os.environ.get("DBTERD_DBT_CLOUD_API_VERSION", "v2"),
+        show_default=True,
     )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):

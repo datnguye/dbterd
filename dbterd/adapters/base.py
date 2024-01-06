@@ -5,6 +5,7 @@ import click
 
 from dbterd import default
 from dbterd.adapters import adapter
+from dbterd.adapters.dbt_cloud import DbtCloudArtifact
 from dbterd.adapters.dbt_invocation import DbtInvocation
 from dbterd.adapters.filter import has_unsupported_rule
 from dbterd.helpers import cli_messaging
@@ -57,6 +58,9 @@ class Executor:
             if kwargs.get("dbt_auto_artifacts"):
                 self.dbt.get_artifacts_for_erd()
                 artifacts_dir = f"{dbt_project_dir}/target"
+        elif kwargs.get("dbt_cloud"):
+            artifacts_dir = f"{dbt_project_dir}/target"
+            DbtCloudArtifact(**kwargs).get(artifacts_dir=artifacts_dir)
         else:
             unsupported, rule = has_unsupported_rule(
                 rules=select.extend(exclude) if exclude else select
