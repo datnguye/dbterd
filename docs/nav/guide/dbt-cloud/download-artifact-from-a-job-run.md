@@ -62,15 +62,15 @@ dbterd run -s <dbterd selection> --dbt-cloud
 and then, here is the sample console log:
 
 ```log
-2024-01-06 17:23:56,466 - dbterd - INFO - Run with dbterd==1.0.0 (main.py:54)
-2024-01-06 17:23:56,467 - dbterd - INFO - Using dbt project dir at: C:\Sources\dbterd (base.py:46)
-2024-01-06 17:23:56,467 - dbterd - INFO - Dowloading...[URL: https://hidden/api/v2/accounts/hidden/runs/2442752/artifacts/manifest.json] (dbt_cloud.py:68)
-2024-01-06 17:24:03,378 - dbterd - INFO - Completed [status: 200] (dbt_cloud.py:71)
-2024-01-06 17:24:04,503 - dbterd - INFO - Dowloading...[URL: https://hidden/api/v2/accounts/hidden/runs/2442752/artifacts/catalog.json] (dbt_cloud.py:68)
-2024-01-06 17:24:08,681 - dbterd - INFO - Completed [status: 200] (dbt_cloud.py:71)
-2024-01-06 17:24:09,900 - dbterd - INFO - Using dbt artifact dir at: hidden (base.py:73)
-2024-01-06 17:24:14,497 - dbterd - INFO - Collected 4 table(s) and 3 relationship(s) (test_relationship.py:59)
-2024-01-06 17:24:14,498 - dbterd - INFO - C:\Sources\dbterd\target/output.dbml (base.py:170)
+dbterd - INFO - Run with dbterd==1.0.0 (main.py:54)
+dbterd - INFO - Using dbt project dir at: C:\Sources\dbterd (base.py:46)
+dbterd - INFO - Dowloading...[URL: https://hidden/api/v2/accounts/hidden/runs/2442752/artifacts/manifest.json] (dbt_cloud.py:68)
+dbterd - INFO - Completed [status: 200] (dbt_cloud.py:71)
+dbterd - INFO - Dowloading...[URL: https://hidden/api/v2/accounts/hidden/runs/2442752/artifacts/catalog.json] (dbt_cloud.py:68)
+dbterd - INFO - Completed [status: 200] (dbt_cloud.py:71)
+dbterd - INFO - Using dbt artifact dir at: hidden (base.py:73)
+dbterd - INFO - Collected 4 table(s) and 3 relationship(s) (test_relationship.py:59)
+dbterd - INFO - C:\Sources\dbterd\target/output.dbml (base.py:170)
 ```
 
 Voila! Happy ERD 🎉!

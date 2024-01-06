@@ -373,6 +373,20 @@ Currently, it supports the following keys in the format:
     dbterd run --entity-name-format table # with table name only
     ```
 
+### dbterd run --dbt-cloud
+
+Decide to download artifact files from dbt Cloud Job Run instead of compiling locally.
+
+Check [Download artifacts from a Job Run](./dbt-cloud/download-artifact-from-a-job-run.md) for more details.
+
+**Examples:**
+=== "CLI"
+
+    ```bash
+    dbterd run --dbt-cloud
+    dbterd run --dbt-cloud --select wildcard:*transaction*
+    ```
+
 ## dbterd debug
 
 Shows hidden configured values, which will help us to see what configs are passed into and how they are evaluated to be used.
