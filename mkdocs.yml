@@ -51,7 +51,7 @@ theme:
     - search.share
     - search.suggest
     - toc.follow
-    
+
   palette:
     - media: "(prefers-color-scheme)"
       primary: black
@@ -70,7 +70,7 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to system preference
-        
+
   font:
     text: Roboto
     code: Roboto Mono
@@ -143,10 +143,10 @@ markdown_extensions:
   - pymdownx.betterem:
       smart_enable: all
   - pymdownx.caret
-  - pymdownx.details
+  - pymdownx.details:
   - pymdownx.emoji:
-      emoji_generator: !!python/name:materialx.emoji.to_svg
-      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.highlight:
       anchor_linenums: true
       line_spans: __span

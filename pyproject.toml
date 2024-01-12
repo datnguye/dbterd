@@ -89,3 +89,7 @@ test-cov = [
   {cmd = "coverage report --show-missing"},
   {cmd = "coverage xml"},
 ]
+build-doc-and-serve = [
+  {cmd = "mkdocs build"},
+  {cmd = "mkdocs serve"}
+]

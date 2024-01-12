@@ -2,15 +2,20 @@
 
 `dbterd` is open source software. It is what it is today because community members have opened issues, provided feedback, and contributed to the knowledge loop. Whether you are a seasoned open source contributor or a first-time committer, we welcome and encourage you to contribute code, documentation, ideas, or problem statements to this project.
 
-1. [About this document](#about-this-document)
-2. [Getting the code](#getting-the-code)
-3. [Setting up an environment](#setting-up-an-environment)
-4. [Testing dbterd](#testing)
-5. [Submitting a Pull Request](#submitting-a-pull-request)
+- [Contributing to `dbterd`](#contributing-to-dbterd)
+  - [About this document](#about-this-document)
+  - [Getting the code](#getting-the-code)
+    - [Installing git](#installing-git)
+    - [External contributors](#external-contributors)
+  - [Setting up an environment](#setting-up-an-environment)
+    - [Tools](#tools)
+  - [Testing](#testing)
+      - [`pytest`](#pytest)
+  - [Submitting a Pull Request](#submitting-a-pull-request)
 
 ## About this document
 
-There are many ways to contribute to the ongoing development of `dbterd`, such as by participating in discussions and issues. We encourage you to first read our higher-level document: ["Expectations for Open Source Contributors"](add-document).
+There are many ways to contribute to the ongoing development of `dbterd`, such as by participating in discussions and issues.
 
 The rest of this document serves as a more granular guide for contributing code changes to `dbterd` (this repository). It is not intended as a guide for using `dbterd`, and some pieces assume a level of familiarity with Python development with `poetry`. Specific code snippets in this guide assume you are using macOS or Linux and are comfortable with the command line.
 
