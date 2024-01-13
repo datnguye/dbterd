@@ -1,14 +1,146 @@
-# from unittest import mock
+import json
+from unittest import mock
 
-# import click
-# import pytest
+import pytest
+import requests
 
-# from dbterd.adapters.dbt_cloud import DbtCloudArtifact
+from dbterd.adapters.dbt_cloud import DbtCloudArtifact
+
+
+class MockResponse:
+    def __init__(self, status_code, data=None) -> None:
+        self.status_code = status_code
+        self.data = data
+
+    def json(self):
+        return self.data
 
 
 class TestDbtCloudArtifact:
-    def test_download_artifact(self):
-        pass
+    @pytest.fixture
+    def dbtCloudArtifact(self) -> DbtCloudArtifact:
+        return DbtCloudArtifact(
+            dbt_cloud_host_url="irrelevant_url",
+            dbt_cloud_service_token="irrelevant_st",
+            dbt_cloud_account_id="irrelevant_acc_id",
+            dbt_cloud_run_id="irrelevant_run_id",
+            dbt_cloud_api_version="irrelevant_v",
+        )
 
-    def test_get(self):
-        pass
+    @pytest.mark.parametrize(
+        "kwargs, expected",
+        [
+            (
+                dict(),
+                dict(
+                    host_url=None,
+                    service_token=None,
+                    account_id=None,
+                    run_id=None,
+                    api_version=None,
+                ),
+            ),
+            (
+                dict(
+                    dbt_cloud_host_url="host_url",
+                    dbt_cloud_service_token="service_token",
+                    dbt_cloud_account_id="account_id",
+                    dbt_cloud_run_id="run_id",
+                    dbt_cloud_api_version="api_version",
+                ),
+                dict(
+                    host_url="host_url",
+                    service_token="service_token",
+                    account_id="account_id",
+                    run_id="run_id",
+                    api_version="api_version",
+                ),
+            ),
+        ],
+    )
+    def test_init(self, kwargs, expected):
+        dbt_cloud = DbtCloudArtifact(**kwargs)
+        assert vars(dbt_cloud) == expected
+        assert dbt_cloud.request_headers == {
+            "Authorization": f"Token {kwargs.get('dbt_cloud_service_token')}"
+        }
+        assert dbt_cloud.api_endpoint == (
+            "https://{host_url}/api/{api_version}/"
+            "accounts/{account_id}/"
+            "runs/{run_id}/"
+            "artifacts/{{path}}"
+        ).format(**expected)
+        assert dbt_cloud.manifest_api_endpoint == (
+            "https://{host_url}/api/{api_version}/"
+            "accounts/{account_id}/"
+            "runs/{run_id}/"
+            "artifacts/manifest.json"
+        ).format(**expected)
+        assert dbt_cloud.catalog_api_endpoint == (
+            "https://{host_url}/api/{api_version}/"
+            "accounts/{account_id}/"
+            "runs/{run_id}/"
+            "artifacts/catalog.json"
+        ).format(**expected)
+
+    @mock.patch("dbterd.adapters.dbt_cloud.file.write_json")
+    @mock.patch("dbterd.adapters.dbt_cloud.requests.get")
+    def test_download_artifact_ok(
+        self, mock_requests_get, mock_write_json, dbtCloudArtifact
+    ):
+        mock_requests_get.return_value = MockResponse(status_code=200, data={})
+        assert dbtCloudArtifact.download_artifact(
+            artifact="manifest", artifacts_dir="/irrelevant/path"
+        )
+        mock_write_json.assert_called_once_with(
+            data=json.dumps({}, indent=2),
+            path="/irrelevant/path/manifest.json",
+        )
+
+    @mock.patch("dbterd.adapters.dbt_cloud.file.write_json")
+    def test_download_artifact_bad_parameters(self, mock_write_json, dbtCloudArtifact):
+        with pytest.raises(AttributeError):
+            dbtCloudArtifact.download_artifact(
+                artifact="irrelevant", artifacts_dir="/irrelevant/path"
+            )
+        assert mock_write_json.call_count == 0
+
+    @mock.patch("dbterd.adapters.dbt_cloud.file.write_json")
+    @mock.patch("dbterd.adapters.dbt_cloud.requests.get")
+    def test_download_artifact_network_failed(
+        self, mock_requests_get, mock_write_json, dbtCloudArtifact
+    ):
+        mock_requests_get.side_effect = requests.exceptions.ConnectionError()
+        assert not dbtCloudArtifact.download_artifact(
+            artifact="manifest", artifacts_dir="/irrelevant/path"
+        )
+        assert mock_write_json.call_count == 0
+
+    @mock.patch("dbterd.adapters.dbt_cloud.file.write_json")
+    @mock.patch("dbterd.adapters.dbt_cloud.requests.get")
+    def test_download_artifact_failed_to_save_file(
+        self, mock_requests_get, mock_write_json, dbtCloudArtifact
+    ):
+        mock_requests_get.return_value = MockResponse(status_code=200, data={})
+        mock_write_json.side_effect = Exception("any error")
+        assert not dbtCloudArtifact.download_artifact(
+            artifact="manifest", artifacts_dir="/irrelevant/path"
+        )
+        assert mock_write_json.call_count == 1
+
+    @mock.patch("dbterd.adapters.dbt_cloud.file.write_json")
+    @mock.patch("dbterd.adapters.dbt_cloud.requests.get")
+    def test_download_artifact_status_not_ok(
+        self, mock_requests_get, mock_write_json, dbtCloudArtifact
+    ):
+        mock_requests_get.return_value = MockResponse(status_code=999)
+        assert not dbtCloudArtifact.download_artifact(
+            artifact="manifest", artifacts_dir="/irrelevant/path"
+        )
+        assert mock_write_json.call_count == 0
+
+    @mock.patch("dbterd.adapters.dbt_cloud.DbtCloudArtifact.download_artifact")
+    def test_get(self, mock_download_artifact, dbtCloudArtifact):
+        mock_download_artifact.return_value = True
+        assert dbtCloudArtifact.get(artifacts_dir="/irrelevant/path")
+        assert mock_download_artifact.call_count == 2

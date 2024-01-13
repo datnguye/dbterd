@@ -10,13 +10,6 @@ from dbterd.adapters.dbt_invocation import DbtInvocation
 
 
 class TestBase:
-    # .run(
-    #     target="dbml",
-    #     algo="test_relationship",
-    #     artifacts_dir="/",
-    #     output="/"
-    # )
-
     def test_worker(self):
         worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
         assert worker.filename_manifest == "manifest.json"
@@ -101,8 +94,19 @@ class TestBase:
                     exclude=[],
                 ),
             ),
+            (
+                dict(select=[], exclude=[], dbt_cloud=True),
+                dict(
+                    dbt_cloud=True,
+                    artifacts_dir="/path/dpd/target",
+                    dbt_project_dir="/path/dpd",
+                    select=[],
+                    exclude=[],
+                ),
+            ),
         ],
     )
+    @mock.patch("dbterd.adapters.dbt_cloud.DbtCloudArtifact.get")
     @mock.patch("dbterd.adapters.base.Executor._Executor__get_dir")
     @mock.patch("dbterd.adapters.base.Executor._Executor__get_selection")
     @mock.patch("dbterd.adapters.base.DbtInvocation.get_artifacts_for_erd")
@@ -111,6 +115,7 @@ class TestBase:
         mock_get_artifacts_for_erd,
         mock_get_selection,
         mock_get_dir,
+        mock_dbt_cloud_get,
         kwargs,
         expected,
     ):
@@ -121,6 +126,8 @@ class TestBase:
         mock_get_dir.assert_called_once()
         if kwargs.get("dbt_auto_artifacts"):
             mock_get_artifacts_for_erd.assert_called_once()
+        if kwargs.get("dbt_cloud"):
+            mock_dbt_cloud_get.assert_called_once()
 
     @pytest.mark.parametrize(
         "kwargs, mock_isfile_se, expected",
