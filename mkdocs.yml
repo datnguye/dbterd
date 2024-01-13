@@ -12,7 +12,7 @@ copyright: Copyright &copy; 2023 Dat Nguyen
 nav:
   - dbterd:
     - index.md
-    - User Guide:
+    - User Guide 📖:
       - CLI Reference: nav/guide/cli-references.md
       - Generate the Targets:
         - DBML: nav/guide/targets/generate-dbml.md
@@ -25,11 +25,9 @@ nav:
         - Relationship Types: nav/metadata/relationship_type.md
       - dbt Cloud:
         - Download artifacts from a Job Run: nav/guide/dbt-cloud/download-artifact-from-a-job-run.md
-    - Development:
-      - Contribution Guideline: nav/development/contributing-guide.md
-      - Change Log: nav/development/CHANGELOG.md
-    - About:
-      - license.md
+    - Contribution Guideline ❤️: nav/development/contributing-guide.md
+    - License: license.md
+    - Change Log ↗️: https://github.com/datnguye/dbterd/releases" target="_blank
 
 theme:
   name: material
@@ -44,7 +42,6 @@ theme:
     - navigation.footer
     - navigation.indexes
     - navigation.sections
-    # - navigation.tabs
     - navigation.top
     - navigation.tracking
     - search.highlight

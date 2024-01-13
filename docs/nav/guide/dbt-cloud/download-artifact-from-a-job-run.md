@@ -15,9 +15,17 @@ In order to support dbt Cloud users, `dbterd` is now having multiple CLI options
 
 ## 1. Prepare the environment variables
 
-Behind the scene, the API Endpoint will look like: `https://{host_url}/api/{api_version}/accounts/{account_id}/runs/{run_id}/artifacts/{path}`.
+Behind the scene, the API Endpoint will look like:
 
-And the dbt Cloud's Job Rub will have the URL constructed as `https://<host_url>/deploy/<account_id>/projects/irrelevant/runs/<run_id>`.
+```log
+https://{host_url}/api/{api_version}/accounts/{account_id}/runs/{run_id}/artifacts/{path}
+```
+
+And the dbt Cloud's Job Rub will have the URL constructed as:
+
+```log
+https://<host_url>/deploy/<account_id>/projects/irrelevant/runs/<run_id>
+```
 
 In the above:
 
@@ -41,10 +49,10 @@ Finally, fill in `your_value` and execute the (Linux or Macos) command below:
 
 ```bash
 export DBTERD_DBT_CLOUD_SERVICE_TOKEN=your_value
-export DBTERD_DBT_CLOUD_HOST_URL=your_value
 export DBTERD_DBT_CLOUD_ACCOUNT_ID=your_value
 export DBTERD_DBT_CLOUD_RUN_ID=your_value
-export DBTERD_DBT_CLOUD_RUN_ID=your_value
+export DBTERD_DBT_CLOUD_HOST_URL=your_value # optional, default = cloud.getdbt.com
+export DBTERD_DBT_CLOUD_API_VERSION=your_value # optional, default = v2
 ```
 
 ## 2. Genrate ERD file
@@ -54,10 +62,11 @@ We're going to use `--dbt-cloud` option to tell `dbterd` to use dbt Cloud API wi
 The command will be looks like:
 
 ```bash
-dbterd run -s <dbterd selection> --dbt-cloud
+dbterd run --dbt-cloud [-s <dbterd selection>]
 ```
 
-> NOTE: You can not use `--dbt` option together with `--dbt-cloud`
+!!! NOTE
+    You can not use `--dbt` option together with `--dbt-cloud`
 
 and then, here is the sample console log:
 

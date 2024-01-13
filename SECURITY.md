@@ -2,25 +2,16 @@
 
 ## Supported Versions
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
-
 | Version | Supported          | Until When?        |
 | ------- | ------------------ | ------------------ |
-| 1.7.x   | :white_check_mark: | |
-| 1.6.x   | :white_check_mark: | |
-| 1.5.x   | :warning: | End of 2023 |
-| 1.4.x   | :warning: | End of 2023 |
-| 1.3.x   | :warning: | End of 2023 |
-| 1.2.x   | :warning: | End of 2023 |
-| 1.1.x   | :warning: | End of 2023 |
-| 1.0.x   | :warning: | End of 2023 |
-| < 1.0   | :x: | End of Life |
+| 1.9.x   | :white_check_mark: | |
+| 1.8.x   | :white_check_mark: | |
+| 1.7.x   | :warning: | End of Feb 2024 |
+| 1.6.x   | :warning: | End of Jan 2024 |
+| < 1.6   | :x: | End of Life |
 
 ## Reporting a Vulnerability
 
-Use this section to tell people how to report a vulnerability.
+The repository is currently enabled with [Privately reporting a security vulnerability](https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing-information-about-vulnerabilities/privately-reporting-a-security-vulnerability). Once any security pops up, `dbterd` maintainer will be responsible to make an update and might release the patches if necessarily.
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+Otherwise, please help to explicitly raise the awareness via [Report a security vulnerability issue](https://github.com/datnguye/dbterd/security/advisories/new/?title=[SEC]).
