@@ -1,7 +1,6 @@
 import os
 import json
 
-import click
 import requests
 
 from dbterd.helpers import file
@@ -78,7 +77,7 @@ class DbtCloudArtifact:
                 data=json.dumps(r.json(), indent=2),
                 path=f"{artifacts_dir}/{artifact}.json",
             )
-        except click.BadParameter as e:
+        except Exception as e:
             logger.error(f"Error occurred while downloading [error: {str(e)}]")
             return False
 
