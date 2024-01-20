@@ -153,6 +153,15 @@ def common_params(func):
         show_default=True,
     )
     @click.option(
+        "--dbt-cloud-job-id",
+        help=(
+            "Configure dbt Cloud's Job ID. "
+            "Try to get OS environment variable (DBTERD_DBT_CLOUD_JOB_ID) if not specified"
+        ),
+        default=os.environ.get("DBTERD_DBT_CLOUD_JOB_ID"),
+        show_default=True,
+    )
+    @click.option(
         "--dbt-cloud-service-token",
         help=(
             "Configure dbt Service Token (Permissions: Job Admin). "

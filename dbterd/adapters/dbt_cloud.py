@@ -17,10 +17,16 @@ class DbtCloudArtifact:
     """
 
     def __init__(self, **kwargs) -> None:
-        """Initialize the base attributes to interact with API service"""
+        """
+        Initialize the base attributes to interact with API service
+
+        Passing JOB_ID to get the latest run's artifacts. In particular to a run, let's use RUN_ID.
+        RUN_ID will take the precedence if specified
+        """
         self.host_url = kwargs.get("dbt_cloud_host_url")
         self.service_token = kwargs.get("dbt_cloud_service_token")
         self.account_id = kwargs.get("dbt_cloud_account_id")
+        self.job_id = kwargs.get("dbt_cloud_job_id")
         self.run_id = kwargs.get("dbt_cloud_run_id")
         self.api_version = kwargs.get("dbt_cloud_api_version")
 
@@ -35,13 +41,13 @@ class DbtCloudArtifact:
         return (
             "https://{host_url}/api/{api_version}/"
             "accounts/{account_id}/"
-            "runs/{run_id}/"
+            "{artifact_id}/"
             "artifacts/{{path}}"
         ).format(
             host_url=self.host_url,
             api_version=self.api_version,
             account_id=self.account_id,
-            run_id=self.run_id,
+            artifact_id=f"runs/{self.run_id}" if self.run_id else f"jobs/{self.job_id}",
         )
 
     @property
