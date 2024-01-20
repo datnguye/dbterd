@@ -10,7 +10,7 @@ The _Prerequisites_ and _Steps_ will be pretty similar to [Download artifacts fr
 Our dbt Cloud's Job will have the URL constructed as:
 
 ```log
-https://<host_url>/deploy/<account_id>/projects/irrelevant/jobs/<run_id>
+https://<host_url>/deploy/<account_id>/projects/irrelevant/jobs/<job_id>
 ```
 
 In the above:
