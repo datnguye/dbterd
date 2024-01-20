@@ -31,12 +31,13 @@ class TestDbtCloudArtifact:
         "kwargs, expected",
         [
             (
-                dict(),
+                dict(dbt_cloud_run_id="run_id"),
                 dict(
                     host_url=None,
                     service_token=None,
                     account_id=None,
-                    run_id=None,
+                    run_id="run_id",
+                    job_id=None,
                     api_version=None,
                 ),
             ),
@@ -53,12 +54,13 @@ class TestDbtCloudArtifact:
                     service_token="service_token",
                     account_id="account_id",
                     run_id="run_id",
+                    job_id=None,
                     api_version="api_version",
                 ),
             ),
         ],
     )
-    def test_init(self, kwargs, expected):
+    def test_init_run(self, kwargs, expected):
         dbt_cloud = DbtCloudArtifact(**kwargs)
         assert vars(dbt_cloud) == expected
         assert dbt_cloud.request_headers == {
@@ -82,6 +84,27 @@ class TestDbtCloudArtifact:
             "runs/{run_id}/"
             "artifacts/catalog.json"
         ).format(**expected)
+
+    @pytest.mark.parametrize(
+        "kwargs, endpoint",
+        [
+            (
+                dict(dbt_cloud_run_id="run_id"),
+                "https://None/api/None/accounts/None/runs/run_id/artifacts/{path}",
+            ),
+            (
+                dict(dbt_cloud_run_id="run_id", dbt_cloud_job_id="job_id"),
+                "https://None/api/None/accounts/None/runs/run_id/artifacts/{path}",
+            ),
+            (
+                dict(dbt_cloud_job_id="job_id"),
+                "https://None/api/None/accounts/None/jobs/job_id/artifacts/{path}",
+            ),
+        ],
+    )
+    def test_api_endpoint(self, kwargs, endpoint):
+        dbt_cloud = DbtCloudArtifact(**kwargs)
+        assert dbt_cloud.api_endpoint == endpoint
 
     @mock.patch("dbterd.adapters.dbt_cloud.file.write_json")
     @mock.patch("dbterd.adapters.dbt_cloud.requests.get")

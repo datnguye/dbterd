@@ -55,6 +55,16 @@ export DBTERD_DBT_CLOUD_HOST_URL=your_value # optional, default = cloud.getdbt.c
 export DBTERD_DBT_CLOUD_API_VERSION=your_value # optional, default = v2
 ```
 
+Or in Powershell:
+
+```bash
+$env:DBTERD_DBT_CLOUD_SERVICE_TOKEN="your_value"
+$env:DBTERD_DBT_CLOUD_ACCOUNT_ID="your_value"
+$env:DBTERD_DBT_CLOUD_RUN_ID="your_value"
+$env:DBTERD_DBT_CLOUD_HOST_URL="your_value" # optional, default = cloud.getdbt.com
+$env:DBTERD_DBT_CLOUD_API_VERSION="your_value" # optional, default = v2
+```
+
 ## 2. Genrate ERD file
 
 We're going to use `--dbt-cloud` option to tell `dbterd` to use dbt Cloud API with all above variables.
@@ -73,9 +83,9 @@ and then, here is the sample console log:
 ```log
 dbterd - INFO - Run with dbterd==1.0.0 (main.py:54)
 dbterd - INFO - Using dbt project dir at: C:\Sources\dbterd (base.py:46)
-dbterd - INFO - Dowloading...[URL: https://hidden/api/v2/accounts/hidden/runs/2442752/artifacts/manifest.json] (dbt_cloud.py:68)
+dbterd - INFO - Dowloading...[URL: https://hidden/api/v2/accounts/hidden/runs/hidden/artifacts/manifest.json] (dbt_cloud.py:68)
 dbterd - INFO - Completed [status: 200] (dbt_cloud.py:71)
-dbterd - INFO - Dowloading...[URL: https://hidden/api/v2/accounts/hidden/runs/2442752/artifacts/catalog.json] (dbt_cloud.py:68)
+dbterd - INFO - Dowloading...[URL: https://hidden/api/v2/accounts/hidden/runs/hidden/artifacts/catalog.json] (dbt_cloud.py:68)
 dbterd - INFO - Completed [status: 200] (dbt_cloud.py:71)
 dbterd - INFO - Using dbt artifact dir at: hidden (base.py:73)
 dbterd - INFO - Collected 4 table(s) and 3 relationship(s) (test_relationship.py:59)
