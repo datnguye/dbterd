@@ -6,7 +6,7 @@ import pytest
 
 from dbterd import default
 from dbterd.adapters.base import Executor
-from dbterd.adapters.dbt_invocation import DbtInvocation
+from dbterd.adapters.dbt_core.dbt_invocation import DbtInvocation
 
 
 class TestBase:
@@ -106,7 +106,7 @@ class TestBase:
             ),
         ],
     )
-    @mock.patch("dbterd.adapters.dbt_cloud.DbtCloudArtifact.get")
+    @mock.patch("dbterd.adapters.dbt_cloud.administrative.DbtCloudArtifact.get")
     @mock.patch("dbterd.adapters.base.Executor._Executor__get_dir")
     @mock.patch("dbterd.adapters.base.Executor._Executor__get_selection")
     @mock.patch("dbterd.adapters.base.DbtInvocation.get_artifacts_for_erd")

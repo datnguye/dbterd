@@ -5,8 +5,9 @@ import click
 
 from dbterd import default
 from dbterd.adapters import adapter
-from dbterd.adapters.dbt_cloud import DbtCloudArtifact
-from dbterd.adapters.dbt_invocation import DbtInvocation
+from dbterd.adapters.dbt_cloud.administrative import DbtCloudArtifact
+from dbterd.adapters.dbt_cloud.discovery import DbtCloudMetadata
+from dbterd.adapters.dbt_core.dbt_invocation import DbtInvocation
 from dbterd.adapters.filter import has_unsupported_rule
 from dbterd.helpers import cli_messaging
 from dbterd.helpers import file as file_handlers
@@ -144,7 +145,7 @@ class Executor:
         with cli_messaging.handle_read_errors(self.filename_catalog):
             return file_handlers.read_catalog(path=cp, version=cv)
 
-    def __run_by_strategy(self, **kwargs):
+    def __run_by_strategy__bk(self, **kwargs):
         """Read artifacts and export the diagram file following the target"""
         target = adapter.load_executor(name=kwargs["target"])  # import {target}
         run_operation_dispatcher = getattr(target, "run_operation_dispatcher")
@@ -172,3 +173,27 @@ class Executor:
         except Exception as e:
             logger.error(str(e))
             raise click.FileError(f"Could not save the output: {str(e)}")
+
+    def __run_by_strategy(self, **kwargs):
+        """Read artifacts and export the diagram file following the target"""
+        data = DbtCloudMetadata(**kwargs).query_erd_data()
+        print(data)
+        # target = adapter.load_executor(name=kwargs["target"])  # import {target}
+        # run_operation_dispatcher = getattr(target, "run_operation_dispatcher")
+        # operation_default = getattr(target, "run_operation_default")
+        # operation = run_operation_dispatcher.get(
+        #     f"{kwargs['target']}_{kwargs['algo'].split(':')[0]}",
+        #     operation_default,
+        # )
+
+        # TODO
+
+        # result = operation(manifest=manifest, catalog=catalog, **kwargs)
+        # path = kwargs.get("output") + f"/{result[0]}"
+        # try:
+        #     with open(path, "w") as f:
+        #         logger.info(path)
+        #         f.write(result[1])
+        # except Exception as e:
+        #     logger.error(str(e))
+        #     raise click.FileError(f"Could not save the output: {str(e)}")

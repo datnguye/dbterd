@@ -180,6 +180,33 @@ def common_params(func):
         default=os.environ.get("DBTERD_DBT_CLOUD_API_VERSION", "v2"),
         show_default=True,
     )
+    @click.option(
+        "--dbt-cloud-metadata",
+        help=(
+            "Decide to query metadata using GraphQL connection via dbt Cloud Discovery API."
+        ),
+        is_flag=True,
+        default=False,
+        show_default=True,
+    )
+    @click.option(
+        "--dbt-cloud-environment-id",
+        help=(
+            "Configure dbt Cloud Environment ID - Used for Metadata (Discovery) API. "
+            "Try to get OS environment variable (DBTERD_DBT_CLOUD_ENVIRONMENT_ID) if not specified."
+        ),
+        default=os.environ.get("DBTERD_DBT_CLOUD_ENVIRONMENT_ID"),
+        show_default=True,
+    )
+    @click.option(
+        "--dbt-cloud-query-file-path",
+        help=(
+            "Configure dbt Cloud GraphQL query file path - Used for Metadata (Discovery) API. "
+            "Try to get OS environment variable (DBTERD_DBT_CLOUD_QUERY_FILE_PATH) if not specified."
+        ),
+        default=os.environ.get("DBTERD_DBT_CLOUD_QUERY_FILE_PATH"),
+        show_default=True,
+    )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)  # pragma: no cover

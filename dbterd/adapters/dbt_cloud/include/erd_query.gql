@@ -1,0 +1,72 @@
+{
+  environment(id: $environment_id){
+    applied {
+      tests(first: $tests_first, after: $test_after) {
+        edges {
+          node {
+            uniqueId,
+            parents { uniqueId, resourceType }
+          }
+        }
+        pageInfo {
+          startCursor,
+          endCursor,
+          hasNextPage
+        }
+        totalCount
+      }
+      models(first: $model_first, after: $model_after){
+        edges {
+          node {
+            uniqueId, name, description,
+            database, schema, alias,
+            tests {uniqueId, columnName, testMetadata {
+              name,
+              kwargs
+            }},
+            catalog {columns {name, description, type}},
+          }
+        }
+        pageInfo {
+          startCursor,
+          endCursor,
+          hasNextPage
+        }
+        totalCount
+      }
+      sources(first: $source_first, after: $source_after){
+        edges {
+          node {
+            uniqueId, name, description,
+            database, schema,
+            tests {columnName, name, uniqueId, testMetadata {
+              name,
+              kwargs
+            }},
+            catalog {columns {name, description, type}},
+          }
+        }
+        pageInfo {
+          startCursor,
+          endCursor,
+          hasNextPage
+        }
+        totalCount
+      }
+      exposures(first: $exposure_first, after: $exposure_after) {
+        edges {
+          node {
+            uniqueId, name, description,
+            parents { uniqueId }
+          }
+        }
+        pageInfo {
+          startCursor,
+          endCursor,
+          hasNextPage
+        }
+        totalCount
+      }
+    }
+  }
+}
