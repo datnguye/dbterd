@@ -70,10 +70,10 @@ class DbtCloudArtifact:
             bool: True is success, False if any errors
         """
         artifact_api_endpoint = getattr(self, f"{artifact}_api_endpoint")
-        logger.info(f"Dowloading...[URL: {artifact_api_endpoint}]")
+        logger.debug(f"Dowloading...[URL: {artifact_api_endpoint}]")
         try:
             r = requests.get(url=artifact_api_endpoint, headers=self.request_headers)
-            logger.info(f"Completed [status: {r.status_code}]")
+            logger.debug(f"Completed [status: {r.status_code}]")
 
             if r.status_code != 200:
                 logger.error(f"Failed to retrieve artifacts [error: {vars(r)}]")

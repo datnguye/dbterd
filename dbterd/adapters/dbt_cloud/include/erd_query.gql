@@ -1,20 +1,16 @@
-{
+query (
+  $environment_id: BigInt!,
+  $model_first: Int!,
+  $model_after: String,
+  $source_first: Int!,
+  $source_after: String,
+  $exposure_first: Int!,
+  $exposure_after: String,
+  $test_first: Int!,
+  $test_after: String
+) {
   environment(id: $environment_id){
     applied {
-      tests(first: $tests_first, after: $test_after) {
-        edges {
-          node {
-            uniqueId,
-            parents { uniqueId, resourceType }
-          }
-        }
-        pageInfo {
-          startCursor,
-          endCursor,
-          hasNextPage
-        }
-        totalCount
-      }
       models(first: $model_first, after: $model_after){
         edges {
           node {
@@ -58,6 +54,20 @@
           node {
             uniqueId, name, description,
             parents { uniqueId }
+          }
+        }
+        pageInfo {
+          startCursor,
+          endCursor,
+          hasNextPage
+        }
+        totalCount
+      }
+      tests(first: $test_first, after: $test_after) {
+        edges {
+          node {
+            uniqueId,
+            parents { uniqueId, resourceType }
           }
         }
         pageInfo {

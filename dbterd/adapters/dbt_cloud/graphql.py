@@ -21,13 +21,17 @@ class GraphQLHelper:
         """Base GraphQL API endpoint"""
         return f"https://{self.host_url}/graphql/"
 
-    def query(self, query: dict, **variables):
+    def query(self, query: str, **variables):
         try:
+            logger.debug(
+                f"Getting erd data...[URL: {self.api_endpoint}, VARS: {variables}]"
+            )
             r = requests.post(
                 self.api_endpoint,
                 headers=self.request_headers,
                 json={"query": query, "variables": variables},
             )
+            logger.debug(f"Completed [status: {r.status_code}]")
 
             if r.status_code != 200:
                 logger.error(f"Failed to query [error: {vars(r)}]")

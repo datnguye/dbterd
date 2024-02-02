@@ -162,7 +162,9 @@ class TestDbtCloudArtifact:
         )
         assert mock_write_json.call_count == 0
 
-    @mock.patch("dbterd.adapters.dbt_cloud.administrative.DbtCloudArtifact.download_artifact")
+    @mock.patch(
+        "dbterd.adapters.dbt_cloud.administrative.DbtCloudArtifact.download_artifact"
+    )
     def test_get(self, mock_download_artifact, dbtCloudArtifact):
         mock_download_artifact.return_value = True
         assert dbtCloudArtifact.get(artifacts_dir="/irrelevant/path")

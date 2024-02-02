@@ -177,7 +177,9 @@ class Executor:
     def __run_by_strategy(self, **kwargs):
         """Read artifacts and export the diagram file following the target"""
         data = DbtCloudMetadata(**kwargs).query_erd_data()
-        print(data)
+        # print(data)
+        print(len(data))
+        # TODO
         # target = adapter.load_executor(name=kwargs["target"])  # import {target}
         # run_operation_dispatcher = getattr(target, "run_operation_dispatcher")
         # operation_default = getattr(target, "run_operation_default")
