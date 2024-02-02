@@ -31,6 +31,11 @@ class Executor:
         kwargs = self.evaluate_kwargs(**kwargs)
         self.__run_by_strategy(**kwargs)
 
+    def runx(self, **kwargs):
+        """Main function helps to run by the target strategy"""
+        # kwargs = self.evaluate_kwargs(**kwargs)
+        self.__run_by_x_strategy(**kwargs)
+
     def evaluate_kwargs(self, **kwargs) -> dict:
         """Re-calculate the options
 
@@ -145,7 +150,7 @@ class Executor:
         with cli_messaging.handle_read_errors(self.filename_catalog):
             return file_handlers.read_catalog(path=cp, version=cv)
 
-    def __run_by_strategy__bk(self, **kwargs):
+    def __run_by_strategy(self, **kwargs):
         """Read artifacts and export the diagram file following the target"""
         target = adapter.load_executor(name=kwargs["target"])  # import {target}
         run_operation_dispatcher = getattr(target, "run_operation_dispatcher")
@@ -174,28 +179,9 @@ class Executor:
             logger.error(str(e))
             raise click.FileError(f"Could not save the output: {str(e)}")
 
-    def __run_by_strategy(self, **kwargs):
+    def __run_by_x_strategy(self, **kwargs):
         """Read artifacts and export the diagram file following the target"""
         data = DbtCloudMetadata(**kwargs).query_erd_data()
         # print(data)
         print(len(data))
         # TODO
-        # target = adapter.load_executor(name=kwargs["target"])  # import {target}
-        # run_operation_dispatcher = getattr(target, "run_operation_dispatcher")
-        # operation_default = getattr(target, "run_operation_default")
-        # operation = run_operation_dispatcher.get(
-        #     f"{kwargs['target']}_{kwargs['algo'].split(':')[0]}",
-        #     operation_default,
-        # )
-
-        # TODO
-
-        # result = operation(manifest=manifest, catalog=catalog, **kwargs)
-        # path = kwargs.get("output") + f"/{result[0]}"
-        # try:
-        #     with open(path, "w") as f:
-        #         logger.info(path)
-        #         f.write(result[1])
-        # except Exception as e:
-        #     logger.error(str(e))
-        #     raise click.FileError(f"Could not save the output: {str(e)}")

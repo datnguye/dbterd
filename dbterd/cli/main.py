@@ -54,10 +54,19 @@ def dbterd(ctx, **kwargs):
     logger.info(f"Run with dbterd=={__version__}")
 
 
+# dbterd run
+@dbterd.command(name="run")
+@click.pass_context
+@params.run_params
+def run(ctx, **kwargs):
+    """Run the convert with reading data from Files"""
+    Executor(ctx).run(**kwargs)
+
+
 # dbterd debug
 @dbterd.command(name="debug")
 @click.pass_context
-@params.common_params
+@params.run_params
 def debug(ctx, **kwargs):
     """Inspect the hidden magics"""
     logger.info("**Arguments used**")
@@ -66,10 +75,22 @@ def debug(ctx, **kwargs):
     logger.debug(jsonify.to_json(Executor(ctx).evaluate_kwargs(**kwargs)))
 
 
-# dbterd run
-@dbterd.command(name="run")
+# dbterd runx
+@dbterd.command(name="runx")
 @click.pass_context
-@params.common_params
-def run(ctx, **kwargs):
-    """Run the convert"""
-    Executor(ctx).run(**kwargs)
+@params.runx_params
+def runx(ctx, **kwargs):
+    """Run the convert with reading data from API"""
+    Executor(ctx).runx(**kwargs)
+
+
+# dbterd debugx
+@dbterd.command(name="debugx")
+@click.pass_context
+@params.runx_params
+def debugx(ctx, **kwargs):
+    """Inspect the hidden magics"""
+    # logger.info("**Arguments used**")
+    # logger.debug(jsonify.to_json(kwargs))
+    # logger.info("**Arguments evaluated**")
+    # logger.debug(jsonify.to_json(Executor(ctx).evaluate_kwargs(**kwargs)))
