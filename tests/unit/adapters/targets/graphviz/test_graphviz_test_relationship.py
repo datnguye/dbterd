@@ -355,7 +355,7 @@ class TestGraphVizTestRelationship:
             return_value=tables,
         ) as mock_get_tables:
             with mock.patch(
-                "dbterd.adapters.algos.test_relationship.get_relationships",
+                "dbterd.adapters.algos.base.get_relationships",
                 return_value=relationships,
             ) as mock_get_relationships:
                 graphviz = engine.parse(

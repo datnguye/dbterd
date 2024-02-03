@@ -6,7 +6,7 @@ from dbterd.helpers.log import logger
 class DbtCloudMetadata:
     def __init__(self, **kwargs) -> None:
         self.graphql = GraphQLHelper(**kwargs)
-        self.env_id = kwargs.get("dbt_cloud_environment_id")
+        self.environment_id = kwargs.get("dbt_cloud_environment_id")
         self.erd_query = Query().take(
             file_path=kwargs.get("dbt_cloud_query_file_path", None)
         )
@@ -14,7 +14,7 @@ class DbtCloudMetadata:
 
     def query_erd_data(self, page_size: int = 500, poll_until_end: bool = True):
         variables = {
-            "environment_id": self.env_id,
+            "environment_id": self.environment_id,
             "model_first": page_size,
             "source_first": page_size,
             "exposure_first": page_size,

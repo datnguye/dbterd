@@ -196,7 +196,7 @@ def run_params(func):
     return wrapper
 
 
-def runx_params(func):
+def run_metadata_params(func):
     @common_params
     @click.option(
         "--dbt-cloud-host-url",

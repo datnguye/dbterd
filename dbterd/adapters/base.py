@@ -27,13 +27,13 @@ class Executor:
         self.dbt: DbtInvocation = None
 
     def run(self, **kwargs):
-        """Main function helps to run by the target strategy"""
+        """Generate ERD from files"""
         kwargs = self.evaluate_kwargs(**kwargs)
         self.__run_by_strategy(**kwargs)
 
-    def runx(self, **kwargs):
-        """Main function helps to run by the target strategy"""
-        # kwargs = self.evaluate_kwargs(**kwargs)
+    def run_metadata(self, **kwargs):
+        """Generate ERD from API metadata"""
+        kwargs = self.evaluate_kwargs(**kwargs)
         self.__run_by_x_strategy(**kwargs)
 
     def evaluate_kwargs(self, **kwargs) -> dict:
@@ -49,34 +49,35 @@ class Executor:
             dict: kwargs dict
         """
         artifacts_dir, dbt_project_dir = self.__get_dir(**kwargs)
-        logger.info(f"Using dbt project dir at: {dbt_project_dir}")
+        command = self.ctx.command.name
 
         select = list(kwargs.get("select")) or []
         exclude = list(kwargs.get("exclude")) or []
-        if kwargs.get("dbt"):
-            self.dbt = DbtInvocation(
-                dbt_project_dir=kwargs.get("dbt_project_dir"),
-                dbt_target=kwargs.get("dbt_target"),
-            )
-            select = self.__get_selection(**kwargs)
-            exclude = []
+        unsupported, rule = has_unsupported_rule(
+            rules=select.extend(exclude) if exclude else select
+        )
+        if unsupported:
+            message = f"Unsupported Selection found: {rule}"
+            logger.error(message)
+            raise click.UsageError(message)
 
-            if kwargs.get("dbt_auto_artifacts"):
-                self.dbt.get_artifacts_for_erd()
+        if command == "run":
+            if kwargs.get("dbt"):
+                logger.info(f"Using dbt project dir at: {dbt_project_dir}")
+                self.dbt = DbtInvocation(
+                    dbt_project_dir=kwargs.get("dbt_project_dir"),
+                    dbt_target=kwargs.get("dbt_target"),
+                )
+                select = self.__get_selection(**kwargs)
+                exclude = []
+
+                if kwargs.get("dbt_auto_artifacts"):
+                    self.dbt.get_artifacts_for_erd()
+                    artifacts_dir = f"{dbt_project_dir}/target"
+            elif kwargs.get("dbt_cloud"):
                 artifacts_dir = f"{dbt_project_dir}/target"
-        elif kwargs.get("dbt_cloud"):
-            artifacts_dir = f"{dbt_project_dir}/target"
-            DbtCloudArtifact(**kwargs).get(artifacts_dir=artifacts_dir)
-        else:
-            unsupported, rule = has_unsupported_rule(
-                rules=select.extend(exclude) if exclude else select
-            )
-            if unsupported:
-                message = f"Unsupported Selection found: {rule}"
-                logger.error(message)
-                raise click.UsageError(message)
+            logger.info(f"Using dbt artifact dir at: {artifacts_dir}")
 
-        logger.info(f"Using dbt artifact dir at: {artifacts_dir}")
         kwargs["artifacts_dir"] = artifacts_dir
         kwargs["dbt_project_dir"] = dbt_project_dir
         kwargs["select"] = select
@@ -159,6 +160,9 @@ class Executor:
             f"{kwargs['target']}_{kwargs['algo'].split(':')[0]}",
             operation_default,
         )
+
+        if kwargs.get("dbt_cloud"):
+            DbtCloudArtifact(**kwargs).get(artifacts_dir=kwargs.get("artifacts_dir"))
 
         manifest = self.__read_manifest(
             mp=kwargs.get("artifacts_dir"),

@@ -59,38 +59,30 @@ def dbterd(ctx, **kwargs):
 @click.pass_context
 @params.run_params
 def run(ctx, **kwargs):
-    """Run the convert with reading data from Files"""
+    """
+    Generate ERD file from reading dbt artifact files,
+    optionally downloading from Administrative API (dbt Cloud) befor hands
+    """
     Executor(ctx).run(**kwargs)
+
+
+# dbterd run_metadata
+@dbterd.command(name="run-metadata")
+@click.pass_context
+@params.run_metadata_params
+def run_metadata(ctx, **kwargs):
+    """Generate ERD file from reading Discovery API (dbt Cloud)"""
+    Executor(ctx).run_metadata(**kwargs)
 
 
 # dbterd debug
 @dbterd.command(name="debug")
 @click.pass_context
 @params.run_params
-def debug(ctx, **kwargs):
+@params.run_metadata_params
+def debugx(ctx, **kwargs):
     """Inspect the hidden magics"""
     logger.info("**Arguments used**")
     logger.debug(jsonify.to_json(kwargs))
     logger.info("**Arguments evaluated**")
     logger.debug(jsonify.to_json(Executor(ctx).evaluate_kwargs(**kwargs)))
-
-
-# dbterd runx
-@dbterd.command(name="runx")
-@click.pass_context
-@params.runx_params
-def runx(ctx, **kwargs):
-    """Run the convert with reading data from API"""
-    Executor(ctx).runx(**kwargs)
-
-
-# dbterd debugx
-@dbterd.command(name="debugx")
-@click.pass_context
-@params.runx_params
-def debugx(ctx, **kwargs):
-    """Inspect the hidden magics"""
-    # logger.info("**Arguments used**")
-    # logger.debug(jsonify.to_json(kwargs))
-    # logger.info("**Arguments evaluated**")
-    # logger.debug(jsonify.to_json(Executor(ctx).evaluate_kwargs(**kwargs)))
