@@ -8,6 +8,40 @@ from dbterd.constants import (
 )
 
 
+def get_tables_from_metadata(data, **kwargs):
+    """Extract tables from dbt metadata
+
+    Args:
+        data (dict): dbt metadata query result
+
+    Returns:
+        List[Table]: All parsed tables
+    """
+    tables = []
+    table_exposures = get_node_exposures_from_metadata(data=data)
+    # Model
+    if "model" in kwargs.get("resource_type", []):
+        for model in data.get("models", {}).get("edges", []):
+            table = get_table_from_metadata(
+                model_metadata=model,
+                exposures=table_exposures,
+                **kwargs,
+            )
+            tables.append(table)
+
+    # Source
+    if "source" in kwargs.get("resource_type", []):
+        for model in data.get("sources", {}).get("edges", []):
+            table = get_table_from_metadata(
+                model_metadata=model,
+                exposures=table_exposures,
+                **kwargs,
+            )
+            tables.append(table)
+
+    return tables
+
+
 def get_tables(manifest, catalog, **kwargs):
     """Extract tables from dbt artifacts
 
@@ -80,6 +114,52 @@ def enrich_tables_from_relationships(tables, relationships):
             ):
                 table.columns.append(Column(name=relationship.column_map[1]))
     return copied_tables
+
+
+def get_table_from_metadata(model_metadata, exposures=[], **kwargs):
+    node_name = model_metadata.get("node", {}).get("uniqueId")
+    node_description = model_metadata.get("node", {}).get("description")
+    node_database = model_metadata.get("node", {}).get("database").lower()
+    node_schema = model_metadata.get("node", {}).get("schema").lower()
+    node_name_parts = node_name.split(".")
+    table = Table(
+        name=get_table_name(
+            format=kwargs.get("entity_name_format"),
+            **dict(
+                resource=node_name_parts[0],
+                package=node_name_parts[1],
+                model=node_name_parts[2],
+                database=node_database,
+                schema=model_metadata.get("node", {}).get("schema").lower(),
+                table=model_metadata.get("node", {}).get("alias").lower(),
+            ),
+        ),
+        node_name=node_name,
+        raw_sql="TODO",
+        database=node_database,
+        schema=node_schema,
+        columns=[],
+        resource_type=node_name.split(".")[0],
+        exposures=[
+            x.get("exposure_name") for x in exposures if x.get("node_name") == node_name
+        ],
+        description=node_description,
+    )
+
+    # columns
+    for column in model_metadata.get("node", {}).get("catalog", {}).get("columns", []):
+        table.columns.append(
+            Column(
+                name=column.get("name", "").lower(),
+                data_type=column.get("type", "").lower(),
+                description=column.get("description", ""),
+            )
+        )
+
+    if not table.columns:
+        table.columns.append(Column())
+
+    return table
 
 
 def get_table(node_name, manifest_node, catalog_node=None, exposures=[], **kwargs):
@@ -187,6 +267,24 @@ def get_compiled_sql(manifest_node):
     return manifest_node.raw_sql  # fallback to raw dbt code
 
 
+def get_node_exposures_from_metadata(data, **kwargs):
+    exposures = []
+    for exposure in data.get("exposures", {}).get("edges", []):
+        name = exposure.get("node", {}).get("name")
+        parent_nodes = exposure.get("node", {}).get("parents")
+        for node in parent_nodes:
+            node_name = node.get("uniqueId", "")
+            if node_name.split(".")[0] in kwargs.get("resource_type", []):
+                exposures.append(
+                    dict(
+                        node_name=node_name,
+                        exposure_name=name,
+                    )
+                )
+
+    return exposures
+
+
 def get_node_exposures(manifest):
     """Get the mapping of table name and exposure name
 
@@ -221,6 +319,11 @@ def get_table_name(format: str, **kwargs) -> str:
         str: Qualified table name
     """
     return ".".join([kwargs.get(x.lower()) or "KEYNOTFOUND" for x in format.split(".")])
+
+
+def get_relationships_from_metadata(data, **kwargs):
+    get_algo_rule(**kwargs)
+    return []
 
 
 def get_relationships(manifest, **kwargs):

@@ -20,10 +20,14 @@ class DbtCloudMetadata:
             "exposure_first": page_size,
             "test_first": page_size,
         }
-        data = [self.graphql.query(query=self.erd_query, **variables)]
+        data = [
+            self.extract_data(
+                graphql_data=self.graphql.query(query=self.erd_query, **variables)
+            )
+        ]
         self.show_counts(data=data[-1])
         if not poll_until_end:
-            return data
+            return data[-1]
 
         while any(
             [
@@ -47,16 +51,25 @@ class DbtCloudMetadata:
             )
 
             self.save_last_cursor(data=data[-1])
-            data.append(self.graphql.query(query=self.erd_query, **variables))
+            data.append(
+                self.extract_data(
+                    graphql_data=self.graphql.query(query=self.erd_query, **variables)
+                )
+            )
             self.show_counts(data=data[-1])
 
-        return data
+        return self.merge_data(data=data)
+
+    def extract_data(self, graphql_data):
+        return graphql_data.get("environment", {}).get("applied", {})
+
+    def merge_data(self, data=[]):
+        # TODO
+        return data[0]
 
     def has_data(self, data, resource_type: str = "model"):
         return (
-            data.get("environment", {})
-            .get("applied", {})
-            .get(f"{resource_type}s", {})
+            data.get(f"{resource_type}s", {})
             .get("pageInfo", {})
             .get("hasNextPage", False)
         )
@@ -71,20 +84,11 @@ class DbtCloudMetadata:
 
     def get_last_cursor(self, data, resource_type: str = "model"):
         return (
-            data.get("environment", {})
-            .get("applied", {})
-            .get(f"{resource_type}s", {})
-            .get("pageInfo", {})
-            .get("endCursor", None)
+            data.get(f"{resource_type}s", {}).get("pageInfo", {}).get("endCursor", None)
         ) or (self.last_cursor.get(f"{resource_type}", None))
 
     def get_count(self, data, resource_type: str = "model"):
-        return len(
-            data.get("environment", {})
-            .get("applied", {})
-            .get(f"{resource_type}s", {})
-            .get("edges", [])
-        )
+        return len(data.get(f"{resource_type}s", {}).get("edges", []))
 
     def show_counts(self, data, resource_types=["model", "source", "exposure", "test"]):
         results = [

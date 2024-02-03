@@ -152,6 +152,11 @@ class Executor:
             return file_handlers.read_catalog(path=cp, version=cv)
 
     def __get_operation(self, kwargs):
+        """Get target's operation (aka.`parse` function)
+
+        Returns:
+            func: Operation function
+        """
         target = adapter.load_executor(name=kwargs["target"])  # import {target}
         run_operation_dispatcher = getattr(target, "run_operation_dispatcher")
         operation_default = getattr(target, "run_operation_default")

@@ -5,7 +5,44 @@ from dbterd.helpers.log import logger
 
 
 def parse_metadata(data, **kwargs):
-    raise NotImplementedError()
+    """Get all information (tables, relationships) needed for building diagram
+    (from Metadata)
+
+    Args:
+        data (dict): metadata dict
+
+    Returns:
+        Tuple(List[Table], List[Ref]): Info of parsed tables and relationships
+    """
+    tables = []
+    relationships = []
+
+    # Parse Table
+    tables = base.get_tables_from_metadata(data=data)
+
+    # Apply selection
+    tables = [
+        table
+        for table in tables
+        if is_selected_table(
+            table=table,
+            select_rules=kwargs.get("select") or [],
+            resource_types=kwargs.get("resource_type", []),
+            exclude_rules=kwargs.get("exclude") or [],
+        )
+    ]
+
+    # Parse Table
+    tables = base.get_tables_from_metadata(data=data, **kwargs)
+    print(tables)
+
+    # Parse Ref
+    print("Parsing Ref - TODO")
+
+    logger.info(
+        f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)"
+    )
+    return (tables, relationships)
 
 
 def parse(manifest, catalog, **kwargs):
