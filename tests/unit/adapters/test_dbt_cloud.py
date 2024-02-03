@@ -4,7 +4,7 @@ from unittest import mock
 import pytest
 import requests
 
-from dbterd.adapters.dbt_cloud import DbtCloudArtifact
+from dbterd.adapters.dbt_cloud.administrative import DbtCloudArtifact
 
 
 class MockResponse:
@@ -106,8 +106,8 @@ class TestDbtCloudArtifact:
         dbt_cloud = DbtCloudArtifact(**kwargs)
         assert dbt_cloud.api_endpoint == endpoint
 
-    @mock.patch("dbterd.adapters.dbt_cloud.file.write_json")
-    @mock.patch("dbterd.adapters.dbt_cloud.requests.get")
+    @mock.patch("dbterd.adapters.dbt_cloud.administrative.file.write_json")
+    @mock.patch("dbterd.adapters.dbt_cloud.administrative.requests.get")
     def test_download_artifact_ok(
         self, mock_requests_get, mock_write_json, dbtCloudArtifact
     ):
@@ -120,7 +120,7 @@ class TestDbtCloudArtifact:
             path="/irrelevant/path/manifest.json",
         )
 
-    @mock.patch("dbterd.adapters.dbt_cloud.file.write_json")
+    @mock.patch("dbterd.adapters.dbt_cloud.administrative.file.write_json")
     def test_download_artifact_bad_parameters(self, mock_write_json, dbtCloudArtifact):
         with pytest.raises(AttributeError):
             dbtCloudArtifact.download_artifact(
@@ -128,8 +128,8 @@ class TestDbtCloudArtifact:
             )
         assert mock_write_json.call_count == 0
 
-    @mock.patch("dbterd.adapters.dbt_cloud.file.write_json")
-    @mock.patch("dbterd.adapters.dbt_cloud.requests.get")
+    @mock.patch("dbterd.adapters.dbt_cloud.administrative.file.write_json")
+    @mock.patch("dbterd.adapters.dbt_cloud.administrative.requests.get")
     def test_download_artifact_network_failed(
         self, mock_requests_get, mock_write_json, dbtCloudArtifact
     ):
@@ -139,8 +139,8 @@ class TestDbtCloudArtifact:
         )
         assert mock_write_json.call_count == 0
 
-    @mock.patch("dbterd.adapters.dbt_cloud.file.write_json")
-    @mock.patch("dbterd.adapters.dbt_cloud.requests.get")
+    @mock.patch("dbterd.adapters.dbt_cloud.administrative.file.write_json")
+    @mock.patch("dbterd.adapters.dbt_cloud.administrative.requests.get")
     def test_download_artifact_failed_to_save_file(
         self, mock_requests_get, mock_write_json, dbtCloudArtifact
     ):
@@ -151,8 +151,8 @@ class TestDbtCloudArtifact:
         )
         assert mock_write_json.call_count == 1
 
-    @mock.patch("dbterd.adapters.dbt_cloud.file.write_json")
-    @mock.patch("dbterd.adapters.dbt_cloud.requests.get")
+    @mock.patch("dbterd.adapters.dbt_cloud.administrative.file.write_json")
+    @mock.patch("dbterd.adapters.dbt_cloud.administrative.requests.get")
     def test_download_artifact_status_not_ok(
         self, mock_requests_get, mock_write_json, dbtCloudArtifact
     ):
@@ -162,7 +162,9 @@ class TestDbtCloudArtifact:
         )
         assert mock_write_json.call_count == 0
 
-    @mock.patch("dbterd.adapters.dbt_cloud.DbtCloudArtifact.download_artifact")
+    @mock.patch(
+        "dbterd.adapters.dbt_cloud.administrative.DbtCloudArtifact.download_artifact"
+    )
     def test_get(self, mock_download_artifact, dbtCloudArtifact):
         mock_download_artifact.return_value = True
         assert dbtCloudArtifact.get(artifacts_dir="/irrelevant/path")

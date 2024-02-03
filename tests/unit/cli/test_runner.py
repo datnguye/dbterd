@@ -60,10 +60,14 @@ class TestRunner:
                 "dbterd.adapters.base.Executor._Executor__read_catalog",
                 return_value=None,
             ) as mock_read_c:
-                with pytest.raises(TypeError):
+                with mock.patch(
+                    "dbterd.adapters.base.Executor._Executor__save_result",
+                    return_value=None,
+                ) as mock_save:
                     dbterd.invoke(["run", "--algo", invalid_strategy])
-                mock_read_m.assert_called_once()
-                mock_read_c.assert_called_once()
+                    mock_read_m.assert_called_once()
+                    mock_read_c.assert_called_once()
+                    mock_save.assert_called_once()
 
     @pytest.mark.parametrize(
         "target, output",

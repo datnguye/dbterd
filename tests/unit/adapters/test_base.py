@@ -6,7 +6,7 @@ import pytest
 
 from dbterd import default
 from dbterd.adapters.base import Executor
-from dbterd.adapters.dbt_invocation import DbtInvocation
+from dbterd.adapters.dbt_core.dbt_invocation import DbtInvocation
 
 
 class TestBase:
@@ -106,7 +106,6 @@ class TestBase:
             ),
         ],
     )
-    @mock.patch("dbterd.adapters.dbt_cloud.DbtCloudArtifact.get")
     @mock.patch("dbterd.adapters.base.Executor._Executor__get_dir")
     @mock.patch("dbterd.adapters.base.Executor._Executor__get_selection")
     @mock.patch("dbterd.adapters.base.DbtInvocation.get_artifacts_for_erd")
@@ -115,19 +114,16 @@ class TestBase:
         mock_get_artifacts_for_erd,
         mock_get_selection,
         mock_get_dir,
-        mock_dbt_cloud_get,
         kwargs,
         expected,
     ):
-        worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
+        worker = Executor(ctx=click.Context(command=click.BaseCommand("run")))
         mock_get_dir.return_value = ("/path/ad", "/path/dpd")
         mock_get_selection.return_value = ["yolo"]
         assert expected == worker.evaluate_kwargs(**kwargs)
         mock_get_dir.assert_called_once()
         if kwargs.get("dbt_auto_artifacts"):
             mock_get_artifacts_for_erd.assert_called_once()
-        if kwargs.get("dbt_cloud"):
-            mock_dbt_cloud_get.assert_called_once()
 
     @pytest.mark.parametrize(
         "kwargs, mock_isfile_se, expected",

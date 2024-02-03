@@ -1,0 +1,80 @@
+query (
+  $environment_id: BigInt!,
+  $model_first: Int!,
+  $model_after: String,
+  $source_first: Int!,
+  $source_after: String,
+  $exposure_first: Int!,
+  $exposure_after: String,
+  $test_first: Int!,
+  $test_after: String
+) {
+  environment(id: $environment_id){
+    applied {
+      models(first: $model_first, after: $model_after){
+        edges {
+          node {
+            uniqueId, name, description,
+            database, schema, alias,
+            catalog {columns {name, description, type}},
+          }
+        }
+        pageInfo {
+          startCursor,
+          endCursor,
+          hasNextPage
+        }
+        totalCount
+      }
+      sources(first: $source_first, after: $source_after){
+        edges {
+          node {
+            uniqueId, name, description,
+            database, schema,
+            catalog {columns {name, description, type}},
+          }
+        }
+        pageInfo {
+          startCursor,
+          endCursor,
+          hasNextPage
+        }
+        totalCount
+      }
+      exposures(first: $exposure_first, after: $exposure_after) {
+        edges {
+          node {
+            uniqueId, name, description,
+            parents { uniqueId }
+          }
+        }
+        pageInfo {
+          startCursor,
+          endCursor,
+          hasNextPage
+        }
+        totalCount
+      }
+      tests(first: $test_first, after: $test_after) {
+        edges {
+          node {
+            uniqueId,
+            columnName,
+            meta,
+            testMetadata {
+              name,
+              kwargs
+            },
+            parents { uniqueId, resourceType }
+          }
+        }
+        pageInfo {
+          startCursor,
+          endCursor,
+          hasNextPage
+        }
+        totalCount
+      }
+    }
+  }
+}

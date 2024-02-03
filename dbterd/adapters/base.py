@@ -5,8 +5,9 @@ import click
 
 from dbterd import default
 from dbterd.adapters import adapter
-from dbterd.adapters.dbt_cloud import DbtCloudArtifact
-from dbterd.adapters.dbt_invocation import DbtInvocation
+from dbterd.adapters.dbt_cloud.administrative import DbtCloudArtifact
+from dbterd.adapters.dbt_cloud.discovery import DbtCloudMetadata
+from dbterd.adapters.dbt_core.dbt_invocation import DbtInvocation
 from dbterd.adapters.filter import has_unsupported_rule
 from dbterd.helpers import cli_messaging
 from dbterd.helpers import file as file_handlers
@@ -26,15 +27,17 @@ class Executor:
         self.dbt: DbtInvocation = None
 
     def run(self, **kwargs):
-        """Main function helps to run by the target strategy"""
+        """Generate ERD from files"""
         kwargs = self.evaluate_kwargs(**kwargs)
         self.__run_by_strategy(**kwargs)
 
+    def run_metadata(self, **kwargs):
+        """Generate ERD from API metadata"""
+        kwargs = self.evaluate_kwargs(**kwargs)
+        self.__run_metadata_by_strategy(**kwargs)
+
     def evaluate_kwargs(self, **kwargs) -> dict:
         """Re-calculate the options
-
-        - trigger `dbt ls` for re-calculate the Selection if `--dbt` enabled
-        - trigger `dbt docs generate` for re-calculate the artifact direction if `--dbt-atu-artifacts` enabled
 
         Raises:
             click.UsageError: Not Supported exception
@@ -43,34 +46,35 @@ class Executor:
             dict: kwargs dict
         """
         artifacts_dir, dbt_project_dir = self.__get_dir(**kwargs)
-        logger.info(f"Using dbt project dir at: {dbt_project_dir}")
+        command = self.ctx.command.name
 
         select = list(kwargs.get("select")) or []
         exclude = list(kwargs.get("exclude")) or []
-        if kwargs.get("dbt"):
-            self.dbt = DbtInvocation(
-                dbt_project_dir=kwargs.get("dbt_project_dir"),
-                dbt_target=kwargs.get("dbt_target"),
-            )
-            select = self.__get_selection(**kwargs)
-            exclude = []
+        unsupported, rule = has_unsupported_rule(
+            rules=select.extend(exclude) if exclude else select
+        )
+        if unsupported:
+            message = f"Unsupported Selection found: {rule}"
+            logger.error(message)
+            raise click.UsageError(message)
 
-            if kwargs.get("dbt_auto_artifacts"):
-                self.dbt.get_artifacts_for_erd()
+        if command == "run":
+            if kwargs.get("dbt"):
+                logger.info(f"Using dbt project dir at: {dbt_project_dir}")
+                self.dbt = DbtInvocation(
+                    dbt_project_dir=kwargs.get("dbt_project_dir"),
+                    dbt_target=kwargs.get("dbt_target"),
+                )
+                select = self.__get_selection(**kwargs)
+                exclude = []
+
+                if kwargs.get("dbt_auto_artifacts"):
+                    self.dbt.get_artifacts_for_erd()
+                    artifacts_dir = f"{dbt_project_dir}/target"
+            elif kwargs.get("dbt_cloud"):
                 artifacts_dir = f"{dbt_project_dir}/target"
-        elif kwargs.get("dbt_cloud"):
-            artifacts_dir = f"{dbt_project_dir}/target"
-            DbtCloudArtifact(**kwargs).get(artifacts_dir=artifacts_dir)
-        else:
-            unsupported, rule = has_unsupported_rule(
-                rules=select.extend(exclude) if exclude else select
-            )
-            if unsupported:
-                message = f"Unsupported Selection found: {rule}"
-                logger.error(message)
-                raise click.UsageError(message)
+            logger.info(f"Using dbt artifact dir at: {artifacts_dir}")
 
-        logger.info(f"Using dbt artifact dir at: {artifacts_dir}")
         kwargs["artifacts_dir"] = artifacts_dir
         kwargs["dbt_project_dir"] = dbt_project_dir
         kwargs["select"] = select
@@ -144,8 +148,12 @@ class Executor:
         with cli_messaging.handle_read_errors(self.filename_catalog):
             return file_handlers.read_catalog(path=cp, version=cv)
 
-    def __run_by_strategy(self, **kwargs):
-        """Read artifacts and export the diagram file following the target"""
+    def __get_operation(self, kwargs):
+        """Get target's operation (aka.`parse` function)
+
+        Returns:
+            func: Operation function
+        """
         target = adapter.load_executor(name=kwargs["target"])  # import {target}
         run_operation_dispatcher = getattr(target, "run_operation_dispatcher")
         operation_default = getattr(target, "run_operation_default")
@@ -153,6 +161,31 @@ class Executor:
             f"{kwargs['target']}_{kwargs['algo'].split(':')[0]}",
             operation_default,
         )
+
+        return operation
+
+    def __save_result(self, path, data):
+        """Save ERD data to file
+
+        Args:
+            path (str): Output file path
+            data (dict): ERD data
+
+        Raises:
+            click.FileError: Can not save the file
+        """
+        try:
+            with open(f"{path}/{data[0]}", "w") as f:
+                logger.info(path)
+                f.write(data[1])
+        except Exception as e:
+            logger.error(str(e))
+            raise click.FileError(f"Could not save the output: {str(e)}")
+
+    def __run_by_strategy(self, **kwargs):
+        """Local File - Read artifacts and export the diagram file following the target"""
+        if kwargs.get("dbt_cloud"):
+            DbtCloudArtifact(**kwargs).get(artifacts_dir=kwargs.get("artifacts_dir"))
 
         manifest = self.__read_manifest(
             mp=kwargs.get("artifacts_dir"),
@@ -163,12 +196,14 @@ class Executor:
             cv=kwargs.get("catalog_version"),
         )
 
+        operation = self.__get_operation(kwargs)
         result = operation(manifest=manifest, catalog=catalog, **kwargs)
-        path = kwargs.get("output") + f"/{result[0]}"
-        try:
-            with open(path, "w") as f:
-                logger.info(path)
-                f.write(result[1])
-        except Exception as e:
-            logger.error(str(e))
-            raise click.FileError(f"Could not save the output: {str(e)}")
+        self.__save_result(path=kwargs.get("output"), data=result)
+
+    def __run_metadata_by_strategy(self, **kwargs):
+        """Metadata - Read artifacts and export the diagram file following the target"""
+        data = DbtCloudMetadata(**kwargs).query_erd_data()
+        operation = self.__get_operation(kwargs)
+
+        result = operation(manifest=data, catalog="metadata", **kwargs)
+        self.__save_result(path=kwargs.get("output"), data=result)

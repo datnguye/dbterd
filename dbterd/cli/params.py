@@ -8,21 +8,6 @@ from dbterd import default
 
 def common_params(func):
     @click.option(
-        "--artifacts-dir",
-        "-ad",
-        help="Specified the path to dbt artifact directory which known as /target directory",
-        default="",
-        type=click.STRING,
-    )
-    @click.option(
-        "--output",
-        "-o",
-        help="Output the result file. Default to the cwd/target",
-        default=default.default_output_path(),
-        show_default=True,
-        type=click.STRING,
-    )
-    @click.option(
         "--select",
         "-s",
         help="Selecttion criteria",
@@ -47,11 +32,51 @@ def common_params(func):
         type=click.STRING,
     )
     @click.option(
+        "--resource-type",
+        "-rt",
+        help="Specified dbt resource type(seed, model, source, snapshot),default:model, use examples, -rt model -rt source",
+        default=["model"],
+        multiple=True,
+        type=click.STRING,
+    )
+    @click.option(
         "--algo",
         "-a",
         help="Specified algorithm in the way to detect diagram connectors",
         default=default.deafult_algo(),
         show_default=True,
+        type=click.STRING,
+    )
+    @click.option(
+        "--entity-name-format",
+        "-enf",
+        help="Specified the format of the entity node's name",
+        default="resource.package.model",
+        show_default=True,
+        type=click.STRING,
+    )
+    @click.option(
+        "--output",
+        "-o",
+        help="Output the result file. Default to the cwd/target",
+        default=default.default_output_path(),
+        show_default=True,
+        type=click.STRING,
+    )
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)  # pragma: no cover
+
+    return wrapper
+
+
+def run_params(func):
+    @common_params
+    @click.option(
+        "--artifacts-dir",
+        "-ad",
+        help="Specified the path to dbt artifact directory which known as /target directory",
+        default="",
         type=click.STRING,
     )
     @click.option(
@@ -66,14 +91,6 @@ def common_params(func):
         "-cv",
         help="Specified dbt catalog.json version",
         default=None,
-        type=click.STRING,
-    )
-    @click.option(
-        "--resource-type",
-        "-rt",
-        help="Specified dbt resource type(seed, model, source, snapshot),default:model, use examples, -rt model -rt source",
-        default=["model"],
-        multiple=True,
         type=click.STRING,
     )
     @click.option(
@@ -104,14 +121,6 @@ def common_params(func):
         is_flag=True,
         default=False,
         show_default=True,
-    )
-    @click.option(
-        "--entity-name-format",
-        "-enf",
-        help="Specified the format of the entity node's name",
-        default="resource.package.model",
-        show_default=True,
-        type=click.STRING,
     )
     @click.option(
         "--dbt-cloud",
@@ -178,6 +187,54 @@ def common_params(func):
             "Try to get OS environment variable (DBTERD_DBT_CLOUD_API_VERSION) if not specified."
         ),
         default=os.environ.get("DBTERD_DBT_CLOUD_API_VERSION", "v2"),
+        show_default=True,
+    )
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        return func(*args, **kwargs)  # pragma: no cover
+
+    return wrapper
+
+
+def run_metadata_params(func):
+    @common_params
+    @click.option(
+        "--dbt-cloud-host-url",
+        help=(
+            "Configure dbt Cloud's Host URL. "
+            "Try to get OS environment variable (DBTERD_DBT_CLOUD_HOST_URL) if not specified. "
+            "Sample dbt Cloud Run URL: "
+            "https://<HOST_URL>/deploy/<ACCOUNT_ID>/projects/irrelevant/runs/<RUN_ID>"
+        ),
+        default=os.environ.get("DBTERD_DBT_CLOUD_HOST_URL", "cloud.getdbt.com"),
+        show_default=True,
+    )
+    @click.option(
+        "--dbt-cloud-service-token",
+        help=(
+            "Configure dbt Service Token (Permissions: Job Admin). "
+            "Try to get OS environment variable (DBTERD_DBT_CLOUD_SERVICE_TOKEN) if not specified. "
+            "Visit https://docs.getdbt.com/docs/dbt-cloud-apis/service-tokens to see how to generate it. "
+        ),
+        default=os.environ.get("DBTERD_DBT_CLOUD_SERVICE_TOKEN"),
+        show_default=True,
+    )
+    @click.option(
+        "--dbt-cloud-environment-id",
+        help=(
+            "Configure dbt Cloud Environment ID - Used for Metadata (Discovery) API. "
+            "Try to get OS environment variable (DBTERD_DBT_CLOUD_ENVIRONMENT_ID) if not specified."
+        ),
+        default=os.environ.get("DBTERD_DBT_CLOUD_ENVIRONMENT_ID"),
+        show_default=True,
+    )
+    @click.option(
+        "--dbt-cloud-query-file-path",
+        help=(
+            "Configure dbt Cloud GraphQL query file path - Used for Metadata (Discovery) API. "
+            "Try to get OS environment variable (DBTERD_DBT_CLOUD_QUERY_FILE_PATH) if not specified."
+        ),
+        default=os.environ.get("DBTERD_DBT_CLOUD_QUERY_FILE_PATH"),
         show_default=True,
     )
     @functools.wraps(func)

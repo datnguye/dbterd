@@ -1,0 +1,35 @@
+name: Build and Deploy Docs Site (for beta)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Document version e.g. 1.1 (beta), 1.2 (beta)
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - uses: actions/cache@v2
+        with:
+          key: ${{ github.ref }}
+          path: .cache
+
+      - name: Install dependencies
+        run: pip install mkdocs mkdocs-material mkdocs-minify-plugin mike
+
+      - name: Configure Git user
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+      - name: Publish site
+        run: |
+          mike deploy --push --update-aliases ${{ inputs.version }}

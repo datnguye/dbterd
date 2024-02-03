@@ -5,7 +5,6 @@ from unittest.mock import MagicMock
 import pytest
 
 from dbterd.adapters.algos import base as base_algo
-from dbterd.adapters.algos import test_relationship as algo
 from dbterd.adapters.meta import Column, Ref, Table
 
 
@@ -371,7 +370,9 @@ class TestAlgoTestRelationship:
         ],
     )
     def test_get_relationships(self, manifest, algorithm, expected):
-        assert algo.get_relationships(manifest=manifest, algo=algorithm) == expected
+        assert (
+            base_algo.get_relationships(manifest=manifest, algo=algorithm) == expected
+        )
 
     @pytest.mark.parametrize(
         "meta, type",
@@ -386,7 +387,7 @@ class TestAlgoTestRelationship:
         ],
     )
     def test_get_relationship_type(self, meta, type):
-        assert algo.get_relationship_type(meta=meta) == type
+        assert base_algo.get_relationship_type(meta=meta) == type
 
     @pytest.mark.parametrize(
         "manifest, expected",

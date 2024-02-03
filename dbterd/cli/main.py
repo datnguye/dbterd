@@ -54,22 +54,35 @@ def dbterd(ctx, **kwargs):
     logger.info(f"Run with dbterd=={__version__}")
 
 
+# dbterd run
+@dbterd.command(name="run")
+@click.pass_context
+@params.run_params
+def run(ctx, **kwargs):
+    """
+    Generate ERD file from reading dbt artifact files,
+    optionally downloading from Administrative API (dbt Cloud) befor hands
+    """
+    Executor(ctx).run(**kwargs)
+
+
+# dbterd run_metadata
+@dbterd.command(name="run-metadata")
+@click.pass_context
+@params.run_metadata_params
+def run_metadata(ctx, **kwargs):
+    """Generate ERD file from reading Discovery API (dbt Cloud)"""
+    Executor(ctx).run_metadata(**kwargs)
+
+
 # dbterd debug
 @dbterd.command(name="debug")
 @click.pass_context
-@params.common_params
-def debug(ctx, **kwargs):
+@params.run_params
+@params.run_metadata_params
+def debugx(ctx, **kwargs):
     """Inspect the hidden magics"""
     logger.info("**Arguments used**")
     logger.debug(jsonify.to_json(kwargs))
     logger.info("**Arguments evaluated**")
     logger.debug(jsonify.to_json(Executor(ctx).evaluate_kwargs(**kwargs)))
-
-
-# dbterd run
-@dbterd.command(name="run")
-@click.pass_context
-@params.common_params
-def run(ctx, **kwargs):
-    """Run the convert"""
-    Executor(ctx).run(**kwargs)
