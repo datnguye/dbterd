@@ -26,6 +26,7 @@ nav:
       - dbt Cloud:
         - Download artifacts from a Job Run: nav/guide/dbt-cloud/download-artifact-from-a-job-run.md
         - Download the latest artifacts from a Job: nav/guide/dbt-cloud/download-artifact-from-a-job.md
+        - Read the latest artifacts from an environment: nav/guide/dbt-cloud/read-artifact-from-an-environment.md
     - Contribution Guideline ❤️: nav/development/contributing-guide.md
     - License: license.md
     - Change Log ↗️: https://github.com/datnguye/dbterd/releases" target="_blank

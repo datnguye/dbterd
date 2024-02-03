@@ -387,6 +387,17 @@ Check [Download artifacts from a Job Run](./dbt-cloud/download-artifact-from-a-j
     dbterd run --dbt-cloud --select wildcard:*transaction*
     ```
 
+## dbterd run-metadata
+
+Command to generate diagram-as-a-code file by connecting to dbt Cloud Discovery API using GraphQL connection
+
+**Examples:**
+=== "CLI"
+
+    ```bash
+    dbterd run-metadata [-t dbml or -t mermaid]
+    ```
+
 ## dbterd debug
 
 Shows hidden configured values, which will help us to see what configs are passed into and how they are evaluated to be used.
