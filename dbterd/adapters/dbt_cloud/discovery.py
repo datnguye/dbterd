@@ -27,7 +27,7 @@ class DbtCloudMetadata:
         ]
         self.show_counts(data=data[-1])
         if not poll_until_end:
-            return data[-1]
+            return data
 
         while any(
             [
@@ -58,14 +58,10 @@ class DbtCloudMetadata:
             )
             self.show_counts(data=data[-1])
 
-        return self.merge_data(data=data)
+        return data
 
     def extract_data(self, graphql_data):
         return graphql_data.get("environment", {}).get("applied", {})
-
-    def merge_data(self, data=[]):
-        # TODO
-        return data[0]
 
     def has_data(self, data, resource_type: str = "model"):
         return (

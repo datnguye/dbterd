@@ -8,7 +8,7 @@ from dbterd.constants import (
 )
 
 
-def get_tables_from_metadata(data, **kwargs):
+def get_tables_from_metadata(data=[], **kwargs):
     """Extract tables from dbt metadata
 
     Args:
@@ -21,23 +21,25 @@ def get_tables_from_metadata(data, **kwargs):
     table_exposures = get_node_exposures_from_metadata(data=data)
     # Model
     if "model" in kwargs.get("resource_type", []):
-        for model in data.get("models", {}).get("edges", []):
-            table = get_table_from_metadata(
-                model_metadata=model,
-                exposures=table_exposures,
-                **kwargs,
-            )
-            tables.append(table)
+        for data_item in data:
+            for model in data_item.get("models", {}).get("edges", []):
+                table = get_table_from_metadata(
+                    model_metadata=model,
+                    exposures=table_exposures,
+                    **kwargs,
+                )
+                tables.append(table)
 
     # Source
     if "source" in kwargs.get("resource_type", []):
-        for model in data.get("sources", {}).get("edges", []):
-            table = get_table_from_metadata(
-                model_metadata=model,
-                exposures=table_exposures,
-                **kwargs,
-            )
-            tables.append(table)
+        for data_item in data:
+            for model in data_item.get("sources", {}).get("edges", []):
+                table = get_table_from_metadata(
+                    model_metadata=model,
+                    exposures=table_exposures,
+                    **kwargs,
+                )
+                tables.append(table)
 
     return tables
 
@@ -267,20 +269,21 @@ def get_compiled_sql(manifest_node):
     return manifest_node.raw_sql  # fallback to raw dbt code
 
 
-def get_node_exposures_from_metadata(data, **kwargs):
+def get_node_exposures_from_metadata(data=[], **kwargs):
     exposures = []
-    for exposure in data.get("exposures", {}).get("edges", []):
-        name = exposure.get("node", {}).get("name")
-        parent_nodes = exposure.get("node", {}).get("parents")
-        for node in parent_nodes:
-            node_name = node.get("uniqueId", "")
-            if node_name.split(".")[0] in kwargs.get("resource_type", []):
-                exposures.append(
-                    dict(
-                        node_name=node_name,
-                        exposure_name=name,
+    for data_item in data:
+        for exposure in data_item.get("exposures", {}).get("edges", []):
+            name = exposure.get("node", {}).get("name")
+            parent_nodes = exposure.get("node", {}).get("parents")
+            for node in parent_nodes:
+                node_name = node.get("uniqueId", "")
+                if node_name.split(".")[0] in kwargs.get("resource_type", []):
+                    exposures.append(
+                        dict(
+                            node_name=node_name,
+                            exposure_name=name,
+                        )
                     )
-                )
 
     return exposures
 
