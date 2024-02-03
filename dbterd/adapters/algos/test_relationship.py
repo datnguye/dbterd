@@ -18,6 +18,10 @@ def parse(manifest, catalog, **kwargs):
     Returns:
         Tuple(List[Table], List[Ref]): Info of parsed tables and relationships
     """
+    # Parse metadata
+    if catalog == "metadata":
+        return parse_metadata(data=manifest, **kwargs)
+
     # Parse Table
     tables = base.get_tables(manifest=manifest, catalog=catalog, **kwargs)
 
