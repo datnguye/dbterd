@@ -151,26 +151,7 @@ class Executor:
         with cli_messaging.handle_read_errors(self.filename_catalog):
             return file_handlers.read_catalog(path=cp, version=cv)
 
-    def __save_result(self, path, result):
-        """Save ERD data to file
-
-        Args:
-            path (str): Output file path
-            result (dict): ERD data
-
-        Raises:
-            click.FileError: Can not save the file
-        """
-        try:
-            with open(path, "w") as f:
-                logger.info(path)
-                f.write(result[1])
-        except Exception as e:
-            logger.error(str(e))
-            raise click.FileError(f"Could not save the output: {str(e)}")
-
-    def __run_by_strategy(self, **kwargs):
-        """Local File - Read artifacts and export the diagram file following the target"""
+    def __get_operation(self, kwargs):
         target = adapter.load_executor(name=kwargs["target"])  # import {target}
         run_operation_dispatcher = getattr(target, "run_operation_dispatcher")
         operation_default = getattr(target, "run_operation_default")
@@ -178,6 +159,29 @@ class Executor:
             f"{kwargs['target']}_{kwargs['algo'].split(':')[0]}",
             operation_default,
         )
+
+        return operation
+
+    def __save_result(self, path, data):
+        """Save ERD data to file
+
+        Args:
+            path (str): Output file path
+            data (dict): ERD data
+
+        Raises:
+            click.FileError: Can not save the file
+        """
+        try:
+            with open(f"{path}/{data[0]}", "w") as f:
+                logger.info(path)
+                f.write(data[1])
+        except Exception as e:
+            logger.error(str(e))
+            raise click.FileError(f"Could not save the output: {str(e)}")
+
+    def __run_by_strategy(self, **kwargs):
+        """Local File - Read artifacts and export the diagram file following the target"""
 
         if kwargs.get("dbt_cloud"):
             DbtCloudArtifact(**kwargs).get(artifacts_dir=kwargs.get("artifacts_dir"))
@@ -191,22 +195,14 @@ class Executor:
             cv=kwargs.get("catalog_version"),
         )
 
+        operation = self.__get_operation(kwargs)
         result = operation(manifest=manifest, catalog=catalog, **kwargs)
-        path = kwargs.get("output") + f"/{result[0]}"
-        self.__save_result(path, result)
+        self.__save_result(path=kwargs.get("output"), data=result)
 
     def __run_metadata_by_strategy(self, **kwargs):
         """Metadata - Read artifacts and export the diagram file following the target"""
         data = DbtCloudMetadata(**kwargs).query_erd_data()
-
-        target = adapter.load_executor(name=kwargs["target"])  # import {target}
-        run_operation_dispatcher = getattr(target, "run_operation_dispatcher")
-        operation_default = getattr(target, "run_operation_default")
-        operation = run_operation_dispatcher.get(
-            f"{kwargs['target']}_{kwargs['algo'].split(':')[0]}",
-            operation_default,
-        )
+        operation = self.__get_operation(kwargs)
 
         result = operation(manifest=data, catalog="metadata", **kwargs)
-        path = kwargs.get("output") + f"/{result[0]}"
-        self.__save_result(path, result)
+        self.__save_result(path=kwargs.get("output"), data=result)
