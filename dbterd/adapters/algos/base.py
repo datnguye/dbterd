@@ -121,7 +121,16 @@ def enrich_tables_from_relationships(tables, relationships):
     return copied_tables
 
 
-def get_table_from_metadata(model_metadata, exposures=[], **kwargs):
+def get_table_from_metadata(model_metadata, exposures=[], **kwargs) -> Table:
+    """Construct a single Table object (for Metadata)
+
+    Args:
+        model_metadata (dict): Metadata model node
+        exposures (list, optional): List of parsed exposures. Defaults to [].
+
+    Returns:
+        Table: Parsed table
+    """
     node_name = model_metadata.get("node", {}).get("uniqueId")
     node_description = model_metadata.get("node", {}).get("description")
     node_database = model_metadata.get("node", {}).get("database").lower()
@@ -170,7 +179,9 @@ def get_table_from_metadata(model_metadata, exposures=[], **kwargs):
     return table
 
 
-def get_table(node_name, manifest_node, catalog_node=None, exposures=[], **kwargs):
+def get_table(
+    node_name, manifest_node, catalog_node=None, exposures=[], **kwargs
+) -> Table:
     """Construct a single Table object
 
     Args:
@@ -276,6 +287,14 @@ def get_compiled_sql(manifest_node):
 
 
 def get_node_exposures_from_metadata(data=[], **kwargs):
+    """Get the mapping of table name and exposure name (for Metadata)
+
+    Args:
+        data (list, optional): Metadata result list. Defaults to [].
+
+    Returns:
+        list: List of maping dict {table_name:..., exposure_name=...}
+    """
     exposures = []
     for data_item in data:
         for exposure in data_item.get("exposures", {}).get("edges", []):
@@ -301,7 +320,7 @@ def get_node_exposures(manifest):
         manifest (dict): dbt manifest json
 
     Returns:
-        dict: Maping dict {table_name:..., exposure_name=...}
+        list: List of maping dict {table_name:..., exposure_name=...}
     """
     exposures = []
 
@@ -330,7 +349,15 @@ def get_table_name(format: str, **kwargs) -> str:
     return ".".join([kwargs.get(x.lower()) or "KEYNOTFOUND" for x in format.split(".")])
 
 
-def get_relationships_from_metadata(data, **kwargs):
+def get_relationships_from_metadata(data=[], **kwargs) -> list[Ref]:
+    """Extract relationships from Metadata result list on test relationship
+
+    Args:
+        data (_type_): Metadata result list. Defaults to [].
+
+    Returns:
+        list[Ref]: List of parsed relationship
+    """
     refs = []
     rule = get_algo_rule(**kwargs)
 
@@ -434,14 +461,14 @@ def get_relationships(manifest, **kwargs):
     return get_unique_refs(refs=refs)
 
 
-def get_unique_refs(refs=[]):
+def get_unique_refs(refs: list[Ref] = []) -> list[Ref]:
     """Remove duplicates in the Relationship list
 
     Args:
-        refs (list, optional): List of parsed relationship. Defaults to [].
+        refs (list[Ref], optional): List of parsed relationship. Defaults to [].
 
     Returns:
-        list: Distinct parsed relationship
+        list[Ref]: Distinct parsed relationship
     """
     if not refs:
         return []
@@ -491,6 +518,18 @@ def get_algo_rule(**kwargs):
 
 
 def get_table_map_from_metadata(test_node, **kwargs):
+    """Get the table map with order of [to, from] guaranteed
+    (for Metadata)
+
+    Args:
+        test_node (dict): Metadata test node
+
+    Raises:
+        click.BadParameter: A Ref must have 2 parents
+
+    Returns:
+        list: [to model, from model]
+    """
     rule = get_algo_rule(**kwargs)
 
     test_parents = []

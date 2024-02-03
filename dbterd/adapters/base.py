@@ -39,9 +39,6 @@ class Executor:
     def evaluate_kwargs(self, **kwargs) -> dict:
         """Re-calculate the options
 
-        - trigger `dbt ls` for re-calculate the Selection if `--dbt` enabled
-        - trigger `dbt docs generate` for re-calculate the artifact direction if `--dbt-atu-artifacts` enabled
-
         Raises:
             click.UsageError: Not Supported exception
 
@@ -187,7 +184,6 @@ class Executor:
 
     def __run_by_strategy(self, **kwargs):
         """Local File - Read artifacts and export the diagram file following the target"""
-
         if kwargs.get("dbt_cloud"):
             DbtCloudArtifact(**kwargs).get(artifacts_dir=kwargs.get("artifacts_dir"))
 

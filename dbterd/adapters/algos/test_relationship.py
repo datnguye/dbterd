@@ -18,7 +18,7 @@ def parse_metadata(data, **kwargs):
     relationships = []
 
     # Parse Table
-    tables = base.get_tables_from_metadata(data=data)
+    tables = base.get_tables_from_metadata(data=data, **kwargs)
 
     # Apply selection
     tables = [
@@ -32,8 +32,6 @@ def parse_metadata(data, **kwargs):
         )
     ]
 
-    # Parse Table
-    tables = base.get_tables_from_metadata(data=data, **kwargs)
     # Parse Ref
     relationships = base.get_relationships_from_metadata(data=data, **kwargs)
     node_names = [x.node_name for x in tables]
