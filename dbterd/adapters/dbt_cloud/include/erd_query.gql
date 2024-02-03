@@ -16,10 +16,6 @@ query (
           node {
             uniqueId, name, description,
             database, schema, alias,
-            tests {uniqueId, columnName, testMetadata {
-              name,
-              kwargs
-            }},
             catalog {columns {name, description, type}},
           }
         }
@@ -35,10 +31,6 @@ query (
           node {
             uniqueId, name, description,
             database, schema,
-            tests {columnName, name, uniqueId, testMetadata {
-              name,
-              kwargs
-            }},
             catalog {columns {name, description, type}},
           }
         }
@@ -67,6 +59,12 @@ query (
         edges {
           node {
             uniqueId,
+            columnName,
+            meta,
+            testMetadata {
+              name,
+              kwargs
+            },
             parents { uniqueId, resourceType }
           }
         }

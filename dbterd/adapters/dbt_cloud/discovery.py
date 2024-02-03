@@ -12,7 +12,7 @@ class DbtCloudMetadata:
         )
         self.last_cursor = {}
 
-    def query_erd_data(self, page_size: int = 500, poll_until_end: bool = True):
+    def query_erd_data(self, page_size: int = 10, poll_until_end: bool = True):
         variables = {
             "environment_id": self.environment_id,
             "model_first": page_size,

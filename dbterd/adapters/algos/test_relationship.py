@@ -34,10 +34,14 @@ def parse_metadata(data, **kwargs):
 
     # Parse Table
     tables = base.get_tables_from_metadata(data=data, **kwargs)
-    print(tables)
-
     # Parse Ref
-    print("Parsing Ref - TODO")
+    relationships = base.get_relationships_from_metadata(data=data, **kwargs)
+    node_names = [x.node_name for x in tables]
+    relationships = [
+        x
+        for x in relationships
+        if x.table_map[0] in node_names and x.table_map[1] in node_names
+    ]
 
     logger.info(
         f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)"

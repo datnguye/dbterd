@@ -1,11 +1,14 @@
 import copy
 
+import click
+
 from dbterd.adapters.meta import Column, Ref, Table
 from dbterd.constants import (
     DEFAULT_ALGO_RULE,
     TEST_META_IGNORE_IN_ERD,
     TEST_META_RELATIONSHIP_TYPE,
 )
+from dbterd.helpers.log import logger
 
 
 def get_tables_from_metadata(data=[], **kwargs):
@@ -133,7 +136,10 @@ def get_table_from_metadata(model_metadata, exposures=[], **kwargs):
                 model=node_name_parts[2],
                 database=node_database,
                 schema=model_metadata.get("node", {}).get("schema").lower(),
-                table=model_metadata.get("node", {}).get("alias").lower(),
+                table=(
+                    model_metadata.get("node", {}).get("alias")
+                    or model_metadata.get("node", {}).get("name")
+                ).lower(),
             ),
         ),
         node_name=node_name,
@@ -325,8 +331,55 @@ def get_table_name(format: str, **kwargs) -> str:
 
 
 def get_relationships_from_metadata(data, **kwargs):
-    get_algo_rule(**kwargs)
-    return []
+    refs = []
+    rule = get_algo_rule(**kwargs)
+
+    for data_item in data:
+        for test in data_item.get("tests", {}).get("edges", []):
+            test_id = test.get("node", {}).get("uniqueId", "")
+            test_meta = test.get("node", {}).get("meta", {})
+            if (
+                test_id.startswith("test")
+                and rule.get("name").lower() in test_id.lower()
+                and test_meta.get(TEST_META_IGNORE_IN_ERD, "0") == "0"
+            ):
+                test_metadata_kwargs = (
+                    test.get("node", {}).get("testMetadata", {}).get("kwargs", {})
+                )
+                refs.append(
+                    Ref(
+                        name=test_id,
+                        table_map=get_table_map_from_metadata(test_node=test, **kwargs),
+                        column_map=[
+                            (
+                                test_metadata_kwargs.get(rule.get("c_to"))
+                                or "_and_".join(
+                                    test_metadata_kwargs.get(
+                                        f'{rule.get("c_to")}s', "unknown"
+                                    )
+                                )
+                            )
+                            .replace('"', "")
+                            .lower(),
+                            (
+                                test_metadata_kwargs.get("columnName")
+                                or test_metadata_kwargs.get(rule.get("c_from"))
+                                or "_and_".join(
+                                    test_metadata_kwargs.get(
+                                        f'{rule.get("c_from")}s', "unknown"
+                                    )
+                                )
+                            )
+                            .replace('"', "")
+                            .lower(),
+                        ],
+                        type=get_relationship_type(
+                            test_meta.get(TEST_META_RELATIONSHIP_TYPE, "")
+                        ),
+                    )
+                )
+
+    return get_unique_refs(refs=refs)
 
 
 def get_relationships(manifest, **kwargs):
@@ -378,17 +431,28 @@ def get_relationships(manifest, **kwargs):
         )
     ]
 
-    # remove duplicates
-    if refs:
-        distinct_list = [refs[0]]
-        for ref in refs:
-            distinct_maps = [str((x.table_map, x.column_map)) for x in distinct_list]
-            if str((ref.table_map, ref.column_map)) not in distinct_maps:
-                distinct_list.append(ref)
+    return get_unique_refs(refs=refs)
 
-        return distinct_list
 
-    return []
+def get_unique_refs(refs=[]):
+    """Remove duplicates in the Relationship list
+
+    Args:
+        refs (list, optional): List of parsed relationship. Defaults to [].
+
+    Returns:
+        list: Distinct parsed relationship
+    """
+    if not refs:
+        return []
+
+    distinct_list = [refs[0]]
+    for ref in refs:
+        distinct_maps = [str((x.table_map, x.column_map)) for x in distinct_list]
+        if str((ref.table_map, ref.column_map)) not in distinct_maps:
+            distinct_list.append(ref)
+
+    return distinct_list
 
 
 def get_algo_rule(**kwargs):
@@ -424,6 +488,45 @@ def get_algo_rule(**kwargs):
     rules = rules[1:-1]  # remove brackets
     rules = dict(arg.split(":") for arg in rules.split("|"))
     return rules
+
+
+def get_table_map_from_metadata(test_node, **kwargs):
+    rule = get_algo_rule(**kwargs)
+
+    test_parents = []
+    for parent in test_node.get("node", {}).get("parents", []):
+        parent_id = parent.get("uniqueId", "")
+        if parent_id.split(".")[0] in kwargs.get("resource_type", []):
+            test_parents.append(parent_id)
+
+    if len(test_parents) == 0:
+        return ["", ""]  # return dummies - need to be excluded manually
+
+    if len(test_parents) != 2:
+        logger.debug(f"Collected test parents: {test_parents}")
+        raise click.BadParameter(
+            "Relationship test unexpectedly doesn't have 2 parents"
+        )
+
+    test_metadata_to = (
+        test_node.get("node", {})
+        .get("testMetadata", {})
+        .get("kwargs", {})
+        .get(rule.get("t_to", "to"), "")
+    )
+
+    first_test_parent_parts = test_parents[0].split(".")
+    first_test_parent_resource_type = (
+        "ref" if first_test_parent_parts[0] != "source" else first_test_parent_parts[0]
+    )
+    to_model_possible_values = [
+        f"{first_test_parent_resource_type}('{first_test_parent_parts[2]}','{first_test_parent_parts[-1]}')",
+        f"{first_test_parent_resource_type}('{first_test_parent_parts[-1]}')",
+    ]
+    if test_metadata_to in to_model_possible_values:
+        return test_parents
+
+    return list(reversed(test_parents))
 
 
 def get_table_map(test_node, **kwargs):
