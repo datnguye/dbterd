@@ -113,7 +113,7 @@ def is_satisfied_by_exact(table: Table, rule: str = ""):
     """
     if not rule:
         return True
-    return table.node_name == rule
+    return table.node_name.lower() == rule
 
 
 def is_satisfied_by_schema(table: Table, rule: str = ""):
