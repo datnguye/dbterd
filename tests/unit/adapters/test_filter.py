@@ -53,6 +53,16 @@ class TestFilter:
                 "model.dummy.table1",
                 True,
             ),
+            (
+                Table(
+                    name="irrelevant",
+                    node_name="model.dummy.Table1",
+                    database="dummydb",
+                    schema="dummyschema",
+                ),
+                "model.dummy.table1",
+                True,
+            ),
         ],
     )
     def test_is_satisfied_by_exact(self, table, rule, expected):
