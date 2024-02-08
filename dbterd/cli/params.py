@@ -67,7 +67,7 @@ def common_params(func):
         "--omit_columns",
         help=(
             "Flag to omit columns in diagram. ",
-            "Currently only mermaid is supported"
+            "Currently only mermaid is supported",
         ),
         is_flag=True,
         default=False,

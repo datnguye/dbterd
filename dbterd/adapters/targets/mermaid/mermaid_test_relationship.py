@@ -42,7 +42,9 @@ def parse(manifest, catalog, **kwargs):
         if kwargs.get("omit_columns", False):
             mermaid += '  "{table_name}" {{\n  }}\n'.format(table_name=table_name)
         else:
-            mermaid += '  "{table_name}" {{\n{columns}\n  }}\n'.format(table_name=table_name, columns=columns)
+            mermaid += '  "{table_name}" {{\n{columns}\n  }}\n'.format(
+                table_name=table_name, columns=columns
+            )
 
     for rel in relationships:
         key_from = f'"{rel.table_map[1]}"'
