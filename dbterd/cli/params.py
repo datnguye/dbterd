@@ -64,7 +64,7 @@ def common_params(func):
         type=click.STRING,
     )
     @click.option(
-        "--omit_columns",
+        "--omit-columns",
         help="Flag to omit columns in diagram. Currently only mermaid is supported",
         is_flag=True,
         default=False,
