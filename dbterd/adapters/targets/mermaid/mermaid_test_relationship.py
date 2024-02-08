@@ -32,15 +32,19 @@ def parse(manifest, catalog, **kwargs):
     # https://mermaid.js.org/syntax/entityRelationshipDiagram.html
     mermaid = "erDiagram\n"
     for table in tables:
-        mermaid += '  "{table}" {{\n{columns}\n  }}\n'.format(
-            table=table.name.upper(),
-            columns="\n".join(
-                [
-                    f'    {x.data_type.replace(" ","-")} {x.name.replace(" ","-")}'
-                    for x in table.columns
-                ]
-            ),
+        table_name = table.name.upper()
+        columns = "\n".join(
+            [
+                f'    {x.data_type.replace(" ","-")} {x.name.replace(" ","-")}'
+                for x in table.columns
+            ]
         )
+        if kwargs.get("omit_columns", False):
+            mermaid += '  "{table_name}" {{\n  }}\n'.format(table_name=table_name)
+        else:
+            mermaid += '  "{table_name}" {{\n{columns}\n  }}\n'.format(
+                table_name=table_name, columns=columns
+            )
 
     for rel in relationships:
         key_from = f'"{rel.table_map[1]}"'

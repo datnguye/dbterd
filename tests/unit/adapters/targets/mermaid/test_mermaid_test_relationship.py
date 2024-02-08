@@ -8,7 +8,7 @@ from dbterd.adapters.targets.mermaid import mermaid_test_relationship as engine
 
 class TestMermaidTestRelationship:
     @pytest.mark.parametrize(
-        "tables, relationships, select, exclude, resource_type, expected",
+        "tables, relationships, select, exclude, resource_type, omit_columns, expected",
         [
             (
                 [
@@ -25,6 +25,7 @@ class TestMermaidTestRelationship:
                 [],
                 [],
                 ["model"],
+                False,
                 """erDiagram
                   "MODEL.DBT_RESTO.TABLE1" {
                       name1-type name1
@@ -73,6 +74,7 @@ class TestMermaidTestRelationship:
                 [],
                 [],
                 ["model", "source"],
+                False,
                 """erDiagram
                   "MODEL.DBT_RESTO.TABLE1" {
                       name1-type name1
@@ -118,6 +120,7 @@ class TestMermaidTestRelationship:
                 ["schema:--schema--"],
                 [],
                 ["model", "source"],
+                False,
                 """erDiagram
                     "MODEL.DBT_RESTO.TABLE1" {
                         name1-type name1
@@ -139,6 +142,7 @@ class TestMermaidTestRelationship:
                 [],
                 ["model.dbt_resto.table1"],
                 ["model"],
+                False,
                 """erDiagram
                 """,
             ),
@@ -165,6 +169,7 @@ class TestMermaidTestRelationship:
                 ["model.dbt_resto"],
                 ["model.dbt_resto.table2"],
                 ["model"],
+                False,
                 """erDiagram
                     "MODEL.DBT_RESTO.TABLE1" {
                         name1-type name1
@@ -186,6 +191,7 @@ class TestMermaidTestRelationship:
                 ["schema:", "wildcard:", ""],
                 [],
                 ["model"],
+                False,
                 """erDiagram
                     "MODEL.DBT_RESTO.TABLE1" {
                         name1-type name1
@@ -215,16 +221,45 @@ class TestMermaidTestRelationship:
                 ["schema:--schema--,wildcard:*dbt_resto.table*"],
                 ["wildcard:*table2"],
                 ["model"],
+                False,
                 """erDiagram
                     "MODEL.DBT_RESTO.TABLE1" {
                         name1-type name1
                     }
                 """,
             ),
+            (
+                [
+                    Table(
+                        name="model.dbt_resto.table1",
+                        node_name="model.dbt_resto.table1",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[Column(name="name1", data_type="name1-type")],
+                        raw_sql="--irrelevant--",
+                    )
+                ],
+                [],
+                [],
+                [],
+                ["model"],
+                True,
+                """erDiagram
+                  "MODEL.DBT_RESTO.TABLE1" {
+                  }
+                """,
+            ),
         ],
     )
     def test_parse(
-        self, tables, relationships, select, exclude, resource_type, expected
+        self,
+        tables,
+        relationships,
+        select,
+        exclude,
+        resource_type,
+        omit_columns,
+        expected,
     ):
         with mock.patch(
             "dbterd.adapters.algos.base.get_tables",
@@ -239,6 +274,7 @@ class TestMermaidTestRelationship:
                     catalog="--catalog--",
                     select=select,
                     exclude=exclude,
+                    omit_columns=omit_columns,
                     resource_type=resource_type,
                 )
                 print("mermaid ", mermaid.replace(" ", "").replace("\n", ""))
