@@ -63,6 +63,16 @@ def common_params(func):
         show_default=True,
         type=click.STRING,
     )
+    @click.option(
+        "--omit_columns",
+        help=(
+            "Flag to omit columns in diagram. ",
+            "Currently only mermaid is supported"
+        ),
+        is_flag=True,
+        default=False,
+        show_default=True,
+    )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)  # pragma: no cover
