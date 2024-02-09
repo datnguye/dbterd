@@ -4,8 +4,16 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Document version e.g. 1.1 (beta), 1.2 (beta)
+        description: Document version e.g. 1.1-beta, 1.2-beta
         required: true
+      promote_to_stable:
+        description: Promote this Beta version to Stable one
+        type: choice
+        required: true
+        default: 'false'
+        options:
+          - true
+          - false
 
 jobs:
   build:
@@ -33,3 +41,12 @@ jobs:
       - name: Publish site
         run: |
           mike deploy --push --update-aliases ${{ inputs.version }}
+
+      - name: Promote site to Stable
+        if: ${{ (inputs.promote_to_stable == 'true)' && contains(inputs.version, '-beta') }}
+        run: |
+          # mike delete --push ${{ inputs.version }}
+
+          stable_version="${ inputs.version//-beta }"
+          echo ${{ stable_version }}
+          # mike deploy --push --update-aliases ${{ stable_version }} latest
