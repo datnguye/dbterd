@@ -47,6 +47,6 @@ jobs:
         run: |
           # mike delete --push ${{ inputs.version }}
 
-          stable_version="${ inputs.version//-beta }"
-          echo ${{ stable_version }}
-          # mike deploy --push --update-aliases ${{ stable_version }} latest
+          STABLE_VERSION="${ inputs.version//-beta }"
+          echo ${{ STABLE_VERSION }}
+          # mike deploy --push --update-aliases ${{ STABLE_VERSION }} latest
