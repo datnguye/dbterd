@@ -25,7 +25,7 @@ def match_complex_column_type(column_type: str) -> Optional[str]:
     pattern = r"(\w+)<(\w+\s+\w+(\s*,\s*\w+\s+\w+)*)>"
     match = re.match(pattern, column_type)
     if match:
-        return match.group(0)
+        return match.group(1)
     else:
         return None
 
