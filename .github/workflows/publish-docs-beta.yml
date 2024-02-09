@@ -4,8 +4,16 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: Document version e.g. 1.1 (beta), 1.2 (beta)
+        description: Document version e.g. 1.1-beta, 1.2-beta
         required: true
+      delete:
+        description: Delete this Beta version
+        type: choice
+        required: true
+        default: 'false'
+        options:
+          - true
+          - false
 
 jobs:
   build:
@@ -30,6 +38,12 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-      - name: Publish site
+      - name: Publish site version (non-stable)
+        if: ${{ inputs.delete == 'false' }}
         run: |
           mike deploy --push --update-aliases ${{ inputs.version }}
+
+      - name: Delete site version
+        if: ${{ inputs.delete == 'true' }}
+        run: |
+          mike delete --push ${{ inputs.version }}
