@@ -138,3 +138,10 @@ class TestRunner:
                         mock_read_c.assert_called_once()
                         mock_engine_parse.assert_called_once()
                         mock_open_w.assert_called_once()
+
+    def test_invoke_run_metadata_ok(self, dbterd: dbterdRunner) -> None:
+        with mock.patch(
+            "dbterd.cli.main.Executor.run_metadata", return_value=None
+        ) as mock_run_metadata:
+            dbterd.invoke(["run-metadata"])
+            mock_run_metadata.assert_called_once()
