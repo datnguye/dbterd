@@ -43,7 +43,7 @@ jobs:
           mike deploy --push --update-aliases ${{ inputs.version }}
 
       - name: Promote site to Stable
-        if: ${{ (inputs.promote_to_stable == 'true)' && contains(inputs.version, '-beta') }}
+        if: ${{ (inputs.promote_to_stable == 'true') && contains(inputs.version, '-beta') }}
         run: |
           # mike delete --push ${{ inputs.version }}
 
