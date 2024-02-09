@@ -101,4 +101,7 @@ def parse(manifest, catalog, **kwargs):
     logger.info(
         f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)"
     )
-    return (tables, relationships)
+    return (
+        sorted(tables, key=lambda tbl: tbl.node_name),
+        sorted(relationships, key=lambda rel: rel.name),
+    )
