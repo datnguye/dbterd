@@ -55,6 +55,8 @@ Command to generate diagram-as-a-code file
         -rt, --resource-type TEXT     Specified dbt resource type(seed, model,
                                         source, snapshot),default:model, use examples,
                                         -rt model -rt source
+        --omit-columns                Flag to omit columns in diagram. Currently
+                                        only mermaid is supported
         -h, --help                    Show this message and exit.
     ```
 
@@ -173,7 +175,6 @@ Configure the path to directory containing the output diagram file.
 
 ### dbterd run --target (-t)
 
-Target to the diagram-as-code platform
 > Default to `dbml`
 
 Supported target, please visit [Generate the Targets](https://dbterd.datnguyen.de/latest/nav/guide/targets/generate-dbml.html)
@@ -230,6 +231,19 @@ In the above:
 
     ```bash
     dbterd run --algo "test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)"
+    ```
+
+### dbterd run --omit-columns
+
+Flag to omit columns in diagram. Currently only mermaid is supported
+
+> Default to `False`
+
+**Examples:**
+=== "CLI"
+
+    ```bash
+    dbterd run --target mermaid --omit-columns
     ```
 
 ### dbterd run --manifest-version (-mv)
