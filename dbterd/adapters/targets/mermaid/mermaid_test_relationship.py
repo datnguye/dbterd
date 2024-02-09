@@ -1,3 +1,6 @@
+import re
+from typing import Optional
+
 from dbterd.adapters.algos import test_relationship
 
 
@@ -12,6 +15,29 @@ def run(manifest, catalog, **kwargs):
         Tuple(str, str): File name and the Mermaid content
     """
     return ("output.md", parse(manifest, catalog, **kwargs))
+
+
+def replace_column_name(column_name: str) -> str:
+    return column_name.replace(" ", "-").replace(".", "__")
+
+
+def match_complex_column_type(column_type: str) -> Optional[str]:
+    pattern = r"(\w+)<(\w+\s+\w+(\s*,\s*\w+\s+\w+)*)>"
+    match = re.match(pattern, column_type)
+    if match:
+        return match.group(0)
+    else:
+        return None
+
+
+def replace_column_type(column_type: str) -> str:
+    # Some specific DWHs may have types that cannot be drawn in mermaid, such as `Struct<first_name string, last_name string>`.
+    # These types may be nested and can be very long, so omit them
+    complex_column_type = match_complex_column_type(column_type)
+    if complex_column_type:
+        return f"{complex_column_type}[OMITTED]"
+    else:
+        return column_type.replace(" ", "-")
 
 
 def parse(manifest, catalog, **kwargs):
@@ -35,7 +61,7 @@ def parse(manifest, catalog, **kwargs):
         table_name = table.name.upper()
         columns = "\n".join(
             [
-                f'    {x.data_type.replace(" ","-")} {x.name.replace(" ","-")}'
+                f"    {replace_column_type(x.data_type)} {replace_column_name(x.name)}"
                 for x in table.columns
             ]
         )
@@ -49,9 +75,9 @@ def parse(manifest, catalog, **kwargs):
     for rel in relationships:
         key_from = f'"{rel.table_map[1]}"'
         key_to = f'"{rel.table_map[0]}"'
-        reference_text = rel.column_map[0].replace(" ", "-")
+        reference_text = replace_column_name(rel.column_map[0])
         if rel.column_map[0] != rel.column_map[1]:
-            reference_text += f"--{ rel.column_map[1].replace(' ','-')}"
+            reference_text += f"--{ replace_column_name(rel.column_map[1])}"
         mermaid += f"  {key_from.upper()} {get_rel_symbol(rel.type)} {key_to.upper()}: {reference_text}\n"
 
     return mermaid
