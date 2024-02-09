@@ -6,8 +6,8 @@ on:
       version:
         description: Document version e.g. 1.1-beta, 1.2-beta
         required: true
-      promote_to_stable:
-        description: Promote this Beta version to Stable one
+      delete:
+        description: Delete this Beta version
         type: choice
         required: true
         default: 'false'
@@ -38,15 +38,12 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
 
-      - name: Publish site
+      - name: Publish site version (non-stable)
+        if: ${{ inputs.delete == 'false' }}
         run: |
           mike deploy --push --update-aliases ${{ inputs.version }}
 
-      - name: Promote site to Stable
-        if: ${{ (inputs.promote_to_stable == 'true') && contains(inputs.version, '-beta') }}
+      - name: Delete site version
+        if: ${{ inputs.delete == 'true' }}
         run: |
-          # mike delete --push ${{ inputs.version }}
-
-          STABLE_VERSION="${ inputs.version//-beta }"
-          echo ${{ STABLE_VERSION }}
-          # mike deploy --push --update-aliases ${{ STABLE_VERSION }} latest
+          mike delete --push ${{ inputs.version }}
