@@ -1,10 +1,13 @@
+from typing import List, Tuple, Union
+
 from dbterd.adapters.algos import base
 from dbterd.adapters.filter import is_selected_table
-from dbterd.adapters.meta import Ref
+from dbterd.adapters.meta import Ref, Table
 from dbterd.helpers.log import logger
+from dbterd.types import Catalog, Manifest
 
 
-def parse_metadata(data, **kwargs):
+def parse_metadata(data, **kwargs) -> Tuple[List[Table], List[Ref]]:
     """Get all information (tables, relationships) needed for building diagram
     (from Metadata)
 
@@ -47,7 +50,9 @@ def parse_metadata(data, **kwargs):
     return (tables, relationships)
 
 
-def parse(manifest, catalog, **kwargs):
+def parse(
+    manifest: Manifest, catalog: Union[str, Catalog], **kwargs
+) -> Tuple[List[Table], List[Ref]]:
     """Get all information (tables, relationships) needed for building diagram
 
     Args:

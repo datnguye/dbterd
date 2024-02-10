@@ -1,7 +1,10 @@
+from typing import Tuple
+
 from dbterd.adapters.algos import test_relationship
+from dbterd.types import Catalog, Manifest
 
 
-def run(manifest, catalog, **kwargs):
+def run(manifest: Manifest, catalog: Catalog, **kwargs) -> Tuple[str, str]:
     """Parse dbt artifacts and export PlantUML file
 
     Args:
@@ -14,7 +17,7 @@ def run(manifest, catalog, **kwargs):
     return ("output.plantuml", parse(manifest, catalog, **kwargs))
 
 
-def parse(manifest, catalog, **kwargs):
+def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
     """Get the PlantUML content from dbt artifacts
 
     Args:

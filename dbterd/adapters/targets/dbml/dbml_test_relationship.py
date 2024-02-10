@@ -1,9 +1,11 @@
 import json
+from typing import Tuple
 
 from dbterd.adapters.algos import test_relationship
+from dbterd.types import Catalog, Manifest
 
 
-def run(manifest, catalog, **kwargs):
+def run(manifest: Manifest, catalog: Catalog, **kwargs) -> Tuple[str, str]:
     """Parse dbt artifacts and export DBML file
 
     Args:
@@ -16,7 +18,7 @@ def run(manifest, catalog, **kwargs):
     return ("output.dbml", parse(manifest, catalog, **kwargs))
 
 
-def parse(manifest, catalog, **kwargs):
+def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
     """Get the DBML content from dbt artifacts
 
     Args:

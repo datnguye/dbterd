@@ -5,6 +5,7 @@ import sys
 from dbt_artifacts_parser import parser
 
 from dbterd.helpers.log import logger
+from dbterd.types import Catalog, Manifest
 
 
 def get_sys_platform():  # pragma: no cover
@@ -109,7 +110,7 @@ def win_prepare_path(path: str) -> str:  # pragma: no cover
     return path
 
 
-def read_manifest(path: str, version: int = None):
+def read_manifest(path: str, version: int = None) -> Manifest:
     """Reads in the manifest.json file, with optional version specification
 
     Args:
@@ -134,7 +135,7 @@ def read_manifest(path: str, version: int = None):
     return parse_func(manifest=_dict)
 
 
-def read_catalog(path: str, version: int = None):
+def read_catalog(path: str, version: int = None) -> Catalog:
     """Reads in the catalog.json file, with optional version specification
 
     Args:
