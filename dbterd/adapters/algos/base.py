@@ -152,7 +152,7 @@ def get_table_from_metadata(model_metadata, exposures=[], **kwargs) -> Table:
             ),
         ),
         node_name=node_name,
-        raw_sql="TODO",
+        raw_sql=None,
         database=node_database,
         schema=node_schema,
         columns=[],
@@ -561,6 +561,8 @@ def get_table_map_from_metadata(test_node, **kwargs):
     to_model_possible_values = [
         f"{first_test_parent_resource_type}('{first_test_parent_parts[2]}','{first_test_parent_parts[-1]}')",
         f"{first_test_parent_resource_type}('{first_test_parent_parts[-1]}')",
+        f'{first_test_parent_resource_type}("{first_test_parent_parts[2]}","{first_test_parent_parts[-1]}")',
+        f'{first_test_parent_resource_type}("{first_test_parent_parts[-1]}")',
     ]
     if test_metadata_to in to_model_possible_values:
         return test_parents

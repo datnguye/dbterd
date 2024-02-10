@@ -403,7 +403,9 @@ Check [Download artifacts from a Job Run](./dbt-cloud/download-artifact-from-a-j
 
 ## dbterd run-metadata
 
-Command to generate diagram-as-a-code file by connecting to dbt Cloud Discovery API using GraphQL connection
+Command to generate diagram-as-a-code file by connecting to dbt Cloud Discovery API using GraphQL connection.
+
+Check [this guideline](./dbt-cloud/read-artifact-from-an-environment.md) for more details.
 
 **Examples:**
 === "CLI"

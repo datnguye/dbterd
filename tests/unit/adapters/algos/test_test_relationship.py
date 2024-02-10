@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from unittest import mock
 from unittest.mock import MagicMock
 
+import click
 import pytest
 
 from dbterd.adapters.algos import base as base_algo
@@ -407,3 +408,385 @@ class TestAlgoTestRelationship:
     )
     def test_get_node_exposures(self, manifest, expected):
         assert expected == base_algo.get_node_exposures(manifest=manifest)
+
+    @pytest.mark.parametrize(
+        "data, expected",
+        [
+            ([], []),
+            ([{}], []),
+            ([{}, {}], []),
+            ([{"models": {"edges": []}, "sources": {"edges": []}}], []),
+        ],
+    )
+    @mock.patch("dbterd.adapters.algos.base.get_table_from_metadata")
+    @mock.patch("dbterd.adapters.algos.base.get_node_exposures_from_metadata")
+    def test_get_tables_from_metadata_w_empty_data(
+        self,
+        mock_get_node_exposures_from_metadata,
+        mock_get_table_from_metadata,
+        data,
+        expected,
+    ):
+        assert expected == base_algo.get_tables_from_metadata(
+            data=data, resource_type=["model", "source"]
+        )
+        mock_get_node_exposures_from_metadata.assert_called_once()
+        assert mock_get_table_from_metadata.call_count == 0
+
+    @pytest.mark.parametrize(
+        "resource_type, data, get_table_from_metadata_call_count",
+        [
+            (
+                ["model"],
+                [{"models": {"edges": ["item1", "item2"]}, "sources": {"edges": []}}],
+                2,
+            ),
+            (
+                ["model"],
+                [
+                    {
+                        "models": {"edges": ["item1", "item2"]},
+                        "sources": {"edges": ["source1"]},
+                    }
+                ],
+                2,
+            ),
+            (
+                ["model", "source"],
+                [
+                    {
+                        "models": {"edges": ["item1", "item2"]},
+                        "sources": {"edges": ["source1"]},
+                    }
+                ],
+                3,
+            ),
+            (
+                [],
+                [
+                    {
+                        "models": {"edges": ["item1", "item2"]},
+                        "sources": {"edges": ["source1"]},
+                    }
+                ],
+                0,
+            ),
+        ],
+    )
+    @mock.patch("dbterd.adapters.algos.base.get_table_from_metadata")
+    @mock.patch("dbterd.adapters.algos.base.get_node_exposures_from_metadata")
+    def test_get_tables_from_metadata_w_1_data(
+        self,
+        mock_get_node_exposures_from_metadata,
+        mock_get_table_from_metadata,
+        resource_type,
+        data,
+        get_table_from_metadata_call_count,
+    ):
+        base_algo.get_tables_from_metadata(data=data, resource_type=resource_type)
+        mock_get_node_exposures_from_metadata.assert_called_once()
+        assert (
+            mock_get_table_from_metadata.call_count
+            == get_table_from_metadata_call_count
+        )
+
+    @pytest.mark.parametrize(
+        "model_metadata, exposures, kwargs, expected",
+        [
+            (
+                {
+                    "node": {
+                        "uniqueId": "model.package.name1",
+                        "database": "db1",
+                        "schema": "sc1",
+                        "name": "name1",
+                        "catalog": {},
+                    }
+                },
+                [],
+                dict(entity_name_format="resource.package.model"),
+                Table(
+                    name="model.package.name1",
+                    node_name="model.package.name1",
+                    database="db1",
+                    schema="sc1",
+                    columns=[
+                        Column(name="unknown", data_type="unknown", description="")
+                    ],
+                    raw_sql=None,
+                    description=None,
+                ),
+            ),
+            (
+                {
+                    "node": {
+                        "uniqueId": "model.package.name1",
+                        "database": "db1",
+                        "schema": "sc1",
+                        "name": "name1",
+                        "catalog": {"columns": [{"name": "col1"}]},
+                    }
+                },
+                [],
+                dict(entity_name_format="resource.package.model"),
+                Table(
+                    name="model.package.name1",
+                    node_name="model.package.name1",
+                    database="db1",
+                    schema="sc1",
+                    columns=[Column(name="col1", data_type="", description="")],
+                    raw_sql=None,
+                    description=None,
+                ),
+            ),
+            (
+                {
+                    "node": {
+                        "uniqueId": "model.package.name1",
+                        "database": "db1",
+                        "schema": "sc1",
+                        "name": "name1",
+                        "catalog": {
+                            "columns": [
+                                {"name": "col1", "type": "type1"},
+                                {"name": "col2", "type": "type2"},
+                            ]
+                        },
+                    }
+                },
+                [],
+                dict(entity_name_format="resource.package.model"),
+                Table(
+                    name="model.package.name1",
+                    node_name="model.package.name1",
+                    database="db1",
+                    schema="sc1",
+                    columns=[
+                        Column(name="col1", data_type="type1", description=""),
+                        Column(name="col2", data_type="type2", description=""),
+                    ],
+                    raw_sql=None,
+                    description=None,
+                ),
+            ),
+        ],
+    )
+    def test_get_table_from_metadata(self, model_metadata, exposures, kwargs, expected):
+        assert expected == base_algo.get_table_from_metadata(
+            model_metadata=model_metadata, exposures=exposures, **kwargs
+        )
+
+    @pytest.mark.parametrize(
+        "data, kwargs, expected",
+        [
+            ([], dict(resource_type=["model", "source"]), []),
+            (
+                [{"exposures": {"edges": []}}],
+                dict(resource_type=["model", "source"]),
+                [],
+            ),
+            (
+                [
+                    {
+                        "exposures": {
+                            "edges": [
+                                {
+                                    "node": {
+                                        "name": "ex1",
+                                        "parents": [{"uniqueId": "model.x"}],
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                dict(resource_type=["model", "source"]),
+                [dict(node_name="model.x", exposure_name="ex1")],
+            ),
+            (
+                [
+                    {
+                        "exposures": {
+                            "edges": [
+                                {
+                                    "node": {
+                                        "name": "ex1",
+                                        "parents": [
+                                            {"uniqueId": "model.x"},
+                                            {"uniqueId": "model.y"},
+                                            {"uniqueId": "source.z"},
+                                        ],
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                dict(resource_type=["model"]),
+                [
+                    dict(node_name="model.x", exposure_name="ex1"),
+                    dict(node_name="model.y", exposure_name="ex1"),
+                ],
+            ),
+        ],
+    )
+    def test_get_node_exposures_from_metadata(self, data, kwargs, expected):
+        assert expected == base_algo.get_node_exposures_from_metadata(
+            data=data, **kwargs
+        )
+
+    @pytest.mark.parametrize(
+        "data, kwargs, expected",
+        [
+            ([], dict(algo="test_relationship"), []),
+            (
+                [{"tests": {"edges": []}}],
+                dict(algo="test_relationship", resource_type=["model", "source"]),
+                [],
+            ),
+            (
+                [
+                    {
+                        "tests": {
+                            "edges": [
+                                {
+                                    "node": {
+                                        "uniqueId": "test.relationship_1",
+                                        "testMetadata": {
+                                            "kwargs": {
+                                                "columnName": "coly",
+                                                "to": 'ref("x")',
+                                                "field": "colx",
+                                            }
+                                        },
+                                        "parents": [],
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                dict(algo="test_relationship", resource_type=["model", "source"]),
+                [
+                    Ref(
+                        name="test.relationship_1",
+                        table_map=["", ""],
+                        column_map=["colx", "coly"],
+                        type="n1",
+                    )
+                ],
+            ),
+            (
+                [
+                    {
+                        "tests": {
+                            "edges": [
+                                {
+                                    "node": {
+                                        "uniqueId": "test.relationship_1",
+                                        "meta": {},
+                                        "testMetadata": {
+                                            "kwargs": {
+                                                "columnName": "coly",
+                                                "to": 'ref("x")',
+                                                "field": "colx",
+                                            }
+                                        },
+                                        "parents": [
+                                            {"uniqueId": "model.p.x"},
+                                            {"uniqueId": "model.p.y"},
+                                        ],
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                dict(algo="test_relationship", resource_type=["model", "source"]),
+                [
+                    Ref(
+                        name="test.relationship_1",
+                        table_map=["model.p.x", "model.p.y"],
+                        column_map=["colx", "coly"],
+                        type="n1",
+                    )
+                ],
+            ),
+            (
+                [
+                    {
+                        "tests": {
+                            "edges": [
+                                {
+                                    "node": {
+                                        "uniqueId": "test.relationship_1",
+                                        "meta": {},
+                                        "testMetadata": {
+                                            "kwargs": {
+                                                "columnName": "coly",
+                                                "to": 'ref("x")',
+                                                "field": "colx",
+                                            }
+                                        },
+                                        "parents": [
+                                            {"uniqueId": "model.p.y"},
+                                            {"uniqueId": "model.p.x"},
+                                        ],
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                dict(algo="test_relationship", resource_type=["model", "source"]),
+                [
+                    Ref(
+                        name="test.relationship_1",
+                        table_map=["model.p.x", "model.p.y"],
+                        column_map=["colx", "coly"],
+                        type="n1",
+                    )
+                ],
+            ),
+        ],
+    )
+    def test_get_relationships_from_metadata(self, data, kwargs, expected):
+        assert expected == base_algo.get_relationships_from_metadata(
+            data=data, **kwargs
+        )
+
+    @pytest.mark.parametrize(
+        "data, kwargs",
+        [
+            (
+                [
+                    {
+                        "tests": {
+                            "edges": [
+                                {
+                                    "node": {
+                                        "uniqueId": "test.relationship_1",
+                                        "meta": {},
+                                        "testMetadata": {
+                                            "kwargs": {
+                                                "columnName": "coly",
+                                                "to": 'ref("x")',
+                                                "field": "colx",
+                                            }
+                                        },
+                                        "parents": [
+                                            {"uniqueId": "model.p.x"},
+                                        ],
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                dict(algo="test_relationship", resource_type=["model", "source"]),
+            ),
+        ],
+    )
+    def test_get_relationships_from_metadata_error(self, data, kwargs):
+        with pytest.raises(click.BadParameter):
+            base_algo.get_relationships_from_metadata(data=data, **kwargs)
