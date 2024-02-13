@@ -1,10 +1,11 @@
 import re
-from typing import Optional
+from typing import Optional, Tuple
 
 from dbterd.adapters.algos import test_relationship
+from dbterd.types import Catalog, Manifest
 
 
-def run(manifest, catalog, **kwargs):
+def run(manifest: Manifest, catalog: Catalog, **kwargs) -> Tuple[str, str]:
     """Parse dbt artifacts and export Mermaid file
 
     Args:
@@ -67,7 +68,7 @@ def replace_column_type(column_type: str) -> str:
         return column_type.replace(" ", "-")
 
 
-def parse(manifest, catalog, **kwargs):
+def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
     """Get the Mermaid content from dbt artifacts
 
     Args:

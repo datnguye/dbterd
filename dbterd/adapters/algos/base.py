@@ -1,4 +1,5 @@
 import copy
+from typing import Dict, List
 
 import click
 
@@ -9,9 +10,10 @@ from dbterd.constants import (
     TEST_META_RELATIONSHIP_TYPE,
 )
 from dbterd.helpers.log import logger
+from dbterd.types import Catalog, Manifest
 
 
-def get_tables_from_metadata(data=[], **kwargs):
+def get_tables_from_metadata(data=[], **kwargs) -> List[Table]:
     """Extract tables from dbt metadata
 
     Args:
@@ -47,7 +49,7 @@ def get_tables_from_metadata(data=[], **kwargs):
     return tables
 
 
-def get_tables(manifest, catalog, **kwargs):
+def get_tables(manifest: Manifest, catalog: Catalog, **kwargs) -> List[Table]:
     """Extract tables from dbt artifacts
 
     Args:
@@ -94,7 +96,9 @@ def get_tables(manifest, catalog, **kwargs):
     return tables
 
 
-def enrich_tables_from_relationships(tables, relationships):
+def enrich_tables_from_relationships(
+    tables: List[Table], relationships: List[Ref]
+) -> List[Table]:
     """Fullfill columns in Table due to `select *`
 
     Args:
@@ -180,7 +184,7 @@ def get_table_from_metadata(model_metadata, exposures=[], **kwargs) -> Table:
 
 
 def get_table(
-    node_name, manifest_node, catalog_node=None, exposures=[], **kwargs
+    node_name: str, manifest_node, catalog_node=None, exposures=[], **kwargs
 ) -> Table:
     """Construct a single Table object
 
@@ -313,7 +317,7 @@ def get_node_exposures_from_metadata(data=[], **kwargs):
     return exposures
 
 
-def get_node_exposures(manifest):
+def get_node_exposures(manifest: Manifest) -> List[Dict[str, str]]:
     """Get the mapping of table name and exposure name
 
     Args:
@@ -349,7 +353,7 @@ def get_table_name(format: str, **kwargs) -> str:
     return ".".join([kwargs.get(x.lower()) or "KEYNOTFOUND" for x in format.split(".")])
 
 
-def get_relationships_from_metadata(data=[], **kwargs) -> list[Ref]:
+def get_relationships_from_metadata(data=[], **kwargs) -> List[Ref]:
     """Extract relationships from Metadata result list on test relationship
 
     Args:
@@ -409,7 +413,7 @@ def get_relationships_from_metadata(data=[], **kwargs) -> list[Ref]:
     return get_unique_refs(refs=refs)
 
 
-def get_relationships(manifest, **kwargs):
+def get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
     """Extract relationships from dbt artifacts based on test relationship
 
     Args:
@@ -482,7 +486,7 @@ def get_unique_refs(refs: list[Ref] = []) -> list[Ref]:
     return distinct_list
 
 
-def get_algo_rule(**kwargs):
+def get_algo_rule(**kwargs) -> Dict[str, str]:
     """Extract rule from the --algo option
 
     Args:
@@ -517,7 +521,7 @@ def get_algo_rule(**kwargs):
     return rules
 
 
-def get_table_map_from_metadata(test_node, **kwargs):
+def get_table_map_from_metadata(test_node, **kwargs) -> List[str]:
     """Get the table map with order of [to, from] guaranteed
     (for Metadata)
 
@@ -570,7 +574,7 @@ def get_table_map_from_metadata(test_node, **kwargs):
     return list(reversed(test_parents))
 
 
-def get_table_map(test_node, **kwargs):
+def get_table_map(test_node, **kwargs) -> List[str]:
     """Get the table map with order of [to, from] guaranteed
 
     Args:

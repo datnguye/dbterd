@@ -1,13 +1,13 @@
 import sys
 from fnmatch import fnmatch
-from typing import List
+from typing import List, Optional, Tuple
 
 from dbterd.adapters.meta import Table
 
 RULE_FUNC_PREFIX = "is_satisfied_by_"
 
 
-def has_unsupported_rule(rules: List[str] = []) -> bool:
+def has_unsupported_rule(rules: List[str] = []) -> Tuple[bool, Optional[str]]:
     """Verify if existing the unsupported selection rule
 
     Args:
@@ -32,7 +32,7 @@ def is_selected_table(
     select_rules: List[str] = [],
     exclude_rules: List[str] = [],
     resource_types: List[str] = ["model"],
-):
+) -> bool:
     """Check if Table is selected with defined selection criteria
 
     Args:
@@ -61,7 +61,7 @@ def is_selected_table(
     return selected and not excluded
 
 
-def evaluate_rule(table: Table, rule: str):
+def evaluate_rule(table: Table, rule: str) -> bool:
     """Evaluate selection/exclusion single rule with AND logic applied
 
     Args:
@@ -86,7 +86,7 @@ def evaluate_rule(table: Table, rule: str):
     return all(results)
 
 
-def is_satisfied_by_name(table: Table, rule: str = ""):
+def is_satisfied_by_name(table: Table, rule: str = "") -> bool:
     """Evaluate rule by Name
 
     Args:
@@ -101,7 +101,7 @@ def is_satisfied_by_name(table: Table, rule: str = ""):
     return table.node_name.startswith(rule)
 
 
-def is_satisfied_by_exact(table: Table, rule: str = ""):
+def is_satisfied_by_exact(table: Table, rule: str = "") -> bool:
     """Evaluate rule by model name with exact match
 
     Args:
@@ -116,7 +116,7 @@ def is_satisfied_by_exact(table: Table, rule: str = ""):
     return table.node_name.lower() == rule
 
 
-def is_satisfied_by_schema(table: Table, rule: str = ""):
+def is_satisfied_by_schema(table: Table, rule: str = "") -> bool:
     """Evaluate rule by Schema name
 
     Args:
@@ -137,7 +137,7 @@ def is_satisfied_by_schema(table: Table, rule: str = ""):
     )
 
 
-def is_satisfied_by_wildcard(table: Table, rule: str = "*"):
+def is_satisfied_by_wildcard(table: Table, rule: str = "*") -> bool:
     """Evaluate rule by Wildcard (Unix Style)
 
     Args:
@@ -152,7 +152,7 @@ def is_satisfied_by_wildcard(table: Table, rule: str = "*"):
     return fnmatch(table.node_name, rule)
 
 
-def is_satisfied_by_exposure(table: Table, rule: str = ""):
+def is_satisfied_by_exposure(table: Table, rule: str = "") -> bool:
     """Evaluate rule by dbt Exposure name
 
     Args:
