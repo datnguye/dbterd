@@ -142,6 +142,14 @@ class DummyManifestRel:
                 nodes=["model.dbt_resto.table-r1", "model.dbt_resto.table-r2"]
             ),
         ),
+        "test.dbt_resto.relationships_table1_recursive": ManifestNode(
+            test_metadata=ManifestNodeTestMetaData(
+                kwargs={"column_name": "f1", "field": "f2", "to": "ref('table1')"}
+            ),
+            meta={},
+            columns={},
+            depends_on=ManifestNodeDependsOn(nodes=["model.dbt_resto.table1"]),
+        ),
     }
 
 
@@ -352,6 +360,11 @@ class TestAlgoTestRelationship:
                             "model.dbt_resto.table-r2",
                             "model.dbt_resto.table-r1",
                         ],
+                        column_map=["f2", "f1"],
+                    ),
+                    Ref(
+                        name="test.dbt_resto.relationships_table1_recursive",
+                        table_map=["model.dbt_resto.table1", "model.dbt_resto.table1"],
                         column_map=["f2", "f1"],
                     ),
                 ],
