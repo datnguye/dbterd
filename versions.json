@@ -1,5 +1,10 @@
 [
   {
+    "version": "1.12-beta",
+    "title": "1.12-beta",
+    "aliases": []
+  },
+  {
     "version": "1.11",
     "title": "1.11",
     "aliases": [
