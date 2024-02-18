@@ -584,6 +584,12 @@ def get_table_map(test_node, **kwargs) -> List[str]:
         list: [to model, from model]
     """
     map = test_node.depends_on.nodes or []
+
+    # Recursive relation case
+    # `from` and `to` will be identical and `test_node.depends_on.nodes` will contain only one element
+    if len(map) == 1:
+        return [map[0], map[0]]
+
     rule = get_algo_rule(**kwargs)
     to_model = str(test_node.test_metadata.kwargs.get(rule.get("t_to", "to"), {}))
     if f'("{map[1].split(".")[-1]}")'.lower() in to_model.replace("'", '"').lower():
