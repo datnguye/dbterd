@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from typing import List, Tuple
 
 import click
 
@@ -9,6 +10,7 @@ from dbterd.adapters.dbt_cloud.administrative import DbtCloudArtifact
 from dbterd.adapters.dbt_cloud.discovery import DbtCloudMetadata
 from dbterd.adapters.dbt_core.dbt_invocation import DbtInvocation
 from dbterd.adapters.filter import has_unsupported_rule
+from dbterd.adapters.meta import Ref, Table
 from dbterd.helpers import cli_messaging
 from dbterd.helpers import file as file_handlers
 from dbterd.helpers.log import logger
@@ -26,15 +28,15 @@ class Executor:
         self.filename_catalog = "catalog.json"
         self.dbt: DbtInvocation = None
 
-    def run(self, **kwargs):
+    def run(self, **kwargs) -> Tuple[List[Table], List[Ref]]:
         """Generate ERD from files"""
         kwargs = self.evaluate_kwargs(**kwargs)
-        self.__run_by_strategy(**kwargs)
+        return self.__run_by_strategy(**kwargs)
 
-    def run_metadata(self, **kwargs):
+    def run_metadata(self, **kwargs) -> Tuple[List[Table], List[Ref]]:
         """Generate ERD from API metadata"""
         kwargs = self.evaluate_kwargs(**kwargs)
-        self.__run_metadata_by_strategy(**kwargs)
+        return self.__run_metadata_by_strategy(**kwargs)
 
     def evaluate_kwargs(self, **kwargs) -> dict:
         """Re-calculate the options
@@ -109,7 +111,7 @@ class Executor:
 
         return (str(artifact_dir), str(project_dir))
 
-    def __get_selection(self, **kwargs):
+    def __get_selection(self, **kwargs) -> List[str]:
         """Override the Selection using dbt's one with `--dbt`"""
         if not self.dbt:
             raise click.UsageError("Flag `--dbt` need to be enabled")
@@ -182,7 +184,7 @@ class Executor:
             logger.error(str(e))
             raise click.FileError(f"Could not save the output: {str(e)}")
 
-    def __run_by_strategy(self, **kwargs):
+    def __run_by_strategy(self, **kwargs) -> Tuple[List[Table], List[Ref]]:
         """Local File - Read artifacts and export the diagram file following the target"""
         if kwargs.get("dbt_cloud"):
             DbtCloudArtifact(**kwargs).get(artifacts_dir=kwargs.get("artifacts_dir"))
@@ -198,12 +200,20 @@ class Executor:
 
         operation = self.__get_operation(kwargs)
         result = operation(manifest=manifest, catalog=catalog, **kwargs)
-        self.__save_result(path=kwargs.get("output"), data=result)
 
-    def __run_metadata_by_strategy(self, **kwargs):
+        if not kwargs.get("api"):
+            self.__save_result(path=kwargs.get("output"), data=result)
+
+        return result
+
+    def __run_metadata_by_strategy(self, **kwargs) -> Tuple[List[Table], List[Ref]]:
         """Metadata - Read artifacts and export the diagram file following the target"""
         data = DbtCloudMetadata(**kwargs).query_erd_data()
         operation = self.__get_operation(kwargs)
 
         result = operation(manifest=data, catalog="metadata", **kwargs)
-        self.__save_result(path=kwargs.get("output"), data=result)
+
+        if not kwargs.get("api"):
+            self.__save_result(path=kwargs.get("output"), data=result)
+
+        return result
