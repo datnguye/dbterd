@@ -589,7 +589,7 @@ class TestAlgoTestRelationship:
                         "database": "db1",
                         "schema": "sc1",
                         "name": "name1",
-                        "catalog": None
+                        "catalog": None,
                     }
                 },
                 [],
