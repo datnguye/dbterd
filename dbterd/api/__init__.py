@@ -8,15 +8,44 @@ from dbterd.adapters.meta import Ref, Table
 
 
 class DbtErd:
-    """dbt ERD official API functions"""
+    """
+    dbt ERD official API functions.
+
+
+    Usage:
+
+    - Get a whole ERD:
+        ```python
+        from dbterd.api import DbtErd
+        erd = DbtErd().get_erd()
+        ```
+
+    - Get a whole ERD given all model:
+        ```python
+        from dbterd.api import DbtErd
+        erd = DbtErd(select="exposure:my_exposure_name").get_erd()
+        ```
+        See the
+        [Selection](https://dbterd.datnguyen.de/latest/nav/guide/cli-references.html#dbterd-run-select-s)
+        page for more details.
+
+    - Get a model (named `model.jaffle_shop.my_model`)'s ERD:
+        ```python
+        from dbterd.api import DbtErd
+        erd = DbtErd().get_model_erd(s
+            node_fqn="model.jaffle_shop.my_model"
+        )
+        ```
+    """
 
     def __init__(self, **kwargs) -> None:
         """Initialize the main Executor given similar input CLI parameters"""
-        self.params = kwargs
+        self.params: dict = kwargs
         """
-        Mimic CLI params with overriding `api = True`.
-        Check the CLI reference page for more details of how the params are used:
-        https://dbterd.datnguyen.de/latest/nav/guide/cli-references.html
+        Mimic CLI params with overriding `api = True`.\n
+        Check
+        [CLI reference page](https://dbterd.datnguyen.de/latest/nav/guide/cli-references.html)
+        for more details of how the params are used.
         """
         self.__set_params_default_if_not_specified()
         ctx_command = self.params.get("api_context_command")
@@ -24,7 +53,7 @@ class DbtErd:
             Context(Command(name=ctx_command if ctx_command else "run"))
         )
         """
-        Mimic CLI's executor.
+        Mimic CLI's executor.\n
         The context command is `run` by default
         unless specifying a param named `api_context_command`
         """
@@ -66,7 +95,7 @@ class DbtErd:
         Usage:
         ```python
         from dbterd.api import DbtErd
-        erd = DbtErd().get_model_erd(node_fqn="model")
+        erd = DbtErd().get_model_erd(node_fqn="model.jaffle_shop.my_model")
         ```
 
         Returns:
