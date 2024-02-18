@@ -23,7 +23,7 @@ jobs:
           path: .cache
 
       - name: Install dependencies
-        run: pip install mkdocs mkdocs-material mkdocs-minify-plugin mike
+        run: pip install mkdocs mkdocs-material mkdocs-minify-plugin mike pdoc
 
       - name: Configure Git user
         run: |
