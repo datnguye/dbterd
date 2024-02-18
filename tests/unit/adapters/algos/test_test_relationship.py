@@ -582,6 +582,30 @@ class TestAlgoTestRelationship:
                     description=None,
                 ),
             ),
+            (
+                {
+                    "node": {
+                        "uniqueId": "model.package.name1",
+                        "database": "db1",
+                        "schema": "sc1",
+                        "name": "name1",
+                        "catalog": None,
+                    }
+                },
+                [],
+                dict(entity_name_format="resource.package.model"),
+                Table(
+                    name="model.package.name1",
+                    node_name="model.package.name1",
+                    database="db1",
+                    schema="sc1",
+                    columns=[
+                        Column(name="unknown", data_type="unknown", description=""),
+                    ],
+                    raw_sql=None,
+                    description=None,
+                ),
+            ),
         ],
     )
     def test_get_table_from_metadata(self, model_metadata, exposures, kwargs, expected):
@@ -761,6 +785,41 @@ class TestAlgoTestRelationship:
                     )
                 ],
             ),
+            (
+                [
+                    {
+                        "tests": {
+                            "edges": [
+                                {
+                                    "node": {
+                                        "uniqueId": "test.relationship_1",
+                                        "meta": {},
+                                        "testMetadata": {
+                                            "kwargs": {
+                                                "columnName": "coly",
+                                                "to": 'ref("x")',
+                                                "field": "colx",
+                                            }
+                                        },
+                                        "parents": [
+                                            {"uniqueId": "model.p.x"},
+                                        ],
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                dict(algo="test_relationship", resource_type=["model"]),
+                [
+                    Ref(
+                        name="test.relationship_1",
+                        table_map=["model.p.x", "model.p.x"],
+                        column_map=["colx", "coly"],
+                        type="n1",
+                    )
+                ],
+            ),
         ],
     )
     def test_get_relationships_from_metadata(self, data, kwargs, expected):
@@ -789,6 +848,8 @@ class TestAlgoTestRelationship:
                                         },
                                         "parents": [
                                             {"uniqueId": "model.p.x"},
+                                            {"uniqueId": "model.p.y"},
+                                            {"uniqueId": "model.p.z"},
                                         ],
                                     }
                                 }

@@ -168,14 +168,16 @@ def get_table_from_metadata(model_metadata, exposures=[], **kwargs) -> Table:
     )
 
     # columns
-    for column in model_metadata.get("node", {}).get("catalog", {}).get("columns", []):
-        table.columns.append(
-            Column(
-                name=column.get("name", "").lower(),
-                data_type=column.get("type", "").lower(),
-                description=column.get("description", ""),
+    table_catalog = model_metadata.get("node", {}).get("catalog", {})
+    if table_catalog:
+        for column in table_catalog.get("columns", []):
+            table.columns.append(
+                Column(
+                    name=column.get("name", "").lower(),
+                    data_type=column.get("type", "").lower(),
+                    description=column.get("description", ""),
+                )
             )
-        )
 
     if not table.columns:
         table.columns.append(Column())
@@ -545,10 +547,13 @@ def get_table_map_from_metadata(test_node, **kwargs) -> List[str]:
     if len(test_parents) == 0:
         return ["", ""]  # return dummies - need to be excluded manually
 
-    if len(test_parents) != 2:
+    if len(test_parents) == 1:
+        return [test_parents[0], test_parents[0]]  # self FK
+
+    if len(test_parents) > 2:
         logger.debug(f"Collected test parents: {test_parents}")
         raise click.BadParameter(
-            "Relationship test unexpectedly doesn't have 2 parents"
+            "Relationship test unexpectedly doesn't have >2 parents"
         )
 
     test_metadata_to = (
