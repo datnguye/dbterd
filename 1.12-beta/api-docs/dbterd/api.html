@@ -87,7 +87,7 @@ dbterd<wbr>.api    </h1>
 </span><span id="L-20"><a href="#L-20"><span class="linenos"> 20</span></a><span class="sd">        erd = DbtErd().get_erd()</span>
 </span><span id="L-21"><a href="#L-21"><span class="linenos"> 21</span></a><span class="sd">        ```</span>
 </span><span id="L-22"><a href="#L-22"><span class="linenos"> 22</span></a>
-</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">    - Get a whole ERD given all model:</span>
+</span><span id="L-23"><a href="#L-23"><span class="linenos"> 23</span></a><span class="sd">    - Get a whole ERD given all models attached to `my_exposure_name`:</span>
 </span><span id="L-24"><a href="#L-24"><span class="linenos"> 24</span></a><span class="sd">        ```python</span>
 </span><span id="L-25"><a href="#L-25"><span class="linenos"> 25</span></a><span class="sd">        from dbterd.api import DbtErd</span>
 </span><span id="L-26"><a href="#L-26"><span class="linenos"> 26</span></a><span class="sd">        erd = DbtErd(select=&quot;exposure:my_exposure_name&quot;).get_erd()</span>
@@ -154,7 +154,7 @@ dbterd<wbr>.api    </h1>
 </span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
 </span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>
-</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>    <span class="k">def</span> <span class="nf">get_model_erd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_fqn</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Table</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Ref</span><span class="p">]]:</span>
+</span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>    <span class="k">def</span> <span class="nf">get_model_erd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_unique_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Table</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Ref</span><span class="p">]]:</span>
 </span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate ERD code for a model.</span>
 </span><span id="L-92"><a href="#L-92"><span class="linenos"> 92</span></a>
 </span><span id="L-93"><a href="#L-93"><span class="linenos"> 93</span></a><span class="sd">        Result contains this model and 1 level relationship models (if any).</span>
@@ -164,18 +164,14 @@ dbterd<wbr>.api    </h1>
 </span><span id="L-97"><a href="#L-97"><span class="linenos"> 97</span></a><span class="sd">        from dbterd.api import DbtErd</span>
 </span><span id="L-98"><a href="#L-98"><span class="linenos"> 98</span></a><span class="sd">        erd = DbtErd().get_model_erd(node_fqn=&quot;model.jaffle_shop.my_model&quot;)</span>
 </span><span id="L-99"><a href="#L-99"><span class="linenos"> 99</span></a><span class="sd">        ```</span>
-</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a>
-</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="sd">        Returns:</span>
-</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="sd">            Tuple[List[Table], List[Ref]]: Tables and Refs</span>
-</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a>        <span class="n">find_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">node_fqn</span><span class="p">]</span>
-</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a>        <span class="c1"># TODO - find FK models of this model</span>
-</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a>
-</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span>
-</span><span id="L-108"><a href="#L-108"><span class="linenos">108</span></a>        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;select&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;exact:</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">find_nodes</span><span class="p">]</span>
-</span><span id="L-109"><a href="#L-109"><span class="linenos">109</span></a>        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;exclude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="L-110"><a href="#L-110"><span class="linenos">110</span></a>
-</span><span id="L-111"><a href="#L-111"><span class="linenos">111</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+</span><span id="L-100"><a href="#L-100"><span class="linenos">100</span></a><span class="sd">        </span>
+</span><span id="L-101"><a href="#L-101"><span class="linenos">101</span></a><span class="sd">        Args:</span>
+</span><span id="L-102"><a href="#L-102"><span class="linenos">102</span></a><span class="sd">            node_unique_id (str): Manifest node unique ID</span>
+</span><span id="L-103"><a href="#L-103"><span class="linenos">103</span></a>
+</span><span id="L-104"><a href="#L-104"><span class="linenos">104</span></a><span class="sd">        Returns:</span>
+</span><span id="L-105"><a href="#L-105"><span class="linenos">105</span></a><span class="sd">            Tuple[List[Table], List[Ref]]: Tables and Refs</span>
+</span><span id="L-106"><a href="#L-106"><span class="linenos">106</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="L-107"><a href="#L-107"><span class="linenos">107</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">node_unique_id</span><span class="o">=</span><span class="n">node_unique_id</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -204,7 +200,7 @@ dbterd<wbr>.api    </h1>
 </span><span id="DbtErd-21"><a href="#DbtErd-21"><span class="linenos"> 21</span></a><span class="sd">        erd = DbtErd().get_erd()</span>
 </span><span id="DbtErd-22"><a href="#DbtErd-22"><span class="linenos"> 22</span></a><span class="sd">        ```</span>
 </span><span id="DbtErd-23"><a href="#DbtErd-23"><span class="linenos"> 23</span></a>
-</span><span id="DbtErd-24"><a href="#DbtErd-24"><span class="linenos"> 24</span></a><span class="sd">    - Get a whole ERD given all model:</span>
+</span><span id="DbtErd-24"><a href="#DbtErd-24"><span class="linenos"> 24</span></a><span class="sd">    - Get a whole ERD given all models attached to `my_exposure_name`:</span>
 </span><span id="DbtErd-25"><a href="#DbtErd-25"><span class="linenos"> 25</span></a><span class="sd">        ```python</span>
 </span><span id="DbtErd-26"><a href="#DbtErd-26"><span class="linenos"> 26</span></a><span class="sd">        from dbterd.api import DbtErd</span>
 </span><span id="DbtErd-27"><a href="#DbtErd-27"><span class="linenos"> 27</span></a><span class="sd">        erd = DbtErd(select=&quot;exposure:my_exposure_name&quot;).get_erd()</span>
@@ -271,7 +267,7 @@ dbterd<wbr>.api    </h1>
 </span><span id="DbtErd-88"><a href="#DbtErd-88"><span class="linenos"> 88</span></a><span class="sd">        &quot;&quot;&quot;</span>
 </span><span id="DbtErd-89"><a href="#DbtErd-89"><span class="linenos"> 89</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
 </span><span id="DbtErd-90"><a href="#DbtErd-90"><span class="linenos"> 90</span></a>
-</span><span id="DbtErd-91"><a href="#DbtErd-91"><span class="linenos"> 91</span></a>    <span class="k">def</span> <span class="nf">get_model_erd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_fqn</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Table</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Ref</span><span class="p">]]:</span>
+</span><span id="DbtErd-91"><a href="#DbtErd-91"><span class="linenos"> 91</span></a>    <span class="k">def</span> <span class="nf">get_model_erd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_unique_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Table</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Ref</span><span class="p">]]:</span>
 </span><span id="DbtErd-92"><a href="#DbtErd-92"><span class="linenos"> 92</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate ERD code for a model.</span>
 </span><span id="DbtErd-93"><a href="#DbtErd-93"><span class="linenos"> 93</span></a>
 </span><span id="DbtErd-94"><a href="#DbtErd-94"><span class="linenos"> 94</span></a><span class="sd">        Result contains this model and 1 level relationship models (if any).</span>
@@ -281,18 +277,14 @@ dbterd<wbr>.api    </h1>
 </span><span id="DbtErd-98"><a href="#DbtErd-98"><span class="linenos"> 98</span></a><span class="sd">        from dbterd.api import DbtErd</span>
 </span><span id="DbtErd-99"><a href="#DbtErd-99"><span class="linenos"> 99</span></a><span class="sd">        erd = DbtErd().get_model_erd(node_fqn=&quot;model.jaffle_shop.my_model&quot;)</span>
 </span><span id="DbtErd-100"><a href="#DbtErd-100"><span class="linenos">100</span></a><span class="sd">        ```</span>
-</span><span id="DbtErd-101"><a href="#DbtErd-101"><span class="linenos">101</span></a>
-</span><span id="DbtErd-102"><a href="#DbtErd-102"><span class="linenos">102</span></a><span class="sd">        Returns:</span>
-</span><span id="DbtErd-103"><a href="#DbtErd-103"><span class="linenos">103</span></a><span class="sd">            Tuple[List[Table], List[Ref]]: Tables and Refs</span>
-</span><span id="DbtErd-104"><a href="#DbtErd-104"><span class="linenos">104</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="DbtErd-105"><a href="#DbtErd-105"><span class="linenos">105</span></a>        <span class="n">find_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">node_fqn</span><span class="p">]</span>
-</span><span id="DbtErd-106"><a href="#DbtErd-106"><span class="linenos">106</span></a>        <span class="c1"># TODO - find FK models of this model</span>
-</span><span id="DbtErd-107"><a href="#DbtErd-107"><span class="linenos">107</span></a>
-</span><span id="DbtErd-108"><a href="#DbtErd-108"><span class="linenos">108</span></a>        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span>
-</span><span id="DbtErd-109"><a href="#DbtErd-109"><span class="linenos">109</span></a>        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;select&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;exact:</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">find_nodes</span><span class="p">]</span>
-</span><span id="DbtErd-110"><a href="#DbtErd-110"><span class="linenos">110</span></a>        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;exclude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="DbtErd-111"><a href="#DbtErd-111"><span class="linenos">111</span></a>
-</span><span id="DbtErd-112"><a href="#DbtErd-112"><span class="linenos">112</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+</span><span id="DbtErd-101"><a href="#DbtErd-101"><span class="linenos">101</span></a><span class="sd">        </span>
+</span><span id="DbtErd-102"><a href="#DbtErd-102"><span class="linenos">102</span></a><span class="sd">        Args:</span>
+</span><span id="DbtErd-103"><a href="#DbtErd-103"><span class="linenos">103</span></a><span class="sd">            node_unique_id (str): Manifest node unique ID</span>
+</span><span id="DbtErd-104"><a href="#DbtErd-104"><span class="linenos">104</span></a>
+</span><span id="DbtErd-105"><a href="#DbtErd-105"><span class="linenos">105</span></a><span class="sd">        Returns:</span>
+</span><span id="DbtErd-106"><a href="#DbtErd-106"><span class="linenos">106</span></a><span class="sd">            Tuple[List[Table], List[Ref]]: Tables and Refs</span>
+</span><span id="DbtErd-107"><a href="#DbtErd-107"><span class="linenos">107</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="DbtErd-108"><a href="#DbtErd-108"><span class="linenos">108</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">node_unique_id</span><span class="o">=</span><span class="n">node_unique_id</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -308,7 +300,7 @@ dbterd<wbr>.api    </h1>
 <span class="n">erd</span> <span class="o">=</span> <span class="n">DbtErd</span><span class="p">()</span><span class="o">.</span><span class="n">get_erd</span><span class="p">()</span>
 </code></pre>
 </div></li>
-<li><p>Get a whole ERD given all model:</p>
+<li><p>Get a whole ERD given all models attached to <code>my_exposure_name</code>:</p>
 
 <div class="pdoc-code codehilite">
 <pre><span></span><code><span class="kn">from</span> <span class="nn"><a href="">dbterd.api</a></span> <span class="kn">import</span> <span class="n">DbtErd</span>
@@ -450,13 +442,13 @@ unless specifying a param named <code>api_context_command</code></p>
 <div class="attr function">
             
         <span class="def">def</span>
-        <span class="name">get_model_erd</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">node_fqn</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">dbterd</span><span class="o">.</span><span class="n">adapters</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">Table</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">dbterd</span><span class="o">.</span><span class="n">adapters</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">Ref</span><span class="p">]]</span>:</span></span>
+        <span class="name">get_model_erd</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="bp">self</span>,</span><span class="param">	<span class="n">node_unique_id</span><span class="p">:</span> <span class="nb">str</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">dbterd</span><span class="o">.</span><span class="n">adapters</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">Table</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">dbterd</span><span class="o">.</span><span class="n">adapters</span><span class="o">.</span><span class="n">meta</span><span class="o">.</span><span class="n">Ref</span><span class="p">]]</span>:</span></span>
 
                 <label class="view-source-button" for="DbtErd.get_model_erd-view-source"><span>View Source</span></label>
 
     </div>
     <a class="headerlink" href="#DbtErd.get_model_erd"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="DbtErd.get_model_erd-91"><a href="#DbtErd.get_model_erd-91"><span class="linenos"> 91</span></a>    <span class="k">def</span> <span class="nf">get_model_erd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_fqn</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Table</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Ref</span><span class="p">]]:</span>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="DbtErd.get_model_erd-91"><a href="#DbtErd.get_model_erd-91"><span class="linenos"> 91</span></a>    <span class="k">def</span> <span class="nf">get_model_erd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_unique_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Table</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Ref</span><span class="p">]]:</span>
 </span><span id="DbtErd.get_model_erd-92"><a href="#DbtErd.get_model_erd-92"><span class="linenos"> 92</span></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate ERD code for a model.</span>
 </span><span id="DbtErd.get_model_erd-93"><a href="#DbtErd.get_model_erd-93"><span class="linenos"> 93</span></a>
 </span><span id="DbtErd.get_model_erd-94"><a href="#DbtErd.get_model_erd-94"><span class="linenos"> 94</span></a><span class="sd">        Result contains this model and 1 level relationship models (if any).</span>
@@ -466,18 +458,14 @@ unless specifying a param named <code>api_context_command</code></p>
 </span><span id="DbtErd.get_model_erd-98"><a href="#DbtErd.get_model_erd-98"><span class="linenos"> 98</span></a><span class="sd">        from dbterd.api import DbtErd</span>
 </span><span id="DbtErd.get_model_erd-99"><a href="#DbtErd.get_model_erd-99"><span class="linenos"> 99</span></a><span class="sd">        erd = DbtErd().get_model_erd(node_fqn=&quot;model.jaffle_shop.my_model&quot;)</span>
 </span><span id="DbtErd.get_model_erd-100"><a href="#DbtErd.get_model_erd-100"><span class="linenos">100</span></a><span class="sd">        ```</span>
-</span><span id="DbtErd.get_model_erd-101"><a href="#DbtErd.get_model_erd-101"><span class="linenos">101</span></a>
-</span><span id="DbtErd.get_model_erd-102"><a href="#DbtErd.get_model_erd-102"><span class="linenos">102</span></a><span class="sd">        Returns:</span>
-</span><span id="DbtErd.get_model_erd-103"><a href="#DbtErd.get_model_erd-103"><span class="linenos">103</span></a><span class="sd">            Tuple[List[Table], List[Ref]]: Tables and Refs</span>
-</span><span id="DbtErd.get_model_erd-104"><a href="#DbtErd.get_model_erd-104"><span class="linenos">104</span></a><span class="sd">        &quot;&quot;&quot;</span>
-</span><span id="DbtErd.get_model_erd-105"><a href="#DbtErd.get_model_erd-105"><span class="linenos">105</span></a>        <span class="n">find_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">node_fqn</span><span class="p">]</span>
-</span><span id="DbtErd.get_model_erd-106"><a href="#DbtErd.get_model_erd-106"><span class="linenos">106</span></a>        <span class="c1"># TODO - find FK models of this model</span>
-</span><span id="DbtErd.get_model_erd-107"><a href="#DbtErd.get_model_erd-107"><span class="linenos">107</span></a>
-</span><span id="DbtErd.get_model_erd-108"><a href="#DbtErd.get_model_erd-108"><span class="linenos">108</span></a>        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span>
-</span><span id="DbtErd.get_model_erd-109"><a href="#DbtErd.get_model_erd-109"><span class="linenos">109</span></a>        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;select&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;exact:</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">find_nodes</span><span class="p">]</span>
-</span><span id="DbtErd.get_model_erd-110"><a href="#DbtErd.get_model_erd-110"><span class="linenos">110</span></a>        <span class="n">params</span><span class="p">[</span><span class="s2">&quot;exclude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="DbtErd.get_model_erd-111"><a href="#DbtErd.get_model_erd-111"><span class="linenos">111</span></a>
-</span><span id="DbtErd.get_model_erd-112"><a href="#DbtErd.get_model_erd-112"><span class="linenos">112</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="o">**</span><span class="n">params</span><span class="p">)</span>
+</span><span id="DbtErd.get_model_erd-101"><a href="#DbtErd.get_model_erd-101"><span class="linenos">101</span></a><span class="sd">        </span>
+</span><span id="DbtErd.get_model_erd-102"><a href="#DbtErd.get_model_erd-102"><span class="linenos">102</span></a><span class="sd">        Args:</span>
+</span><span id="DbtErd.get_model_erd-103"><a href="#DbtErd.get_model_erd-103"><span class="linenos">103</span></a><span class="sd">            node_unique_id (str): Manifest node unique ID</span>
+</span><span id="DbtErd.get_model_erd-104"><a href="#DbtErd.get_model_erd-104"><span class="linenos">104</span></a>
+</span><span id="DbtErd.get_model_erd-105"><a href="#DbtErd.get_model_erd-105"><span class="linenos">105</span></a><span class="sd">        Returns:</span>
+</span><span id="DbtErd.get_model_erd-106"><a href="#DbtErd.get_model_erd-106"><span class="linenos">106</span></a><span class="sd">            Tuple[List[Table], List[Ref]]: Tables and Refs</span>
+</span><span id="DbtErd.get_model_erd-107"><a href="#DbtErd.get_model_erd-107"><span class="linenos">107</span></a><span class="sd">        &quot;&quot;&quot;</span>
+</span><span id="DbtErd.get_model_erd-108"><a href="#DbtErd.get_model_erd-108"><span class="linenos">108</span></a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">executor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">node_unique_id</span><span class="o">=</span><span class="n">node_unique_id</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
 </span></pre></div>
 
 
@@ -492,6 +480,9 @@ unless specifying a param named <code>api_context_command</code></p>
 <span class="n">erd</span> <span class="o">=</span> <span class="n">DbtErd</span><span class="p">()</span><span class="o">.</span><span class="n">get_model_erd</span><span class="p">(</span><span class="n">node_fqn</span><span class="o">=</span><span class="s2">&quot;model.jaffle_shop.my_model&quot;</span><span class="p">)</span>
 </code></pre>
 </div>
+
+<p>Args:
+    node_unique_id (str): Manifest node unique ID</p>
 
 <p>Returns:
     Tuple[List[Table], List[Ref]]: Tables and Refs</p>
