@@ -20,7 +20,7 @@ class DbtErd:
         erd = DbtErd().get_erd()
         ```
 
-    - Get a whole ERD given all model:
+    - Get a whole ERD given all models attached to `my_exposure_name`:
         ```python
         from dbterd.api import DbtErd
         erd = DbtErd(select="exposure:my_exposure_name").get_erd()
@@ -87,7 +87,7 @@ class DbtErd:
         """
         return self.executor.run(**self.params)
 
-    def get_model_erd(self, node_fqn: str) -> Tuple[List[Table], List[Ref]]:
+    def get_model_erd(self, node_unique_id: str) -> Tuple[List[Table], List[Ref]]:
         """Generate ERD code for a model.
 
         Result contains this model and 1 level relationship models (if any).
@@ -97,15 +97,11 @@ class DbtErd:
         from dbterd.api import DbtErd
         erd = DbtErd().get_model_erd(node_fqn="model.jaffle_shop.my_model")
         ```
+        
+        Args:
+            node_unique_id (str): Manifest node unique ID
 
         Returns:
             Tuple[List[Table], List[Ref]]: Tables and Refs
         """
-        find_nodes = [node_fqn]
-        # TODO - find FK models of this model
-
-        params = self.params
-        params["select"] = [f"exact:{x}" for x in find_nodes]
-        params["exclude"] = []
-
-        return self.executor.run(**params)
+        return self.executor.run(node_unique_id=node_unique_id, **params)
