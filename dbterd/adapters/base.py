@@ -156,7 +156,7 @@ class Executor:
         Returns:
             func: Operation function
         """
-        target = adapter.load_executor(name=kwargs["target"])  # import {target}
+        target = adapter.load_target(name=kwargs["target"])  # import {target}
         run_operation_dispatcher = getattr(target, "run_operation_dispatcher")
         operation_default = getattr(target, "run_operation_default")
         operation = run_operation_dispatcher.get(
