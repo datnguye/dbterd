@@ -1,7 +1,7 @@
 from importlib import import_module
 
 
-def load_executor(name: str):
+def load_target(name: str):
     """Import the target extension dynamically
 
     Args:
