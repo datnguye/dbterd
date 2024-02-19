@@ -27,7 +27,7 @@ nav:
         - Download the latest artifacts from a Job: nav/guide/dbt-cloud/download-artifact-from-a-job.md
         - Read the latest artifacts from an environment: nav/guide/dbt-cloud/read-artifact-from-an-environment.md
       - CLI Reference: nav/guide/cli-references.md
-      - Python API Reference: api-docs/index.html # managed by hook
+      - Python API Reference ↗️: api-docs/index.html" target="_blank # managed by hook
     - Contribution Guideline ❤️: nav/development/contributing-guide.md
     - License 🔑: license.md
     - Change Log ↗️: https://github.com/datnguye/dbterd/releases" target="_blank
