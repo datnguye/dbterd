@@ -7,6 +7,7 @@ import pytest
 from dbterd import default
 from dbterd.adapters.base import Executor
 from dbterd.adapters.dbt_core.dbt_invocation import DbtInvocation
+from dbterd.adapters.targets.dbml import dbml_test_relationship
 
 
 class TestBase:
@@ -215,3 +216,60 @@ class TestBase:
         worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
         mock_isfile.side_effect = mock_isfile_se
         assert worker._Executor__get_dir(**kwargs) == expected
+
+    def test__set_single_node_selection__none_id(self):
+        worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
+        assert worker._Executor__set_single_node_selection(
+            manifest="irrelevant", node_unique_id=None, **dict(i="irr")
+        ) == dict(i="irr")
+
+    @mock.patch("dbterd.adapters.algos.test_relationship.find_related_nodes_by_id")
+    def test__set_single_node_selection(self, mock_find_related_nodes_by_id):
+        worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
+        mock_find_related_nodes_by_id.return_value = ["irr"]
+        assert worker._Executor__set_single_node_selection(
+            manifest="irrelevant",
+            node_unique_id="irrelevant",
+            **dict(algo="test_relationship"),
+        ) == dict(algo="test_relationship", select=["irr"], exclude=[])
+        assert mock_find_related_nodes_by_id.call_count == 1
+
+    @mock.patch("dbterd.adapters.targets.dbml.dbml_test_relationship.run")
+    @mock.patch("dbterd.adapters.base.Executor._Executor__get_operation")
+    @mock.patch("dbterd.adapters.base.Executor._Executor__read_manifest")
+    @mock.patch("dbterd.adapters.base.Executor._Executor__read_catalog")
+    @mock.patch("dbterd.adapters.base.Executor._Executor__set_single_node_selection")
+    def test__run_by_strategy__for_api_simple(
+        self,
+        mock_set_single_node_selection,
+        mock_read_catalog,
+        mock_read_manifest,
+        mock_get_operation,
+        mock_dbml_run,
+    ):
+        worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
+
+        mock_parent = mock.Mock()
+        mock_get_operation.return_value = dbml_test_relationship.run
+        mock_parent.attach_mock(mock_get_operation, "mock_get_operation")
+        mock_read_catalog.return_value = dict()
+        mock_parent.attach_mock(mock_read_catalog, "mock_read_catalog")
+        mock_read_manifest.return_value = dict()
+        mock_parent.attach_mock(mock_read_manifest, "mock_read_manifest")
+        mock_set_single_node_selection.return_value = dict(api=True)
+        mock_parent.attach_mock(
+            mock_set_single_node_selection, "mock_set_single_node_selection"
+        )
+        mock_dbml_run.return_value = dict(i="irr")
+        mock_parent.attach_mock(mock_dbml_run, "mock_dbml_run")
+
+        assert worker._Executor__run_by_strategy(node_unique_id="irr") == dict(i="irr")
+        assert mock_parent.mock_calls == [
+            mock.call.mock_read_manifest(mp=None, mv=None),
+            mock.call.mock_read_catalog(cp=None, cv=None),
+            mock.call.mock_set_single_node_selection(
+                manifest=dict(), node_unique_id="irr"
+            ),
+            mock.call.mock_get_operation(dict(api=True)),
+            mock.call.mock_dbml_run(manifest=dict(), catalog=dict(), **dict(api=True)),
+        ]

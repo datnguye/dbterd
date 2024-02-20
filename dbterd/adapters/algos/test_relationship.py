@@ -141,7 +141,7 @@ def find_related_nodes_by_id(
     )
     found_nodes = [node_unique_id]
     for test_node in test_nodes:
-        nodes = test_node.depends_on.nodes or []
+        nodes = manifest.nodes[test_node].depends_on.nodes or []
         if node_unique_id in nodes:
             found_nodes.extend(nodes)
 

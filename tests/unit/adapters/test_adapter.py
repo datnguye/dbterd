@@ -1,7 +1,7 @@
-from dbterd.adapters.algos import test_relationship
 import pytest
 
 from dbterd.adapters import adapter
+from dbterd.adapters.algos import test_relationship
 from dbterd.adapters.targets import dbml
 
 
