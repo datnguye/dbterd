@@ -20,6 +20,7 @@ def load_target(name: str):
             raise Exception(f"Could not find adapter target type {name}!")
         raise  # pragma: no cover
 
+
 def load_algo(name: str):
     """Import the algo extension dynamically
 

@@ -90,18 +90,21 @@ class DbtErd:
     def get_model_erd(self, node_unique_id: str) -> Tuple[List[Table], List[Ref]]:
         """Generate ERD code for a model.
 
-        Result contains this model and 1 level relationship models (if any).
+        Result contains the input model and 1 level relationship model(s) (if any).
 
         Usage:
-        ```python
-        from dbterd.api import DbtErd
-        erd = DbtErd().get_model_erd(node_fqn="model.jaffle_shop.my_model")
-        ```
-        
+
+            ```python
+            from dbterd.api import DbtErd
+            erd = DbtErd().get_model_erd(
+                node_unique_id="model.jaffle_shop.my_model"
+            )
+            ```
+
         Args:
-            node_unique_id (str): Manifest node unique ID
+            - node_unique_id (str): Manifest node unique ID
 
         Returns:
             Tuple[List[Table], List[Ref]]: Tables and Refs
         """
-        return self.executor.run(node_unique_id=node_unique_id, **params)
+        return self.executor.run(node_unique_id=node_unique_id, **self.params)

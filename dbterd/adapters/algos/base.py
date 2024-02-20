@@ -415,6 +415,30 @@ def get_relationships_from_metadata(data=[], **kwargs) -> List[Ref]:
     return get_unique_refs(refs=refs)
 
 
+def get_test_nodes_by_rule_name(manifest: Manifest, rule_name: str) -> List:
+    """Get manifest nodes given the algo rule name.
+
+    Default algo rule name is `relationship`,
+    see `get_algo_rule` function for more details.
+
+    Args:
+        rule_name (str): Rule name
+        manifest (Manifest): Manifest data
+
+    Returns:
+        List: List of manifest nodes
+    """
+    return [
+        x
+        for x in manifest.nodes
+        if (
+            x.startswith("test")
+            and rule_name in x.lower()
+            and manifest.nodes[x].meta.get(TEST_META_IGNORE_IN_ERD, "0") == "0"
+        )
+    ]
+
+
 def get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
     """Extract relationships from dbt artifacts based on test relationship
 
@@ -456,11 +480,8 @@ def get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
                 manifest.nodes[x].meta.get(TEST_META_RELATIONSHIP_TYPE, "")
             ),
         )
-        for x in manifest.nodes
-        if (
-            x.startswith("test")
-            and rule.get("name").lower() in x.lower()
-            and manifest.nodes[x].meta.get(TEST_META_IGNORE_IN_ERD, "0") == "0"
+        for x in get_test_nodes_by_rule_name(
+            manifest=manifest, rule_name=rule.get("name").lower()
         )
     ]
 

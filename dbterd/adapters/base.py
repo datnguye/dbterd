@@ -28,7 +28,9 @@ class Executor:
         self.filename_catalog = "catalog.json"
         self.dbt: DbtInvocation = None
 
-    def run(self, node_unique_id: str = None, **kwargs) -> Tuple[List[Table], List[Ref]]:
+    def run(
+        self, node_unique_id: str = None, **kwargs
+    ) -> Tuple[List[Table], List[Ref]]:
         """Generate ERD from files"""
         kwargs = self.evaluate_kwargs(**kwargs)
         return self.__run_by_strategy(node_unique_id=node_unique_id, **kwargs)
@@ -184,24 +186,35 @@ class Executor:
             logger.error(str(e))
             raise click.FileError(f"Could not save the output: {str(e)}")
 
-    def __set_single_node_selection(self, manifest, node_unique_id: str, type: str = None, **kwargs):
+    def __set_single_node_selection(
+        self, manifest, node_unique_id: str, type: str = None, **kwargs
+    ) -> dict:
+        """Override the Selection for the specific manifest node
+
+        Args:
+            manifest (Union[Manifest, dict]): Manifest data of dbt project
+            node_unique_id (str): Manifest node unique ID
+            type (str, optional): |
+                Determine manifest type e.g. from file or from metadata.
+                Defaults to None.
+
+        Returns:
+            dict: Editted kwargs dict
+        """
         if not node_unique_id:
             return kwargs
 
-        if type == "metadata":
-            raise click.BadParameter(f"Not supported method")
-
         algo_module = adapter.load_algo(name=kwargs["algo"])
         kwargs["select"] = algo_module.find_related_nodes_by_id(
-            manifest=manifest,
-            type=type,
-            node_unique_id=node_unique_id
+            manifest=manifest, node_unique_id=node_unique_id, type=type, **kwargs
         )
         kwargs["exclude"] = []
-        
+
         return kwargs
-        
-    def __run_by_strategy(self, node_unique_id: str = None, **kwargs) -> Tuple[List[Table], List[Ref]]:
+
+    def __run_by_strategy(
+        self, node_unique_id: str = None, **kwargs
+    ) -> Tuple[List[Table], List[Ref]]:
         """Local File - Read artifacts and export the diagram file following the target"""
         if kwargs.get("dbt_cloud"):
             DbtCloudArtifact(**kwargs).get(artifacts_dir=kwargs.get("artifacts_dir"))
@@ -214,12 +227,10 @@ class Executor:
             cp=kwargs.get("artifacts_dir"),
             cv=kwargs.get("catalog_version"),
         )
-        
+
         if node_unique_id:
             kwargs = self.__set_single_node_selection(
-                manifest=manifest,
-                node_unique_id=node_unique_id,
-                **kwargs
+                manifest=manifest, node_unique_id=node_unique_id, **kwargs
             )
         operation = self.__get_operation(kwargs)
         result = operation(manifest=manifest, catalog=catalog, **kwargs)
