@@ -6,6 +6,7 @@ import click
 import pytest
 
 from dbterd.adapters.algos import base as base_algo
+from dbterd.adapters.algos import test_relationship
 from dbterd.adapters.meta import Column, Ref, Table
 
 
@@ -864,3 +865,21 @@ class TestAlgoTestRelationship:
     def test_get_relationships_from_metadata_error(self, data, kwargs):
         with pytest.raises(click.BadParameter):
             base_algo.get_relationships_from_metadata(data=data, **kwargs)
+
+    def test_find_related_nodes_by_id_error(self):
+        with pytest.raises(click.BadParameter):
+            test_relationship.find_related_nodes_by_id(
+                manifest="irrelevant", type="metadata", node_unique_id="irrelevant"
+            )
+
+    def test_find_related_nodes_by_id(self):
+        assert sorted(["model.dbt_resto.table1", "model.dbt_resto.table2"]) == sorted(
+            test_relationship.find_related_nodes_by_id(
+                manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.table2"
+            )
+        )
+        assert [
+            "model.dbt_resto.not-exists"
+        ] == test_relationship.find_related_nodes_by_id(
+            manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.not-exists"
+        )

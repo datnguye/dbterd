@@ -13,7 +13,6 @@ nav:
   - dbterd:
     - index.md
     - User Guide 📖:
-      - CLI Reference: nav/guide/cli-references.md
       - Generate the Targets:
         - DBML: nav/guide/targets/generate-dbml.md
         - Mermaid: nav/guide/targets/generate-markdown-mermaid-erd.md
@@ -27,9 +26,14 @@ nav:
         - Download artifacts from a Job Run: nav/guide/dbt-cloud/download-artifact-from-a-job-run.md
         - Download the latest artifacts from a Job: nav/guide/dbt-cloud/download-artifact-from-a-job.md
         - Read the latest artifacts from an environment: nav/guide/dbt-cloud/read-artifact-from-an-environment.md
+      - CLI Reference: nav/guide/cli-references.md
+      - Python API Reference ↗️: api-docs/index.html" target="_blank # managed by hook
     - Contribution Guideline ❤️: nav/development/contributing-guide.md
     - License 🔑: license.md
     - Change Log ↗️: https://github.com/datnguye/dbterd/releases" target="_blank
+
+hooks:
+  - docs/hooks.py
 
 theme:
   name: material
@@ -122,6 +126,8 @@ extra:
 
 extra_css:
   - assets/css/termynal.css
+  - assets/css/syntax-highlighting.css
+  - assets/css/theme.css
 
 extra_javascript:
   - assets/js/feedback.js

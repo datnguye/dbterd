@@ -35,7 +35,7 @@ def common_params(func):
         "--resource-type",
         "-rt",
         help="Specified dbt resource type(seed, model, source, snapshot),default:model, use examples, -rt model -rt source",
-        default=["model"],
+        default=default.default_resource_types(),
         multiple=True,
         type=click.STRING,
     )
@@ -51,7 +51,7 @@ def common_params(func):
         "--entity-name-format",
         "-enf",
         help="Specified the format of the entity node's name",
-        default="resource.package.model",
+        default=default.default_entity_name_format(),
         show_default=True,
         type=click.STRING,
     )

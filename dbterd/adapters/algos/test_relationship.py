@@ -1,5 +1,7 @@
 from typing import List, Tuple, Union
 
+import click
+
 from dbterd.adapters.algos import base
 from dbterd.adapters.filter import is_selected_table
 from dbterd.adapters.meta import Ref, Table
@@ -110,3 +112,37 @@ def parse(
         sorted(tables, key=lambda tbl: tbl.node_name),
         sorted(relationships, key=lambda rel: rel.name),
     )
+
+
+def find_related_nodes_by_id(
+    manifest: Union[Manifest, dict], node_unique_id: str, type: str = None, **kwargs
+) -> List[str]:
+    """Find the FK models which are related to the input model ID inclusively
+
+    given the manifest data of dbt project
+
+    Args:
+        manifest (Union[Manifest, dict]): Manifest data
+        node_unique_id (str): Manifest node unique ID
+        type (str, optional): Manifest type (local file or metadata). Defaults to None.
+
+    Raises:
+        click.BadParameter: Not Supported manifest type
+
+    Returns:
+        List[str]: Manifest nodes' unique ID
+    """
+    if type is not None:
+        raise click.BadParameter("Not supported manifest type")
+
+    rule = base.get_algo_rule(**kwargs)
+    test_nodes = base.get_test_nodes_by_rule_name(
+        manifest=manifest, rule_name=rule.get("name").lower()
+    )
+    found_nodes = [node_unique_id]
+    for test_node in test_nodes:
+        nodes = manifest.nodes[test_node].depends_on.nodes or []
+        if node_unique_id in nodes:
+            found_nodes.extend(nodes)
+
+    return list(set(found_nodes))
