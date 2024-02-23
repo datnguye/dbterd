@@ -1,6 +1,5 @@
 from dbterd.adapters.algos import base
 from dbterd.adapters.filter import is_selected_table
-from dbterd.adapters.meta import Ref
 from dbterd.helpers.log import logger
 
 
@@ -34,12 +33,9 @@ def parse_metadata(data, **kwargs):
 
     # Parse Ref
     relationships = base.get_relationships_from_metadata(data=data, **kwargs)
-    node_names = [x.node_name for x in tables]
-    relationships = [
-        x
-        for x in relationships
-        if x.table_map[0] in node_names and x.table_map[1] in node_names
-    ]
+    relationships = base.make_up_relationships(
+        relationships=relationships, tables=tables
+    )
 
     logger.info(
         f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)"
@@ -78,20 +74,9 @@ def parse(manifest, catalog, **kwargs):
 
     # Parse Ref
     relationships = base.get_relationships(manifest=manifest, **kwargs)
-    node_names = [x.node_name for x in tables]
-    relationships = [
-        Ref(
-            name=x.name,
-            table_map=[
-                [t for t in tables if t.node_name == x.table_map[0]][0].name,
-                [t for t in tables if t.node_name == x.table_map[1]][0].name,
-            ],
-            column_map=x.column_map,
-            type=x.type,
-        )
-        for x in relationships
-        if x.table_map[0] in node_names and x.table_map[1] in node_names
-    ]
+    relationships = base.make_up_relationships(
+        relationships=relationships, tables=tables
+    )
 
     # Fullfill columns in Tables (due to `select *`)
     tables = base.enrich_tables_from_relationships(

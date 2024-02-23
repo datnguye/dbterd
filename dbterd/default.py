@@ -15,3 +15,11 @@ def default_target() -> str:
 
 def deafult_algo() -> str:
     return "test_relationship"
+
+
+def default_resource_types() -> list[str]:
+    return ["model"]
+
+
+def default_entity_name_format() -> str:
+    return "resource.package.model"
