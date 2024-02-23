@@ -355,6 +355,30 @@ def get_table_name(format: str, **kwargs) -> str:
     return ".".join([kwargs.get(x.lower()) or "KEYNOTFOUND" for x in format.split(".")])
 
 
+def get_test_nodes_by_rule_name(manifest: Manifest, rule_name: str) -> List:
+    """Get manifest nodes given the algo rule name.
+
+    Default algo rule name is `relationship`,
+    see `get_algo_rule` function for more details.
+
+    Args:
+        rule_name (str): Rule name
+        manifest (Manifest): Manifest data
+
+    Returns:
+        List: List of manifest nodes
+    """
+    return [
+        x
+        for x in manifest.nodes
+        if (
+            x.startswith("test")
+            and rule_name in x.lower()
+            and manifest.nodes[x].meta.get(TEST_META_IGNORE_IN_ERD, "0") == "0"
+        )
+    ]
+
+
 def get_relationships_from_metadata(data=[], **kwargs) -> List[Ref]:
     """Extract relationships from Metadata result list on test relationship
 
@@ -415,30 +439,6 @@ def get_relationships_from_metadata(data=[], **kwargs) -> List[Ref]:
     return get_unique_refs(refs=refs)
 
 
-def get_test_nodes_by_rule_name(manifest: Manifest, rule_name: str) -> List:
-    """Get manifest nodes given the algo rule name.
-
-    Default algo rule name is `relationship`,
-    see `get_algo_rule` function for more details.
-
-    Args:
-        rule_name (str): Rule name
-        manifest (Manifest): Manifest data
-
-    Returns:
-        List: List of manifest nodes
-    """
-    return [
-        x
-        for x in manifest.nodes
-        if (
-            x.startswith("test")
-            and rule_name in x.lower()
-            and manifest.nodes[x].meta.get(TEST_META_IGNORE_IN_ERD, "0") == "0"
-        )
-    ]
-
-
 def get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
     """Extract relationships from dbt artifacts based on test relationship
 
@@ -486,6 +486,36 @@ def get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
     ]
 
     return get_unique_refs(refs=refs)
+
+
+def make_up_relationships(
+    relationships: List[Ref] = [], tables: List[Table] = []
+) -> List[Ref]:
+    """Filter Refs given by the parsed Tables & applied the entity name format
+
+    Args:
+        relationships (List[Ref], optional): Parsed relationships. Defaults to [].
+        tables (List[Table], optional): Parsed tables. Defaults to [].
+
+    Returns:
+        List[Ref]: Cooked relationships
+    """
+    node_names = [x.node_name for x in tables]
+    relationships = [
+        Ref(
+            name=x.name,
+            table_map=[
+                [t for t in tables if t.node_name == x.table_map[0]][0].name,
+                [t for t in tables if t.node_name == x.table_map[1]][0].name,
+            ],
+            column_map=x.column_map,
+            type=x.type,
+        )
+        for x in relationships
+        if x.table_map[0] in node_names and x.table_map[1] in node_names
+    ]
+
+    return relationships
 
 
 def get_unique_refs(refs: list[Ref] = []) -> list[Ref]:

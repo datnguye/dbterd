@@ -19,7 +19,7 @@ def deafult_algo() -> str:
 
 
 def default_resource_types() -> List[str]:
-    return ["model", "source"]
+    return ["model"]
 
 
 def default_entity_name_format() -> str:
