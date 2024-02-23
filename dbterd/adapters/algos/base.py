@@ -488,7 +488,9 @@ def get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
     return get_unique_refs(refs=refs)
 
 
-def make_up_relationships(relationships: List[Ref] = [], tables: List[Table] = []) -> List[Ref]:
+def make_up_relationships(
+    relationships: List[Ref] = [], tables: List[Table] = []
+) -> List[Ref]:
     """Filter Refs given by the parsed Tables & applied the entity name format
 
     Args:

@@ -39,7 +39,9 @@ def parse_metadata(data, **kwargs) -> Tuple[List[Table], List[Ref]]:
 
     # Parse Ref
     relationships = base.get_relationships_from_metadata(data=data, **kwargs)
-    relationships = base.make_up_relationships(relationships=relationships, tables=tables)
+    relationships = base.make_up_relationships(
+        relationships=relationships, tables=tables
+    )
 
     logger.info(
         f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)"
@@ -80,7 +82,9 @@ def parse(
 
     # Parse Ref
     relationships = base.get_relationships(manifest=manifest, **kwargs)
-    relationships = base.make_up_relationships(relationships=relationships, tables=tables)
+    relationships = base.make_up_relationships(
+        relationships=relationships, tables=tables
+    )
 
     # Fullfill columns in Tables (due to `select *`)
     tables = base.enrich_tables_from_relationships(
