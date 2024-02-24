@@ -64,16 +64,6 @@ dbterd --version
 
   erd = DbtErd(target="mermaid").get_erd()
   print("erd (mermaid):", erd)
-
-  fact_number_erd = DbtErd(target="mermaid").get_model_erd(
-      node_unique_id="model.dbt_resto.fact_number"
-  )
-  print("erd of fact_number (mermaid):", fact_number_erd)
-
-  dim_prize_erd = DbtErd(target="mermaid").get_model_erd(
-      node_unique_id="model.dbt_resto.dim_prize"
-  )
-  print("erd of dim_date (mermaid):", dim_prize_erd)
   ```
 
 </details>
