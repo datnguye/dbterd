@@ -43,7 +43,7 @@ def common_params(func):
         "--algo",
         "-a",
         help="Specified algorithm in the way to detect diagram connectors",
-        default=default.deafult_algo(),
+        default=default.default_algo(),
         show_default=True,
         type=click.STRING,
     )

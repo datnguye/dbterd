@@ -14,7 +14,7 @@ def default_target() -> str:
     return "dbml"
 
 
-def deafult_algo() -> str:
+def default_algo() -> str:
     return "test_relationship"
 
 

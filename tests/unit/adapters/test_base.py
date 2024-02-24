@@ -260,7 +260,7 @@ class TestBase:
         mock_parent.attach_mock(
             mock_set_single_node_selection, "mock_set_single_node_selection"
         )
-        mock_dbml_run.return_value = dict(i="irr")
+        mock_dbml_run.return_value = ("irr", dict(i="irr"))
         mock_parent.attach_mock(mock_dbml_run, "mock_dbml_run")
 
         assert worker._Executor__run_by_strategy(node_unique_id="irr") == dict(i="irr")

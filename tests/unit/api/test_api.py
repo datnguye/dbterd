@@ -1,10 +1,22 @@
 from pathlib import Path
+from unittest import mock
 
 from dbterd import default
 from dbterd.api import DbtErd
 
 
 class TestDbtErd:
+
+    @mock.patch("dbterd.adapters.base.Executor.run")
+    def test_get_erd(self, mock_executor_run):
+        mock_executor_run.return_value = "expected-result"
+        assert DbtErd().get_erd() == "expected-result"
+
+    @mock.patch("dbterd.adapters.base.Executor.run")
+    def test_get_model_erd(self, mock_executor_run):
+        mock_executor_run.return_value = "expected-result"
+        assert DbtErd().get_model_erd(node_unique_id="any") == "expected-result"
+
     def test_init_default(self):
         actual = DbtErd()
         actual_dict = dict(vars(actual))
@@ -15,7 +27,7 @@ class TestDbtErd:
                 select=[],
                 exclude=[],
                 resource_type=default.default_resource_types(),
-                algo=default.deafult_algo(),
+                algo=default.default_algo(),
                 entity_name_format=default.default_entity_name_format(),
                 omit_columns=False,
                 artifacts_dir=Path.cwd(),

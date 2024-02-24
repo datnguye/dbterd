@@ -76,7 +76,7 @@ class DbtErd:
         self.params["resource_type"] = self.params.get(
             "resource_type", default.default_resource_types()
         )
-        self.params["algo"] = self.params.get("algo", default.deafult_algo())
+        self.params["algo"] = self.params.get("algo", default.default_algo())
         self.params["entity_name_format"] = self.params.get(
             "entity_name_format", default.default_entity_name_format()
         )
