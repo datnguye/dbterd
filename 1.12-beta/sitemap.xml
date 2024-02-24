@@ -2,72 +2,72 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://datnguye.github.io/dbterd/1.12-beta/index.html</loc>
-         <lastmod>2024-02-20</lastmod>
+         <lastmod>2024-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://datnguye.github.io/dbterd/1.12-beta/license.html</loc>
-         <lastmod>2024-02-20</lastmod>
+         <lastmod>2024-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://datnguye.github.io/dbterd/1.12-beta/nav/development/contributing-guide.html</loc>
-         <lastmod>2024-02-20</lastmod>
+         <lastmod>2024-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://datnguye.github.io/dbterd/1.12-beta/nav/guide/cli-references.html</loc>
-         <lastmod>2024-02-20</lastmod>
+         <lastmod>2024-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://datnguye.github.io/dbterd/1.12-beta/nav/guide/dbt-cloud/download-artifact-from-a-job-run.html</loc>
-         <lastmod>2024-02-20</lastmod>
+         <lastmod>2024-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://datnguye.github.io/dbterd/1.12-beta/nav/guide/dbt-cloud/download-artifact-from-a-job.html</loc>
-         <lastmod>2024-02-20</lastmod>
+         <lastmod>2024-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://datnguye.github.io/dbterd/1.12-beta/nav/guide/dbt-cloud/read-artifact-from-an-environment.html</loc>
-         <lastmod>2024-02-20</lastmod>
+         <lastmod>2024-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://datnguye.github.io/dbterd/1.12-beta/nav/guide/targets/generate-d2.html</loc>
-         <lastmod>2024-02-20</lastmod>
+         <lastmod>2024-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://datnguye.github.io/dbterd/1.12-beta/nav/guide/targets/generate-dbml.html</loc>
-         <lastmod>2024-02-20</lastmod>
+         <lastmod>2024-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://datnguye.github.io/dbterd/1.12-beta/nav/guide/targets/generate-graphviz.html</loc>
-         <lastmod>2024-02-20</lastmod>
+         <lastmod>2024-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://datnguye.github.io/dbterd/1.12-beta/nav/guide/targets/generate-markdown-mermaid-erd.html</loc>
-         <lastmod>2024-02-20</lastmod>
+         <lastmod>2024-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://datnguye.github.io/dbterd/1.12-beta/nav/guide/targets/generate-plantuml.html</loc>
-         <lastmod>2024-02-20</lastmod>
+         <lastmod>2024-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://datnguye.github.io/dbterd/1.12-beta/nav/metadata/ignore_in_erd.html</loc>
-         <lastmod>2024-02-20</lastmod>
+         <lastmod>2024-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://datnguye.github.io/dbterd/1.12-beta/nav/metadata/relationship_type.html</loc>
-         <lastmod>2024-02-20</lastmod>
+         <lastmod>2024-02-24</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
