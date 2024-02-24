@@ -6,7 +6,6 @@ from dbterd.api import DbtErd
 
 
 class TestDbtErd:
-
     @mock.patch("dbterd.adapters.base.Executor.run")
     def test_get_erd(self, mock_executor_run):
         mock_executor_run.return_value = "expected-result"

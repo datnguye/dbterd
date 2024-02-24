@@ -30,7 +30,9 @@ class TestBase:
 
     @mock.patch("dbterd.adapters.base.DbtCloudMetadata.query_erd_data")
     @mock.patch("dbterd.adapters.base.Executor._Executor__save_result")
-    def test___run_metadata_by_strategy_with_not_implemented_algo(self, mock_query_erd_data, mock_save_result):
+    def test___run_metadata_by_strategy_with_not_implemented_algo(
+        self, mock_query_erd_data, mock_save_result
+    ):
         result = Executor(
             ctx=click.Context(command=click.BaseCommand("dummy"))
         )._Executor__run_metadata_by_strategy(target="dbml", algo="notfound")
