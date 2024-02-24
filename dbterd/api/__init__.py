@@ -1,12 +1,10 @@
 import logging
 from pathlib import Path
-from typing import List, Tuple
 
 from click import Command, Context
 
 from dbterd import default
 from dbterd.adapters.base import Executor
-from dbterd.adapters.meta import Ref, Table
 from dbterd.helpers.log import logger
 
 logger.setLevel(logging.WARNING)  # hide log
@@ -84,7 +82,7 @@ class DbtErd:
         self.params["artifacts_dir"] = self.params.get("artifacts_dir", Path.cwd())
         self.params["target"] = self.params.get("target", default.default_target())
 
-    def get_erd(self) -> Tuple[List[Table], List[Ref]]:
+    def get_erd(self) -> str:
         """Generate ERD code for a whole project
 
         Usage:
@@ -94,11 +92,11 @@ class DbtErd:
         ```
 
         Returns:
-            Tuple[List[Table], List[Ref]]: Tables and Refs
+            str: ERD text
         """
         return self.executor.run(**self.params)
 
-    def get_model_erd(self, node_unique_id: str) -> Tuple[List[Table], List[Ref]]:
+    def get_model_erd(self, node_unique_id: str) -> str:
         """Generate ERD code for a model.
 
         Result contains the input model and 1 level relationship model(s) (if any).
@@ -116,6 +114,6 @@ class DbtErd:
             - node_unique_id (str): Manifest node unique ID
 
         Returns:
-            Tuple[List[Table], List[Ref]]: Tables and Refs
+            str: ERD text
         """
         return self.executor.run(node_unique_id=node_unique_id, **self.params)
