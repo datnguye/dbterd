@@ -96,6 +96,6 @@ poe test-cov
 
 Code can be merged into the current development branch `main` by opening a pull request. A `dbterd` maintainer will review your PR. They may suggest code revision for style or clarity, or request that you add unit or integration test(s). These are good things! We believe that, with a little bit of help, anyone can contribute high-quality code.
 
-Automated tests run via GitHub Actions. If you're a first-time contributor, all tests (including code checks and unit tests) will require a maintainer to approve. Changes in the `dbterd` repository trigger integration tests against Postgres. dbt Labs also provides CI environments in which to test changes to other adapters, triggered by PRs in those adapters' repositories, as well as periodic maintenance checks of each adapter in concert with the latest `dbterd` code changes.
+Automated tests run via GitHub Actions. If you're a first-time contributor, all tests (including code checks and unit tests) will require a maintainer to approve. Changes in the `dbterd` repository trigger unit tests against multiple Python versions with the latest `dbterd` code changes.
 
 Once all tests are passing and your PR has been approved, a `dbterd` maintainer will merge your changes into the active development branch. And that's it! Happy developing :tada:
