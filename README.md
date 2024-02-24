@@ -21,7 +21,7 @@ dbterd --version
 ## Quick examine with existing samples
 
 <details>
-  <summary>Click me</summary>
+  <summary>Play with CLI</summary>
 
   ```bash
   # select all models in dbt_resto
@@ -49,6 +49,58 @@ dbterd --version
 
   # your own sample without commiting to repo
   dbterd run -ad samples/local -rt model -rt source
+  ```
+
+</details>
+
+<details>
+  <summary>Play with Python API (whole ERD)</summary>
+
+  ```python
+  from dbterd.api import DbtErd
+
+  erd = DbtErd().get_erd()
+  print("erd (dbml):", erd)
+
+  erd = DbtErd(target="mermaid").get_erd()
+  print("erd (mermaid):", erd)
+  ```
+
+</details>
+
+
+<details>
+  <summary>Play with Python API (1 model's ERD)</summary>
+
+  ```python
+  from dbterd.api import DbtErd
+
+  dim_prize_erd = DbtErd(target="mermaid").get_model_erd(
+      node_unique_id="model.dbt_resto.dim_prize"
+  )
+  print("erd of dim_date (mermaid):", dim_prize_erd)
+  ```
+
+  Here is the output:
+
+  ```mermaid
+  erDiagram
+    "MODEL.DBT_RESTO.DIM_PRIZE" {
+      varchar prize_key
+      nvarchar prize_name
+      int prize_order
+    }
+    "MODEL.DBT_RESTO.FACT_RESULT" {
+      varchar fact_result_key
+      varchar box_key
+      varchar prize_key
+      date date_key
+      int no_of_won
+      float prize_value
+      float prize_paid
+      int is_prize_taken
+    }
+    "MODEL.DBT_RESTO.FACT_RESULT" }|--|| "MODEL.DBT_RESTO.DIM_PRIZE": prize_key
   ```
 
 </details>

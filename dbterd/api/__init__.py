@@ -1,3 +1,5 @@
+import logging
+from pathlib import Path
 from typing import List, Tuple
 
 from click import Command, Context
@@ -5,6 +7,9 @@ from click import Command, Context
 from dbterd import default
 from dbterd.adapters.base import Executor
 from dbterd.adapters.meta import Ref, Table
+from dbterd.helpers.log import logger
+
+logger.setLevel(logging.WARNING)  # hide log
 
 
 class DbtErd:
@@ -12,34 +17,38 @@ class DbtErd:
     dbt ERD official API functions.
 
 
-    Usage:
+    **Usage**:
 
-    - Get a whole ERD:
-        ```python
-        from dbterd.api import DbtErd
-        erd = DbtErd().get_erd()
-        ```
+    ## Get a whole ERD
 
-    - Get a whole ERD given all models attached to `my_exposure_name`:
-        ```python
-        from dbterd.api import DbtErd
-        erd = DbtErd(select="exposure:my_exposure_name").get_erd()
-        ```
-        See the
-        [Selection](https://dbterd.datnguyen.de/latest/nav/guide/cli-references.html#dbterd-run-select-s)
-        page for more details.
+    ```python
+    from dbterd.api import DbtErd
+    erd = DbtErd().get_erd()
+    ```
 
-    - Get a model (named `model.jaffle_shop.my_model`)'s ERD:
-        ```python
-        from dbterd.api import DbtErd
-        erd = DbtErd().get_model_erd(s
-            node_fqn="model.jaffle_shop.my_model"
-        )
-        ```
+    ## Get a whole ERD given all models attached to `my_exposure_name`
+
+    ```python
+    from dbterd.api import DbtErd
+    erd = DbtErd(select="exposure:my_exposure_name").get_erd()
+    ```
+    See the
+    [Selection](https://dbterd.datnguyen.de/latest/nav/guide/cli-references.html#dbterd-run-select-s)
+    page for more details.
+
+    ## Get a model (named `model.jaffle_shop.my_model`)'s ERD
+
+    ```python
+    from dbterd.api import DbtErd
+    erd = DbtErd().get_model_erd(s
+        node_fqn="model.jaffle_shop.my_model"
+    )
+    ```
     """
 
     def __init__(self, **kwargs) -> None:
         """Initialize the main Executor given similar input CLI parameters"""
+
         self.params: dict = kwargs
         """
         Mimic CLI params with overriding `api = True`.\n
@@ -67,11 +76,13 @@ class DbtErd:
         self.params["resource_type"] = self.params.get(
             "resource_type", default.default_resource_types()
         )
-        self.params["algo"] = self.params.get("algo", default.deafult_algo())
+        self.params["algo"] = self.params.get("algo", default.default_algo())
         self.params["entity_name_format"] = self.params.get(
             "entity_name_format", default.default_entity_name_format()
         )
         self.params["omit_columns"] = self.params.get("omit_columns", False)
+        self.params["artifacts_dir"] = self.params.get("artifacts_dir", Path.cwd())
+        self.params["target"] = self.params.get("target", default.default_target())
 
     def get_erd(self) -> Tuple[List[Table], List[Ref]]:
         """Generate ERD code for a whole project

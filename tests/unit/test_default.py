@@ -17,5 +17,5 @@ class TestDefault:
         assert default.default_target() == target
 
     @pytest.mark.parametrize("algo", [("test_relationship")])
-    def test_deafult_algo(self, algo):
-        assert default.deafult_algo() == algo
+    def test_default_algo(self, algo):
+        assert default.default_algo() == algo

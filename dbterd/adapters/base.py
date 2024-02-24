@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+from types import NotImplementedType
 from typing import List, Tuple
 
 import click
@@ -238,7 +239,10 @@ class Executor:
         if not kwargs.get("api"):
             self.__save_result(path=kwargs.get("output"), data=result)
 
-        return result
+        if type(result) == NotImplementedType:
+            return result
+
+        return result[1]
 
     def __run_metadata_by_strategy(self, **kwargs) -> Tuple[List[Table], List[Ref]]:
         """Metadata - Read artifacts and export the diagram file following the target"""
@@ -250,4 +254,7 @@ class Executor:
         if not kwargs.get("api"):
             self.__save_result(path=kwargs.get("output"), data=result)
 
-        return result
+        if type(result) == NotImplementedType:
+            return result
+
+        return result[1]
