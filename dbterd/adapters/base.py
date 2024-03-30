@@ -54,14 +54,8 @@ class Executor:
 
         select = list(kwargs.get("select")) or []
         exclude = list(kwargs.get("exclude")) or []
-        select.extend(exclude)
 
-        unsupported, rule = has_unsupported_rule(rules=select)
-        if unsupported:
-            message = f"Unsupported Selection found: {rule}"
-            logger.error(message)
-            raise click.UsageError(message)
-
+        self.__check_if_any_unsupported_selection(select, exclude)
         if command == "run":
             if kwargs.get("dbt"):
                 logger.info(f"Using dbt project dir at: {dbt_project_dir}")
@@ -85,6 +79,26 @@ class Executor:
         kwargs["exclude"] = exclude
 
         return kwargs
+
+    def __check_if_any_unsupported_selection(
+        self, select: list = [], exclude: list = []
+    ):
+        """Throw an error if detected any supported selections
+
+        Args:
+            select (list, optional): Select rules. Defaults to [].
+            exclude (list, optional): Exclude rules. Defaults to [].
+
+        Raises:
+            click.UsageError: Unsupported selection
+        """
+        rules = list(select)
+        rules.extend(exclude)
+        unsupported, rule = has_unsupported_rule(rules=rules)
+        if unsupported:
+            message = f"Unsupported Selection found: {rule}"
+            logger.error(message)
+            raise click.UsageError(message)
 
     def __get_dir(self, **kwargs) -> str:
         """Calculate the dbt artifact directory and dbt project directory
