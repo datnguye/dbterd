@@ -33,7 +33,7 @@ class TestDbtInvocation:
             ),
         ],
     )
-    @mock.patch("dbterd.adapters.dbt_core.dbt_invocation.dbtRunner.invoke")
+    @mock.patch("dbt.cli.main.dbtRunner.invoke")
     def test_get_selection(
         self,
         mock_dbtRunner_invoke,
@@ -62,7 +62,7 @@ class TestDbtInvocation:
             ]
         )
 
-    @mock.patch("dbterd.adapters.dbt_core.dbt_invocation.dbtRunner.invoke")
+    @mock.patch("dbt.cli.main.dbtRunner.invoke")
     def test_get_selection__failed(self, mock_dbtRunner_invoke):
         mock_dbtRunner_invoke.return_value = dbtRunnerResult(success=False)
         with pytest.raises(click.UsageError):
@@ -70,7 +70,7 @@ class TestDbtInvocation:
                 select_rules=[], exclude_rules=[]
             )
 
-    @mock.patch("dbterd.adapters.dbt_core.dbt_invocation.dbtRunner.invoke")
+    @mock.patch("dbt.cli.main.dbtRunner.invoke")
     def test_get_artifacts_for_erd(self, mock_dbtRunner_invoke):
         invoker = DbtInvocation()
         _ = invoker.get_artifacts_for_erd()
