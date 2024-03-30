@@ -15,7 +15,8 @@ def run(manifest: Manifest, catalog: Catalog, **kwargs) -> Tuple[str, str]:
     Returns:
         Tuple(str, str): File name and the Mermaid content
     """
-    return ("output.md", parse(manifest, catalog, **kwargs))
+    output_file_name = kwargs.get("output_file_name", "output.md")
+    return (output_file_name, parse(manifest, catalog, **kwargs))
 
 
 def replace_column_name(column_name: str) -> str:

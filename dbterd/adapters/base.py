@@ -179,8 +179,9 @@ class Executor:
             click.FileError: Can not save the file
         """
         try:
-            with open(f"{path}/{data[0]}", "w") as f:
-                logger.info(path)
+            file_path = f"{path}/{data[0]}"
+            with open(file_path, "w") as f:
+                logger.info(f"Output saved to {file_path}")
                 f.write(data[1])
         except Exception as e:
             logger.error(str(e))

@@ -14,7 +14,8 @@ def run(manifest: Manifest, catalog: Catalog, **kwargs) -> Tuple[str, str]:
     Returns:
         Tuple(str, str): File name and the GraphViz content
     """
-    return ("output.graphviz", parse(manifest, catalog, **kwargs))
+    output_file_name = kwargs.get("output_file_name", "output.graphviz")
+    return (output_file_name, parse(manifest, catalog, **kwargs))
 
 
 def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
