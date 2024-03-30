@@ -19,7 +19,8 @@ dbterd --version
 ```
 
 > [!TIP]
-> For `dbt-core` Users, it's highly recommended to upgrade `dbt-artifacts-parser` to the latest version in order to support the newer `dbt-core` version which would cause to have the [new manifest / catalog json schema](https://schemas.getdbt.com/): `pip install dbt-artifacts-parser --upgrade`
+> For `dbt-core` Users, it's highly recommended to upgrade `dbt-artifacts-parser` to the latest version in order to support the newer `dbt-core` version which would cause to have the [new manifest / catalog json schema](https://schemas.getdbt.com/):
+> `pip install dbt-artifacts-parser --upgrade`
 
 ## Quick examine with existing samples
 
