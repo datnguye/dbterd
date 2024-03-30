@@ -79,7 +79,7 @@ dbterd --version
     dim_prize_erd = DbtErd(target="mermaid").get_model_erd(
         node_unique_id="model.dbt_resto.dim_prize"
     )
-    print("erd of dim_date (mermaid):", dim_prize_erd)
+    print("erd of dim_prize (mermaid):", dim_prize_erd)
     ```
 
     Here is the output:
