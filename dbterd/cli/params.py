@@ -64,6 +64,14 @@ def common_params(func):
         type=click.STRING,
     )
     @click.option(
+        "--output-file-name",
+        "-ofn",
+        help="Output the result file name. Default is defined in the target module",
+        default=None,
+        show_default=True,
+        type=click.STRING,
+    )
+    @click.option(
         "--omit-columns",
         help="Flag to omit columns in diagram. Currently only mermaid is supported",
         is_flag=True,

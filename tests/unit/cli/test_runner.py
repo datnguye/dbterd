@@ -72,11 +72,11 @@ class TestRunner:
     @pytest.mark.parametrize(
         "target, output",
         [
-            ("dbml", "output.dbml"),
-            ("mermaid", "output.md"),
-            ("plantuml", "output.plantuml"),
-            ("graphviz", "output.graphviz"),
-            ("d2", "output.d2"),
+            ("dbml", None),
+            ("mermaid", None),
+            ("plantuml", None),
+            ("graphviz", None),
+            ("d2", None),
         ],
     )
     def test_invoke_run_ok(self, target, output, dbterd: dbterdRunner) -> None:
