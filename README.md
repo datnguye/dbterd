@@ -18,45 +18,45 @@ Verify installation:
 dbterd --version
 ```
 
-> [!TIP] For `dbt-core` Users
-> It's highly recommended to update `dbt-artifacts-parser` to the latest version in order to support the newer `dbt-core` version which would cause to have the [new manifest / catalog json schema](https://schemas.getdbt.com/): `pip install dbt-artifacts-parser --upgrade`
+> [!TIP]
+> For `dbt-core` Users, it's highly recommended to upgrade `dbt-artifacts-parser` to the latest version in order to support the newer `dbt-core` version which would cause to have the [new manifest / catalog json schema](https://schemas.getdbt.com/): `pip install dbt-artifacts-parser --upgrade`
 
 ## Quick examine with existing samples
 
 - Play with CLIs:
 
-<details>
-  <summary>Click me</summary>
+    <details>
+      <summary>Click me</summary>
 
-  ```bash
-  # select all models in dbt_resto
-  dbterd run -ad samples/dbtresto
-  # select all models in dbt_resto, Select multiple dbt resources
-  dbterd run -ad samples/dbtresto -rt model -rt source
-  # select only models in dbt_resto excluding staging
-  dbterd run -ad samples/dbtresto -s model.dbt_resto -ns model.dbt_resto.staging
-  # select only models in schema name mart excluding staging
-  dbterd run -ad samples/dbtresto -s schema:mart -ns model.dbt_resto.staging
-  # select only models in schema full name dbt.mart excluding staging
-  dbterd run -ad samples/dbtresto -s schema:dbt.mart -ns model.dbt_resto.staging
+      ```bash
+      # select all models in dbt_resto
+      dbterd run -ad samples/dbtresto
+      # select all models in dbt_resto, Select multiple dbt resources
+      dbterd run -ad samples/dbtresto -rt model -rt source
+      # select only models in dbt_resto excluding staging
+      dbterd run -ad samples/dbtresto -s model.dbt_resto -ns model.dbt_resto.staging
+      # select only models in schema name mart excluding staging
+      dbterd run -ad samples/dbtresto -s schema:mart -ns model.dbt_resto.staging
+      # select only models in schema full name dbt.mart excluding staging
+      dbterd run -ad samples/dbtresto -s schema:dbt.mart -ns model.dbt_resto.staging
 
-  # other samples
-  dbterd run -ad samples/fivetranlog
-  dbterd run -ad samples/fivetranlog -rt model -rt source
+      # other samples
+      dbterd run -ad samples/fivetranlog
+      dbterd run -ad samples/fivetranlog -rt model -rt source
 
-  dbterd run -ad samples/facebookad
-  dbterd run -ad samples/facebookad -rt model -rt source
+      dbterd run -ad samples/facebookad
+      dbterd run -ad samples/facebookad -rt model -rt source
 
-  dbterd run -ad samples/shopify -s wildcard:*shopify.shopify__*
-  dbterd run -ad samples/shopify -rt model -rt source
+      dbterd run -ad samples/shopify -s wildcard:*shopify.shopify__*
+      dbterd run -ad samples/shopify -rt model -rt source
 
-  dbterd run -ad samples/dbt-constraints -a "test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)"
+      dbterd run -ad samples/dbt-constraints -a "test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)"
 
-  # your own sample without commiting to repo
-  dbterd run -ad samples/local -rt model -rt source
-  ```
+      # your own sample without commiting to repo
+      dbterd run -ad samples/local -rt model -rt source
+      ```
 
-</details>
+    </details>
 
 - Play with Python API (whole ERD):
 
