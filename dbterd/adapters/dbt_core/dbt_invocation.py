@@ -1,11 +1,10 @@
 import os
-import importlib.util
+from importlib import util
 from importlib.metadata import version
 from pathlib import Path
 from typing import List
 
 import click
-from dbt.cli.main import dbtRunner, dbtRunnerResult
 
 from dbterd.helpers.log import logger
 
@@ -21,6 +20,8 @@ class DbtInvocation:
             dbt_target (str, optional): Custom dbt target name. Defaults to None - using default target
         """
         self.__ensure_dbt_installed()
+        from dbt.cli.main import dbtRunner
+
         self.dbt = dbtRunner()
         self.project_dir = (
             dbt_project_dir or os.environ.get("DBT_PROJECT_DIR") or str(Path.cwd())
@@ -42,7 +43,7 @@ class DbtInvocation:
         """
         args = self.__construct_arguments(*runner_args)
         logger.debug(f"Invoking: `dbt {' '.join(args)}` at {self.project_dir}")
-        r: dbtRunnerResult = self.dbt.invoke(args)
+        r = self.dbt.invoke(args)
 
         if not r.success:
             logger.error(str(r))
@@ -72,7 +73,7 @@ class DbtInvocation:
         Raises:
             click.UsageError: dbt is not installed
         """
-        dbt_spec = importlib.util.find_spec("dbt")
+        dbt_spec = util.find_spec("dbt")
         if dbt_spec and dbt_spec.loader:
             installed_path = dbt_spec.submodule_search_locations[0]
             logger.debug(
