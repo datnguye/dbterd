@@ -1,6 +1,6 @@
 # dbterd
 
-CLI to generate Diagram-as-a-code file ([DBML](https://dbdiagram.io/d), [Mermaid](https://mermaid-js.github.io/mermaid-live-editor/), [PlantUML](https://plantuml.com/ie-diagram), [GraphViz](https://graphviz.org/), [D2](https://d2lang.com/)) from dbt artifact files (required: [![dbt](https://img.shields.io/badge/manifest.json-upto--v10-3776AB.svg?style=flat&logo=dbt&logoColor=orange)](https://schemas.getdbt.com/) [![dbt](https://img.shields.io/badge/catalog.json-upto--v1-3776AB.svg?style=flat&logo=dbt&logoColor=orange)](https://schemas.getdbt.com/))
+CLI to generate Diagram-as-a-code file ([DBML](https://dbdiagram.io/d), [Mermaid](https://mermaid-js.github.io/mermaid-live-editor/), [PlantUML](https://plantuml.com/ie-diagram), [GraphViz](https://graphviz.org/), [D2](https://d2lang.com/)) from dbt artifact files
 
 [![PyPI version](https://badge.fury.io/py/dbterd.svg)](https://pypi.org/project/dbterd/)
 ![python-cli](https://img.shields.io/badge/CLI-Python-FFCE3E?labelColor=14354C&logo=python&logoColor=white)
@@ -20,6 +20,15 @@ Verify installation:
 ```bash
 dbterd --version
 ```
+
+!!! Tip "For `dbt-core` Users"
+    It's highly recommended to update `dbt-artifacts-parser` to the latest version
+    in order to support the newer `dbt-core` version which would cause to have
+    the [new manifest / catalog json schema](https://schemas.getdbt.com/):
+
+    ```bash
+    pip install dbt-artifacts-parser --upgrade
+    ```
 
 ## Quick examine with existing samples
 

@@ -18,10 +18,15 @@ Verify installation:
 dbterd --version
 ```
 
+> [!TIP] For `dbt-core` Users
+> It's highly recommended to update `dbt-artifacts-parser` to the latest version in order to support the newer `dbt-core` version which would cause to have the [new manifest / catalog json schema](https://schemas.getdbt.com/): `pip install dbt-artifacts-parser --upgrade`
+
 ## Quick examine with existing samples
 
+- Play with CLIs:
+
 <details>
-  <summary>Play with CLI</summary>
+  <summary>Click me</summary>
 
   ```bash
   # select all models in dbt_resto
@@ -53,55 +58,50 @@ dbterd --version
 
 </details>
 
-<details>
-  <summary>Play with Python API (whole ERD)</summary>
+- Play with Python API (whole ERD):
 
-  ```python
-  from dbterd.api import DbtErd
+    ```python
+    from dbterd.api import DbtErd
 
-  erd = DbtErd().get_erd()
-  print("erd (dbml):", erd)
+    erd = DbtErd().get_erd()
+    print("erd (dbml):", erd)
 
-  erd = DbtErd(target="mermaid").get_erd()
-  print("erd (mermaid):", erd)
-  ```
+    erd = DbtErd(target="mermaid").get_erd()
+    print("erd (mermaid):", erd)
+    ```
 
-</details>
+- Play with Python API (1 model's ERD):
 
+    ```python
+    from dbterd.api import DbtErd
 
-<details>
-  <summary>Play with Python API (1 model's ERD)</summary>
+    dim_prize_erd = DbtErd(target="mermaid").get_model_erd(
+        node_unique_id="model.dbt_resto.dim_prize"
+    )
+    print("erd of dim_date (mermaid):", dim_prize_erd)
+    ```
 
-  ```python
-  from dbterd.api import DbtErd
+    Here is the output:
 
-  dim_prize_erd = DbtErd(target="mermaid").get_model_erd(
-      node_unique_id="model.dbt_resto.dim_prize"
-  )
-  print("erd of dim_date (mermaid):", dim_prize_erd)
-  ```
-
-  Here is the output:
-
-  ```mermaid
-  erDiagram
-    "MODEL.DBT_RESTO.DIM_PRIZE" {
-      varchar prize_key
-      nvarchar prize_name
-      int prize_order
-    }
-    "MODEL.DBT_RESTO.FACT_RESULT" {
-      varchar fact_result_key
-      varchar box_key
-      varchar prize_key
-      date date_key
-      int no_of_won
-      float prize_value
-      float prize_paid
-      int is_prize_taken
-    }
-    "MODEL.DBT_RESTO.FACT_RESULT" }|--|| "MODEL.DBT_RESTO.DIM_PRIZE": prize_key
-  ```
+    ```mermaid
+    erDiagram
+      "MODEL.DBT_RESTO.DIM_PRIZE" {
+        varchar prize_key
+        nvarchar prize_name
+        int prize_order
+      }
+      "MODEL.DBT_RESTO.FACT_RESULT" {
+        varchar fact_result_key
+        varchar box_key
+        varchar prize_key
+        date date_key
+        int no_of_won
+        float prize_value
+        float prize_paid
+        int is_prize_taken
+      }
+      "MODEL.DBT_RESTO.FACT_RESULT" }|--|| "MODEL.DBT_RESTO.DIM_PRIZE": prize_key
+    ```
 
 </details>
 
