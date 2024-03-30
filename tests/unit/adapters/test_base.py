@@ -1,5 +1,4 @@
 from pathlib import Path
-from types import NotImplementedType
 from unittest import mock
 
 import click
@@ -36,7 +35,7 @@ class TestBase:
         result = Executor(
             ctx=click.Context(command=click.BaseCommand("dummy"))
         )._Executor__run_metadata_by_strategy(target="dbml", algo="notfound")
-        assert type(result) == NotImplementedType
+        assert result is None
         mock_query_erd_data.assert_called_once()
         mock_save_result.assert_called_once()
 
