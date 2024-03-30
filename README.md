@@ -26,38 +26,38 @@ dbterd --version
 
 - Play with CLIs:
 
-    <details>
-      <summary>Click me</summary>
+  <details>
+    <summary>Click me</summary>
 
-      ```bash
-      # select all models in dbt_resto
-      dbterd run -ad samples/dbtresto
-      # select all models in dbt_resto, Select multiple dbt resources
-      dbterd run -ad samples/dbtresto -rt model -rt source
-      # select only models in dbt_resto excluding staging
-      dbterd run -ad samples/dbtresto -s model.dbt_resto -ns model.dbt_resto.staging
-      # select only models in schema name mart excluding staging
-      dbterd run -ad samples/dbtresto -s schema:mart -ns model.dbt_resto.staging
-      # select only models in schema full name dbt.mart excluding staging
-      dbterd run -ad samples/dbtresto -s schema:dbt.mart -ns model.dbt_resto.staging
+    ```bash
+    # select all models in dbt_resto
+    dbterd run -ad samples/dbtresto
+    # select all models in dbt_resto, Select multiple dbt resources
+    dbterd run -ad samples/dbtresto -rt model -rt source
+    # select only models in dbt_resto excluding staging
+    dbterd run -ad samples/dbtresto -s model.dbt_resto -ns model.dbt_resto.staging
+    # select only models in schema name mart excluding staging
+    dbterd run -ad samples/dbtresto -s schema:mart -ns model.dbt_resto.staging
+    # select only models in schema full name dbt.mart excluding staging
+    dbterd run -ad samples/dbtresto -s schema:dbt.mart -ns model.dbt_resto.staging
 
-      # other samples
-      dbterd run -ad samples/fivetranlog
-      dbterd run -ad samples/fivetranlog -rt model -rt source
+    # other samples
+    dbterd run -ad samples/fivetranlog
+    dbterd run -ad samples/fivetranlog -rt model -rt source
 
-      dbterd run -ad samples/facebookad
-      dbterd run -ad samples/facebookad -rt model -rt source
+    dbterd run -ad samples/facebookad
+    dbterd run -ad samples/facebookad -rt model -rt source
 
-      dbterd run -ad samples/shopify -s wildcard:*shopify.shopify__*
-      dbterd run -ad samples/shopify -rt model -rt source
+    dbterd run -ad samples/shopify -s wildcard:*shopify.shopify__*
+    dbterd run -ad samples/shopify -rt model -rt source
 
-      dbterd run -ad samples/dbt-constraints -a "test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)"
+    dbterd run -ad samples/dbt-constraints -a "test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)"
 
-      # your own sample without commiting to repo
-      dbterd run -ad samples/local -rt model -rt source
-      ```
+    # your own sample without commiting to repo
+    dbterd run -ad samples/local -rt model -rt source
+    ```
 
-    </details>
+  </details>
 
 - Play with Python API (whole ERD):
 
@@ -106,11 +106,7 @@ dbterd --version
 
 </details>
 
-## Quick DEMO
-
-Check [Quick Demo](https://dbterd.datnguyen.de/latest/nav/guide/targets/generate-dbml.html) out! And, following is the sample result using `dbdocs`:
-
-![screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png](https://raw.githubusercontent.com/datnguye/dbterd/main/assets/images/screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png)
+🏃Check out the [Quick Demo](https://dbterd.datnguyen.de/latest/nav/guide/targets/generate-dbml.html) with DBML!
 
 ## Contributing ✨
 
@@ -123,3 +119,7 @@ Finally, super thanks to our *Contributors*:
 <a href="https://github.com/datnguye/dbterd/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=datnguye/dbterd" />
 </a>
+
+</br>
+
+[![buy me a coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?logo=buy-me-a-coffee&logoColor=white&labelColor=ff813f&style=for-the-badge)](https://www.buymeacoffee.com/datnguye)

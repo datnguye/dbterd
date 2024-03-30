@@ -4,11 +4,9 @@
 
 | Version | Supported          | Until When?        |
 | ------- | ------------------ | ------------------ |
-| 1.9.x   | :white_check_mark: | |
-| 1.8.x   | :white_check_mark: | |
-| 1.7.x   | :warning: | End of Feb 2024 |
-| 1.6.x   | :warning: | End of Jan 2024 |
-| < 1.6   | :x: | End of Life |
+| >=1.13   | :white_check_mark: | |
+| >1.10, <=1.12 | :warning: | End of Jun 2024 |
+| <=1.10   | :x: | End of Support |
 
 ## Reporting a Vulnerability
 

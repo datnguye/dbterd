@@ -14,7 +14,7 @@ def run(manifest: Manifest, catalog: Catalog, **kwargs) -> Tuple[str, str]:
     Returns:
         Tuple(str, str): File name and the D2 content
     """
-    output_file_name = kwargs.get("output_file_name", "output.d2")
+    output_file_name = kwargs.get("output_file_name") or "output.d2"
     return (output_file_name, parse(manifest, catalog, **kwargs))
 
 

@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "dbterd"
 version = "1.0.0"
-description = "CLI to generate ERD Diagram file from dbt artifact files"
+description = "Generate the ERD-as-a-code from dbt artifacts"
 authors = ["Dat Nguyen <datnguyen.it09@gmail.com>"]
 license = "MIT"
 readme = "README.md"
@@ -33,7 +33,8 @@ requests = "^2.31.0"
 dbt-artifacts-parser = "^0"
 
 [tool.poetry.group.dev.dependencies]
-dbt-postgres = "^1.5"
+dbt-core = "^1.7.11"
+dbt-postgres = "^1.7.11"
 pytest = "^6.2.5"
 pytest-sugar = "^0.9.6"
 black = "^22.10.0"

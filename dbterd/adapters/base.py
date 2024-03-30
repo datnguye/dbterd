@@ -54,9 +54,9 @@ class Executor:
 
         select = list(kwargs.get("select")) or []
         exclude = list(kwargs.get("exclude")) or []
-        unsupported, rule = has_unsupported_rule(
-            rules=select.extend(exclude) if exclude else select
-        )
+        select.extend(exclude)
+
+        unsupported, rule = has_unsupported_rule(rules=select)
         if unsupported:
             message = f"Unsupported Selection found: {rule}"
             logger.error(message)

@@ -15,7 +15,7 @@ def run(manifest: Manifest, catalog: Catalog, **kwargs) -> Tuple[str, str]:
     Returns:
         Tuple(str, str): File name and the Mermaid content
     """
-    output_file_name = kwargs.get("output_file_name", "output.md")
+    output_file_name = kwargs.get("output_file_name") or "output.md"
     return (output_file_name, parse(manifest, catalog, **kwargs))
 
 
