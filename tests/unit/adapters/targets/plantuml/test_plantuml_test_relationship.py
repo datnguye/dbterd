@@ -246,7 +246,7 @@ class TestPlantUMLTestRelationship:
                     select=select,
                     exclude=exclude,
                     resource_type=resource_type,
-                    algo="test_relationship"
+                    algo="test_relationship",
                 )
                 print("plantuml ", plantuml.replace(" ", "").replace("\n", ""))
                 print("expected", expected.replace(" ", "").replace("\n", ""))

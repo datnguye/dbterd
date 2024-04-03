@@ -343,7 +343,7 @@ class TestDbmlTestRelationship:
                     select=select,
                     exclude=exclude,
                     resource_type=resource_type,
-                    algo="test_relationship"
+                    algo="test_relationship",
                 )
                 assert dbml.replace(" ", "").replace("\n", "") == str(expected).replace(
                     " ", ""
