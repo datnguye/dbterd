@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dbterd"
-version = "1.0.0"
+version = "0.0.0"
 description = "Generate the ERD-as-a-code from dbt artifacts"
 authors = ["Dat Nguyen <datnguyen.it09@gmail.com>"]
 license = "MIT"

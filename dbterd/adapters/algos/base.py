@@ -490,6 +490,54 @@ def get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
     return get_unique_refs(refs=refs)
 
 
+# def get_relationships_by_contraints(manifest: Manifest, **kwargs) -> List[Ref]:
+#     """Extract relationships from dbt artifacts based on model's configured contraints
+
+#     Args:
+#         manifest (dict): Manifest json
+
+#     Returns:
+#         List[Ref]: List of parsed relationship
+#     """
+#     wfk_nodes = [
+#         (node, constraint)
+#         for node in manifest.nodes
+#         if not node.startswith("test") and node.constraints is not None
+#         for constraint in node.constraints
+#         if constraint.type == "foreign_key"
+#     ]
+
+#     refs = []
+#     for x in wfk_nodes:
+#         to_model_expr = str(x[1].expression).split("(")
+#         to_model_columns_str = to_model_expr[1].strip()[:-1]
+#         to_model_name = to_model_expr[0].split(".")[-1].strip()
+#         find_to_models = [
+#             str(node)
+#             for node in manifest.nodes
+#             if str(node).endswith(f".{to_model_name}")
+#         ]
+#         if find_to_models:
+#             to_model_name = find_to_models[0]
+
+#         refs.append(
+#             Ref(
+#                 name=x[1].name,
+#                 table_map=[
+#                     to_model_name,
+#                     str(x[0]),
+#                 ],
+#                 column_map=[
+#                     to_model_columns_str.replace('"', "").lower(),
+#                     str(",".join(x[1].columns)).replace('"', "").lower(),
+#                 ],
+#                 type="1n",  # cannot add `relationship_type` meta to constraints
+#             )
+#         )
+
+#     return get_unique_refs(refs=refs)
+
+
 def make_up_relationships(
     relationships: List[Ref] = [], tables: List[Table] = []
 ) -> List[Ref]:

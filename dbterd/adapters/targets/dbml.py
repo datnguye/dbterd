@@ -1,7 +1,7 @@
 import json
 from typing import Tuple
 
-from dbterd.adapters.algos import test_relationship
+from dbterd.adapters import adapter
 from dbterd.types import Catalog, Manifest
 
 
@@ -29,7 +29,9 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
     Returns:
         str: DBML content
     """
-    tables, relationships = test_relationship.parse(
+
+    algo_module = adapter.load_algo(name=kwargs["algo"])
+    tables, relationships = algo_module.parse(
         manifest=manifest, catalog=catalog, **kwargs
     )
 
