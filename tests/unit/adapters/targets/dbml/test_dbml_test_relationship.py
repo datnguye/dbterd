@@ -3,7 +3,7 @@ from unittest import mock
 import pytest
 
 from dbterd.adapters.meta import Column, Ref, Table
-from dbterd.adapters.targets.dbml import dbml_test_relationship as engine
+from dbterd.adapters.targets import dbml as engine
 
 
 class TestDbmlTestRelationship:
@@ -343,6 +343,7 @@ class TestDbmlTestRelationship:
                     select=select,
                     exclude=exclude,
                     resource_type=resource_type,
+                    algo="test_relationship",
                 )
                 assert dbml.replace(" ", "").replace("\n", "") == str(expected).replace(
                     " ", ""

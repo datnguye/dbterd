@@ -3,7 +3,7 @@ from unittest import mock
 import pytest
 
 from dbterd.adapters.meta import Column, Ref, Table
-from dbterd.adapters.targets.graphviz import graphviz_test_relationship as engine
+from dbterd.adapters.targets import graphviz as engine
 
 
 class TestGraphVizTestRelationship:
@@ -364,6 +364,7 @@ class TestGraphVizTestRelationship:
                     select=select,
                     exclude=exclude,
                     resource_type=resource_type,
+                    algo="test_relationship",
                 )
                 print("graphviz ", graphviz.replace(" ", "").replace("\n", ""))
                 print("expected", expected.replace(" ", "").replace("\n", ""))

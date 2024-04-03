@@ -173,14 +173,7 @@ class Executor:
             func: Operation function
         """
         target = adapter.load_target(name=kwargs["target"])  # import {target}
-        run_operation_dispatcher = getattr(target, "run_operation_dispatcher")
-        operation_default = getattr(target, "run_operation_default")
-        operation = run_operation_dispatcher.get(
-            f"{kwargs['target']}_{kwargs['algo'].split(':')[0]}",
-            operation_default,
-        )
-
-        return operation
+        return getattr(target, "run")
 
     def __save_result(self, path, data):
         """Save ERD data to file

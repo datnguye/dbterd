@@ -64,10 +64,11 @@ class TestRunner:
                     "dbterd.adapters.base.Executor._Executor__save_result",
                     return_value=None,
                 ) as mock_save:
-                    dbterd.invoke(["run", "--algo", invalid_strategy])
+                    with pytest.raises(Exception):
+                        dbterd.invoke(["run", "--algo", invalid_strategy])
                     mock_read_m.assert_called_once()
                     mock_read_c.assert_called_once()
-                    mock_save.assert_called_once()
+                    mock_save.call_count == 0
 
     @pytest.mark.parametrize(
         "target, output",
@@ -88,7 +89,7 @@ class TestRunner:
                 return_value=None,
             ) as mock_read_c:
                 with mock.patch(
-                    f"dbterd.adapters.targets.{target}.{target}_test_relationship.parse",
+                    f"dbterd.adapters.targets.{target}.parse",
                     return_value="--irrelevant--",
                 ) as mock_engine_parse:
                     with mock.patch("builtins.open", mock.mock_open()) as mock_open_w:
@@ -126,7 +127,7 @@ class TestRunner:
                 return_value=None,
             ) as mock_read_c:
                 with mock.patch(
-                    f"dbterd.adapters.targets.{target}.{target}_test_relationship.parse",
+                    f"dbterd.adapters.targets.{target}.parse",
                     return_value="--irrelevant--",
                 ) as mock_engine_parse:
                     with mock.patch(

@@ -3,7 +3,7 @@ from unittest import mock
 import pytest
 
 from dbterd.adapters.meta import Column, Ref, Table
-from dbterd.adapters.targets.mermaid import mermaid_test_relationship as engine
+from dbterd.adapters.targets import mermaid as engine
 
 
 class TestMermaidTestRelationship:
@@ -325,6 +325,7 @@ class TestMermaidTestRelationship:
                     exclude=exclude,
                     omit_columns=omit_columns,
                     resource_type=resource_type,
+                    algo="test_relationship",
                 )
                 print("mermaid ", mermaid.replace(" ", "").replace("\n", ""))
                 print("expected", expected.replace(" ", "").replace("\n", ""))

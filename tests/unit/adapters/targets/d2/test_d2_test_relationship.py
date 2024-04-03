@@ -3,7 +3,7 @@ from unittest import mock
 import pytest
 
 from dbterd.adapters.meta import Column, Ref, Table
-from dbterd.adapters.targets.d2 import d2_test_relationship as engine
+from dbterd.adapters.targets import d2 as engine
 
 
 class TestD2TestRelationship:
@@ -248,6 +248,7 @@ class TestD2TestRelationship:
                     select=select,
                     exclude=exclude,
                     resource_type=resource_type,
+                    algo="test_relationship",
                 )
                 print("mermaid ", mermaid.replace(" ", "").replace("\n", ""))
                 print("expected", expected.replace(" ", "").replace("\n", ""))
