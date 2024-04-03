@@ -45,9 +45,11 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
                         '  "{0}" "{1}"{2}',
                         x.name,
                         x.data_type,
-                        str.format(" [note: {0}]", json.dumps(x.description))
-                        if x.description
-                        else "",
+                        (
+                            str.format(" [note: {0}]", json.dumps(x.description))
+                            if x.description
+                            else ""
+                        ),
                     )
                     for x in table.columns
                 ]
