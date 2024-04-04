@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import List
 
 
 def default_artifact_path() -> str:
@@ -13,5 +14,13 @@ def default_target() -> str:
     return "dbml"
 
 
-def deafult_algo() -> str:
+def default_algo() -> str:
     return "test_relationship"
+
+
+def default_resource_types() -> List[str]:
+    return ["model"]
+
+
+def default_entity_name_format() -> str:
+    return "resource.package.model"

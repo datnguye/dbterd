@@ -173,6 +173,23 @@ Configure the path to directory containing the output diagram file.
     dbterd run --output "./target"
     ```
 
+### dbterd run --output-file-name (-ofn)
+
+Configure the output file name
+> Default to `output.{modulename}` which is defined in the target module
+
+**Examples:**
+=== "CLI"
+
+    ```bash
+    dbterd run -ofn "erd.dbml"
+    ```
+=== "CLI (long style)"
+
+    ```bash
+    dbterd run --output-file-name "erd.dbml"
+    ```
+
 ### dbterd run --target (-t)
 
 > Default to `dbml`

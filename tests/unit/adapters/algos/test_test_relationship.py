@@ -6,6 +6,7 @@ import click
 import pytest
 
 from dbterd.adapters.algos import base as base_algo
+from dbterd.adapters.algos import test_relationship
 from dbterd.adapters.meta import Column, Ref, Table
 
 
@@ -141,6 +142,14 @@ class DummyManifestRel:
             depends_on=ManifestNodeDependsOn(
                 nodes=["model.dbt_resto.table-r1", "model.dbt_resto.table-r2"]
             ),
+        ),
+        "test.dbt_resto.relationships_table1_recursive": ManifestNode(
+            test_metadata=ManifestNodeTestMetaData(
+                kwargs={"column_name": "f1", "field": "f2", "to": "ref('table1')"}
+            ),
+            meta={},
+            columns={},
+            depends_on=ManifestNodeDependsOn(nodes=["model.dbt_resto.table1"]),
         ),
     }
 
@@ -352,6 +361,11 @@ class TestAlgoTestRelationship:
                             "model.dbt_resto.table-r2",
                             "model.dbt_resto.table-r1",
                         ],
+                        column_map=["f2", "f1"],
+                    ),
+                    Ref(
+                        name="test.dbt_resto.relationships_table1_recursive",
+                        table_map=["model.dbt_resto.table1", "model.dbt_resto.table1"],
                         column_map=["f2", "f1"],
                     ),
                 ],
@@ -569,6 +583,30 @@ class TestAlgoTestRelationship:
                     description=None,
                 ),
             ),
+            (
+                {
+                    "node": {
+                        "uniqueId": "model.package.name1",
+                        "database": "db1",
+                        "schema": "sc1",
+                        "name": "name1",
+                        "catalog": None,
+                    }
+                },
+                [],
+                dict(entity_name_format="resource.package.model"),
+                Table(
+                    name="model.package.name1",
+                    node_name="model.package.name1",
+                    database="db1",
+                    schema="sc1",
+                    columns=[
+                        Column(name="unknown", data_type="unknown", description=""),
+                    ],
+                    raw_sql=None,
+                    description=None,
+                ),
+            ),
         ],
     )
     def test_get_table_from_metadata(self, model_metadata, exposures, kwargs, expected):
@@ -748,6 +786,41 @@ class TestAlgoTestRelationship:
                     )
                 ],
             ),
+            (
+                [
+                    {
+                        "tests": {
+                            "edges": [
+                                {
+                                    "node": {
+                                        "uniqueId": "test.relationship_1",
+                                        "meta": {},
+                                        "testMetadata": {
+                                            "kwargs": {
+                                                "columnName": "coly",
+                                                "to": 'ref("x")',
+                                                "field": "colx",
+                                            }
+                                        },
+                                        "parents": [
+                                            {"uniqueId": "model.p.x"},
+                                        ],
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ],
+                dict(algo="test_relationship", resource_type=["model"]),
+                [
+                    Ref(
+                        name="test.relationship_1",
+                        table_map=["model.p.x", "model.p.x"],
+                        column_map=["colx", "coly"],
+                        type="n1",
+                    )
+                ],
+            ),
         ],
     )
     def test_get_relationships_from_metadata(self, data, kwargs, expected):
@@ -776,6 +849,8 @@ class TestAlgoTestRelationship:
                                         },
                                         "parents": [
                                             {"uniqueId": "model.p.x"},
+                                            {"uniqueId": "model.p.y"},
+                                            {"uniqueId": "model.p.z"},
                                         ],
                                     }
                                 }
@@ -790,3 +865,21 @@ class TestAlgoTestRelationship:
     def test_get_relationships_from_metadata_error(self, data, kwargs):
         with pytest.raises(click.BadParameter):
             base_algo.get_relationships_from_metadata(data=data, **kwargs)
+
+    def test_find_related_nodes_by_id_error(self):
+        with pytest.raises(click.BadParameter):
+            test_relationship.find_related_nodes_by_id(
+                manifest="irrelevant", type="metadata", node_unique_id="irrelevant"
+            )
+
+    def test_find_related_nodes_by_id(self):
+        assert sorted(["model.dbt_resto.table1", "model.dbt_resto.table2"]) == sorted(
+            test_relationship.find_related_nodes_by_id(
+                manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.table2"
+            )
+        )
+        assert [
+            "model.dbt_resto.not-exists"
+        ] == test_relationship.find_related_nodes_by_id(
+            manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.not-exists"
+        )

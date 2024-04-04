@@ -168,14 +168,16 @@ def get_table_from_metadata(model_metadata, exposures=[], **kwargs) -> Table:
     )
 
     # columns
-    for column in model_metadata.get("node", {}).get("catalog", {}).get("columns", []):
-        table.columns.append(
-            Column(
-                name=column.get("name", "").lower(),
-                data_type=column.get("type", "").lower(),
-                description=column.get("description", ""),
+    table_catalog = model_metadata.get("node", {}).get("catalog", {})
+    if table_catalog:
+        for column in table_catalog.get("columns", []):
+            table.columns.append(
+                Column(
+                    name=column.get("name", "").lower(),
+                    data_type=column.get("type", "").lower(),
+                    description=column.get("description", ""),
+                )
             )
-        )
 
     if not table.columns:
         table.columns.append(Column())
@@ -210,9 +212,11 @@ def get_table(
                 table=(
                     manifest_node.identifier.lower()
                     if hasattr(manifest_node, "identifier")
-                    else manifest_node.alias.lower()
-                    if hasattr(manifest_node, "alias")
-                    else node_name
+                    else (
+                        manifest_node.alias.lower()
+                        if hasattr(manifest_node, "alias")
+                        else node_name
+                    )
                 ),
             ),
         ),
@@ -353,6 +357,30 @@ def get_table_name(format: str, **kwargs) -> str:
     return ".".join([kwargs.get(x.lower()) or "KEYNOTFOUND" for x in format.split(".")])
 
 
+def get_test_nodes_by_rule_name(manifest: Manifest, rule_name: str) -> List:
+    """Get manifest nodes given the algo rule name.
+
+    Default algo rule name is `relationship`,
+    see `get_algo_rule` function for more details.
+
+    Args:
+        rule_name (str): Rule name
+        manifest (Manifest): Manifest data
+
+    Returns:
+        List: List of manifest nodes
+    """
+    return [
+        x
+        for x in manifest.nodes
+        if (
+            x.startswith("test")
+            and rule_name in x.lower()
+            and manifest.nodes[x].meta.get(TEST_META_IGNORE_IN_ERD, "0") == "0"
+        )
+    ]
+
+
 def get_relationships_from_metadata(data=[], **kwargs) -> List[Ref]:
     """Extract relationships from Metadata result list on test relationship
 
@@ -454,15 +482,90 @@ def get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
                 manifest.nodes[x].meta.get(TEST_META_RELATIONSHIP_TYPE, "")
             ),
         )
-        for x in manifest.nodes
-        if (
-            x.startswith("test")
-            and rule.get("name").lower() in x.lower()
-            and manifest.nodes[x].meta.get(TEST_META_IGNORE_IN_ERD, "0") == "0"
+        for x in get_test_nodes_by_rule_name(
+            manifest=manifest, rule_name=rule.get("name").lower()
         )
     ]
 
     return get_unique_refs(refs=refs)
+
+
+# def get_relationships_by_contraints(manifest: Manifest, **kwargs) -> List[Ref]:
+#     """Extract relationships from dbt artifacts based on model's configured contraints
+
+#     Args:
+#         manifest (dict): Manifest json
+
+#     Returns:
+#         List[Ref]: List of parsed relationship
+#     """
+#     wfk_nodes = [
+#         (node, constraint)
+#         for node in manifest.nodes
+#         if not node.startswith("test") and node.constraints is not None
+#         for constraint in node.constraints
+#         if constraint.type == "foreign_key"
+#     ]
+
+#     refs = []
+#     for x in wfk_nodes:
+#         to_model_expr = str(x[1].expression).split("(")
+#         to_model_columns_str = to_model_expr[1].strip()[:-1]
+#         to_model_name = to_model_expr[0].split(".")[-1].strip()
+#         find_to_models = [
+#             str(node)
+#             for node in manifest.nodes
+#             if str(node).endswith(f".{to_model_name}")
+#         ]
+#         if find_to_models:
+#             to_model_name = find_to_models[0]
+
+#         refs.append(
+#             Ref(
+#                 name=x[1].name,
+#                 table_map=[
+#                     to_model_name,
+#                     str(x[0]),
+#                 ],
+#                 column_map=[
+#                     to_model_columns_str.replace('"', "").lower(),
+#                     str(",".join(x[1].columns)).replace('"', "").lower(),
+#                 ],
+#                 type="1n",  # cannot add `relationship_type` meta to constraints
+#             )
+#         )
+
+#     return get_unique_refs(refs=refs)
+
+
+def make_up_relationships(
+    relationships: List[Ref] = [], tables: List[Table] = []
+) -> List[Ref]:
+    """Filter Refs given by the parsed Tables & applied the entity name format
+
+    Args:
+        relationships (List[Ref], optional): Parsed relationships. Defaults to [].
+        tables (List[Table], optional): Parsed tables. Defaults to [].
+
+    Returns:
+        List[Ref]: Cooked relationships
+    """
+    node_names = [x.node_name for x in tables]
+    relationships = [
+        Ref(
+            name=x.name,
+            table_map=[
+                [t for t in tables if t.node_name == x.table_map[0]][0].name,
+                [t for t in tables if t.node_name == x.table_map[1]][0].name,
+            ],
+            column_map=x.column_map,
+            type=x.type,
+        )
+        for x in relationships
+        if x.table_map[0] in node_names and x.table_map[1] in node_names
+    ]
+
+    return relationships
 
 
 def get_unique_refs(refs: list[Ref] = []) -> list[Ref]:
@@ -545,10 +648,13 @@ def get_table_map_from_metadata(test_node, **kwargs) -> List[str]:
     if len(test_parents) == 0:
         return ["", ""]  # return dummies - need to be excluded manually
 
-    if len(test_parents) != 2:
+    if len(test_parents) == 1:
+        return [test_parents[0], test_parents[0]]  # self FK
+
+    if len(test_parents) > 2:
         logger.debug(f"Collected test parents: {test_parents}")
         raise click.BadParameter(
-            "Relationship test unexpectedly doesn't have 2 parents"
+            "Relationship test unexpectedly doesn't have >2 parents"
         )
 
     test_metadata_to = (
@@ -584,6 +690,12 @@ def get_table_map(test_node, **kwargs) -> List[str]:
         list: [to model, from model]
     """
     map = test_node.depends_on.nodes or []
+
+    # Recursive relation case
+    # `from` and `to` will be identical and `test_node.depends_on.nodes` will contain only one element
+    if len(map) == 1:
+        return [map[0], map[0]]
+
     rule = get_algo_rule(**kwargs)
     to_model = str(test_node.test_metadata.kwargs.get(rule.get("t_to", "to"), {}))
     if f'("{map[1].split(".")[-1]}")'.lower() in to_model.replace("'", '"').lower():

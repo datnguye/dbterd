@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from dbterd.adapters.algos import test_relationship
+from dbterd.adapters import adapter
 from dbterd.types import Catalog, Manifest
 
 
@@ -14,7 +14,8 @@ def run(manifest: Manifest, catalog: Catalog, **kwargs) -> Tuple[str, str]:
     Returns:
         Tuple(str, str): File name and the PlantUML content
     """
-    return ("output.plantuml", parse(manifest, catalog, **kwargs))
+    output_file_name = kwargs.get("output_file_name") or "output.plantuml"
+    return (output_file_name, parse(manifest, catalog, **kwargs))
 
 
 def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
@@ -27,7 +28,8 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
     Returns:
         str: PlantUML content
     """
-    tables, relationships = test_relationship.parse(
+    algo_module = adapter.load_algo(name=kwargs["algo"])
+    tables, relationships = algo_module.parse(
         manifest=manifest, catalog=catalog, **kwargs
     )
 

@@ -35,7 +35,7 @@ def common_params(func):
         "--resource-type",
         "-rt",
         help="Specified dbt resource type(seed, model, source, snapshot),default:model, use examples, -rt model -rt source",
-        default=["model"],
+        default=default.default_resource_types(),
         multiple=True,
         type=click.STRING,
     )
@@ -43,7 +43,7 @@ def common_params(func):
         "--algo",
         "-a",
         help="Specified algorithm in the way to detect diagram connectors",
-        default=default.deafult_algo(),
+        default=default.default_algo(),
         show_default=True,
         type=click.STRING,
     )
@@ -51,7 +51,7 @@ def common_params(func):
         "--entity-name-format",
         "-enf",
         help="Specified the format of the entity node's name",
-        default="resource.package.model",
+        default=default.default_entity_name_format(),
         show_default=True,
         type=click.STRING,
     )
@@ -60,6 +60,14 @@ def common_params(func):
         "-o",
         help="Output the result file. Default to the cwd/target",
         default=default.default_output_path(),
+        show_default=True,
+        type=click.STRING,
+    )
+    @click.option(
+        "--output-file-name",
+        "-ofn",
+        help="Output the result file name. Default is defined in the target module",
+        default=None,
         show_default=True,
         type=click.STRING,
     )

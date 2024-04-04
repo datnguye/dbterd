@@ -3,7 +3,7 @@ from unittest import mock
 import pytest
 
 from dbterd.adapters.meta import Column, Ref, Table
-from dbterd.adapters.targets.plantuml import plantuml_test_relationship as engine
+from dbterd.adapters.targets import plantuml as engine
 
 
 class TestPlantUMLTestRelationship:
@@ -246,6 +246,7 @@ class TestPlantUMLTestRelationship:
                     select=select,
                     exclude=exclude,
                     resource_type=resource_type,
+                    algo="test_relationship",
                 )
                 print("plantuml ", plantuml.replace(" ", "").replace("\n", ""))
                 print("expected", expected.replace(" ", "").replace("\n", ""))

@@ -22,8 +22,15 @@ jobs:
           key: ${{ github.ref }}
           path: .cache
 
+      - uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: 1.6.1
+
       - name: Install dependencies
-        run: pip install mkdocs mkdocs-material mkdocs-minify-plugin mike
+        run: |
+          poetry config installer.max-workers 1
+          poetry config virtualenvs.in-project true
+          poetry install
 
       - name: Configure Git user
         run: |
@@ -32,4 +39,4 @@ jobs:
 
       - name: Publish site
         run: |
-          mike deploy --push --update-aliases ${{ inputs.version }} latest
+          poetry run mike deploy --push --update-aliases ${{ inputs.version }} latest
