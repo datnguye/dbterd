@@ -32,50 +32,100 @@ dbterd --version
 
 ## Quick examine with existing samples
 
-<details>
-  <summary>Click me</summary>
+- Play with CLIs:
 
-  ```bash
-  # select all models in dbt_resto
-  dbterd run -ad samples/dbtresto
-  # select all models in dbt_resto, Select multiple dbt resources
-  dbterd run -ad samples/dbtresto -rt model -rt source
-  # select only models in dbt_resto excluding staging
-  dbterd run -ad samples/dbtresto -s model.dbt_resto -ns model.dbt_resto.staging
-  # select only models in schema name mart excluding staging
-  dbterd run -ad samples/dbtresto -s schema:mart -ns model.dbt_resto.staging
-  # select only models in schema full name dbt.mart excluding staging
-  dbterd run -ad samples/dbtresto -s schema:dbt.mart -ns model.dbt_resto.staging
+  <details>
+    <summary>Click me</summary>
 
-  # other samples
-  dbterd run -ad samples/fivetranlog
-  dbterd run -ad samples/fivetranlog -rt model -rt source
+    ```bash
+    # select all models in dbt_resto
+    dbterd run -ad samples/dbtresto
+    # select all models in dbt_resto, Select multiple dbt resources
+    dbterd run -ad samples/dbtresto -rt model -rt source
+    # select only models in dbt_resto excluding staging
+    dbterd run -ad samples/dbtresto -s model.dbt_resto -ns model.dbt_resto.staging
+    # select only models in schema name mart excluding staging
+    dbterd run -ad samples/dbtresto -s schema:mart -ns model.dbt_resto.staging
+    # select only models in schema full name dbt.mart excluding staging
+    dbterd run -ad samples/dbtresto -s schema:dbt.mart -ns model.dbt_resto.staging
 
-  dbterd run -ad samples/facebookad
-  dbterd run -ad samples/facebookad -rt model -rt source
+    # other samples
+    dbterd run -ad samples/fivetranlog
+    dbterd run -ad samples/fivetranlog -rt model -rt source
 
-  dbterd run -ad samples/shopify -s wildcard:*shopify.shopify__*
-  dbterd run -ad samples/shopify -rt model -rt source
+    dbterd run -ad samples/facebookad
+    dbterd run -ad samples/facebookad -rt model -rt source
 
-  dbterd run -ad samples/dbt-constraints -a "test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)"
+    dbterd run -ad samples/shopify -s wildcard:*shopify.shopify__*
+    dbterd run -ad samples/shopify -rt model -rt source
 
-  # your own sample without commiting to repo
-  dbterd run -ad samples/local -rt model -rt source
-  ```
+    dbterd run -ad samples/dbt-constraints -a "test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)"
+
+    # your own sample without commiting to repo
+    dbterd run -ad samples/local -rt model -rt source
+    ```
+
+  </details>
+
+- Play with Python API (whole ERD):
+
+    ```python
+    from dbterd.api import DbtErd
+
+    erd = DbtErd().get_erd()
+    print("erd (dbml):", erd)
+
+    erd = DbtErd(target="mermaid").get_erd()
+    print("erd (mermaid):", erd)
+    ```
+
+- Play with Python API (1 model's ERD):
+
+    ```python
+    from dbterd.api import DbtErd
+
+    dim_prize_erd = DbtErd(target="mermaid").get_model_erd(
+        node_unique_id="model.dbt_resto.dim_prize"
+    )
+    print("erd of dim_prize (mermaid):", dim_prize_erd)
+    ```
+
+    Here is the output:
+
+    ```mermaid
+    erDiagram
+      "MODEL.DBT_RESTO.DIM_PRIZE" {
+        varchar prize_key
+        nvarchar prize_name
+        int prize_order
+      }
+      "MODEL.DBT_RESTO.FACT_RESULT" {
+        varchar fact_result_key
+        varchar box_key
+        varchar prize_key
+        date date_key
+        int no_of_won
+        float prize_value
+        float prize_paid
+        int is_prize_taken
+      }
+      "MODEL.DBT_RESTO.FACT_RESULT" }|--|| "MODEL.DBT_RESTO.DIM_PRIZE": prize_key
+    ```
 
 </details>
 
-## Quick DEMO
-
-Check [Quick Demo](https://dbterd.datnguyen.de/latest/nav/guide/targets/generate-dbml.html) out! And, following is the sample result using `dbdocs`:
-
-![screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png](https://raw.githubusercontent.com/datnguye/dbterd/main/assets/images/screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png)
+🏃Check out the [Quick Demo](./nav/guide/targets/generate-dbml.md) with DBML!
 
 ## Contributing ✨
 
 If you've ever wanted to contribute to this tool, and a great cause, now is your chance!
 
-See the contributing docs [CONTRIBUTING](https://dbterd.datnguyen.de/latest/nav/development/contributing-guide.html) for more information.
+See the contributing docs [CONTRIBUTING](./nav/development/contributing-guide.md) for more information.
+
+If you've found this tool to be very helpful, please consider giving the repository a star, sharing it on social media, or even writing a blog post about it 💌
+
+[![dbterd stars](https://img.shields.io/github/stars/datnguye/dbterd.svg?logo=github&style=for-the-badge&label=Star%20this%20repo)](https://github.com/datnguye/dbterd)
+[![buy me a coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?logo=buy-me-a-coffee&logoColor=white&labelColor=ff813f&style=for-the-badge)](https://www.buymeacoffee.com/datnguye)
 
 Finally, super thanks to our *Contributors*:
 
