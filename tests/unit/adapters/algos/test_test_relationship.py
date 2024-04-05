@@ -866,11 +866,10 @@ class TestAlgoTestRelationship:
         with pytest.raises(click.BadParameter):
             base_algo.get_relationships_from_metadata(data=data, **kwargs)
 
-    def test_find_related_nodes_by_id_error(self):
-        with pytest.raises(click.BadParameter):
-            test_relationship.find_related_nodes_by_id(
-                manifest="irrelevant", type="metadata", node_unique_id="irrelevant"
-            )
+    def test_find_related_nodes_by_id_not_supported_type(self):
+        assert ["model.p.abc"] == test_relationship.find_related_nodes_by_id(
+            manifest="irrelevant", type="metadata", node_unique_id="model.p.abc"
+        )
 
     def test_find_related_nodes_by_id(self):
         assert sorted(["model.dbt_resto.table1", "model.dbt_resto.table2"]) == sorted(
