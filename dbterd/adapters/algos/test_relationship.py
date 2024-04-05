@@ -1,7 +1,5 @@
 from typing import List, Tuple, Union
 
-import click
-
 from dbterd.adapters.algos import base
 from dbterd.adapters.filter import is_selected_table
 from dbterd.adapters.meta import Ref, Table
@@ -121,14 +119,15 @@ def find_related_nodes_by_id(
     Returns:
         List[str]: Manifest nodes' unique ID
     """
-    if type is not None:
-        raise click.BadParameter("Not supported manifest type")
+    found_nodes = [node_unique_id]
+    if type == "metadata":
+        return found_nodes  # not supported yet, returned input only
 
     rule = base.get_algo_rule(**kwargs)
     test_nodes = base.get_test_nodes_by_rule_name(
         manifest=manifest, rule_name=rule.get("name").lower()
     )
-    found_nodes = [node_unique_id]
+
     for test_node in test_nodes:
         nodes = manifest.nodes[test_node].depends_on.nodes or []
         if node_unique_id in nodes:
