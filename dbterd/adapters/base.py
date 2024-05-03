@@ -55,7 +55,9 @@ class Executor:
         select = list(kwargs.get("select")) or []
         exclude = list(kwargs.get("exclude")) or []
 
-        self.__check_if_any_unsupported_selection(select, exclude)
+        if not kwargs.get("dbt"):
+            self.__check_if_any_unsupported_selection(select, exclude)
+
         if command == "run":
             if kwargs.get("dbt"):
                 logger.info(f"Using dbt project dir at: {dbt_project_dir}")
@@ -65,6 +67,10 @@ class Executor:
                 )
                 select = self.__get_selection(**kwargs)
                 exclude = []
+                if not select:
+                    select = [
+                        "exact:none"
+                    ]  # 'cause [] is all, so let's select nothing here
 
                 if kwargs.get("dbt_auto_artifacts"):
                     self.dbt.get_artifacts_for_erd()
@@ -84,6 +90,7 @@ class Executor:
         self, select: list = [], exclude: list = []
     ):
         """Throw an error if detected any supported selections
+        which are built-in in dbterd (not dbt)
 
         Args:
             select (list, optional): Select rules. Defaults to [].
