@@ -23,7 +23,7 @@ def get_tables_from_metadata(data=[], **kwargs) -> List[Table]:
         List[Table]: All parsed tables
     """
     tables = []
-    table_exposures = get_node_exposures_from_metadata(data=data)
+    table_exposures = get_node_exposures_from_metadata(data=data, **kwargs)
     # Model
     if "model" in kwargs.get("resource_type", []):
         for data_item in data:

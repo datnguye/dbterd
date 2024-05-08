@@ -505,6 +505,103 @@ class TestAlgoTestRelationship:
         )
 
     @pytest.mark.parametrize(
+        "data, kwargs, expected",
+        [
+            (
+                [
+                    {
+                        "models": {
+                            "edges": [
+                                {
+                                    "node": {
+                                        "uniqueId": "model.package.name1",
+                                        "database": "db1",
+                                        "schema": "sc1",
+                                        "name": "name1",
+                                        "catalog": {},
+                                    }
+                                },
+                            ]
+                        }
+                    }
+                ],
+                dict(
+                    entity_name_format="resource.package.model", resource_type=["model"]
+                ),
+                [
+                    Table(
+                        name="model.package.name1",
+                        database="db1",
+                        schema="sc1",
+                        columns=[
+                            Column(name="unknown", data_type="unknown", description="")
+                        ],
+                        raw_sql=None,
+                        resource_type="model",
+                        exposures=[],
+                        node_name="model.package.name1",
+                        description=None,
+                    ),
+                ],
+            ),
+            (
+                [
+                    {
+                        "models": {
+                            "edges": [
+                                {
+                                    "node": {
+                                        "uniqueId": "model.package.name1",
+                                        "database": "db1",
+                                        "schema": "sc1",
+                                        "name": "name1",
+                                        "catalog": {},
+                                    }
+                                },
+                            ]
+                        },
+                        "exposures": {
+                            "edges": [
+                                {
+                                    "node": {
+                                        "uniqueId": "exposure.package.e1",
+                                        "name": "e1",
+                                        "parents": [
+                                            {"uniqueId": "model.package.name1"}
+                                        ],
+                                    }
+                                },
+                            ]
+                        },
+                    }
+                ],
+                dict(
+                    entity_name_format="resource.package.model",
+                    resource_type=["model"],
+                    select=["exposure:e1"],
+                ),
+                [
+                    Table(
+                        name="model.package.name1",
+                        database="db1",
+                        schema="sc1",
+                        columns=[
+                            Column(name="unknown", data_type="unknown", description="")
+                        ],
+                        raw_sql=None,
+                        resource_type="model",
+                        exposures=["e1"],
+                        node_name="model.package.name1",
+                        description=None,
+                    ),
+                ],
+            ),
+        ],
+    )
+    def test_get_tables_from_metadata(self, data, kwargs, expected):
+        assert expected == base_algo.get_tables_from_metadata(data=data, **kwargs)
+
+    @pytest.mark.parametrize(
         "model_metadata, exposures, kwargs, expected",
         [
             (
