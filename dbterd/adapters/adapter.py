@@ -33,9 +33,10 @@ def load_algo(name: str):
     Returns:
         ModuleType: Imported module
     """
+    module_name = name.split(":")[0]
     try:
-        return import_module(name=f".{name}", package="dbterd.adapters.algos")
+        return import_module(name=f".{module_name}", package="dbterd.adapters.algos")
     except ModuleNotFoundError as exc:
-        if exc.name == "dbterd.adapters.algos." + name:
-            raise Exception(f"Could not find adapter algo {name}!")
+        if exc.name == "dbterd.adapters.algos." + module_name:
+            raise Exception(f"Could not find adapter algo {module_name}!")
         raise  # pragma: no cover
