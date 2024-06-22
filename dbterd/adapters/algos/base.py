@@ -99,7 +99,7 @@ def get_tables(manifest: Manifest, catalog: Catalog, **kwargs) -> List[Table]:
 def enrich_tables_from_relationships(
     tables: List[Table], relationships: List[Ref]
 ) -> List[Table]:
-    """Fullfill columns in Table due to `select *`
+    """Fulfill columns in Table due to `select *`
 
     Args:
         tables (List[Table]): List of Tables
@@ -301,7 +301,7 @@ def get_node_exposures_from_metadata(data=[], **kwargs):
         data (list, optional): Metadata result list. Defaults to [].
 
     Returns:
-        list: List of maping dict {table_name:..., exposure_name=...}
+        list: List of mapping dict {table_name:..., exposure_name=...}
     """
     exposures = []
     for data_item in data:
@@ -328,7 +328,7 @@ def get_node_exposures(manifest: Manifest) -> List[Dict[str, str]]:
         manifest (dict): dbt manifest json
 
     Returns:
-        list: List of maping dict {table_name:..., exposure_name=...}
+        list: List of mapping dict {table_name:..., exposure_name=...}
     """
     exposures = []
 
@@ -490,8 +490,8 @@ def get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
     return get_unique_refs(refs=refs)
 
 
-# def get_relationships_by_contraints(manifest: Manifest, **kwargs) -> List[Ref]:
-#     """Extract relationships from dbt artifacts based on model's configured contraints
+# def get_relationships_by_constraints(manifest: Manifest, **kwargs) -> List[Ref]:
+#     """Extract relationships from dbt artifacts based on model's configured constraints
 
 #     Args:
 #         manifest (dict): Manifest json

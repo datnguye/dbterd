@@ -7,7 +7,7 @@ class GraphQLHelper:
     """GraphQL Helper class"""
 
     def __init__(self, **kwargs) -> None:
-        """Initilize the required inputs:
+        """Initialize the required inputs:
         - Host URL
         - Bearer Token
         """
@@ -34,7 +34,7 @@ class GraphQLHelper:
             query (str): query string
 
         Returns:
-            dict: Query data responsed. None if any exceptions
+            dict: Query data responses. None if any exceptions
         """
         try:
             logger.debug(

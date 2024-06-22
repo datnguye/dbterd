@@ -14,7 +14,7 @@
 - Paste the PlantUML content generated as above
 - Wait for a second and get the URL
 
-### 3. Embeded the PlantUML URL into Markdown
+### 3. Embedded the PlantUML URL into Markdown
 
 ```markdown
 ![](https://www.plantuml.com/plantuml/dpng/{your-hash})

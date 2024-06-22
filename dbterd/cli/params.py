@@ -117,7 +117,7 @@ def run_params(func):
     )
     @click.option(
         "--dbt",
-        help="Flag to indicate the Selecton to follow dbt's one leveraging Programmatic Invocation",
+        help="Flag to indicate the Selection to follow dbt's one leveraging Programmatic Invocation",
         is_flag=True,
         default=False,
         show_default=True,

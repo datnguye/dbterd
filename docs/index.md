@@ -61,7 +61,7 @@ dbterd --version
 
     dbterd run -ad samples/dbt-constraints -a "test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)"
 
-    # your own sample without commiting to repo
+    # your own sample without committing to repo
     dbterd run -ad samples/local -rt model -rt source
     ```
 

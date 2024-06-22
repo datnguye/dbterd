@@ -13,13 +13,13 @@ __version__ = importlib.metadata.version("dbterd")
 
 # Programmatic invocation
 class dbterdRunner:
-    """Support runner for the programatic call"""
+    """Support runner for the programmatic call"""
 
     def __init__(self) -> None:
         pass
 
     def invoke(self, args: List[str]):
-        """Invoke a command of dbterd programatically
+        """Invoke a command of dbterd programmatically
 
         Args:
             args (List[str]): dbterd arguments
@@ -61,7 +61,7 @@ def dbterd(ctx, **kwargs):
 def run(ctx, **kwargs):
     """
     Generate ERD file from reading dbt artifact files,
-    optionally downloading from Administrative API (dbt Cloud) befor hands
+    optionally downloading from Administrative API (dbt Cloud) before hands
     """
     Executor(ctx).run(**kwargs)
 

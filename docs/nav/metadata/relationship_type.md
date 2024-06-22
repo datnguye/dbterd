@@ -21,7 +21,7 @@ Default value: `many-to-one` if the meta config is not specified
 
 List of accepted values:
 
-| Relationship Type | Programatic Symbol |
+| Relationship Type | Programmatic Symbol |
 |--------|--------|
 | one-to-many | 1n |
 | zero-to-many | 0n |

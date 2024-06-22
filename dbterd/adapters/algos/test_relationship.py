@@ -87,7 +87,7 @@ def parse(
         relationships=relationships, tables=tables
     )
 
-    # Fullfill columns in Tables (due to `select *`)
+    # Fulfill columns in Tables (due to `select *`)
     tables = base.enrich_tables_from_relationships(
         tables=tables, relationships=relationships
     )
