@@ -56,6 +56,13 @@ def common_params(func):
         type=click.STRING,
     )
     @click.option(
+        "--omit-entity-name-quotes",
+        help="Flag to omit double quotes in the entity name. Currently only dbml is supported",
+        is_flag=True,
+        default=False,
+        show_default=True,
+    )
+    @click.option(
         "--output",
         "-o",
         help="Output the result file. Default to the cwd/target",

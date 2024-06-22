@@ -404,6 +404,33 @@ Currently, it supports the following keys in the format:
     dbterd run --entity-name-format table # with table name only
     ```
 
+### dbterd run --omit-entity-name-quotes
+
+Flag to omit the double quotes in the generated entity name. Currently only `dbml` is supported.
+
+> Default to `False`
+
+Enabled it to allow `dbdocs` to recognize the schemas and display them as grouping:
+
+- With quotes:
+
+![dbdocs-enf-with-quotes](../../assets/images/dbdocs-enf-with-quotes.png)
+
+- Without quotes:
+
+![dbdocs-enf-without-quotes](../../assets/images/dbdocs-enf-without-quotes.png)
+
+> ⚠️ As of 2024 June: DBML doesn't support nested schema in the entity name which means 'database.schema.table' won't be allowed, but 'schema.table' does!
+
+**Examples:**
+=== "CLI"
+
+    ```bash
+    dbterd run --entity-name-format resource.package.model --omit-entity-name-quotes # ❌
+    dbterd run --entity-name-format database.schema.table --omit-entity-name-quotes # ❌
+    dbterd run --entity-name-format schema.table --omit-entity-name-quotes # ✅
+    ```
+
 ### dbterd run --dbt-cloud
 
 Decide to download artifact files from dbt Cloud Job Run instead of compiling locally.

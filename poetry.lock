@@ -371,18 +371,18 @@ files = [
 
 [[package]]
 name = "dbt-adapters"
-version = "1.2.1"
+version = "1.3.1"
 description = "The set of adapter protocols and base functionality that supports integration with dbt-core"
 optional = false
 python-versions = ">=3.8.0"
 files = [
-    {file = "dbt_adapters-1.2.1-py3-none-any.whl", hash = "sha256:0f78a4cab153bf0cc4f02cbfb013b65149c9107f5ccc4132386e733a2a1ef39f"},
-    {file = "dbt_adapters-1.2.1.tar.gz", hash = "sha256:78c785ea783670f65c7351eac768960fd5263b8e37cb3377b980743e8433ace3"},
+    {file = "dbt_adapters-1.3.1-py3-none-any.whl", hash = "sha256:aa0cedf9143b7ebbaaac6c91e6ebc0945bfcf4a0fcec75950c892e75b0f19922"},
+    {file = "dbt_adapters-1.3.1.tar.gz", hash = "sha256:ee7d6ae965cc7f472f65a95c588c81a0721c0f3cefeb35b4285bd9bb9e54ee49"},
 ]
 
 [package.dependencies]
 agate = ">=1.0,<2.0"
-dbt-common = "<2.0"
+dbt-common = ">=1.3,<2.0"
 mashumaro = {version = ">=3.0,<4.0", extras = ["msgpack"]}
 protobuf = ">=3.0,<5.0"
 pytz = ">=2015.7"
@@ -408,18 +408,19 @@ test = ["black (==21.9b0)", "flake8 (>=3.8.3,<4.0.0)", "isort (>=5.0.6,<6.0.0)",
 
 [[package]]
 name = "dbt-common"
-version = "1.3.0"
+version = "1.4.0"
 description = "The shared common utilities that dbt-core and adapter implementations use"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "dbt_common-1.3.0-py3-none-any.whl", hash = "sha256:327ea3572c605ef9b874138285a8099e92d5d5ec91f2c8dd7e188b6d76f9463c"},
-    {file = "dbt_common-1.3.0.tar.gz", hash = "sha256:489ecba5c75fffde9c6b36f8d561a392d159fd84ed4f01e13bd37b3b57f84657"},
+    {file = "dbt_common-1.4.0-py3-none-any.whl", hash = "sha256:57847b459f737d8502fde051103106eac914399f29b6e115ebf8c5b1f4d49496"},
+    {file = "dbt_common-1.4.0.tar.gz", hash = "sha256:a1521f0bfb6f2153f6e808c751f25d8169ad9c771ca4c9dcc68867a98edead5d"},
 ]
 
 [package.dependencies]
 agate = ">=1.7.0,<1.10"
 colorama = ">=0.3.9,<0.5"
+deepdiff = ">=7.0,<8.0"
 isodate = ">=0.6,<0.7"
 jinja2 = ">=3.1.3,<4"
 jsonschema = ">=4.0,<5.0"
@@ -437,13 +438,13 @@ test = ["hypothesis (>=6.87,<7.0)", "pytest (>=7.3,<8.0)", "pytest-cov (>=4.1,<5
 
 [[package]]
 name = "dbt-core"
-version = "1.8.2"
+version = "1.8.3"
 description = "With dbt, data analysts and engineers can build analytics the way engineers build applications."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "dbt_core-1.8.2-py3-none-any.whl", hash = "sha256:09a09a7c2a5febfe618d162ea996b0207b58c31d30671d589492947ed2b87e9d"},
-    {file = "dbt_core-1.8.2.tar.gz", hash = "sha256:a9da3c8a8a3fe76730757c5795208bdba26e1a4c42536e2c1d339811a624c2bb"},
+    {file = "dbt_core-1.8.3-py3-none-any.whl", hash = "sha256:29c4d3ed4385090492ea48e88c58a405e4d646aabde81e7945bedddb2a55e86e"},
+    {file = "dbt_core-1.8.3.tar.gz", hash = "sha256:e98ea11f0c91f086e9df9ac4d2e6093cf30a94e6fd419541a32374ddd6b92d9e"},
 ]
 
 [package.dependencies]
@@ -495,13 +496,13 @@ files = [
 
 [[package]]
 name = "dbt-postgres"
-version = "1.8.1"
+version = "1.8.2"
 description = "The set of adapter protocols and base functionality that supports integration with dbt-core"
 optional = false
 python-versions = ">=3.8.0"
 files = [
-    {file = "dbt_postgres-1.8.1-py3-none-any.whl", hash = "sha256:dcd05f95b0f9f89cb790322827918ac07299436ded73059887abe7eef03ce2c9"},
-    {file = "dbt_postgres-1.8.1.tar.gz", hash = "sha256:1685989277c1222b7feec4c78a4bfcc4ad864d52072624a7db1e00c46c8b0c4b"},
+    {file = "dbt_postgres-1.8.2-py3-none-any.whl", hash = "sha256:b0d9f53b5927722cd22e8135e0b76181febf3cf89aef8caf039c59bfce78afc9"},
+    {file = "dbt_postgres-1.8.2.tar.gz", hash = "sha256:23b302626dd11e90594ccff0347148252c37af1a1e8c8710bc9c03b05337f3d3"},
 ]
 
 [package.dependencies]
@@ -509,8 +510,7 @@ agate = ">=1.0,<2.0"
 dbt-adapters = ">=0.1.0a1,<2.0"
 dbt-common = ">=0.1.0a1,<2.0"
 dbt-core = ">=1.8.0a1"
-psycopg2 = {version = ">=2.9,<3.0", markers = "platform_system == \"Linux\""}
-psycopg2-binary = {version = ">=2.9,<3.0", markers = "platform_system != \"Linux\""}
+psycopg2-binary = ">=2.9,<3.0"
 
 [[package]]
 name = "dbt-semantic-interfaces"
@@ -535,6 +535,24 @@ pyyaml = ">=6.0,<7"
 typing-extensions = ">=4.4,<5"
 
 [[package]]
+name = "deepdiff"
+version = "7.0.1"
+description = "Deep Difference and Search of any Python object/data. Recreate objects by adding adding deltas to each other."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "deepdiff-7.0.1-py3-none-any.whl", hash = "sha256:447760081918216aa4fd4ca78a4b6a848b81307b2ea94c810255334b759e1dc3"},
+    {file = "deepdiff-7.0.1.tar.gz", hash = "sha256:260c16f052d4badbf60351b4f77e8390bee03a0b516246f6839bc813fb429ddf"},
+]
+
+[package.dependencies]
+ordered-set = ">=4.1.0,<4.2.0"
+
+[package.extras]
+cli = ["click (==8.1.7)", "pyyaml (==6.0.1)"]
+optimize = ["orjson"]
+
+[[package]]
 name = "distlib"
 version = "0.3.8"
 description = "Distribution utilities"
@@ -547,18 +565,18 @@ files = [
 
 [[package]]
 name = "filelock"
-version = "3.15.1"
+version = "3.15.3"
 description = "A platform independent file lock."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "filelock-3.15.1-py3-none-any.whl", hash = "sha256:71b3102950e91dfc1bb4209b64be4dc8854f40e5f534428d8684f953ac847fac"},
-    {file = "filelock-3.15.1.tar.gz", hash = "sha256:58a2549afdf9e02e10720eaa4d4470f56386d7a6f72edd7d0596337af8ed7ad8"},
+    {file = "filelock-3.15.3-py3-none-any.whl", hash = "sha256:0151273e5b5d6cf753a61ec83b3a9b7d8821c39ae9af9d7ecf2f9e2f17404103"},
+    {file = "filelock-3.15.3.tar.gz", hash = "sha256:e1199bf5194a2277273dacd50269f0d87d0682088a3c561c15674ea9005d8635"},
 ]
 
 [package.extras]
 docs = ["furo (>=2023.9.10)", "sphinx (>=7.2.6)", "sphinx-autodoc-typehints (>=1.25.2)"]
-testing = ["covdefaults (>=2.3)", "coverage (>=7.3.2)", "diff-cover (>=8.0.1)", "pytest (>=7.4.3)", "pytest-asyncio (>=0.21)", "pytest-cov (>=4.1)", "pytest-mock (>=3.12)", "pytest-timeout (>=2.2)"]
+testing = ["covdefaults (>=2.3)", "coverage (>=7.3.2)", "diff-cover (>=8.0.1)", "pytest (>=7.4.3)", "pytest-asyncio (>=0.21)", "pytest-cov (>=4.1)", "pytest-mock (>=3.12)", "pytest-timeout (>=2.2)", "virtualenv (>=20.26.2)"]
 typing = ["typing-extensions (>=4.8)"]
 
 [[package]]
@@ -881,13 +899,13 @@ files = [
 
 [[package]]
 name = "mashumaro"
-version = "3.13"
+version = "3.13.1"
 description = "Fast and well tested serialization library"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "mashumaro-3.13-py3-none-any.whl", hash = "sha256:59457aebb90e85b8b195e5ccc2d46b608f2709bedb679f9d19a952f9bb1fb6ec"},
-    {file = "mashumaro-3.13.tar.gz", hash = "sha256:636c31afe39d991efe4cad269fef0c8ba408d87581118784d2a47924c2073faa"},
+    {file = "mashumaro-3.13.1-py3-none-any.whl", hash = "sha256:ad0a162b8f4ea232dadd2891d77ff20165b855b9d84610f36ac84462d4576aa0"},
+    {file = "mashumaro-3.13.1.tar.gz", hash = "sha256:169f0290253b3e6077bcb39c14a9dd0791a3fdedd9e286e536ae561d4ff1975b"},
 ]
 
 [package.dependencies]
@@ -1007,13 +1025,13 @@ pyyaml = ">=5.1"
 
 [[package]]
 name = "mkdocs-material"
-version = "9.5.26"
+version = "9.5.27"
 description = "Documentation that simply works"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "mkdocs_material-9.5.26-py3-none-any.whl", hash = "sha256:5d01fb0aa1c7946a1e3ae8689aa2b11a030621ecb54894e35aabb74c21016312"},
-    {file = "mkdocs_material-9.5.26.tar.gz", hash = "sha256:56aeb91d94cffa43b6296fa4fbf0eb7c840136e563eecfd12c2d9e92e50ba326"},
+    {file = "mkdocs_material-9.5.27-py3-none-any.whl", hash = "sha256:af8cc263fafa98bb79e9e15a8c966204abf15164987569bd1175fd66a7705182"},
+    {file = "mkdocs_material-9.5.27.tar.gz", hash = "sha256:a7d4a35f6d4a62b0c43a0cfe7e987da0980c13587b5bc3c26e690ad494427ec0"},
 ]
 
 [package.dependencies]
@@ -1180,6 +1198,20 @@ files = [
 ]
 
 [[package]]
+name = "ordered-set"
+version = "4.1.0"
+description = "An OrderedSet is a custom MutableSet that remembers its order, so that every"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "ordered-set-4.1.0.tar.gz", hash = "sha256:694a8e44c87657c59292ede72891eb91d34131f6531463aab3009191c77364a8"},
+    {file = "ordered_set-4.1.0-py3-none-any.whl", hash = "sha256:046e1132c71fcf3330438a539928932caf51ddbc582496833e23de611de14562"},
+]
+
+[package.extras]
+dev = ["black", "mypy", "pytest"]
+
+[[package]]
 name = "packaging"
 version = "24.1"
 description = "Core utilities for Python packages"
@@ -1337,28 +1369,6 @@ files = [
     {file = "protobuf-4.25.3-cp39-cp39-win_amd64.whl", hash = "sha256:e3c97a1555fd6388f857770ff8b9703083de6bf1f9274a002a332d65fbb56c8c"},
     {file = "protobuf-4.25.3-py3-none-any.whl", hash = "sha256:f0700d54bcf45424477e46a9f0944155b46fb0639d69728739c0e47bab83f2b9"},
     {file = "protobuf-4.25.3.tar.gz", hash = "sha256:25b5d0b42fd000320bd7830b349e3b696435f3b329810427a6bcce6a5492cc5c"},
-]
-
-[[package]]
-name = "psycopg2"
-version = "2.9.9"
-description = "psycopg2 - Python-PostgreSQL Database Adapter"
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "psycopg2-2.9.9-cp310-cp310-win32.whl", hash = "sha256:38a8dcc6856f569068b47de286b472b7c473ac7977243593a288ebce0dc89516"},
-    {file = "psycopg2-2.9.9-cp310-cp310-win_amd64.whl", hash = "sha256:426f9f29bde126913a20a96ff8ce7d73fd8a216cfb323b1f04da402d452853c3"},
-    {file = "psycopg2-2.9.9-cp311-cp311-win32.whl", hash = "sha256:ade01303ccf7ae12c356a5e10911c9e1c51136003a9a1d92f7aa9d010fb98372"},
-    {file = "psycopg2-2.9.9-cp311-cp311-win_amd64.whl", hash = "sha256:121081ea2e76729acfb0673ff33755e8703d45e926e416cb59bae3a86c6a4981"},
-    {file = "psycopg2-2.9.9-cp312-cp312-win32.whl", hash = "sha256:d735786acc7dd25815e89cc4ad529a43af779db2e25aa7c626de864127e5a024"},
-    {file = "psycopg2-2.9.9-cp312-cp312-win_amd64.whl", hash = "sha256:a7653d00b732afb6fc597e29c50ad28087dcb4fbfb28e86092277a559ae4e693"},
-    {file = "psycopg2-2.9.9-cp37-cp37m-win32.whl", hash = "sha256:5e0d98cade4f0e0304d7d6f25bbfbc5bd186e07b38eac65379309c4ca3193efa"},
-    {file = "psycopg2-2.9.9-cp37-cp37m-win_amd64.whl", hash = "sha256:7e2dacf8b009a1c1e843b5213a87f7c544b2b042476ed7755be813eaf4e8347a"},
-    {file = "psycopg2-2.9.9-cp38-cp38-win32.whl", hash = "sha256:ff432630e510709564c01dafdbe996cb552e0b9f3f065eb89bdce5bd31fabf4c"},
-    {file = "psycopg2-2.9.9-cp38-cp38-win_amd64.whl", hash = "sha256:bac58c024c9922c23550af2a581998624d6e02350f4ae9c5f0bc642c633a2d5e"},
-    {file = "psycopg2-2.9.9-cp39-cp39-win32.whl", hash = "sha256:c92811b2d4c9b6ea0285942b2e7cac98a59e166d59c588fe5cfe1eda58e72d59"},
-    {file = "psycopg2-2.9.9-cp39-cp39-win_amd64.whl", hash = "sha256:de80739447af31525feddeb8effd640782cf5998e1a4e9192ebdf829717e3913"},
-    {file = "psycopg2-2.9.9.tar.gz", hash = "sha256:d1454bde93fb1e224166811694d600e746430c006fbb031ea06ecc2ea41bf156"},
 ]
 
 [[package]]
@@ -2115,13 +2125,13 @@ files = [
 
 [[package]]
 name = "urllib3"
-version = "2.2.1"
+version = "2.2.2"
 description = "HTTP library with thread-safe connection pooling, file post, and more."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "urllib3-2.2.1-py3-none-any.whl", hash = "sha256:450b20ec296a467077128bff42b73080516e71b56ff59a60a02bef2232c4fa9d"},
-    {file = "urllib3-2.2.1.tar.gz", hash = "sha256:d0570876c61ab9e520d776c38acbbb5b05a776d3f9ff98a5c8fd5162a444cf19"},
+    {file = "urllib3-2.2.2-py3-none-any.whl", hash = "sha256:a448b2f64d686155468037e1ace9f2d2199776e17f0a46610480d311f73e3472"},
+    {file = "urllib3-2.2.2.tar.gz", hash = "sha256:dd505485549a7a552833da5e6063639d0d177c04f23bc3864e41e5dc5f612168"},
 ]
 
 [package.extras]
