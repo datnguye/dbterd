@@ -37,9 +37,11 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
 
     # Build DBML content
     dbml = "//Tables (based on the selection criteria)\n"
+    quote = "" if kwargs.get("omit_entity_name_quotes") else '"'
     for table in tables:
         dbml += f"//--configured at schema: {table.database}.{table.schema}\n"
-        dbml += 'Table "{table}" {{\n{columns}\n\n  Note: {table_note}\n}}\n'.format(
+        dbml += "Table {quote}{table}{quote} {{\n{columns}\n\n  Note: {table_note}\n}}\n".format(
+            quote=quote,
             table=table.name,
             columns="\n".join(
                 [
@@ -61,8 +63,8 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
 
     dbml += "//Refs (based on the DBT Relationship Tests)\n"
     for rel in relationships:
-        key_from = f'"{rel.table_map[1]}"."{rel.column_map[1]}"'
-        key_to = f'"{rel.table_map[0]}"."{rel.column_map[0]}"'
+        key_from = f'{quote}{rel.table_map[1]}{quote}."{rel.column_map[1]}"'
+        key_to = f'{quote}{rel.table_map[0]}{quote}."{rel.column_map[0]}"'
         dbml += f"Ref: {key_from} {get_rel_symbol(rel.type)} {key_to}\n"
     return dbml
 
