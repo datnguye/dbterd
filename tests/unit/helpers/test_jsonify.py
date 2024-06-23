@@ -20,7 +20,7 @@ class DummyData:
 
 class TestFile:
     @pytest.mark.parametrize(
-        "input, ouput",
+        "input, output",
         [
             ('{"data":"dummy"}', dict({"data": "dummy"})),
             (
@@ -29,8 +29,8 @@ class TestFile:
             ),
         ],
     )
-    def test_mask(self, input, ouput):
-        assert jsonify.mask(obj=input) == ouput
+    def test_mask(self, input, output):
+        assert jsonify.mask(obj=input) == output
 
     def test_mask_with_class(self):
         obj = Dummy(str="dummy", secret_str="this is a secret")

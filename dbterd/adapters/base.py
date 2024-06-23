@@ -214,7 +214,7 @@ class Executor:
                 Defaults to None.
 
         Returns:
-            dict: Editted kwargs dict
+            dict: Edited kwargs dict
         """
         if not node_unique_id:
             return kwargs

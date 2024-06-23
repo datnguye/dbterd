@@ -52,7 +52,7 @@ class DbtInvocation:
         return r.result
 
     def __construct_arguments(self, *args) -> List[str]:
-        """Enrich the dbt arguements with the based options
+        """Enrich the dbt arguments with the based options
 
         Returns:
             List[str]: Actual dbt arguments

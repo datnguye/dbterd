@@ -27,7 +27,7 @@ curl -fsSL https://d2lang.com/install.sh | sh -s --
     <span data-ty data-ty-prompt="$ ~/repo>"></span>
 </div>
 
-### 3. Embeded into Markdown
+### 3. Embedded into Markdown
 
 ```markdown
 # Sample D2 ERD

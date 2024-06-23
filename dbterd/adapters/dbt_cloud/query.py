@@ -7,7 +7,7 @@ class Query:
     """ERD Query file helper"""
 
     def __init__(self) -> None:
-        """Initilize the required input:
+        """Initialize the required input:
         - Query directory
         """
         self.dir = f"{os.path.dirname(os.path.realpath(__file__))}/include"

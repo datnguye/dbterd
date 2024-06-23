@@ -1,7 +1,7 @@
 site_name: DaaC from dbt artifacts
 site_url: https://datnguye.github.io/dbterd/
 site_author: Dat Nguyen
-site_description: Offical documentation of `dbterd` CLI
+site_description: Official documentation of `dbterd` CLI
 
 repo_name: datnguye/dbterd
 repo_url: https://github.com/datnguye/dbterd
