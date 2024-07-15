@@ -15,9 +15,11 @@ column_types = [
     ("array<struct<string a_id, string b_id>>", "array[OMITTED]"),
 ]
 
+
 @pytest.mark.parametrize("input,expected", complex_column_types)
 def test_match_complex_column_type(input, expected):
     assert mermaid.match_complex_column_type(input) == expected
+
 
 @pytest.mark.parametrize("input,expected", column_types)
 def test_replace_column_type(input, expected):
