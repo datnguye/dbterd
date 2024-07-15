@@ -42,7 +42,7 @@ def match_complex_column_type(column_type: str) -> Optional[str]:
     Returns:
         Optional[str]: Returns root type if input type is nested complex type, otherwise returns `None` for primitive types
     """
-    pattern = r"(\w+)<(\w+\s+\w+(\s*,\s*\w+\s+\w+)*)>"
+    pattern = r"(\w+)<.*>"
     match = re.match(pattern, column_type)
     if match:
         return match.group(1)
