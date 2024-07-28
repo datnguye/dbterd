@@ -1,0 +1,1392 @@
+{
+    "metadata": {
+        "dbt_schema_version": "https://schemas.getdbt.com/dbt/catalog/v1.json",
+        "dbt_version": "1.8.4",
+        "generated_at": "2024-07-28T01:54:28.426794Z",
+        "invocation_id": "f06e159b-5afc-49ef-98b4-43a9bd2bb77a",
+        "env": {}
+    },
+    "nodes": {
+        "model.jaffle_shop.customers": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "public",
+                "name": "customers",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "customer_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "customer_id",
+                    "comment": null
+                },
+                "customer_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "customer_name",
+                    "comment": null
+                },
+                "count_lifetime_orders": {
+                    "type": "bigint",
+                    "index": 3,
+                    "name": "count_lifetime_orders",
+                    "comment": null
+                },
+                "first_ordered_at": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "first_ordered_at",
+                    "comment": null
+                },
+                "last_ordered_at": {
+                    "type": "timestamp without time zone",
+                    "index": 5,
+                    "name": "last_ordered_at",
+                    "comment": null
+                },
+                "lifetime_spend_pretax": {
+                    "type": "numeric",
+                    "index": 6,
+                    "name": "lifetime_spend_pretax",
+                    "comment": null
+                },
+                "lifetime_tax_paid": {
+                    "type": "numeric",
+                    "index": 7,
+                    "name": "lifetime_tax_paid",
+                    "comment": null
+                },
+                "lifetime_spend": {
+                    "type": "numeric",
+                    "index": 8,
+                    "name": "lifetime_spend",
+                    "comment": null
+                },
+                "customer_type": {
+                    "type": "text",
+                    "index": 9,
+                    "name": "customer_type",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.jaffle_shop.customers"
+        },
+        "model.jaffle_shop.locations": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "public",
+                "name": "locations",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "location_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "location_id",
+                    "comment": null
+                },
+                "location_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "location_name",
+                    "comment": null
+                },
+                "tax_rate": {
+                    "type": "double precision",
+                    "index": 3,
+                    "name": "tax_rate",
+                    "comment": null
+                },
+                "opened_date": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "opened_date",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.jaffle_shop.locations"
+        },
+        "model.jaffle_shop.metricflow_time_spine": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "public",
+                "name": "metricflow_time_spine",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "date_day": {
+                    "type": "date",
+                    "index": 1,
+                    "name": "date_day",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.jaffle_shop.metricflow_time_spine"
+        },
+        "model.jaffle_shop.order_items": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "public",
+                "name": "order_items",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "order_item_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "order_item_id",
+                    "comment": null
+                },
+                "order_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "order_id",
+                    "comment": null
+                },
+                "product_id": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "product_id",
+                    "comment": null
+                },
+                "ordered_at": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "ordered_at",
+                    "comment": null
+                },
+                "product_name": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "product_name",
+                    "comment": null
+                },
+                "product_price": {
+                    "type": "numeric",
+                    "index": 6,
+                    "name": "product_price",
+                    "comment": null
+                },
+                "is_food_item": {
+                    "type": "boolean",
+                    "index": 7,
+                    "name": "is_food_item",
+                    "comment": null
+                },
+                "is_drink_item": {
+                    "type": "boolean",
+                    "index": 8,
+                    "name": "is_drink_item",
+                    "comment": null
+                },
+                "supply_cost": {
+                    "type": "numeric",
+                    "index": 9,
+                    "name": "supply_cost",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.jaffle_shop.order_items"
+        },
+        "model.jaffle_shop.orders": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "public",
+                "name": "orders",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "order_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "order_id",
+                    "comment": null
+                },
+                "location_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "location_id",
+                    "comment": null
+                },
+                "customer_id": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "customer_id",
+                    "comment": null
+                },
+                "subtotal_cents": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "subtotal_cents",
+                    "comment": null
+                },
+                "tax_paid_cents": {
+                    "type": "integer",
+                    "index": 5,
+                    "name": "tax_paid_cents",
+                    "comment": null
+                },
+                "order_total_cents": {
+                    "type": "integer",
+                    "index": 6,
+                    "name": "order_total_cents",
+                    "comment": null
+                },
+                "subtotal": {
+                    "type": "numeric",
+                    "index": 7,
+                    "name": "subtotal",
+                    "comment": null
+                },
+                "tax_paid": {
+                    "type": "numeric",
+                    "index": 8,
+                    "name": "tax_paid",
+                    "comment": null
+                },
+                "order_total": {
+                    "type": "numeric",
+                    "index": 9,
+                    "name": "order_total",
+                    "comment": null
+                },
+                "ordered_at": {
+                    "type": "timestamp without time zone",
+                    "index": 10,
+                    "name": "ordered_at",
+                    "comment": null
+                },
+                "order_cost": {
+                    "type": "numeric",
+                    "index": 11,
+                    "name": "order_cost",
+                    "comment": null
+                },
+                "order_items_subtotal": {
+                    "type": "numeric",
+                    "index": 12,
+                    "name": "order_items_subtotal",
+                    "comment": null
+                },
+                "count_food_items": {
+                    "type": "bigint",
+                    "index": 13,
+                    "name": "count_food_items",
+                    "comment": null
+                },
+                "count_drink_items": {
+                    "type": "bigint",
+                    "index": 14,
+                    "name": "count_drink_items",
+                    "comment": null
+                },
+                "count_order_items": {
+                    "type": "bigint",
+                    "index": 15,
+                    "name": "count_order_items",
+                    "comment": null
+                },
+                "is_food_order": {
+                    "type": "boolean",
+                    "index": 16,
+                    "name": "is_food_order",
+                    "comment": null
+                },
+                "is_drink_order": {
+                    "type": "boolean",
+                    "index": 17,
+                    "name": "is_drink_order",
+                    "comment": null
+                },
+                "customer_order_number": {
+                    "type": "bigint",
+                    "index": 18,
+                    "name": "customer_order_number",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.jaffle_shop.orders"
+        },
+        "model.jaffle_shop.products": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "public",
+                "name": "products",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "product_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "product_id",
+                    "comment": null
+                },
+                "product_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "product_name",
+                    "comment": null
+                },
+                "product_type": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "product_type",
+                    "comment": null
+                },
+                "product_description": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "product_description",
+                    "comment": null
+                },
+                "product_price": {
+                    "type": "numeric",
+                    "index": 5,
+                    "name": "product_price",
+                    "comment": null
+                },
+                "is_food_item": {
+                    "type": "boolean",
+                    "index": 6,
+                    "name": "is_food_item",
+                    "comment": null
+                },
+                "is_drink_item": {
+                    "type": "boolean",
+                    "index": 7,
+                    "name": "is_drink_item",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.jaffle_shop.products"
+        },
+        "model.jaffle_shop.stg_customers": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "public",
+                "name": "stg_customers",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "customer_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "customer_id",
+                    "comment": null
+                },
+                "customer_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "customer_name",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.jaffle_shop.stg_customers"
+        },
+        "model.jaffle_shop.stg_locations": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "public",
+                "name": "stg_locations",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "location_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "location_id",
+                    "comment": null
+                },
+                "location_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "location_name",
+                    "comment": null
+                },
+                "tax_rate": {
+                    "type": "double precision",
+                    "index": 3,
+                    "name": "tax_rate",
+                    "comment": null
+                },
+                "opened_date": {
+                    "type": "timestamp without time zone",
+                    "index": 4,
+                    "name": "opened_date",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.jaffle_shop.stg_locations"
+        },
+        "model.jaffle_shop.stg_order_items": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "public",
+                "name": "stg_order_items",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "order_item_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "order_item_id",
+                    "comment": null
+                },
+                "order_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "order_id",
+                    "comment": null
+                },
+                "product_id": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "product_id",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.jaffle_shop.stg_order_items"
+        },
+        "model.jaffle_shop.stg_orders": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "public",
+                "name": "stg_orders",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "order_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "order_id",
+                    "comment": null
+                },
+                "location_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "location_id",
+                    "comment": null
+                },
+                "customer_id": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "customer_id",
+                    "comment": null
+                },
+                "subtotal_cents": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "subtotal_cents",
+                    "comment": null
+                },
+                "tax_paid_cents": {
+                    "type": "integer",
+                    "index": 5,
+                    "name": "tax_paid_cents",
+                    "comment": null
+                },
+                "order_total_cents": {
+                    "type": "integer",
+                    "index": 6,
+                    "name": "order_total_cents",
+                    "comment": null
+                },
+                "subtotal": {
+                    "type": "numeric",
+                    "index": 7,
+                    "name": "subtotal",
+                    "comment": null
+                },
+                "tax_paid": {
+                    "type": "numeric",
+                    "index": 8,
+                    "name": "tax_paid",
+                    "comment": null
+                },
+                "order_total": {
+                    "type": "numeric",
+                    "index": 9,
+                    "name": "order_total",
+                    "comment": null
+                },
+                "ordered_at": {
+                    "type": "timestamp without time zone",
+                    "index": 10,
+                    "name": "ordered_at",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.jaffle_shop.stg_orders"
+        },
+        "model.jaffle_shop.stg_products": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "public",
+                "name": "stg_products",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "product_id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "product_id",
+                    "comment": null
+                },
+                "product_name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "product_name",
+                    "comment": null
+                },
+                "product_type": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "product_type",
+                    "comment": null
+                },
+                "product_description": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "product_description",
+                    "comment": null
+                },
+                "product_price": {
+                    "type": "numeric",
+                    "index": 5,
+                    "name": "product_price",
+                    "comment": null
+                },
+                "is_food_item": {
+                    "type": "boolean",
+                    "index": 6,
+                    "name": "is_food_item",
+                    "comment": null
+                },
+                "is_drink_item": {
+                    "type": "boolean",
+                    "index": 7,
+                    "name": "is_drink_item",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.jaffle_shop.stg_products"
+        },
+        "model.jaffle_shop.stg_supplies": {
+            "metadata": {
+                "type": "VIEW",
+                "schema": "public",
+                "name": "stg_supplies",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "supply_uuid": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "supply_uuid",
+                    "comment": null
+                },
+                "supply_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "supply_id",
+                    "comment": null
+                },
+                "product_id": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "product_id",
+                    "comment": null
+                },
+                "supply_name": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "supply_name",
+                    "comment": null
+                },
+                "supply_cost": {
+                    "type": "numeric",
+                    "index": 5,
+                    "name": "supply_cost",
+                    "comment": null
+                },
+                "is_perishable_supply": {
+                    "type": "boolean",
+                    "index": 6,
+                    "name": "is_perishable_supply",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.jaffle_shop.stg_supplies"
+        },
+        "model.jaffle_shop.supplies": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "public",
+                "name": "supplies",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "supply_uuid": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "supply_uuid",
+                    "comment": null
+                },
+                "supply_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "supply_id",
+                    "comment": null
+                },
+                "product_id": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "product_id",
+                    "comment": null
+                },
+                "supply_name": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "supply_name",
+                    "comment": null
+                },
+                "supply_cost": {
+                    "type": "numeric",
+                    "index": 5,
+                    "name": "supply_cost",
+                    "comment": null
+                },
+                "is_perishable_supply": {
+                    "type": "boolean",
+                    "index": 6,
+                    "name": "is_perishable_supply",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "model.jaffle_shop.supplies"
+        },
+        "seed.jaffle_shop.raw_customers": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "raw",
+                "name": "raw_customers",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "name",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.jaffle_shop.raw_customers"
+        },
+        "seed.jaffle_shop.raw_items": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "raw",
+                "name": "raw_items",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "order_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "order_id",
+                    "comment": null
+                },
+                "sku": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "sku",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.jaffle_shop.raw_items"
+        },
+        "seed.jaffle_shop.raw_orders": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "raw",
+                "name": "raw_orders",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "customer": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "customer",
+                    "comment": null
+                },
+                "ordered_at": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "ordered_at",
+                    "comment": null
+                },
+                "store_id": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "store_id",
+                    "comment": null
+                },
+                "subtotal": {
+                    "type": "integer",
+                    "index": 5,
+                    "name": "subtotal",
+                    "comment": null
+                },
+                "tax_paid": {
+                    "type": "integer",
+                    "index": 6,
+                    "name": "tax_paid",
+                    "comment": null
+                },
+                "order_total": {
+                    "type": "integer",
+                    "index": 7,
+                    "name": "order_total",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.jaffle_shop.raw_orders"
+        },
+        "seed.jaffle_shop.raw_products": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "raw",
+                "name": "raw_products",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "sku": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "sku",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "name",
+                    "comment": null
+                },
+                "type": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "type",
+                    "comment": null
+                },
+                "price": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "price",
+                    "comment": null
+                },
+                "description": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "description",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.jaffle_shop.raw_products"
+        },
+        "seed.jaffle_shop.raw_stores": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "raw",
+                "name": "raw_stores",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "name",
+                    "comment": null
+                },
+                "opened_at": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "opened_at",
+                    "comment": null
+                },
+                "tax_rate": {
+                    "type": "double precision",
+                    "index": 4,
+                    "name": "tax_rate",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.jaffle_shop.raw_stores"
+        },
+        "seed.jaffle_shop.raw_supplies": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "raw",
+                "name": "raw_supplies",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "name",
+                    "comment": null
+                },
+                "cost": {
+                    "type": "integer",
+                    "index": 3,
+                    "name": "cost",
+                    "comment": null
+                },
+                "perishable": {
+                    "type": "boolean",
+                    "index": 4,
+                    "name": "perishable",
+                    "comment": null
+                },
+                "sku": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "sku",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "seed.jaffle_shop.raw_supplies"
+        }
+    },
+    "sources": {
+        "source.jaffle_shop.ecom.raw_customers": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "raw",
+                "name": "raw_customers",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "name",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.jaffle_shop.ecom.raw_customers"
+        },
+        "source.jaffle_shop.ecom.raw_items": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "raw",
+                "name": "raw_items",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "order_id": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "order_id",
+                    "comment": null
+                },
+                "sku": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "sku",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.jaffle_shop.ecom.raw_items"
+        },
+        "source.jaffle_shop.ecom.raw_orders": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "raw",
+                "name": "raw_orders",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "customer": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "customer",
+                    "comment": null
+                },
+                "ordered_at": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "ordered_at",
+                    "comment": null
+                },
+                "store_id": {
+                    "type": "text",
+                    "index": 4,
+                    "name": "store_id",
+                    "comment": null
+                },
+                "subtotal": {
+                    "type": "integer",
+                    "index": 5,
+                    "name": "subtotal",
+                    "comment": null
+                },
+                "tax_paid": {
+                    "type": "integer",
+                    "index": 6,
+                    "name": "tax_paid",
+                    "comment": null
+                },
+                "order_total": {
+                    "type": "integer",
+                    "index": 7,
+                    "name": "order_total",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.jaffle_shop.ecom.raw_orders"
+        },
+        "source.jaffle_shop.ecom.raw_products": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "raw",
+                "name": "raw_products",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "sku": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "sku",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "name",
+                    "comment": null
+                },
+                "type": {
+                    "type": "text",
+                    "index": 3,
+                    "name": "type",
+                    "comment": null
+                },
+                "price": {
+                    "type": "integer",
+                    "index": 4,
+                    "name": "price",
+                    "comment": null
+                },
+                "description": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "description",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.jaffle_shop.ecom.raw_products"
+        },
+        "source.jaffle_shop.ecom.raw_stores": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "raw",
+                "name": "raw_stores",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "name",
+                    "comment": null
+                },
+                "opened_at": {
+                    "type": "timestamp without time zone",
+                    "index": 3,
+                    "name": "opened_at",
+                    "comment": null
+                },
+                "tax_rate": {
+                    "type": "double precision",
+                    "index": 4,
+                    "name": "tax_rate",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.jaffle_shop.ecom.raw_stores"
+        },
+        "source.jaffle_shop.ecom.raw_supplies": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "raw",
+                "name": "raw_supplies",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "id": {
+                    "type": "text",
+                    "index": 1,
+                    "name": "id",
+                    "comment": null
+                },
+                "name": {
+                    "type": "text",
+                    "index": 2,
+                    "name": "name",
+                    "comment": null
+                },
+                "cost": {
+                    "type": "integer",
+                    "index": 3,
+                    "name": "cost",
+                    "comment": null
+                },
+                "perishable": {
+                    "type": "boolean",
+                    "index": 4,
+                    "name": "perishable",
+                    "comment": null
+                },
+                "sku": {
+                    "type": "text",
+                    "index": 5,
+                    "name": "sku",
+                    "comment": null
+                }
+            },
+            "stats": {
+                "has_stats": {
+                    "id": "has_stats",
+                    "label": "Has Stats?",
+                    "value": false,
+                    "include": false,
+                    "description": "Indicates whether there are statistics for this table"
+                }
+            },
+            "unique_id": "source.jaffle_shop.ecom.raw_supplies"
+        }
+    },
+    "errors": null
+}
