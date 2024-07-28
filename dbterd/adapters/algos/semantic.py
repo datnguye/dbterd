@@ -1,7 +1,7 @@
 from typing import List, Tuple, Union
 
 from dbterd.adapters.algos import base
-from dbterd.adapters.meta import Ref, Table
+from dbterd.adapters.meta import Ref, SemanticEntity, Table
 from dbterd.constants import TEST_META_RELATIONSHIP_TYPE
 from dbterd.helpers.log import logger
 from dbterd.types import Catalog, Manifest
@@ -49,9 +49,23 @@ def find_related_nodes_by_id(
 
 
 def _get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
+    """_summary_
+
+    Args:
+        manifest (Manifest): _description_
+
+    Returns:
+        List[Ref]: _description_
+    """
     if not hasattr(manifest, "semantic_models"):
-        logger.warning("dbt version is NOT supported for the Semantic Models")
+        logger.warning(
+            "No relationships will be captured"
+            "since dbt version is NOT supported for the Semantic Models"
+        )
         return []
+
+    FK = "foreign"
+    PK = "primary"
 
     semantic_entities = []
     for x in manifest.semantic_models:
@@ -59,37 +73,31 @@ def _get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
             continue
 
         for e in manifest.semantic_models[x].entities:
-            if e.type.value not in ["primary", "foreign"]:
-                continue
-
-            entity_info = dict(
-                e=x, m=manifest.semantic_models[x].depends_on.nodes[0], pk=None, fk=None
-            )
-            if e.type.value == "primary":
-                entity_info["pk"] = dict(
-                    name=e.name, type=e.type.value, column_name=e.expr or e.name
+            if e.type.value in [PK, FK]:
+                semantic_entities.append(
+                    SemanticEntity(
+                        semantic_model=x,
+                        model=manifest.semantic_models[x].depends_on.nodes[0],
+                        entity_name=e.name,
+                        entity_type=e.type.value,
+                        column_name=e.expr or e.name,
+                    )
                 )
-            if e.type.value == "foreign":
-                entity_info["fk"] = dict(
-                    name=e.name, type=e.type.value, column_name=e.expr or e.name
-                )
-            semantic_entities.append(entity_info)
 
     refs = []
-    for from_e in [x for x in semantic_entities if x.get("fk")]:
-        fk_entity_name = from_e.get("fk", {}).get("name")
-        fk_column_name = from_e.get("fk", {}).get("column_name")
-
-        for to_e in [x for x in semantic_entities if x.get("pk")]:
-            pk_entity_name = to_e.get("pk", {}).get("name")
-            pk_column_name = to_e.get("pk", {}).get("column_name")
-
-            if fk_entity_name == pk_entity_name:
+    foreigns = [x for x in semantic_entities if x.entity_type == FK]
+    primaries = [x for x in semantic_entities if x.entity_type == PK]
+    for foreign_entity in foreigns:
+        for primary_entity in primaries:
+            if foreign_entity.entity_name == primary_entity.entity_name:
                 refs.append(
                     Ref(
-                        name=from_e.get("e"),
-                        table_map=(to_e.get("m"), from_e.get("m")),
-                        column_map=(fk_column_name, pk_column_name),
+                        name=primary_entity.semantic_model,
+                        table_map=(primary_entity.model, foreign_entity.model),
+                        column_map=(
+                            foreign_entity.column_name,
+                            primary_entity.column_name,
+                        ),
                         type=manifest.semantic_models[x].config.meta.get(
                             TEST_META_RELATIONSHIP_TYPE, ""
                         ),
