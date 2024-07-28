@@ -14,6 +14,7 @@ nav:
     - index.md
     - User Guide 📖:
       - Generate the Targets:
+        - Choosing the algorithm: nav/guide/targets/choose-algo.md
         - DBML: nav/guide/targets/generate-dbml.md
         - Mermaid: nav/guide/targets/generate-markdown-mermaid-erd.md
         - PlantUML: nav/guide/targets/generate-plantuml.md

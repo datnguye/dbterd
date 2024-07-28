@@ -211,15 +211,19 @@ Supported target, please visit [Generate the Targets](https://dbterd.datnguyen.d
 ### dbterd run --algo (-a)
 
 Specified algorithm in the way to detect diagram connectors
-> Default to `test_relationship`
 
-In the advanced use case, the test name can be configurable by following syntax:
+Supported ones:
+
+- `test_relationship`: Looking for all relationship tests to understand the ERs
+- `semantic`: Looking for all semantic models' entities (primary & foreign) to understand the ERs
+
+In the advanced use case of `test_relationship`, the test name can be configurable by following syntax:
 
 `{algorithm_name}:(name:{contains_test_name}|c_from:{referencing_column_name}|c_to:{referenced_column_name})`
 
 In the above:
 
-- `algorithm_name`: `test_relationship` (only supported value now)
+- `algorithm_name` (Mandatory): `test_relationship` or `semantic`
 - `contains_test_name`: Configure the test name (detected with `contains` logic). Default to `relationship`
 - `c_from`: Configure the test metadata attribute (1) for the foreign key column name(s). If (1)'s value is multiple columns, it will concat them all   with `_and` wording
       > NOTE: It always looking at the `column_name` attribute firstly

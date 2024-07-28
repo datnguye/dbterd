@@ -2,6 +2,11 @@
 
 Generate the ERD-as-a-code ([DBML](https://dbdiagram.io/d), [Mermaid](https://mermaid-js.github.io/mermaid-live-editor/), [PlantUML](https://plantuml.com/ie-diagram), [GraphViz](https://graphviz.org/), [D2](https://d2lang.com/)) from dbt artifact files (`dbt Core`) or from dbt metadata (`dbt Cloud`)
 
+Entity Relationships are configurably detected by ([docs](https://dbterd.datnguyen.de/latest/nav/guide/cli-references.html#dbterd-run-algo-a)):
+
+- [Test Relationships](https://docs.getdbt.com/reference/resource-properties/data-tests#relationships) (default)
+- [Semantic Entities](https://docs.getdbt.com/docs/build/entities) (use `-a` option)
+
 [![PyPI version](https://badge.fury.io/py/dbterd.svg)](https://pypi.org/project/dbterd/)
 ![python-cli](https://img.shields.io/badge/CLI-Python-FFCE3E?labelColor=14354C&logo=python&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
