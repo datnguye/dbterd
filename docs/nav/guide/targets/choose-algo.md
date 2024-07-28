@@ -101,7 +101,7 @@ Now running `dbterd run -enf table` with the environment variable `DBTERD_ALGO=s
 dbterd run -enf table -a semantic
 ```
 
-The result DBML code will be the same as the 1st option!
+The result DBML code will be the same as the 1st option. Voila! 🎉🎉
 
 ## New module(s)?
 
