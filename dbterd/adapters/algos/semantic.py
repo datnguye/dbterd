@@ -45,33 +45,90 @@ def parse(
 def find_related_nodes_by_id(
     manifest: Union[Manifest, dict], node_unique_id: str, type: str = None, **kwargs
 ) -> List[str]:
-    raise NotImplementedError()
+    """Find FK/PK nodes which are linked to the given node
+
+    Args:
+        manifest (Union[Manifest, dict]): Manifest data
+        node_unique_id (str): Manifest model node unique id
+        type (str, optional): Manifest type (local file or metadata). Defaults to None.
+
+    Returns:
+        List[str]: Manifest nodes' unique ID
+    """
+    found_nodes = [node_unique_id]
+    if type == "metadata":
+        return found_nodes  # not supported yet, returned input only
+
+    entities = _get_linked_semantic_entities(manifest=manifest)
+    for foreign, primary in entities:
+        if primary.model == node_unique_id:
+            found_nodes.append(foreign.model)
+        if foreign.model == node_unique_id:
+            found_nodes.append(primary.model)
+
+    return list(set(found_nodes))
 
 
 def _get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
     """_summary_
 
     Args:
-        manifest (Manifest): _description_
+        manifest (Manifest): Extract relationships from dbt artifacts based on Semantic Entities
 
     Returns:
-        List[Ref]: _description_
+        List[Ref]: List of parsed relationship
     """
-    if not hasattr(manifest, "semantic_models"):
-        logger.warning(
-            "No relationships will be captured"
-            "since dbt version is NOT supported for the Semantic Models"
+    entities = _get_linked_semantic_entities(manifest=manifest)
+    return [
+        Ref(
+            name=primary_entity.semantic_model,
+            table_map=(primary_entity.model, foreign_entity.model),
+            column_map=(
+                foreign_entity.column_name,
+                primary_entity.column_name,
+            ),
+            type=primary_entity.relationship_type,
         )
-        return []
+        for foreign_entity, primary_entity in entities
+    ]
 
+
+def _get_linked_semantic_entities(
+    manifest: Manifest,
+) -> List[Tuple[SemanticEntity, SemanticEntity]]:
+    """Get filtered list of Semantic Entities which are linked
+
+    Args:
+        manifest (Manifest): Manifest data
+
+    Returns:
+        List[Tuple[SemanticEntity, SemanticEntity]]: List of (FK, PK) objects
+    """
+    foreigns, primaries = _get_semantic_entities(manifest=manifest)
+    linked_entities = []
+    for foreign_entity in foreigns:
+        for primary_entity in primaries:
+            if foreign_entity.entity_name == primary_entity.entity_name:
+                linked_entities.append((foreign_entity, primary_entity))
+    return linked_entities
+
+
+def _get_semantic_entities(
+    manifest: Manifest,
+) -> Tuple[List[SemanticEntity], List[SemanticEntity]]:
+    """Get all Semantic Entities
+
+    Args:
+        manifest (Manifest): Manifest data
+
+    Returns:
+        Tuple[List[SemanticEntity], List[SemanticEntity]]: FK list and PK list
+    """
     FK = "foreign"
     PK = "primary"
 
     semantic_entities = []
-    for x in manifest.semantic_models:
-        if not len(manifest.semantic_models[x].depends_on.nodes):
-            continue
-
+    for x in _get_semantic_nodes(manifest=manifest):
         for e in manifest.semantic_models[x].entities:
             if e.type.value in [PK, FK]:
                 semantic_entities.append(
@@ -81,27 +138,36 @@ def _get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
                         entity_name=e.name,
                         entity_type=e.type.value,
                         column_name=e.expr or e.name,
-                    )
-                )
-
-    refs = []
-    foreigns = [x for x in semantic_entities if x.entity_type == FK]
-    primaries = [x for x in semantic_entities if x.entity_type == PK]
-    for foreign_entity in foreigns:
-        for primary_entity in primaries:
-            if foreign_entity.entity_name == primary_entity.entity_name:
-                refs.append(
-                    Ref(
-                        name=primary_entity.semantic_model,
-                        table_map=(primary_entity.model, foreign_entity.model),
-                        column_map=(
-                            foreign_entity.column_name,
-                            primary_entity.column_name,
-                        ),
-                        type=manifest.semantic_models[x].config.meta.get(
+                        relationship_type=manifest.semantic_models[x].config.meta.get(
                             TEST_META_RELATIONSHIP_TYPE, ""
                         ),
                     )
                 )
 
-    return refs
+    return (
+        [x for x in semantic_entities if x.entity_type == FK],
+        [x for x in semantic_entities if x.entity_type == PK],
+    )
+
+
+def _get_semantic_nodes(manifest: Manifest) -> List:
+    """Extract the Semantic Models
+
+    Args:
+        manifest (Manifest): Manifest data
+
+    Returns:
+        List: List of Semantic Models
+    """
+    if not hasattr(manifest, "semantic_models"):
+        logger.warning(
+            "No relationships will be captured"
+            "since dbt version is NOT supported for the Semantic Models"
+        )
+        return []
+
+    return [
+        x
+        for x in manifest.semantic_models
+        if len(manifest.semantic_models[x].depends_on.nodes)
+    ]

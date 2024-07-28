@@ -90,9 +90,6 @@ def find_related_nodes_by_id(
         node_unique_id (str): Manifest node unique ID
         type (str, optional): Manifest type (local file or metadata). Defaults to None.
 
-    Raises:
-        click.BadParameter: Not Supported manifest type
-
     Returns:
         List[str]: Manifest nodes' unique ID
     """

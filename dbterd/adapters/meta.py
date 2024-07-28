@@ -46,6 +46,7 @@ class SemanticEntity:
     entity_name: str
     entity_type: str
     column_name: str
+    relationship_type: str
 
 
 class SelectionType(Enum):
