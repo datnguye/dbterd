@@ -8,14 +8,14 @@ from dbterd.types import Catalog, Manifest
 
 
 def parse_metadata(data, **kwargs) -> Tuple[List[Table], List[Ref]]:
-    raise NotImplementedError()
+    raise NotImplementedError()  # pragma: no cover
 
 
 def parse(
     manifest: Manifest, catalog: Union[str, Catalog], **kwargs
 ) -> Tuple[List[Table], List[Ref]]:
     # Parse metadata
-    if catalog == "metadata":
+    if catalog == "metadata":  # pragma: no cover
         return parse_metadata(data=manifest, **kwargs)
 
     # Parse Table
@@ -56,7 +56,7 @@ def find_related_nodes_by_id(
         List[str]: Manifest nodes' unique ID
     """
     found_nodes = [node_unique_id]
-    if type == "metadata":
+    if type == "metadata":  # pragma: no cover
         return found_nodes  # not supported yet, returned input only
 
     entities = _get_linked_semantic_entities(manifest=manifest)
@@ -79,18 +79,20 @@ def _get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
         List[Ref]: List of parsed relationship
     """
     entities = _get_linked_semantic_entities(manifest=manifest)
-    return [
-        Ref(
-            name=primary_entity.semantic_model,
-            table_map=(primary_entity.model, foreign_entity.model),
-            column_map=(
-                foreign_entity.column_name,
-                primary_entity.column_name,
-            ),
-            type=primary_entity.relationship_type,
-        )
-        for foreign_entity, primary_entity in entities
-    ]
+    return base.get_unique_refs(
+        refs=[
+            Ref(
+                name=primary_entity.semantic_model,
+                table_map=(primary_entity.model, foreign_entity.model),
+                column_map=(
+                    primary_entity.column_name,
+                    foreign_entity.column_name,
+                ),
+                type=primary_entity.relationship_type,
+            )
+            for foreign_entity, primary_entity in entities
+        ]
+    )
 
 
 def _get_linked_semantic_entities(
@@ -129,20 +131,34 @@ def _get_semantic_entities(
 
     semantic_entities = []
     for x in _get_semantic_nodes(manifest=manifest):
-        for e in manifest.semantic_models[x].entities:
+        semantic_node = manifest.semantic_models[x]
+        for e in semantic_node.entities:
             if e.type.value in [PK, FK]:
                 semantic_entities.append(
                     SemanticEntity(
                         semantic_model=x,
-                        model=manifest.semantic_models[x].depends_on.nodes[0],
+                        model=semantic_node.depends_on.nodes[0],
                         entity_name=e.name,
                         entity_type=e.type.value,
                         column_name=e.expr or e.name,
-                        relationship_type=manifest.semantic_models[x].config.meta.get(
+                        relationship_type=semantic_node.config.meta.get(
                             TEST_META_RELATIONSHIP_TYPE, ""
                         ),
                     )
                 )
+        if semantic_node.primary_entity:
+            semantic_entities.append(
+                SemanticEntity(
+                    semantic_model=x,
+                    model=semantic_node.depends_on.nodes[0],
+                    entity_name=semantic_node.primary_entity,
+                    entity_type=PK,
+                    column_name=semantic_node.primary_entity,
+                    relationship_type=semantic_node.config.meta.get(
+                        TEST_META_RELATIONSHIP_TYPE, ""
+                    ),
+                )
+            )
 
     return (
         [x for x in semantic_entities if x.entity_type == FK],
