@@ -3,6 +3,7 @@ from typing import Dict, List
 
 import click
 
+from dbterd.adapters.filter import is_selected_table
 from dbterd.adapters.meta import Column, Ref, Table
 from dbterd.constants import (
     DEFAULT_ALGO_RULE,
@@ -94,6 +95,27 @@ def get_tables(manifest: Manifest, catalog: Catalog, **kwargs) -> List[Table]:
                 tables.append(table)
 
     return tables
+
+
+def filter_tables_based_on_selection(tables: List[Table], **kwargs) -> List[Table]:
+    """Filter list of tables based on the Selection Rules
+
+    Args:
+        tables (List[Table]): Parsed tables
+
+    Returns:
+        List[Table]: Filtered tables
+    """
+    return [
+        table
+        for table in tables
+        if is_selected_table(
+            table=table,
+            select_rules=kwargs.get("select") or [],
+            resource_types=kwargs.get("resource_type", []),
+            exclude_rules=kwargs.get("exclude") or [],
+        )
+    ]
 
 
 def enrich_tables_from_relationships(

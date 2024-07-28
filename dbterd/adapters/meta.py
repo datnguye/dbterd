@@ -37,6 +37,18 @@ class Ref:
     type: str = "n1"
 
 
+@dataclass
+class SemanticEntity:
+    """Parsed Semantic Model's Entity object"""
+
+    semantic_model: str
+    model: str
+    entity_name: str
+    entity_type: str
+    column_name: str
+    relationship_type: str
+
+
 class SelectionType(Enum):
     START_WITH_NAME = ""
     EXACT_NAME = "exact"

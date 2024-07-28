@@ -12,6 +12,7 @@ from dbt_artifacts_parser.parsers.manifest.manifest_v8 import ManifestV8
 from dbt_artifacts_parser.parsers.manifest.manifest_v9 import ManifestV9
 from dbt_artifacts_parser.parsers.manifest.manifest_v10 import ManifestV10
 from dbt_artifacts_parser.parsers.manifest.manifest_v11 import ManifestV11
+from dbt_artifacts_parser.parsers.manifest.manifest_v12 import ManifestV12
 
 Manifest = Union[
     ManifestV1,
@@ -25,6 +26,7 @@ Manifest = Union[
     ManifestV9,
     ManifestV10,
     ManifestV11,
+    ManifestV12,
 ]
 
 # If a new version of Catalog is added, replace with `Union[CatalogV1, CatalogV2, ...]`.

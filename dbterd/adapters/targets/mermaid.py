@@ -107,7 +107,7 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
         key_to = f'"{rel.table_map[0]}"'
         reference_text = replace_column_name(rel.column_map[0])
         if rel.column_map[0] != rel.column_map[1]:
-            reference_text += f"--{ replace_column_name(rel.column_map[1])}"
+            reference_text += f"--{replace_column_name(rel.column_map[1])}"
         mermaid += f"  {key_from.upper()} {get_rel_symbol(rel.type)} {key_to.upper()}: {reference_text}\n"
 
     return mermaid
