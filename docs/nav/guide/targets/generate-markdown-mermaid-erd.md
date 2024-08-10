@@ -27,4 +27,4 @@
 
 Check out the [sample](https://github.com/datnguye/dbterd/blob/main/samples/dbtresto/ERD.md) output:
 
-![erd](https://raw.githubusercontent.com/datnguye/dbterd/main/assets/images/sample-mermaid-ERD.png)
+![erd](./../../../assets/images/sample-mermaid-ERD.png)

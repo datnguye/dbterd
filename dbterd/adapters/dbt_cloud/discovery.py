@@ -96,11 +96,13 @@ class DbtCloudMetadata:
             dict: Applied data
         """
         result = graphql_data.get("environment", {}).get("applied", {})
-        result["semanticModels"] = (
+        semantic_models = (
             graphql_data.get("environment", {})
             .get("definition", {})
-            .get("semanticModels", dict(edges=[], pageInfo=dict(hasNextPage=False)))
+            .get("semanticModels", {})
         )
+        if semantic_models:
+            result["semanticModels"] = semantic_models
 
         return result
 
