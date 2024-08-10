@@ -25,7 +25,7 @@ def parse_metadata(data, **kwargs) -> Tuple[List[Table], List[Ref]]:
     tables = base.filter_tables_based_on_selection(tables=tables, **kwargs)
 
     # Parse Ref
-    relationships = _get_relationships_from_data(data=data, **kwargs)
+    relationships = _get_relationships_from_metadata(data=data, **kwargs)
     relationships = base.make_up_relationships(
         relationships=relationships, tables=tables
     )
@@ -97,7 +97,7 @@ def find_related_nodes_by_id(
     return list(set(found_nodes))
 
 
-def _get_relationships_from_data(data=[], **kwargs) -> List[Ref]:
+def _get_relationships_from_metadata(data=[], **kwargs) -> List[Ref]:
     """Extract relationships from Metadata result list on Semantic Entities
 
     Args:
@@ -106,7 +106,7 @@ def _get_relationships_from_data(data=[], **kwargs) -> List[Ref]:
     Returns:
         list[Ref]: List of parsed relationship
     """
-    entities = _get_linked_semantic_entities_from_data(data=data)
+    entities = _get_linked_semantic_entities_from_metadata(data=data)
     return base.get_unique_refs(
         refs=[
             Ref(
@@ -149,7 +149,7 @@ def _get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
     )
 
 
-def _get_linked_semantic_entities_from_data(
+def _get_linked_semantic_entities_from_metadata(
     data=[],
 ) -> List[Tuple[SemanticEntity, SemanticEntity]]:
     """Get filtered list of Semantic Entities which are linked
@@ -161,7 +161,7 @@ def _get_linked_semantic_entities_from_data(
     Returns:
         List[Tuple[SemanticEntity, SemanticEntity]]: List of (FK, PK) objects
     """
-    foreigns, primaries = _get_semantic_entities_from_data(data=data)
+    foreigns, primaries = _get_semantic_entities_from_metadata(data=data)
     linked_entities = []
     for foreign_entity in foreigns:
         for primary_entity in primaries:
@@ -190,7 +190,7 @@ def _get_linked_semantic_entities(
     return linked_entities
 
 
-def _get_semantic_entities_from_data(
+def _get_semantic_entities_from_metadata(
     data=[],
 ) -> Tuple[List[SemanticEntity], List[SemanticEntity]]:
     """Get all Semantic Entities

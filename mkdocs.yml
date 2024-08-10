@@ -13,8 +13,8 @@ nav:
   - dbterd:
     - index.md
     - User Guide 📖:
+      - Choose the Parser: nav/guide/choose-algo.md
       - Generate the Targets:
-        - Choosing the algorithm: nav/guide/targets/choose-algo.md
         - DBML: nav/guide/targets/generate-dbml.md
         - Mermaid: nav/guide/targets/generate-markdown-mermaid-erd.md
         - PlantUML: nav/guide/targets/generate-plantuml.md
