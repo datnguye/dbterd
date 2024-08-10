@@ -11,7 +11,8 @@ class DbtCloudMetadata:
         self.graphql = GraphQLHelper(**kwargs)
         self.environment_id = kwargs.get("dbt_cloud_environment_id")
         self.erd_query = Query().take(
-            file_path=kwargs.get("dbt_cloud_query_file_path", None)
+            file_path=kwargs.get("dbt_cloud_query_file_path", None),
+            algo=kwargs.get("algo", None),
         )
         self.last_cursor = {}
 
@@ -31,6 +32,7 @@ class DbtCloudMetadata:
             "source_first": page_size,
             "exposure_first": page_size,
             "test_first": page_size,
+            "semantic_model_first": page_size,
         }
         data = [
             self.extract_data(
@@ -47,6 +49,7 @@ class DbtCloudMetadata:
                 self.has_data(data=data[-1], resource_type="source"),
                 self.has_data(data=data[-1], resource_type="exposure"),
                 self.has_data(data=data[-1], resource_type="test"),
+                self.has_data(data=data[-1], resource_type="semanticModel"),
             ]
         ):
             variables["model_after"] = self.get_last_cursor(
@@ -60,6 +63,9 @@ class DbtCloudMetadata:
             )
             variables["test_after"] = self.get_last_cursor(
                 data=data[-1], resource_type="test"
+            )
+            variables["semantic_model_after"] = self.get_last_cursor(
+                data=data[-1], resource_type="semanticModel"
             )
 
             self.save_last_cursor(data=data[-1])
@@ -75,7 +81,9 @@ class DbtCloudMetadata:
     def extract_data(self, graphql_data: dict):
         """Extract the core nested dict only:
         environment:
-            applied: <-- HERE
+            definition: <-- HERE
+                semanticModels
+            applied: <-- and HERE
                 models
                 sources
                 tests
@@ -87,7 +95,14 @@ class DbtCloudMetadata:
         Returns:
             dict: Applied data
         """
-        return graphql_data.get("environment", {}).get("applied", {})
+        result = graphql_data.get("environment", {}).get("applied", {})
+        result["semanticModels"] = (
+            graphql_data.get("environment", {})
+            .get("definition", {})
+            .get("semanticModels", dict(edges=[], pageInfo=dict(hasNextPage=False)))
+        )
+
+        return result
 
     def has_data(self, data, resource_type: str = "model") -> bool:
         """Check if there is still having data to poll more given the resource type.
@@ -97,6 +112,7 @@ class DbtCloudMetadata:
         - source
         - exposure
         - test
+        - semanticModel
 
         Args:
             data (dict): Metadata result
@@ -112,7 +128,9 @@ class DbtCloudMetadata:
         )
 
     def save_last_cursor(
-        self, data, resource_types=["model", "source", "exposure", "test"]
+        self,
+        data,
+        resource_types=["model", "source", "exposure", "test", "semanticModel"],
     ):
         """Save last poll's cursor of all resource types.
 
@@ -120,7 +138,7 @@ class DbtCloudMetadata:
             data (dict): Metadata result
             resource_types (list, optional): |
                 Resource types.
-                Defaults to ["model", "source", "exposure", "test"].
+                Defaults to ["model", "source", "exposure", "test", "semanticModel"].
         """
         for resource_type in resource_types:
             self.last_cursor[resource_type] = self.get_last_cursor(
@@ -153,14 +171,18 @@ class DbtCloudMetadata:
         """
         return len(data.get(f"{resource_type}s", {}).get("edges", []))
 
-    def show_counts(self, data, resource_types=["model", "source", "exposure", "test"]):
+    def show_counts(
+        self,
+        data,
+        resource_types=["model", "source", "exposure", "test", "semanticModel"],
+    ):
         """Print the metadata result count for all resource types
 
         Args:
             data (dict): Metadata result
             resource_types (list, optional): |
                 Resource types.
-                Defaults to ["model", "source", "exposure", "test"].
+                Defaults to ["model", "source", "exposure", "test", "semanticModel"].
         """
         results = [
             f"{self.get_count(data=data, resource_type=x)} {x}(s)"

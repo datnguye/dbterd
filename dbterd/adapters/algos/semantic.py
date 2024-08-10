@@ -8,7 +8,35 @@ from dbterd.types import Catalog, Manifest
 
 
 def parse_metadata(data, **kwargs) -> Tuple[List[Table], List[Ref]]:
-    raise NotImplementedError()  # pragma: no cover
+    """Get all information (tables, relationships) needed for building diagram
+    (from Metadata, with Semantic Entities)
+
+    Args:
+        data (dict): metadata dict
+
+    Returns:
+        Tuple(List[Table], List[Ref]): Info of parsed tables and relationships
+    """
+    tables = []
+    relationships = []
+
+    # Parse Table
+    tables = base.get_tables_from_metadata(data=data, **kwargs)
+    tables = base.filter_tables_based_on_selection(tables=tables, **kwargs)
+
+    # Parse Ref
+    relationships = _get_relationships_from_data(data=data, **kwargs)
+    relationships = base.make_up_relationships(
+        relationships=relationships, tables=tables
+    )
+
+    logger.info(
+        f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)"
+    )
+    return (
+        sorted(tables, key=lambda tbl: tbl.node_name),
+        sorted(relationships, key=lambda rel: rel.name),
+    )
 
 
 def parse(
@@ -69,6 +97,32 @@ def find_related_nodes_by_id(
     return list(set(found_nodes))
 
 
+def _get_relationships_from_data(data=[], **kwargs) -> List[Ref]:
+    """Extract relationships from Metadata result list on Semantic Entities
+
+    Args:
+        data (List): Metadata result list. Defaults to [].
+
+    Returns:
+        list[Ref]: List of parsed relationship
+    """
+    entities = _get_linked_semantic_entities_from_data(data=data)
+    return base.get_unique_refs(
+        refs=[
+            Ref(
+                name=primary_entity.semantic_model,
+                table_map=(primary_entity.model, foreign_entity.model),
+                column_map=(
+                    primary_entity.column_name,
+                    foreign_entity.column_name,
+                ),
+                type=primary_entity.relationship_type,
+            )
+            for foreign_entity, primary_entity in entities
+        ]
+    )
+
+
 def _get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
     """_summary_
 
@@ -95,6 +149,27 @@ def _get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
     )
 
 
+def _get_linked_semantic_entities_from_data(
+    data=[],
+) -> List[Tuple[SemanticEntity, SemanticEntity]]:
+    """Get filtered list of Semantic Entities which are linked
+    (Metadata)
+
+    Args:
+        data (List): Metadata result list. Defaults to [].
+
+    Returns:
+        List[Tuple[SemanticEntity, SemanticEntity]]: List of (FK, PK) objects
+    """
+    foreigns, primaries = _get_semantic_entities_from_data(data=data)
+    linked_entities = []
+    for foreign_entity in foreigns:
+        for primary_entity in primaries:
+            if foreign_entity.entity_name == primary_entity.entity_name:
+                linked_entities.append((foreign_entity, primary_entity))
+    return linked_entities
+
+
 def _get_linked_semantic_entities(
     manifest: Manifest,
 ) -> List[Tuple[SemanticEntity, SemanticEntity]]:
@@ -113,6 +188,53 @@ def _get_linked_semantic_entities(
             if foreign_entity.entity_name == primary_entity.entity_name:
                 linked_entities.append((foreign_entity, primary_entity))
     return linked_entities
+
+
+def _get_semantic_entities_from_data(
+    data=[],
+) -> Tuple[List[SemanticEntity], List[SemanticEntity]]:
+    """Get all Semantic Entities
+    (Metadata)
+
+    Args:
+        data (List): Metadata result list. Defaults to [].
+
+    Returns:
+        Tuple[List[SemanticEntity], List[SemanticEntity]]: FK list and PK list
+    """
+    FK = "foreign"
+    PK = "primary"
+
+    semantic_entities = []
+    for data_item in data:
+        for semantic_model in data_item.get("semanticModels", {}).get("edges", []):
+            id = semantic_model.get("node", {}).get("uniqueId", "")
+            meta = semantic_model.get("node", {}).get("meta", {}) or {}
+            # currently only 1 parent with rs type of "model"
+            model_id = (
+                semantic_model.get("node", {}).get("parents", {})[0].get("uniqueId", "")
+            )
+
+            entities = semantic_model.get("node", {}).get("entities", [])
+            for e in entities:
+                entity_name = e.get("name")
+                semantic_entities.append(
+                    SemanticEntity(
+                        semantic_model=id,
+                        model=model_id,
+                        entity_name=entity_name,
+                        entity_type=e.get("type"),
+                        column_name=e.get("expr") or entity_name,
+                        relationship_type=(
+                            meta.get(TEST_META_RELATIONSHIP_TYPE, "") if meta else ""
+                        ),
+                    )
+                )
+
+    return (
+        [x for x in semantic_entities if x.entity_type == FK],
+        [x for x in semantic_entities if x.entity_type == PK],
+    )
 
 
 def _get_semantic_entities(
