@@ -32,11 +32,13 @@ class Executor:
         self, node_unique_id: str = None, **kwargs
     ) -> Tuple[List[Table], List[Ref]]:
         """Generate ERD from files"""
+        logger.info(f"Using algorithm [{kwargs.get('algo')}]")
         kwargs = self.evaluate_kwargs(**kwargs)
         return self.__run_by_strategy(node_unique_id=node_unique_id, **kwargs)
 
     def run_metadata(self, **kwargs) -> Tuple[List[Table], List[Ref]]:
         """Generate ERD from API metadata"""
+        logger.info(f"Using algorithm [{kwargs.get('algo')}]")
         kwargs = self.evaluate_kwargs(**kwargs)
         return self.__run_metadata_by_strategy(**kwargs)
 

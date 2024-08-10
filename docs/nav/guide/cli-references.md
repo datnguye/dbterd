@@ -212,6 +212,8 @@ Supported target, please visit [Generate the Targets](https://dbterd.datnguyen.d
 
 Specified algorithm in the way to detect diagram connectors
 
+Check the [docs](./choose-algo.md) 📖
+
 Supported ones:
 
 - `test_relationship`: Looking for all relationship tests to understand the ERs
@@ -238,10 +240,15 @@ In the above:
     ```
 
 **Examples:**
-=== "CLI"
+=== "CLI (test_relationship)"
 
     ```bash
     dbterd run -a test_relationship
+    ```
+=== "CLI (semantic)"
+
+    ```bash
+    dbterd run -a semantic
     ```
 === "CLI (long style)"
 

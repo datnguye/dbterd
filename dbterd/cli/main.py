@@ -3,7 +3,6 @@ from typing import List
 
 import click
 
-from dbterd import default
 from dbterd.adapters.base import Executor
 from dbterd.cli import params
 from dbterd.helpers import jsonify
@@ -52,7 +51,7 @@ class dbterdRunner:
 @click.pass_context
 def dbterd(ctx, **kwargs):
     """Tools for producing diagram-as-code"""
-    logger.info(f"Run with dbterd=={__version__} [{default.default_algo()}]")
+    logger.info(f"Run with dbterd=={__version__}")
 
 
 # dbterd run

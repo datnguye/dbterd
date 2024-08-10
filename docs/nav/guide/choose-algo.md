@@ -1,9 +1,9 @@
-# Choosing the algorithm to parse the Entity Relationships (ERs)
+# Choosing the algorithm (parsers) to parse the Entity Relationships (ERs)
 
 There are 2 approaches (or 2 modules) we can use here to let `dbterd` look at how the ERs can be recognized between the dbt models:
 
-1. **Test Relationship** ([docs](https://docs.getdbt.com/reference/resource-properties/data-tests#relationships))
-2. **Semantic Entities** ([docs](https://docs.getdbt.com/docs/build/entities))
+1. **Test Relationship** ([docs](https://docs.getdbt.com/reference/resource-properties/data-tests#relationships), [source](https://github.com/datnguye/dbterd/blob/main/dbterd/adapters/algos/test_relationship.py)) (default)
+2. **Semantic Entities** ([docs](https://docs.getdbt.com/docs/build/entities), [source](https://github.com/datnguye/dbterd/blob/main/dbterd/adapters/algos/semantic.py))
 
 ## Test Relationship
 
@@ -65,13 +65,15 @@ NO, not yet (maybe!), sometime this module is not going to work perfectly due to
 - We have the tests done in separate tools already (e.g. Soda), there is no reason to duplicate the (relationship) tests here.
     - No problem! Let's still add it with `where: 1=0` or with the dummy relationship tests (see this [blogpost](https://medium.com/@vaibhavchopda04/generating-erds-from-dbt-projects-a-code-driven-approach-83abb957f483))
 
+In case that we don't want to leverage the dbt tests still, let's move on the next section for the alternative 🏃
+
 ## Semantic Entities
 
-Since dbt v1.6, dbt has supported the Semantic Layer, when implementing this dbt Semantic Layer with Metric Flow ([docs](https://docs.getdbt.com/docs/build/about-metricflow)), we have the ability to define entities in our semantic modelling, telling `metricflow` how to join tables together.
+Since dbt v1.6, dbt has supported the Semantic Layer (SL) with Metric Flow ([docs](https://docs.getdbt.com/docs/build/about-metricflow)), we have the ability to define entities in our semantic modelling, telling `metricflow` how to join tables together. Therefore, it now becomes the 2nd parser for our choice of usage if we have implemented the dbt SL already.
 
-Based on the above, `dbterd` can also look for the Semantic [Entities](https://docs.getdbt.com/docs/build/entities) (`primary` and `foreign`) in order to understand the ERs, subsequently produce the ERD code as the 2nd option.
+`dbterd` can now look for the Semantic [Entities](https://docs.getdbt.com/docs/build/entities) (`primary` and `foreign`) in order to understand the ERs, subsequently produce the ERD code.
 
-Let's use the above Jaffle Shop project again, here is the sample implemented `semantic_models` between `order_item` and `orders`:
+Let's use the above [Jaffle Shop](https://github.com/dbt-labs/jaffle-shop) project again, here is the sample code which was implemented in the repo for the semantic models: `order_item` and `orders`:
 
 ```yml
 semantic_models:
@@ -85,8 +87,7 @@ semantic_models:
       - name: order_id
         type: foreign
         expr: order_id
-...
-semantic_models:
+  ...
   - name: orders
     ...
     model: ref('orders')
@@ -105,4 +106,7 @@ The result DBML code will be the same as the 1st option. Voila! 🎉🎉
 
 ## New module(s)?
 
-If you get the idea of having new type of module(s) to parse ERs, feel free to submit yours [here](https://github.com/datnguye/dbterd/issues/new/?title=[FEAT]-What-is-your-idea) or to check [Contribution](https://dbterd.datnguyen.de/latest/nav/development/contributing-guide.html) for pulling a request!
+If you've got an idea of having new type of module(s) to parse ERs, feel free to:
+
+- To submit yours [here](https://github.com/datnguye/dbterd/issues/new/?title=[FEAT]-What-is-your-idea)
+- Or to check [Contribution](./development/contributing-guide.html) for pulling a request!

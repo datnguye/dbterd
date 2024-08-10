@@ -12,7 +12,7 @@ class Query:
         """
         self.dir = f"{os.path.dirname(os.path.realpath(__file__))}/include"
 
-    def take(self, file_path: str = None) -> str:
+    def take(self, file_path: str = None, algo: str = None) -> str:
         """Read the given file path and return the content as the query string
 
         Args:
@@ -21,7 +21,7 @@ class Query:
         Returns:
             str: Query string
         """
-        query_file = file_path or f"{self.dir}/erd_query.gql"
+        query_file = file_path or f"{self.dir}/erd_query__{algo}.gql"
         logger.info(f"Looking for the query in: {query_file}")
         return self.get_file_content(file_path=query_file)
 

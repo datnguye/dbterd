@@ -422,6 +422,7 @@ def get_relationships_from_metadata(data=[], **kwargs) -> List[Ref]:
             if (
                 test_id.startswith("test")
                 and rule.get("name").lower() in test_id.lower()
+                and test_meta is not None
                 and test_meta.get(TEST_META_IGNORE_IN_ERD, "0") == "0"
             ):
                 test_metadata_kwargs = (
