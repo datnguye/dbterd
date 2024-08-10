@@ -70,7 +70,9 @@ class TestAlgoSemantic:
                                 ),
                                 dict(
                                     node=dict(
-                                        entities=[dict(name="one", type="foreign", expr="two")],
+                                        entities=[
+                                            dict(name="one", type="foreign", expr="two")
+                                        ],
                                         uniqueId="semantic_model.a.model2",
                                         meta=None,
                                         parents=[dict(uniqueId="model.a.model2")],

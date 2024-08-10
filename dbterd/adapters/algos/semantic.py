@@ -43,7 +43,7 @@ def parse(
     manifest: Manifest, catalog: Union[str, Catalog], **kwargs
 ) -> Tuple[List[Table], List[Ref]]:
     # Parse metadata
-    if catalog == "metadata": 
+    if catalog == "metadata":
         return parse_metadata(data=manifest, **kwargs)
 
     # Parse Table
