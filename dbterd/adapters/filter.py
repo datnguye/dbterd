@@ -66,7 +66,7 @@ def evaluate_rule(table: Table, rule: str) -> bool:
 
     Args:
         table (Table): Table object to be evaluated
-        rule (str): Rule defintion
+        rule (str): Rule definition
 
     Returns:
         bool: True if satisfied all rules

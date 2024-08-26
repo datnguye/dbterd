@@ -2,10 +2,15 @@
 
 Generate the ERD-as-a-code ([DBML](https://dbdiagram.io/d), [Mermaid](https://mermaid-js.github.io/mermaid-live-editor/), [PlantUML](https://plantuml.com/ie-diagram), [GraphViz](https://graphviz.org/), [D2](https://d2lang.com/)) from dbt artifact files (`dbt Core`) or from dbt metadata (`dbt Cloud`)
 
+Entity Relationships are configurably detected by ([docs](https://dbterd.datnguyen.de/latest/nav/guide/cli-references.html#dbterd-run-algo-a)):
+
+- [Test Relationships](https://docs.getdbt.com/reference/resource-properties/data-tests#relationships) (default)
+- [Semantic Entities](https://docs.getdbt.com/docs/build/entities) (use `-a` option)
+
 [![PyPI version](https://badge.fury.io/py/dbterd.svg)](https://pypi.org/project/dbterd/)
 ![python-cli](https://img.shields.io/badge/CLI-Python-FFCE3E?labelColor=14354C&logo=python&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![python](https://img.shields.io/badge/Python-3.9|3.10|3.11-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
+[![python](https://img.shields.io/badge/Python-3.9|3.10|3.11|3.12-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![codecov](https://codecov.io/gh/datnguye/dbterd/branch/main/graph/badge.svg?token=N7DMQBLH4P)](https://codecov.io/gh/datnguye/dbterd)
 
 ```bash
@@ -53,7 +58,7 @@ dbterd --version
 
     dbterd run -ad samples/dbt-constraints -a "test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)"
 
-    # your own sample without commiting to repo
+    # your own sample without committing to repo
     dbterd run -ad samples/local -rt model -rt source
     ```
 

@@ -1,4 +1,3 @@
-from dataclasses import dataclass, field
 from unittest import mock
 from unittest.mock import MagicMock
 
@@ -8,234 +7,16 @@ import pytest
 from dbterd.adapters.algos import base as base_algo
 from dbterd.adapters.algos import test_relationship
 from dbterd.adapters.meta import Column, Ref, Table
-
-
-@dataclass
-class DummyManifestV6:
-    compiled_sql: str = "compiled_sql"
-
-
-@dataclass
-class DummyManifestV7:
-    compiled_code: str = "compiled_code"
-
-
-@dataclass
-class DummyManifestError:
-    raw_sql: str = "raw_sql"
-
-
-@dataclass
-class DummyManifestHasColumns:
-    columns = dict({"col1": None, "col2": None})
-    database = "database_dummy"
-    schema = "schema_dummy"
-
-
-@dataclass
-class ManifestNodeTestMetaData:
-    kwargs: dict
-
-
-@dataclass
-class ManifestNodeDependsOn:
-    nodes: list = field(default_factory=list)
-
-
-@dataclass
-class ManifestNode:
-    test_metadata: ManifestNodeTestMetaData
-    meta: dict
-    columns: dict
-    raw_sql: str = ""
-    database: str = ""
-    schema_: str = ""
-    depends_on: ManifestNodeDependsOn = field(default_factory=ManifestNodeDependsOn)
-    description: str = ""
-
-
-@dataclass
-class ManifestExposureNode:
-    depends_on: ManifestNodeDependsOn
-
-
-@dataclass
-class ManifestNodeColumn:
-    name: str
-    data_type: str = "unknown"
-    description: str = ""
-
-
-@dataclass
-class DummyManifestRel:
-    nodes = {
-        "test.dbt_resto.relationships_table1": ManifestNode(
-            test_metadata=ManifestNodeTestMetaData(
-                kwargs={"column_name": "f1", "field": "f2", "to": "ref('table2')"}
-            ),
-            meta={},
-            columns={},
-            depends_on=ManifestNodeDependsOn(
-                nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]
-            ),
-        ),
-        "test.dbt_resto.relationships_table2": ManifestNode(
-            test_metadata=ManifestNodeTestMetaData(
-                kwargs={"column_name": "f1", "field": "f2", "to": "ref('table2')"}
-            ),
-            meta={},
-            columns={},
-            depends_on=ManifestNodeDependsOn(
-                nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]
-            ),
-        ),
-        "test.dbt_resto.relationships_table3": ManifestNode(
-            test_metadata=ManifestNodeTestMetaData(
-                kwargs={"column_name": "f1", "field": "f2", "to": "ref('tabley')"}
-            ),
-            meta={},
-            columns={},
-            depends_on=ManifestNodeDependsOn(
-                nodes=["model.dbt_resto.tabley", "model.dbt_resto.tablex"]
-            ),
-        ),
-        "test.dbt_resto.relationships_tablex": ManifestNode(
-            test_metadata=ManifestNodeTestMetaData(
-                kwargs={"column_name": "x", "field": "y", "to": "ref('y')"}
-            ),
-            meta={"ignore_in_erd": 1},
-            columns={},
-            depends_on=ManifestNodeDependsOn(
-                nodes=["model.dbt_resto.y", "model.dbt_resto.x"]
-            ),
-        ),
-        "test.dbt_resto.foreign_key_table1": ManifestNode(
-            test_metadata=ManifestNodeTestMetaData(
-                kwargs={
-                    "column_name": "f1",
-                    "pk_column_name": "f2",
-                    "pk_table_name": "ref('table2')",
-                }
-            ),
-            meta={},
-            columns={},
-            depends_on=ManifestNodeDependsOn(
-                nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]
-            ),
-        ),
-        "test.dbt_resto.relationships_table4": ManifestNode(
-            test_metadata=ManifestNodeTestMetaData(
-                kwargs={"column_name": "f1", "field": "f2", "to": "ref('table-m2')"}
-            ),
-            meta={"relationship_type": "one-to-one"},
-            columns={},
-            depends_on=ManifestNodeDependsOn(
-                nodes=["model.dbt_resto.table-m2", "model.dbt_resto.table-m1"]
-            ),
-        ),
-        "test.dbt_resto.relationships_table1_reverse": ManifestNode(
-            test_metadata=ManifestNodeTestMetaData(
-                kwargs={"column_name": "f1", "field": "f2", "to": "ref('table-r2')"}
-            ),
-            meta={},
-            columns={},
-            depends_on=ManifestNodeDependsOn(
-                nodes=["model.dbt_resto.table-r1", "model.dbt_resto.table-r2"]
-            ),
-        ),
-        "test.dbt_resto.relationships_table1_recursive": ManifestNode(
-            test_metadata=ManifestNodeTestMetaData(
-                kwargs={"column_name": "f1", "field": "f2", "to": "ref('table1')"}
-            ),
-            meta={},
-            columns={},
-            depends_on=ManifestNodeDependsOn(nodes=["model.dbt_resto.table1"]),
-        ),
-    }
-
-
-@dataclass
-class DummyManifestTable:
-    nodes = {
-        "model.dbt_resto.table1": ManifestNode(
-            test_metadata=ManifestNodeTestMetaData(kwargs={}),
-            meta={},
-            raw_sql="--raw_sql--",
-            database="--database--",
-            schema_="--schema--",
-            columns={},
-        ),
-        "model.dbt_resto.table_dummy_columns": ManifestNode(
-            test_metadata=ManifestNodeTestMetaData(kwargs={}),
-            meta={},
-            raw_sql="--raw_sql--",
-            database="--database--",
-            schema_="--schema--",
-            columns={},
-        ),
-        "model.dbt_resto.table2": ManifestNode(
-            test_metadata=ManifestNodeTestMetaData(kwargs={}),
-            meta={},
-            raw_sql="--raw_sql2--",
-            database="--database2--",
-            schema_="--schema2--",
-            columns={
-                "name2": ManifestNodeColumn(name="name2"),
-                "name3": ManifestNodeColumn(name="name3"),
-            },
-        ),
-    }
-    sources = {
-        "source.dummy.source_table": ManifestNode(
-            test_metadata=ManifestNodeTestMetaData(kwargs={}),
-            meta={},
-            database="--database--",
-            schema_="--schema--",
-            columns={
-                "name1": ManifestNodeColumn(name="name1"),
-                "name2": ManifestNodeColumn(name="name2"),
-            },
-        ),
-    }
-
-
-@dataclass
-class DummyManifestWithExposure:
-    exposures = {
-        "exposure.dbt_resto.dummy": ManifestExposureNode(
-            depends_on=ManifestNodeDependsOn(
-                nodes=["model.dbt_resto.table1", "model.dbt_resto.table2"]
-            ),
-        )
-    }
-
-
-@dataclass
-class CatalogNode:
-    columns: dict
-
-
-@dataclass
-class CatalogNodeColumn:
-    type: str
-    comment: str = ""
-
-
-@dataclass
-class DummyCatalogTable:
-    nodes = {
-        "model.dbt_resto.table1": CatalogNode(
-            columns={"name1": CatalogNodeColumn(type="--name1-type--")}
-        ),
-        "model.dbt_resto.table2": CatalogNode(
-            columns={"name3": CatalogNodeColumn(type="--name3-type--")}
-        ),
-    }
-    sources = {
-        "source.dummy.source_table": CatalogNode(
-            columns={"name1": CatalogNodeColumn(type="--name1-type--")}
-        ),
-    }
+from tests.unit.adapters.algos import (
+    DummyCatalogTable,
+    DummyManifestError,
+    DummyManifestHasColumns,
+    DummyManifestRel,
+    DummyManifestTable,
+    DummyManifestV6,
+    DummyManifestV7,
+    DummyManifestWithExposure,
+)
 
 
 class TestAlgoTestRelationship:
@@ -503,6 +284,103 @@ class TestAlgoTestRelationship:
             mock_get_table_from_metadata.call_count
             == get_table_from_metadata_call_count
         )
+
+    @pytest.mark.parametrize(
+        "data, kwargs, expected",
+        [
+            (
+                [
+                    {
+                        "models": {
+                            "edges": [
+                                {
+                                    "node": {
+                                        "uniqueId": "model.package.name1",
+                                        "database": "db1",
+                                        "schema": "sc1",
+                                        "name": "name1",
+                                        "catalog": {},
+                                    }
+                                },
+                            ]
+                        }
+                    }
+                ],
+                dict(
+                    entity_name_format="resource.package.model", resource_type=["model"]
+                ),
+                [
+                    Table(
+                        name="model.package.name1",
+                        database="db1",
+                        schema="sc1",
+                        columns=[
+                            Column(name="unknown", data_type="unknown", description="")
+                        ],
+                        raw_sql=None,
+                        resource_type="model",
+                        exposures=[],
+                        node_name="model.package.name1",
+                        description=None,
+                    ),
+                ],
+            ),
+            (
+                [
+                    {
+                        "models": {
+                            "edges": [
+                                {
+                                    "node": {
+                                        "uniqueId": "model.package.name1",
+                                        "database": "db1",
+                                        "schema": "sc1",
+                                        "name": "name1",
+                                        "catalog": {},
+                                    }
+                                },
+                            ]
+                        },
+                        "exposures": {
+                            "edges": [
+                                {
+                                    "node": {
+                                        "uniqueId": "exposure.package.e1",
+                                        "name": "e1",
+                                        "parents": [
+                                            {"uniqueId": "model.package.name1"}
+                                        ],
+                                    }
+                                },
+                            ]
+                        },
+                    }
+                ],
+                dict(
+                    entity_name_format="resource.package.model",
+                    resource_type=["model"],
+                    select=["exposure:e1"],
+                ),
+                [
+                    Table(
+                        name="model.package.name1",
+                        database="db1",
+                        schema="sc1",
+                        columns=[
+                            Column(name="unknown", data_type="unknown", description="")
+                        ],
+                        raw_sql=None,
+                        resource_type="model",
+                        exposures=["e1"],
+                        node_name="model.package.name1",
+                        description=None,
+                    ),
+                ],
+            ),
+        ],
+    )
+    def test_get_tables_from_metadata(self, data, kwargs, expected):
+        assert expected == base_algo.get_tables_from_metadata(data=data, **kwargs)
 
     @pytest.mark.parametrize(
         "model_metadata, exposures, kwargs, expected",
@@ -866,11 +744,10 @@ class TestAlgoTestRelationship:
         with pytest.raises(click.BadParameter):
             base_algo.get_relationships_from_metadata(data=data, **kwargs)
 
-    def test_find_related_nodes_by_id_error(self):
-        with pytest.raises(click.BadParameter):
-            test_relationship.find_related_nodes_by_id(
-                manifest="irrelevant", type="metadata", node_unique_id="irrelevant"
-            )
+    def test_find_related_nodes_by_id_not_supported_type(self):
+        assert ["model.p.abc"] == test_relationship.find_related_nodes_by_id(
+            manifest="irrelevant", type="metadata", node_unique_id="model.p.abc"
+        )
 
     def test_find_related_nodes_by_id(self):
         assert sorted(["model.dbt_resto.table1", "model.dbt_resto.table2"]) == sorted(

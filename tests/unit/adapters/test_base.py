@@ -116,7 +116,7 @@ class TestBase:
             worker._Executor__get_selection()
 
     @pytest.mark.parametrize(
-        "command, kwargs, expected",
+        "command, kwargs, select_result, expected",
         [
             (
                 "run",
@@ -124,6 +124,7 @@ class TestBase:
                     select=[],
                     exclude=[],
                 ),
+                ["yolo"],
                 dict(
                     artifacts_dir="/path/ad",
                     dbt_project_dir="/path/dpd",
@@ -133,7 +134,20 @@ class TestBase:
             ),
             (
                 "run",
+                dict(select=["dummy"], exclude=[], dbt=True),
+                [],
+                dict(
+                    dbt=True,
+                    artifacts_dir="/path/ad",
+                    dbt_project_dir="/path/dpd",
+                    select=["exact:none"],
+                    exclude=[],
+                ),
+            ),
+            (
+                "run",
                 dict(select=[], exclude=[], dbt=True),
+                ["yolo"],
                 dict(
                     dbt=True,
                     artifacts_dir="/path/ad",
@@ -145,6 +159,7 @@ class TestBase:
             (
                 "run",
                 dict(select=[], exclude=[], dbt=True, dbt_auto_artifacts=True),
+                ["yolo"],
                 dict(
                     dbt=True,
                     dbt_auto_artifacts=True,
@@ -157,6 +172,7 @@ class TestBase:
             (
                 "run",
                 dict(select=[], exclude=[], dbt_cloud=True),
+                ["yolo"],
                 dict(
                     dbt_cloud=True,
                     artifacts_dir="/path/dpd/target",
@@ -167,6 +183,9 @@ class TestBase:
             ),
         ],
     )
+    @mock.patch(
+        "dbterd.adapters.base.Executor._Executor__check_if_any_unsupported_selection"
+    )
     @mock.patch("dbterd.adapters.base.Executor._Executor__get_dir")
     @mock.patch("dbterd.adapters.base.Executor._Executor__get_selection")
     @mock.patch("dbterd.adapters.base.DbtInvocation.get_artifacts_for_erd")
@@ -175,15 +194,19 @@ class TestBase:
         mock_get_artifacts_for_erd,
         mock_get_selection,
         mock_get_dir,
+        mock_check_if_any_unsupported_selection,
         command,
         kwargs,
+        select_result,
         expected,
     ):
         worker = Executor(ctx=click.Context(command=click.BaseCommand(command)))
         mock_get_dir.return_value = ("/path/ad", "/path/dpd")
-        mock_get_selection.return_value = ["yolo"]
+        mock_get_selection.return_value = select_result
         assert expected == worker.evaluate_kwargs(**kwargs)
         mock_get_dir.assert_called_once()
+        if not kwargs.get("dbt"):
+            mock_check_if_any_unsupported_selection.assert_called_once()
         if command == "run":
             if kwargs.get("dbt") and kwargs.get("dbt_auto_artifacts"):
                 mock_get_artifacts_for_erd.assert_called_once()

@@ -1,9 +1,6 @@
 from typing import List, Tuple, Union
 
-import click
-
 from dbterd.adapters.algos import base
-from dbterd.adapters.filter import is_selected_table
 from dbterd.adapters.meta import Ref, Table
 from dbterd.helpers.log import logger
 from dbterd.types import Catalog, Manifest
@@ -24,18 +21,7 @@ def parse_metadata(data, **kwargs) -> Tuple[List[Table], List[Ref]]:
 
     # Parse Table
     tables = base.get_tables_from_metadata(data=data, **kwargs)
-
-    # Apply selection
-    tables = [
-        table
-        for table in tables
-        if is_selected_table(
-            table=table,
-            select_rules=kwargs.get("select") or [],
-            resource_types=kwargs.get("resource_type", []),
-            exclude_rules=kwargs.get("exclude") or [],
-        )
-    ]
+    tables = base.filter_tables_based_on_selection(tables=tables, **kwargs)
 
     # Parse Ref
     relationships = base.get_relationships_from_metadata(data=data, **kwargs)
@@ -70,18 +56,7 @@ def parse(
 
     # Parse Table
     tables = base.get_tables(manifest=manifest, catalog=catalog, **kwargs)
-
-    # Apply selection
-    tables = [
-        table
-        for table in tables
-        if is_selected_table(
-            table=table,
-            select_rules=kwargs.get("select") or [],
-            resource_types=kwargs.get("resource_type", []),
-            exclude_rules=kwargs.get("exclude") or [],
-        )
-    ]
+    tables = base.filter_tables_based_on_selection(tables=tables, **kwargs)
 
     # Parse Ref
     relationships = base.get_relationships(manifest=manifest, **kwargs)
@@ -89,7 +64,7 @@ def parse(
         relationships=relationships, tables=tables
     )
 
-    # Fullfill columns in Tables (due to `select *`)
+    # Fulfill columns in Tables (due to `select *`)
     tables = base.enrich_tables_from_relationships(
         tables=tables, relationships=relationships
     )
@@ -115,20 +90,18 @@ def find_related_nodes_by_id(
         node_unique_id (str): Manifest node unique ID
         type (str, optional): Manifest type (local file or metadata). Defaults to None.
 
-    Raises:
-        click.BadParameter: Not Supported manifest type
-
     Returns:
         List[str]: Manifest nodes' unique ID
     """
-    if type is not None:
-        raise click.BadParameter("Not supported manifest type")
+    found_nodes = [node_unique_id]
+    if type == "metadata":
+        return found_nodes  # not supported yet, returned input only
 
     rule = base.get_algo_rule(**kwargs)
     test_nodes = base.get_test_nodes_by_rule_name(
         manifest=manifest, rule_name=rule.get("name").lower()
     )
-    found_nodes = [node_unique_id]
+
     for test_node in test_nodes:
         nodes = manifest.nodes[test_node].depends_on.nodes or []
         if node_unique_id in nodes:

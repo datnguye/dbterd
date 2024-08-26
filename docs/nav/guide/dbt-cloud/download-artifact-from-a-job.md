@@ -40,9 +40,9 @@ And the sample logs:
 ```log
 dbterd - INFO - Run with dbterd==1.0.0 (main.py:54)
 dbterd - INFO - Using dbt project dir at: C:\Sources\dbterd (base.py:46)
-dbterd - INFO - Dowloading...[URL: https://hidden/api/v2/accounts/hidden/jobs/hidden/artifacts/manifest.json] (dbt_cloud.py:68)
+dbterd - INFO - Downloading...[URL: https://hidden/api/v2/accounts/hidden/jobs/hidden/artifacts/manifest.json] (dbt_cloud.py:68)
 dbterd - INFO - Completed [status: 200] (dbt_cloud.py:71)
-dbterd - INFO - Dowloading...[URL: https://hidden/api/v2/accounts/hidden/jobs/hidden/artifacts/catalog.json] (dbt_cloud.py:68)
+dbterd - INFO - Downloading...[URL: https://hidden/api/v2/accounts/hidden/jobs/hidden/artifacts/catalog.json] (dbt_cloud.py:68)
 dbterd - INFO - Completed [status: 200] (dbt_cloud.py:71)
 dbterd - INFO - Using dbt artifact dir at: hidden (base.py:73)
 dbterd - INFO - Collected 4 table(s) and 3 relationship(s) (test_relationship.py:59)

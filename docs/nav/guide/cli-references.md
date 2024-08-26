@@ -63,7 +63,7 @@ Command to generate diagram-as-a-code file
 ### dbterd run --select (-s)
 
 Selection criteria.
-> Select all dbt models if not specified, supports mulitple options
+> Select all dbt models if not specified, supports multiple options
 
 Rules:
 
@@ -102,7 +102,7 @@ Rules:
 
 #### `AND` and `OR` logic
 
-- `AND` logic is applied to a single selection splitted by comma (,)
+- `AND` logic is applied to a single selection split by comma (,)
 - `OR` logic is applied to 2+ selection
 
 **Examples:**
@@ -122,7 +122,7 @@ Rules:
 ### dbterd run --exclude (-ns)
 
 Exclusion criteria. Rules are the same as Selection Criteria.
-> Do not exclude any dbt models if not specified, supports mulitple options
+> Do not exclude any dbt models if not specified, supports multiple options
 
 **Examples:**
 === "CLI"
@@ -211,22 +211,28 @@ Supported target, please visit [Generate the Targets](https://dbterd.datnguyen.d
 ### dbterd run --algo (-a)
 
 Specified algorithm in the way to detect diagram connectors
-> Default to `test_relationship`
 
-In the advanced use case, the test name can be configurable by following syntax:
+Check the [docs](./choose-algo.md) 📖
+
+Supported ones:
+
+- `test_relationship`: Looking for all relationship tests to understand the ERs
+- `semantic`: Looking for all semantic models' entities (primary & foreign) to understand the ERs
+
+In the advanced use case of `test_relationship`, the test name can be configurable by following syntax:
 
 `{algorithm_name}:(name:{contains_test_name}|c_from:{referencing_column_name}|c_to:{referenced_column_name})`
 
 In the above:
 
-- `algorithm_name`: `test_relationship` (only supported value now)
+- `algorithm_name` (Mandatory): `test_relationship` or `semantic`
 - `contains_test_name`: Configure the test name (detected with `contains` logic). Default to `relationship`
 - `c_from`: Configure the test metadata attribute (1) for the foreign key column name(s). If (1)'s value is multiple columns, it will concat them all   with `_and` wording
       > NOTE: It always looking at the `column_name` attribute firstly
 - `c_to`: Configure the test metadata attribute (2) for the referenced column name(s). If (2)'s value is multiple columns, it will concat them all with `_and` wording. Default to `field`
 
 !!! tip "For example, if you would use `dbt-constraints` package"
-    The [dbt-constraints](https://hub.getdbt.com/snowflake-labs/dbt_constraints/latest/) package is using different name of test which is close to the contraint names, in this case, you would need to customize the input string here:
+    The [dbt-constraints](https://hub.getdbt.com/snowflake-labs/dbt_constraints/latest/) package is using different name of test which is close to the constraint names, in this case, you would need to customize the input string here:
 
     ```bash
     dbterd run \
@@ -234,10 +240,15 @@ In the above:
     ```
 
 **Examples:**
-=== "CLI"
+=== "CLI (test_relationship)"
 
     ```bash
     dbterd run -a test_relationship
+    ```
+=== "CLI (semantic)"
+
+    ```bash
+    dbterd run -a semantic
     ```
 === "CLI (long style)"
 
@@ -300,7 +311,7 @@ Specified dbt catalog.json version
 ### dbterd run --resource-type (-rt)
 
 Specified dbt resource type(seed, model, source, snapshot).
-> Default to `["model"]`, supports mulitple options
+> Default to `["model"]`, supports multiple options
 
 **Examples:**
 === "CLI"
@@ -316,7 +327,7 @@ Specified dbt resource type(seed, model, source, snapshot).
 
 ### dbterd run --dbt
 
-Flag to indicate the Selecton to follow dbt's one leveraging Programmatic Invocation
+Flag to indicate the Selection to follow dbt's one leveraging Programmatic Invocation
 > Default to `False`
 
 **Examples:**
@@ -335,7 +346,7 @@ Flag to indicate the Selecton to follow dbt's one leveraging Programmatic Invoca
 
 ### dbterd run --dbt --dbt-auto-artifact
 
-Flag to indicate force running `dbt docs generate` to the targetted project in order to produce the dbt artifact files.
+Flag to indicate force running `dbt docs generate` to the targeted project in order to produce the dbt artifact files.
 
 This option have to be enabled together with `--dbt` option, and will override the value of `--artifacts-dir` to be using the `/target` dir of the value of `--dbt-project-dir`.
 
@@ -402,6 +413,33 @@ Currently, it supports the following keys in the format:
     dbterd run --entity-name-format database.schema.table # with fqn of the physical tables
     dbterd run --entity-name-format schema.table # with schema.table only
     dbterd run --entity-name-format table # with table name only
+    ```
+
+### dbterd run --omit-entity-name-quotes
+
+Flag to omit the double quotes in the generated entity name. Currently only `dbml` is supported.
+
+> Default to `False`
+
+Enabled it to allow `dbdocs` to recognize the schemas and display them as grouping:
+
+- With quotes:
+
+![dbdocs-enf-with-quotes](../../assets/images/dbdocs-enf-with-quotes.png)
+
+- Without quotes:
+
+![dbdocs-enf-without-quotes](../../assets/images/dbdocs-enf-without-quotes.png)
+
+> ⚠️ As of 2024 June: DBML doesn't support nested schema in the entity name which means 'database.schema.table' won't be allowed, but 'schema.table' does!
+
+**Examples:**
+=== "CLI"
+
+    ```bash
+    dbterd run --entity-name-format resource.package.model --omit-entity-name-quotes # ❌
+    dbterd run --entity-name-format database.schema.table --omit-entity-name-quotes # ❌
+    dbterd run --entity-name-format schema.table --omit-entity-name-quotes # ✅
     ```
 
 ### dbterd run --dbt-cloud

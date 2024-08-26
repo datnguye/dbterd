@@ -3,6 +3,7 @@ from typing import Dict, List
 
 import click
 
+from dbterd.adapters.filter import is_selected_table
 from dbterd.adapters.meta import Column, Ref, Table
 from dbterd.constants import (
     DEFAULT_ALGO_RULE,
@@ -23,7 +24,7 @@ def get_tables_from_metadata(data=[], **kwargs) -> List[Table]:
         List[Table]: All parsed tables
     """
     tables = []
-    table_exposures = get_node_exposures_from_metadata(data=data)
+    table_exposures = get_node_exposures_from_metadata(data=data, **kwargs)
     # Model
     if "model" in kwargs.get("resource_type", []):
         for data_item in data:
@@ -96,10 +97,31 @@ def get_tables(manifest: Manifest, catalog: Catalog, **kwargs) -> List[Table]:
     return tables
 
 
+def filter_tables_based_on_selection(tables: List[Table], **kwargs) -> List[Table]:
+    """Filter list of tables based on the Selection Rules
+
+    Args:
+        tables (List[Table]): Parsed tables
+
+    Returns:
+        List[Table]: Filtered tables
+    """
+    return [
+        table
+        for table in tables
+        if is_selected_table(
+            table=table,
+            select_rules=kwargs.get("select") or [],
+            resource_types=kwargs.get("resource_type", []),
+            exclude_rules=kwargs.get("exclude") or [],
+        )
+    ]
+
+
 def enrich_tables_from_relationships(
     tables: List[Table], relationships: List[Ref]
 ) -> List[Table]:
-    """Fullfill columns in Table due to `select *`
+    """Fulfill columns in Table due to `select *`
 
     Args:
         tables (List[Table]): List of Tables
@@ -301,7 +323,7 @@ def get_node_exposures_from_metadata(data=[], **kwargs):
         data (list, optional): Metadata result list. Defaults to [].
 
     Returns:
-        list: List of maping dict {table_name:..., exposure_name=...}
+        list: List of mapping dict {table_name:..., exposure_name=...}
     """
     exposures = []
     for data_item in data:
@@ -328,7 +350,7 @@ def get_node_exposures(manifest: Manifest) -> List[Dict[str, str]]:
         manifest (dict): dbt manifest json
 
     Returns:
-        list: List of maping dict {table_name:..., exposure_name=...}
+        list: List of mapping dict {table_name:..., exposure_name=...}
     """
     exposures = []
 
@@ -400,6 +422,7 @@ def get_relationships_from_metadata(data=[], **kwargs) -> List[Ref]:
             if (
                 test_id.startswith("test")
                 and rule.get("name").lower() in test_id.lower()
+                and test_meta is not None
                 and test_meta.get(TEST_META_IGNORE_IN_ERD, "0") == "0"
             ):
                 test_metadata_kwargs = (
@@ -490,8 +513,8 @@ def get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
     return get_unique_refs(refs=refs)
 
 
-# def get_relationships_by_contraints(manifest: Manifest, **kwargs) -> List[Ref]:
-#     """Extract relationships from dbt artifacts based on model's configured contraints
+# def get_relationships_by_constraints(manifest: Manifest, **kwargs) -> List[Ref]:
+#     """Extract relationships from dbt artifacts based on model's configured constraints
 
 #     Args:
 #         manifest (dict): Manifest json

@@ -64,7 +64,7 @@ $env:DBTERD_DBT_CLOUD_SERVICE_TOKEN="your_value"
 $env:DBTERD_DBT_CLOUD_ENVIRONMENT_ID="your_value"
 ```
 
-## 2. Genrate ERD file
+## 2. Generate ERD file
 
 We're going to use a new command as `dbterd run-metadata` to tell `dbterd` to use dbt Cloud Discovery API with all above variables.
 
@@ -74,7 +74,7 @@ The command will be looks like:
 dbterd run-metadata [-s <dbterd selection>]
 ```
 
-> Behind the scenes, it will try use to the ERD GraphQL query buit-in at [include/erd_query.gql](https://github.com/datnguye/dbterd/tree/main/dbterd/adapters/dbt_cloud/include/erd_query.gql)
+> Behind the scenes, it will try use to the ERD GraphQL query built-in at [include/erd_query.gql](https://github.com/datnguye/dbterd/tree/main/dbterd/adapters/dbt_cloud/include/erd_query.gql)
 
 and then, here is the sample console log:
 

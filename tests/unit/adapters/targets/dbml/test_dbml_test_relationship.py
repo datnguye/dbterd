@@ -8,7 +8,7 @@ from dbterd.adapters.targets import dbml as engine
 
 class TestDbmlTestRelationship:
     @pytest.mark.parametrize(
-        "tables, relationships, select, exclude, resource_type, expected",
+        "tables, relationships, select, exclude, resource_type, omit_entity_name_quotes, expected",
         [
             (
                 [
@@ -31,6 +31,7 @@ class TestDbmlTestRelationship:
                 [],
                 [],
                 ["model"],
+                False,
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table1" {
@@ -82,6 +83,7 @@ class TestDbmlTestRelationship:
                 [],
                 [],
                 ["model", "source"],
+                False,
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table1" {
@@ -134,6 +136,7 @@ class TestDbmlTestRelationship:
                 ["schema:--schema--"],
                 [],
                 ["model", "source"],
+                False,
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table1" {
@@ -158,6 +161,7 @@ class TestDbmlTestRelationship:
                 [],
                 ["model.dbt_resto.table1"],
                 ["model"],
+                False,
                 """//Tables (based on the selection criteria)
                 //Refs (based on the DBT Relationship Tests)
                 """,
@@ -185,6 +189,7 @@ class TestDbmlTestRelationship:
                 ["model.dbt_resto"],
                 ["model.dbt_resto.table2"],
                 ["model"],
+                False,
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table1" {
@@ -225,6 +230,7 @@ class TestDbmlTestRelationship:
                 ["wildcard:*.table*"],
                 [],
                 ["model", "source"],
+                False,
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table1" {
@@ -255,6 +261,7 @@ class TestDbmlTestRelationship:
                 ["exposure:dummy1", "exposure:"],
                 [],
                 ["model"],
+                False,
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table1" {
@@ -289,6 +296,7 @@ class TestDbmlTestRelationship:
                 ["exposure:dummy2"],
                 [],
                 ["model"],
+                False,
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table23" {
@@ -315,6 +323,7 @@ class TestDbmlTestRelationship:
                 ["exposure:dummy2"],
                 [],
                 ["model"],
+                False,
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table23" {
@@ -324,10 +333,42 @@ class TestDbmlTestRelationship:
                 //Refs (based on the DBT Relationship Tests)
                 """,
             ),
+            (
+                [
+                    Table(
+                        name="model.dbt_resto.table23",
+                        node_name="model.dbt_resto.table23",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[Column(name="name23", data_type="name23-type")],
+                        raw_sql="--irrelevant--",
+                    ),
+                ],
+                [],
+                [],
+                [],
+                ["model"],
+                True,
+                """//Tables (based on the selection criteria)
+                //--configured at schema: --database--.--schema--
+                Table model.dbt_resto.table23 {
+                    "name23" "name23-type"
+                    Note:""
+                }
+                //Refs (based on the DBT Relationship Tests)
+                """,
+            ),
         ],
     )
     def test_parse(
-        self, tables, relationships, select, exclude, resource_type, expected
+        self,
+        tables,
+        relationships,
+        select,
+        exclude,
+        resource_type,
+        omit_entity_name_quotes,
+        expected,
     ):
         with mock.patch(
             "dbterd.adapters.algos.base.get_tables",
@@ -344,6 +385,7 @@ class TestDbmlTestRelationship:
                     exclude=exclude,
                     resource_type=resource_type,
                     algo="test_relationship",
+                    omit_entity_name_quotes=omit_entity_name_quotes,
                 )
                 assert dbml.replace(" ", "").replace("\n", "") == str(expected).replace(
                     " ", ""

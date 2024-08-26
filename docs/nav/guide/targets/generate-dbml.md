@@ -49,7 +49,7 @@ Assuming you're already familiar with [dbdocs](https://dbdocs.io/docs#installati
 
 The site will be looks like:
 
-![screencapture-dbdocs-io-datnguye-poc-2022-12-18-22_02_28.png](https://raw.githubusercontent.com/datnguye/dbterd/main/assets/images/screencapture-dbdocs-io-datnguye-poc-2022-12-18-22_02_28.png)
+![screencapture-dbdocs-io-datnguye-poc-2022-12-18-22_02_28.png](./../../../assets/images/screencapture-dbdocs-io-datnguye-poc-2022-12-18-22_02_28.png)
 
 Result after applied Model Selection:
-![screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png](https://raw.githubusercontent.com/datnguye/dbterd/main/assets/images/screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png)
+![screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png](./../../../assets/images/screencapture-dbdocs-io-datnguye-poc-2023-02-25-10_29_32.png)

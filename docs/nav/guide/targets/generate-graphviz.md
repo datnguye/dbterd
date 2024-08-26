@@ -23,7 +23,7 @@ sudo apt install graphviz
     <span data-ty data-ty-prompt="$ ~/repo>"></span>
 </div>
 
-### 3. Embeded into Markdown
+### 3. Embedded into Markdown
 
 ```markdown
 # Sample GraphViz ERD

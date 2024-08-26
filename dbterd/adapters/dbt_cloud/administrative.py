@@ -70,7 +70,7 @@ class DbtCloudArtifact:
             bool: True is success, False if any errors
         """
         artifact_api_endpoint = getattr(self, f"{artifact}_api_endpoint")
-        logger.debug(f"Dowloading...[URL: {artifact_api_endpoint}]")
+        logger.debug(f"Downloading...[URL: {artifact_api_endpoint}]")
         try:
             r = requests.get(url=artifact_api_endpoint, headers=self.request_headers)
             logger.debug(f"Completed [status: {r.status_code}]")
