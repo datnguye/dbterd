@@ -20,6 +20,7 @@ nav:
         - PlantUML: nav/guide/targets/generate-plantuml.md
         - D2: nav/guide/targets/generate-d2.md
         - GraphViz: nav/guide/targets/generate-graphviz.md
+        - DrawDB: nav/guide/targets/generate-drawdb.md
       - Metadata:
         - Ignore Tests: nav/metadata/ignore_in_erd.md
         - Relationship Types: nav/metadata/relationship_type.md
