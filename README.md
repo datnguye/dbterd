@@ -1,6 +1,6 @@
 # dbterd
 
-Generate the ERD-as-a-code ([DBML](https://dbdiagram.io/d), [Mermaid](https://mermaid-js.github.io/mermaid-live-editor/), [PlantUML](https://plantuml.com/ie-diagram), [GraphViz](https://graphviz.org/), [D2](https://d2lang.com/), [DrawDB](https://drawdb.vercel.app/)) from dbt artifact files (`dbt Core`) or from dbt metadata (`dbt Cloud`)
+Generate the ERD-as-a-code ([DBML](https://dbdiagram.io/d), [Mermaid](https://mermaid-js.github.io/mermaid-live-editor/), [PlantUML](https://plantuml.com/ie-diagram), [GraphViz](https://graphviz.org/), [D2](https://d2lang.com/), [DrawDB](https://drawdb.vercel.app/), [JSON](https://json.org/)) from dbt artifact files (`dbt Core`) or from dbt metadata (`dbt Cloud`)
 
 Entity Relationships are configurably detected by ([docs](https://dbterd.datnguyen.de/latest/nav/guide/cli-references.html#dbterd-run-algo-a)):
 
