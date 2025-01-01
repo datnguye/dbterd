@@ -1,6 +1,6 @@
 # dbterd
 
-CLI to generate Diagram-as-a-code file ([DBML](https://dbdiagram.io/d), [Mermaid](https://mermaid-js.github.io/mermaid-live-editor/), [PlantUML](https://plantuml.com/ie-diagram), [GraphViz](https://graphviz.org/), [D2](https://d2lang.com/)) from dbt artifact files.
+CLI to generate Diagram-as-a-code file ([DBML](https://dbdiagram.io/d), [Mermaid](https://mermaid-js.github.io/mermaid-live-editor/), [PlantUML](https://plantuml.com/ie-diagram), [GraphViz](https://graphviz.org/), [D2](https://d2lang.com/), [DrawDB](https://drawdb.vercel.app/)) from dbt artifact files.
 
 Entity Relationships are configurably detected by ([docs](https://dbterd.datnguyen.de/latest/nav/guide/cli-references.html#dbterd-run-algo-a)):
 
