@@ -1,4 +1,5 @@
 import copy
+import re
 from typing import Dict, List, Tuple
 
 import click
@@ -504,6 +505,41 @@ def get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
             type=get_relationship_type(node.meta.get(TEST_META_RELATIONSHIP_TYPE, "")),
         )
         refs.append(ref)
+
+    for node_name, node in manifest.nodes.items():
+        if not node_name.startswith("test"):
+            continue
+        for column_info in node.columns.values():
+            from_column = column_info.name
+            if hasattr(column_info, "constraints"):
+                constraints = column_info.constraints
+                foreign_key_constraints = [
+                    constraint for constraint in constraints if constraint.type == "foreign_key"
+                ]
+                if not foreign_key_constraints:
+                    continue
+                if not hasattr(foreign_key_constraints[0], "to_columns"):
+                    continue
+                to_column = foreign_key_constraints[0].to_columns[0]
+
+                match = re.search(r'ref\(["\'](.*?)["\']\)', foreign_key_constraints[0].to)
+                find_to_models = [
+                    str(node)
+                    for node in manifest.nodes
+                    if str(node).endswith(f".{match.group(1)}")
+                ]
+                if find_to_models:
+                    to_model_name = find_to_models[0]
+
+                from_model_name = node.name
+                ref = Ref(
+                    name=x,
+                    table_map=(to_model_name, from_model_name),
+                    column_map=(to_column, from_column),
+                    type="1n",  # cannot add `relationship_type` meta to constraints
+                )
+                refs.append(ref)
+
     return get_unique_refs(refs=refs)
 
 
