@@ -474,42 +474,26 @@ def get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
         List[Ref]: List of parsed relationship
     """
     rule = get_algo_rule(**kwargs)
-    refs = [
-        Ref(
+    refs = []
+    for x in get_test_nodes_by_rule_name(manifest=manifest, rule_name=rule.get("name").lower()):
+        node = manifest.nodes[x]
+        kwargs = node.test_metadata.kwargs
+        to_column = str(
+            kwargs.get(rule.get("c_to"))
+            or "_and_".join(kwargs.get(f'{rule.get("c_to")}s', "unknown"))
+        ).replace('"', "").lower()
+        from_column = str(
+            kwargs.get("column_name")
+            or kwargs.get(rule.get("c_from"))
+            or "_and_".join(kwargs.get(f'{rule.get("c_from")}s', "unknown"))
+        ).replace('"', "").lower()
+        ref = Ref(
             name=x,
-            table_map=get_table_map(test_node=manifest.nodes[x], **kwargs),
-            column_map=[
-                str(
-                    manifest.nodes[x].test_metadata.kwargs.get(rule.get("c_to"))
-                    or "_and_".join(
-                        manifest.nodes[x].test_metadata.kwargs.get(
-                            f'{rule.get("c_to")}s', "unknown"
-                        )
-                    )
-                )
-                .replace('"', "")
-                .lower(),
-                str(
-                    manifest.nodes[x].test_metadata.kwargs.get("column_name")
-                    or manifest.nodes[x].test_metadata.kwargs.get(rule.get("c_from"))
-                    or "_and_".join(
-                        manifest.nodes[x].test_metadata.kwargs.get(
-                            f'{rule.get("c_from")}s', "unknown"
-                        )
-                    )
-                )
-                .replace('"', "")
-                .lower(),
-            ],
-            type=get_relationship_type(
-                manifest.nodes[x].meta.get(TEST_META_RELATIONSHIP_TYPE, "")
-            ),
+            table_map=get_table_map(test_node=node, **kwargs),
+            column_map=[to_column, from_column],
+            type=get_relationship_type(node.meta.get(TEST_META_RELATIONSHIP_TYPE, "")),
         )
-        for x in get_test_nodes_by_rule_name(
-            manifest=manifest, rule_name=rule.get("name").lower()
-        )
-    ]
-
+        refs.append(ref)
     return get_unique_refs(refs=refs)
 
 
