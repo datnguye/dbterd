@@ -1,5 +1,5 @@
 import copy
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 import click
 
@@ -687,26 +687,26 @@ def get_table_map_from_metadata(test_node, **kwargs) -> List[str]:
     return list(reversed(test_parents))
 
 
-def get_table_map(test_node, **kwargs) -> List[str]:
+def get_table_map(test_node, **kwargs) -> Tuple[str, str]:
     """Get the table map with order of [to, from] guaranteed
 
     Args:
         test_node (dict): Manifest Test node
 
     Returns:
-        list: [to model, from model]
+        Tuple: (to model, from model)
     """
-    map = test_node.depends_on.nodes or []
+    map = tuple(test_node.depends_on.nodes) or ()
 
     # Recursive relation case
     # `from` and `to` will be identical and `test_node.depends_on.nodes` will contain only one element
     if len(map) == 1:
-        return [map[0], map[0]]
+        return (map[0], map[0])
 
     rule = get_algo_rule(**kwargs)
     to_model = str(test_node.test_metadata.kwargs.get(rule.get("t_to", "to"), {}))
     if f'("{map[1].split(".")[-1]}")'.lower() in to_model.replace("'", '"').lower():
-        return [map[1], map[0]]
+        return (map[1], map[0])
 
     return map
 
