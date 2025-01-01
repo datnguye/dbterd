@@ -1,5 +1,6 @@
 import copy
-from typing import Dict, List
+import re
+from typing import Dict, List, Tuple
 
 import click
 
@@ -474,41 +475,70 @@ def get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
         List[Ref]: List of parsed relationship
     """
     rule = get_algo_rule(**kwargs)
-    refs = [
-        Ref(
+    refs = []
+    for x in get_test_nodes_by_rule_name(
+        manifest=manifest, rule_name=rule.get("name").lower()
+    ):
+        node = manifest.nodes[x]
+        kwargs = node.test_metadata.kwargs
+        to_column = (
+            str(
+                kwargs.get(rule.get("c_to"))
+                or "_and_".join(kwargs.get(f'{rule.get("c_to")}s', "unknown"))
+            )
+            .replace('"', "")
+            .lower()
+        )
+        from_column = (
+            str(
+                kwargs.get("column_name")
+                or kwargs.get(rule.get("c_from"))
+                or "_and_".join(kwargs.get(f'{rule.get("c_from")}s', "unknown"))
+            )
+            .replace('"', "")
+            .lower()
+        )
+        ref = Ref(
             name=x,
-            table_map=get_table_map(test_node=manifest.nodes[x], **kwargs),
-            column_map=[
-                str(
-                    manifest.nodes[x].test_metadata.kwargs.get(rule.get("c_to"))
-                    or "_and_".join(
-                        manifest.nodes[x].test_metadata.kwargs.get(
-                            f'{rule.get("c_to")}s', "unknown"
-                        )
-                    )
-                )
-                .replace('"', "")
-                .lower(),
-                str(
-                    manifest.nodes[x].test_metadata.kwargs.get("column_name")
-                    or manifest.nodes[x].test_metadata.kwargs.get(rule.get("c_from"))
-                    or "_and_".join(
-                        manifest.nodes[x].test_metadata.kwargs.get(
-                            f'{rule.get("c_from")}s', "unknown"
-                        )
-                    )
-                )
-                .replace('"', "")
-                .lower(),
-            ],
-            type=get_relationship_type(
-                manifest.nodes[x].meta.get(TEST_META_RELATIONSHIP_TYPE, "")
-            ),
+            table_map=get_table_map(test_node=node, **kwargs),
+            column_map=[to_column, from_column],
+            type=get_relationship_type(node.meta.get(TEST_META_RELATIONSHIP_TYPE, "")),
         )
-        for x in get_test_nodes_by_rule_name(
-            manifest=manifest, rule_name=rule.get("name").lower()
-        )
-    ]
+        refs.append(ref)
+
+    for node_name, node in manifest.nodes.items():
+        if not node_name.startswith("test"):
+            continue
+        for column_info in node.columns.values():
+            from_column = column_info.name
+            if hasattr(column_info, "constraints"):
+                constraints = column_info.constraints
+                foreign_key_constraints = [
+                    constraint for constraint in constraints if constraint.type == "foreign_key"
+                ]
+                if not foreign_key_constraints:
+                    continue
+                if not hasattr(foreign_key_constraints[0], "to_columns"):
+                    continue
+                to_column = foreign_key_constraints[0].to_columns[0]
+
+                match = re.search(r'ref\(["\'](.*?)["\']\)', foreign_key_constraints[0].to)
+                find_to_models = [
+                    str(node)
+                    for node in manifest.nodes
+                    if str(node).endswith(f".{match.group(1)}")
+                ]
+                if find_to_models:
+                    to_model_name = find_to_models[0]
+
+                from_model_name = node.name
+                ref = Ref(
+                    name=x,
+                    table_map=(to_model_name, from_model_name),
+                    column_map=(to_column, from_column),
+                    type="1n",  # cannot add `relationship_type` meta to constraints
+                )
+                refs.append(ref)
 
     return get_unique_refs(refs=refs)
 
@@ -703,26 +733,26 @@ def get_table_map_from_metadata(test_node, **kwargs) -> List[str]:
     return list(reversed(test_parents))
 
 
-def get_table_map(test_node, **kwargs) -> List[str]:
+def get_table_map(test_node, **kwargs) -> Tuple[str, str]:
     """Get the table map with order of [to, from] guaranteed
 
     Args:
         test_node (dict): Manifest Test node
 
     Returns:
-        list: [to model, from model]
+        Tuple: (to model, from model)
     """
-    map = test_node.depends_on.nodes or []
+    map = tuple(test_node.depends_on.nodes) or ()
 
     # Recursive relation case
     # `from` and `to` will be identical and `test_node.depends_on.nodes` will contain only one element
     if len(map) == 1:
-        return [map[0], map[0]]
+        return (map[0], map[0])
 
     rule = get_algo_rule(**kwargs)
     to_model = str(test_node.test_metadata.kwargs.get(rule.get("t_to", "to"), {}))
     if f'("{map[1].split(".")[-1]}")'.lower() in to_model.replace("'", '"').lower():
-        return [map[1], map[0]]
+        return (map[1], map[0])
 
     return map
 
