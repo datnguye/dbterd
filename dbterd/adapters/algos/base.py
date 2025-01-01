@@ -475,18 +475,28 @@ def get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
     """
     rule = get_algo_rule(**kwargs)
     refs = []
-    for x in get_test_nodes_by_rule_name(manifest=manifest, rule_name=rule.get("name").lower()):
+    for x in get_test_nodes_by_rule_name(
+        manifest=manifest, rule_name=rule.get("name").lower()
+    ):
         node = manifest.nodes[x]
         kwargs = node.test_metadata.kwargs
-        to_column = str(
-            kwargs.get(rule.get("c_to"))
-            or "_and_".join(kwargs.get(f'{rule.get("c_to")}s', "unknown"))
-        ).replace('"', "").lower()
-        from_column = str(
-            kwargs.get("column_name")
-            or kwargs.get(rule.get("c_from"))
-            or "_and_".join(kwargs.get(f'{rule.get("c_from")}s', "unknown"))
-        ).replace('"', "").lower()
+        to_column = (
+            str(
+                kwargs.get(rule.get("c_to"))
+                or "_and_".join(kwargs.get(f'{rule.get("c_to")}s', "unknown"))
+            )
+            .replace('"', "")
+            .lower()
+        )
+        from_column = (
+            str(
+                kwargs.get("column_name")
+                or kwargs.get(rule.get("c_from"))
+                or "_and_".join(kwargs.get(f'{rule.get("c_from")}s', "unknown"))
+            )
+            .replace('"', "")
+            .lower()
+        )
         ref = Ref(
             name=x,
             table_map=get_table_map(test_node=node, **kwargs),
