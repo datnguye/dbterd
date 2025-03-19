@@ -298,6 +298,79 @@ class TestMermaidTestRelationship:
                   "MODEL.DBT_RESTO.TABLE1" }|--|| "MODEL.DBT_RESTO.TABLE2": name2__first_name--name1__first_name
                 """,
             ),
+            (
+                [
+                    Table(
+                        name="model.dbt_resto.table1",
+                        node_name="model.dbt_resto.table1",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[Column(name="name1", data_type="name1-type")],
+                        raw_sql="--irrelevant--",
+                        label="table1"
+                    )
+                ],
+                [],
+                [],
+                [],
+                ["model"],
+                False,
+                """erDiagram
+                  "TABLE1" {
+                      name1-type name1
+                  }
+                """,
+            ),
+            (
+                [
+                    Table(
+                        name="model.dbt_resto.table1",
+                        node_name="model.dbt_resto.table1",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[
+                            Column(name="name1.first_name", data_type="name1-type")
+                        ],
+                        raw_sql="--irrelevant--",
+                    ),
+                    Table(
+                        name="model.dbt_resto.table2",
+                        node_name="model.dbt_resto.table2",
+                        database="--database2--",
+                        schema="--schema2--",
+                        columns=[
+                            Column(name="name2.first_name", data_type="name2-type2"),
+                            Column(
+                                name="complex_struct",
+                                data_type="Struct<field1 string, field2 string>",
+                            ),
+                        ],
+                        raw_sql="--irrelevant--",
+                    ),
+                ],
+                [
+                    Ref(
+                        name="test.dbt_resto.relationships_table1",
+                        table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
+                        column_map=["name2.first_name", "name1.first_name"],
+                        label="Preferred_Relationship_Name"
+                    ),
+                ],
+                [],
+                [],
+                ["model", "source"],
+                False,
+                """erDiagram
+                  "MODEL.DBT_RESTO.TABLE1" {
+                      name1-type name1__first_name
+                  }
+                  "MODEL.DBT_RESTO.TABLE2" {
+                    name2-type2 name2__first_name
+                    Struct[OMITTED] complex_struct
+                  }
+                  "MODEL.DBT_RESTO.TABLE1" }|--|| "MODEL.DBT_RESTO.TABLE2": Preferred_Relationship_Name
+                """,
+            ),
         ],
     )
     def test_parse(

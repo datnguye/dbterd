@@ -161,6 +161,7 @@ def get_table_from_metadata(model_metadata, exposures=[], **kwargs) -> Table:
     node_description = model_metadata.get("node", {}).get("description")
     node_database = model_metadata.get("node", {}).get("database").lower()
     node_schema = model_metadata.get("node", {}).get("schema").lower()
+    node_label = model_metadata.get("node", {}).get("meta", {}).get('label')
     node_name_parts = node_name.split(".")
     table = Table(
         name=get_table_name(
@@ -187,6 +188,7 @@ def get_table_from_metadata(model_metadata, exposures=[], **kwargs) -> Table:
             x.get("exposure_name") for x in exposures if x.get("node_name") == node_name
         ],
         description=node_description,
+        label=node_label,
     )
 
     # columns
@@ -252,6 +254,7 @@ def get_table(
             x.get("exposure_name") for x in exposures if x.get("node_name") == node_name
         ],
         description=manifest_node.description,
+        label=manifest_node.meta.get('label'),
     )
 
     if catalog_node:
@@ -458,6 +461,8 @@ def get_relationships_from_metadata(data=[], **kwargs) -> List[Ref]:
                         type=get_relationship_type(
                             test_meta.get(TEST_META_RELATIONSHIP_TYPE, "")
                         ),
+                        label=test_meta.get('label')
+
                     )
                 )
 
@@ -504,6 +509,8 @@ def get_relationships(manifest: Manifest, **kwargs) -> List[Ref]:
             type=get_relationship_type(
                 manifest.nodes[x].meta.get(TEST_META_RELATIONSHIP_TYPE, "")
             ),
+            label=manifest.nodes[x].meta.get('label')
+
         )
         for x in get_test_nodes_by_rule_name(
             manifest=manifest, rule_name=rule.get("name").lower()
@@ -583,6 +590,7 @@ def make_up_relationships(
             ],
             column_map=x.column_map,
             type=x.type,
+            label=x.label
         )
         for x in relationships
         if x.table_map[0] in node_names and x.table_map[1] in node_names
@@ -692,9 +700,9 @@ def get_table_map_from_metadata(test_node, **kwargs) -> List[str]:
         "ref" if first_test_parent_parts[0] != "source" else first_test_parent_parts[0]
     )
     to_model_possible_values = [
-        f"{first_test_parent_resource_type}('{first_test_parent_parts[2]}','{first_test_parent_parts[-1]}')",
+        f"{first_test_parent_resource_type}('{first_test_parent_parts[2]}', '{first_test_parent_parts[-1]}')",
         f"{first_test_parent_resource_type}('{first_test_parent_parts[-1]}')",
-        f'{first_test_parent_resource_type}("{first_test_parent_parts[2]}","{first_test_parent_parts[-1]}")',
+        f'{first_test_parent_resource_type}("{first_test_parent_parts[2]}", "{first_test_parent_parts[-1]}")',
         f'{first_test_parent_resource_type}("{first_test_parent_parts[-1]}")',
     ]
     if test_metadata_to in to_model_possible_values:

@@ -89,6 +89,9 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
     mermaid = "erDiagram\n"
     for table in tables:
         table_name = table.name.upper()
+        if hasattr(table, 'label') and table.label:
+            table_name = table.label.upper()
+
         columns = "\n".join(
             [
                 f"    {replace_column_type(x.data_type)} {replace_column_name(x.name)}"
@@ -108,6 +111,8 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
         reference_text = replace_column_name(rel.column_map[0])
         if rel.column_map[0] != rel.column_map[1]:
             reference_text += f"--{replace_column_name(rel.column_map[1])}"
+        if hasattr(rel, 'label') and rel.label:
+            reference_text = replace_column_name(rel.label)
         mermaid += f"  {key_from.upper()} {get_rel_symbol(rel.type)} {key_to.upper()}: {reference_text}\n"
 
     return mermaid

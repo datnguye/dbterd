@@ -25,6 +25,7 @@ class Table:
     exposures: Optional[List[str]] = field(default_factory=lambda: [])
     node_name: str = None
     description: str = ""
+    label: Optional[str] = None
 
 
 @dataclass
@@ -35,6 +36,7 @@ class Ref:
     table_map: Tuple[str, str]
     column_map: Tuple[str, str]
     type: str = "n1"
+    label: Optional[str] = None
 
 
 @dataclass
