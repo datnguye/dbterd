@@ -90,7 +90,9 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
     for table in tables:
         table_name = table.name.upper()
         if hasattr(table, 'label') and table.label:
-            table_name = table.label.upper()
+            table_label = f'["{table.label.upper()}"]'
+        else:
+            table_label = ''
 
         columns = "\n".join(
             [
@@ -99,10 +101,10 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
             ]
         )
         if kwargs.get("omit_columns", False):
-            mermaid += '  "{table_name}" {{\n  }}\n'.format(table_name=table_name)
+            mermaid += '  "{table_name}"{table_label} {{\n  }}\n'.format(table_name=table_name, table_label=table_label)
         else:
-            mermaid += '  "{table_name}" {{\n{columns}\n  }}\n'.format(
-                table_name=table_name, columns=columns
+            mermaid += '  "{table_name}"{table_label} {{\n{columns}\n  }}\n'.format(
+                table_name=table_name, columns=columns, table_label=table_label
             )
 
     for rel in relationships:

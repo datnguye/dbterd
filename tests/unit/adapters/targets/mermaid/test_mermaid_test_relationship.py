@@ -316,7 +316,7 @@ class TestMermaidTestRelationship:
                 ["model"],
                 False,
                 """erDiagram
-                  "TABLE1" {
+                  "MODEL.DBT_RESTO.TABLE1"["TABLE1"] {
                       name1-type name1
                   }
                 """,
