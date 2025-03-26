@@ -307,7 +307,7 @@ class TestMermaidTestRelationship:
                         schema="--schema--",
                         columns=[Column(name="name1", data_type="name1-type")],
                         raw_sql="--irrelevant--",
-                        label="table1"
+                        label="table1",
                     )
                 ],
                 [],
@@ -353,7 +353,7 @@ class TestMermaidTestRelationship:
                         name="test.dbt_resto.relationships_table1",
                         table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
                         column_map=["name2.first_name", "name1.first_name"],
-                        label="Preferred_Relationship_Name"
+                        label="Preferred_Relationship_Name",
                     ),
                 ],
                 [],
