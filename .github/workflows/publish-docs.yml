@@ -24,7 +24,7 @@ jobs:
 
       - uses: abatilo/actions-poetry@v4
         with:
-          poetry-version: 1.6.1
+          poetry-version: 1.7.1
 
       - name: Install dependencies
         run: |
