@@ -1,10 +1,8 @@
-from typing import Tuple
-
 from dbterd.adapters import adapter
 from dbterd.types import Catalog, Manifest
 
 
-def run(manifest: Manifest, catalog: Catalog, **kwargs) -> Tuple[str, str]:
+def run(manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[str, str]:
     """Parse dbt artifacts and export PlantUML file
 
     Args:
@@ -29,9 +27,7 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
         str: PlantUML content
     """
     algo_module = adapter.load_algo(name=kwargs["algo"])
-    tables, relationships = algo_module.parse(
-        manifest=manifest, catalog=catalog, **kwargs
-    )
+    tables, relationships = algo_module.parse(manifest=manifest, catalog=catalog, **kwargs)
 
     # Build PlantUML content
     # https://plantuml.com/ie-diagram, https://www.plantuml.com/plantuml/uml

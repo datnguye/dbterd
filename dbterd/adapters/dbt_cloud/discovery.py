@@ -34,11 +34,7 @@ class DbtCloudMetadata:
             "test_first": page_size,
             "semantic_model_first": page_size,
         }
-        data = [
-            self.extract_data(
-                graphql_data=self.graphql.query(query=self.erd_query, **variables)
-            )
-        ]
+        data = [self.extract_data(graphql_data=self.graphql.query(query=self.erd_query, **variables))]
         self.show_counts(data=data[-1])
         if not poll_until_end:
             return data
@@ -52,28 +48,14 @@ class DbtCloudMetadata:
                 self.has_data(data=data[-1], resource_type="semanticModel"),
             ]
         ):
-            variables["model_after"] = self.get_last_cursor(
-                data=data[-1], resource_type="model"
-            )
-            variables["source_after"] = self.get_last_cursor(
-                data=data[-1], resource_type="source"
-            )
-            variables["exposure_after"] = self.get_last_cursor(
-                data=data[-1], resource_type="exposure"
-            )
-            variables["test_after"] = self.get_last_cursor(
-                data=data[-1], resource_type="test"
-            )
-            variables["semantic_model_after"] = self.get_last_cursor(
-                data=data[-1], resource_type="semanticModel"
-            )
+            variables["model_after"] = self.get_last_cursor(data=data[-1], resource_type="model")
+            variables["source_after"] = self.get_last_cursor(data=data[-1], resource_type="source")
+            variables["exposure_after"] = self.get_last_cursor(data=data[-1], resource_type="exposure")
+            variables["test_after"] = self.get_last_cursor(data=data[-1], resource_type="test")
+            variables["semantic_model_after"] = self.get_last_cursor(data=data[-1], resource_type="semanticModel")
 
             self.save_last_cursor(data=data[-1])
-            data.append(
-                self.extract_data(
-                    graphql_data=self.graphql.query(query=self.erd_query, **variables)
-                )
-            )
+            data.append(self.extract_data(graphql_data=self.graphql.query(query=self.erd_query, **variables)))
             self.show_counts(data=data[-1])
 
         return data
@@ -96,11 +78,7 @@ class DbtCloudMetadata:
             dict: Applied data
         """
         result = graphql_data.get("environment", {}).get("applied", {})
-        semantic_models = (
-            graphql_data.get("environment", {})
-            .get("definition", {})
-            .get("semanticModels", {})
-        )
+        semantic_models = graphql_data.get("environment", {}).get("definition", {}).get("semanticModels", {})
         if semantic_models:
             result["semanticModels"] = semantic_models
 
@@ -123,16 +101,12 @@ class DbtCloudMetadata:
         Returns:
             bool: True if has data need polling more
         """
-        return (
-            data.get(f"{resource_type}s", {})
-            .get("pageInfo", {})
-            .get("hasNextPage", False)
-        )
+        return data.get(f"{resource_type}s", {}).get("pageInfo", {}).get("hasNextPage", False)
 
     def save_last_cursor(
         self,
         data,
-        resource_types=["model", "source", "exposure", "test", "semanticModel"],
+        resource_types=None,
     ):
         """Save last poll's cursor of all resource types.
 
@@ -142,6 +116,8 @@ class DbtCloudMetadata:
                 Resource types.
                 Defaults to ["model", "source", "exposure", "test", "semanticModel"].
         """
+        if resource_types is None:
+            resource_types = ["model", "source", "exposure", "test", "semanticModel"]
         for resource_type in resource_types:
             self.last_cursor[resource_type] = self.get_last_cursor(
                 data=data, resource_type=resource_type
@@ -157,9 +133,9 @@ class DbtCloudMetadata:
         Returns:
             str: Cursor value
         """
-        return (
-            data.get(f"{resource_type}s", {}).get("pageInfo", {}).get("endCursor", None)
-        ) or (self.last_cursor.get(f"{resource_type}", None))
+        return (data.get(f"{resource_type}s", {}).get("pageInfo", {}).get("endCursor", None)) or (
+            self.last_cursor.get(f"{resource_type}", None)
+        )
 
     def get_count(self, data, resource_type: str = "model") -> int:
         """Get metadata result count of given resource type
@@ -176,7 +152,7 @@ class DbtCloudMetadata:
     def show_counts(
         self,
         data,
-        resource_types=["model", "source", "exposure", "test", "semanticModel"],
+        resource_types=None,
     ):
         """Print the metadata result count for all resource types
 
@@ -186,8 +162,7 @@ class DbtCloudMetadata:
                 Resource types.
                 Defaults to ["model", "source", "exposure", "test", "semanticModel"].
         """
-        results = [
-            f"{self.get_count(data=data, resource_type=x)} {x}(s)"
-            for x in resource_types
-        ]
+        if resource_types is None:
+            resource_types = ["model", "source", "exposure", "test", "semanticModel"]
+        results = [f"{self.get_count(data=data, resource_type=x)} {x}(s)" for x in resource_types]
         logger.info(f"Metadata result: {', '.join(results)}")

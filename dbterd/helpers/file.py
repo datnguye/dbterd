@@ -1,6 +1,7 @@
-import os
 import json
+import os
 import sys
+from typing import Optional
 
 from dbt_artifacts_parser import parser
 
@@ -110,7 +111,7 @@ def win_prepare_path(path: str) -> str:  # pragma: no cover
     return path
 
 
-def read_manifest(path: str, version: int = None) -> Manifest:
+def read_manifest(path: str, version: Optional[int] = None) -> Manifest:
     """Reads in the manifest.json file, with optional version specification
 
     Args:
@@ -135,7 +136,7 @@ def read_manifest(path: str, version: int = None) -> Manifest:
     return parse_func(manifest=_dict)
 
 
-def read_catalog(path: str, version: int = None) -> Catalog:
+def read_catalog(path: str, version: Optional[int] = None) -> Catalog:
     """Reads in the catalog.json file, with optional version specification
 
     Args:

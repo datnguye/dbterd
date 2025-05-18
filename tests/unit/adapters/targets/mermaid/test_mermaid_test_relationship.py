@@ -256,9 +256,7 @@ class TestMermaidTestRelationship:
                         node_name="model.dbt_resto.table1",
                         database="--database--",
                         schema="--schema--",
-                        columns=[
-                            Column(name="name1.first_name", data_type="name1-type")
-                        ],
+                        columns=[Column(name="name1.first_name", data_type="name1-type")],
                         raw_sql="--irrelevant--",
                     ),
                     Table(
@@ -329,9 +327,7 @@ class TestMermaidTestRelationship:
                 )
                 print("mermaid ", mermaid.replace(" ", "").replace("\n", ""))
                 print("expected", expected.replace(" ", "").replace("\n", ""))
-                assert mermaid.replace(" ", "").replace("\n", "") == str(
-                    expected
-                ).replace(" ", "").replace("\n", "")
+                assert mermaid.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
                 mock_get_tables.assert_called_once()
                 mock_get_relationships.assert_called_once()
 

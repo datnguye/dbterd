@@ -387,9 +387,7 @@ class TestDbmlTestRelationship:
                     algo="test_relationship",
                     omit_entity_name_quotes=omit_entity_name_quotes,
                 )
-                assert dbml.replace(" ", "").replace("\n", "") == str(expected).replace(
-                    " ", ""
-                ).replace("\n", "")
+                assert dbml.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
                 mock_get_tables.assert_called_once()
                 mock_get_relationships.assert_called_once()
 

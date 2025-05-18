@@ -2,6 +2,7 @@ import pytest
 
 from dbterd.adapters.targets import mermaid
 
+
 complex_column_types = [
     ("string", None),
     ("struct<string a, string b>", "struct"),

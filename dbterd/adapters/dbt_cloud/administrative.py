@@ -1,5 +1,6 @@
-import os
 import json
+import os
+from typing import Optional
 
 import requests
 
@@ -38,12 +39,7 @@ class DbtCloudArtifact:
     @property
     def api_endpoint(self) -> dict:
         """Base API endpoint to a specific artifact object"""
-        return (
-            "https://{host_url}/api/{api_version}/"
-            "accounts/{account_id}/"
-            "{artifact_id}/"
-            "artifacts/{{path}}"
-        ).format(
+        return ("https://{host_url}/api/{api_version}/accounts/{account_id}/{artifact_id}/artifacts/{{path}}").format(
             host_url=self.host_url,
             api_version=self.api_version,
             account_id=self.account_id,
@@ -84,12 +80,12 @@ class DbtCloudArtifact:
                 path=f"{artifacts_dir}/{artifact}.json",
             )
         except Exception as e:
-            logger.error(f"Error occurred while downloading [error: {str(e)}]")
+            logger.error(f"Error occurred while downloading [error: {e!s}]")
             return False
 
         return True
 
-    def get(self, artifacts_dir: str = None) -> bool:
+    def get(self, artifacts_dir: Optional[str] = None) -> bool:
         """Download `manifest.json` and `catalog.json` to the local dir
 
         Args:

@@ -1,5 +1,4 @@
 import importlib.metadata
-from typing import List
 
 import click
 
@@ -8,17 +7,18 @@ from dbterd.cli import params
 from dbterd.helpers import jsonify
 from dbterd.helpers.log import logger
 
+
 __version__ = importlib.metadata.version("dbterd")
 
 
 # Programmatic invocation
-class dbterdRunner:
+class DbterdRunner:
     """Support runner for the programmatic call"""
 
     def __init__(self) -> None:
         pass
 
-    def invoke(self, args: List[str]):
+    def invoke(self, args: list[str]):
         """Invoke a command of dbterd programmatically
 
         Args:
@@ -35,9 +35,9 @@ class dbterdRunner:
             # 0 exit code, expected for --version early exit
             if str(e) == "0":
                 return [], True
-            raise Exception(f"unhandled exit code {str(e)}")
+            raise Exception(f"unhandled exit code {e!s}") from e
         except (click.NoSuchOption, click.UsageError) as e:
-            raise Exception(e.message)
+            raise Exception(e.message) from e
 
 
 # dbterd

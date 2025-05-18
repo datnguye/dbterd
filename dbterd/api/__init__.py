@@ -7,6 +7,7 @@ from dbterd import default
 from dbterd.adapters.base import Executor
 from dbterd.helpers.log import logger
 
+
 logger.setLevel(logging.WARNING)  # hide log
 
 
@@ -56,9 +57,7 @@ class DbtErd:
         """
         self.__set_params_default_if_not_specified()
         ctx_command = self.params.get("api_context_command")
-        self.executor: Executor = Executor(
-            Context(Command(name=ctx_command if ctx_command else "run"))
-        )
+        self.executor: Executor = Executor(Context(Command(name=ctx_command if ctx_command else "run")))
         """
         Mimic CLI's executor.\n
         The context command is `run` by default
@@ -71,13 +70,9 @@ class DbtErd:
 
         self.params["select"] = self.params.get("select", [])
         self.params["exclude"] = self.params.get("exclude", [])
-        self.params["resource_type"] = self.params.get(
-            "resource_type", default.default_resource_types()
-        )
+        self.params["resource_type"] = self.params.get("resource_type", default.default_resource_types())
         self.params["algo"] = self.params.get("algo", default.default_algo())
-        self.params["entity_name_format"] = self.params.get(
-            "entity_name_format", default.default_entity_name_format()
-        )
+        self.params["entity_name_format"] = self.params.get("entity_name_format", default.default_entity_name_format())
         self.params["omit_columns"] = self.params.get("omit_columns", False)
         self.params["artifacts_dir"] = self.params.get("artifacts_dir", Path.cwd())
         self.params["target"] = self.params.get("target", default.default_target())

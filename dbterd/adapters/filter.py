@@ -1,13 +1,16 @@
-import sys
 from fnmatch import fnmatch
-from typing import List, Optional, Tuple
+import sys
+from typing import Optional
 
 from dbterd.adapters.meta import Table
+
 
 RULE_FUNC_PREFIX = "is_satisfied_by_"
 
 
-def has_unsupported_rule(rules: List[str] = []) -> Tuple[bool, Optional[str]]:
+def has_unsupported_rule(
+    rules: Optional[list[str]] = None,
+) -> tuple[bool, Optional[str]]:
     """Verify if existing the unsupported selection rule
 
     Args:
@@ -16,6 +19,8 @@ def has_unsupported_rule(rules: List[str] = []) -> Tuple[bool, Optional[str]]:
     Returns:
         bool: True if existing any unsupported one
     """
+    if rules is None:
+        rules = []
     for rule in rules:
         type = rule.split(":")
         if len(type) == 1:
@@ -29,9 +34,9 @@ def has_unsupported_rule(rules: List[str] = []) -> Tuple[bool, Optional[str]]:
 
 def is_selected_table(
     table: Table,
-    select_rules: List[str] = [],
-    exclude_rules: List[str] = [],
-    resource_types: List[str] = ["model"],
+    select_rules: Optional[list[str]] = None,
+    exclude_rules: Optional[list[str]] = None,
+    resource_types: Optional[list[str]] = None,
 ) -> bool:
     """Check if Table is selected with defined selection criteria
 
@@ -45,18 +50,22 @@ def is_selected_table(
         bool: True if Table is selected. False if Tables is excluded
     """
     # Selection
+    if resource_types is None:
+        resource_types = ["model"]
+    if exclude_rules is None:
+        exclude_rules = []
+    if select_rules is None:
+        select_rules = []
     selected = True
     if select_rules:
-        selected = any([evaluate_rule(table=table, rule=rule) for rule in select_rules])
+        selected = any(evaluate_rule(table=table, rule=rule) for rule in select_rules)
     if resource_types:
         selected = selected and table.resource_type in resource_types
 
     # Exclusion
     excluded = False
     if exclude_rules:
-        excluded = any(
-            [evaluate_rule(table=table, rule=rule) for rule in exclude_rules]
-        )
+        excluded = any(evaluate_rule(table=table, rule=rule) for rule in exclude_rules)
 
     return selected and not excluded
 
@@ -132,9 +141,7 @@ def is_satisfied_by_schema(table: Table, rule: str = "") -> bool:
     parts = rule.split(".")
     selected_schema = parts[-1]
     selected_database = parts[0] if len(parts) > 1 else table.database
-    return f"{table.database}.{table.schema}".startswith(
-        f"{selected_database}.{selected_schema}"
-    )
+    return f"{table.database}.{table.schema}".startswith(f"{selected_database}.{selected_schema}")
 
 
 def is_satisfied_by_wildcard(table: Table, rule: str = "*") -> bool:

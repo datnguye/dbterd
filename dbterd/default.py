@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-from typing import List
 
 
 def default_artifact_path() -> str:
@@ -19,7 +18,7 @@ def default_algo() -> str:
     return os.environ.get("DBTERD_ALGO", "test_relationship")
 
 
-def default_resource_types() -> List[str]:
+def default_resource_types() -> list[str]:
     return os.environ.get("DBTERD_RESOURCE_TYPES", ["model"])
 
 

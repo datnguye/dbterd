@@ -347,9 +347,7 @@ class TestGraphVizTestRelationship:
             ),
         ],
     )
-    def test_parse(
-        self, tables, relationships, select, exclude, resource_type, expected
-    ):
+    def test_parse(self, tables, relationships, select, exclude, resource_type, expected):
         with mock.patch(
             "dbterd.adapters.algos.base.get_tables",
             return_value=tables,
@@ -368,9 +366,7 @@ class TestGraphVizTestRelationship:
                 )
                 print("graphviz ", graphviz.replace(" ", "").replace("\n", ""))
                 print("expected", expected.replace(" ", "").replace("\n", ""))
-                assert graphviz.replace(" ", "").replace("\n", "") == str(
-                    expected
-                ).replace(" ", "").replace("\n", "")
+                assert graphviz.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
                 mock_get_tables.assert_called_once()
                 mock_get_relationships.assert_called_once()
 

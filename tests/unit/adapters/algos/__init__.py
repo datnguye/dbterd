@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from typing import ClassVar
 
 
 @dataclass
@@ -18,7 +19,7 @@ class DummyManifestError:
 
 @dataclass
 class DummyManifestHasColumns:
-    columns = dict({"col1": None, "col2": None})
+    columns: ClassVar[dict[str, None]] = {"col1": None, "col2": None}
     database = "database_dummy"
     schema = "schema_dummy"
 
@@ -84,13 +85,9 @@ class ManifestNodeColumn:
 
 @dataclass
 class DummyManifestRel:
-    semantic_models = {
+    semantic_models: ClassVar[dict[str, "SemanticModel"]] = {
         "semantic_model.dbt_resto.sm1": SemanticModel(
-            entities=[
-                SemanticModelEntity(
-                    name="id1", type=SemanticModelEntityType(value="primary"), expr=None
-                )
-            ],
+            entities=[SemanticModelEntity(name="id1", type=SemanticModelEntityType(value="primary"), expr=None)],
             depends_on=ManifestNodeDependsOn(nodes=["model.dbt_resto.table1"]),
             primary_entity=None,
         ),
@@ -107,57 +104,37 @@ class DummyManifestRel:
         ),
         "semantic_model.dbt_resto.smx": SemanticModel(
             entities=[
-                SemanticModelEntity(
-                    name="pkx", type=SemanticModelEntityType(value="primary"), expr=None
-                ),
-                SemanticModelEntity(
-                    name="id1", type=SemanticModelEntityType(value="foreign"), expr="x"
-                ),
+                SemanticModelEntity(name="pkx", type=SemanticModelEntityType(value="primary"), expr=None),
+                SemanticModelEntity(name="id1", type=SemanticModelEntityType(value="foreign"), expr="x"),
             ],
             depends_on=ManifestNodeDependsOn(nodes=["model.dbt_resto.tablex"]),
             primary_entity=None,
         ),
     }
-    nodes = {
+    nodes: ClassVar[dict[str, "ManifestNode"]] = {
         "test.dbt_resto.relationships_table1": ManifestNode(
-            test_metadata=ManifestNodeTestMetaData(
-                kwargs={"column_name": "f1", "field": "f2", "to": "ref('table2')"}
-            ),
+            test_metadata=ManifestNodeTestMetaData(kwargs={"column_name": "f1", "field": "f2", "to": "ref('table2')"}),
             meta={},
             columns={},
-            depends_on=ManifestNodeDependsOn(
-                nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]
-            ),
+            depends_on=ManifestNodeDependsOn(nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]),
         ),
         "test.dbt_resto.relationships_table2": ManifestNode(
-            test_metadata=ManifestNodeTestMetaData(
-                kwargs={"column_name": "f1", "field": "f2", "to": "ref('table2')"}
-            ),
+            test_metadata=ManifestNodeTestMetaData(kwargs={"column_name": "f1", "field": "f2", "to": "ref('table2')"}),
             meta={},
             columns={},
-            depends_on=ManifestNodeDependsOn(
-                nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]
-            ),
+            depends_on=ManifestNodeDependsOn(nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]),
         ),
         "test.dbt_resto.relationships_table3": ManifestNode(
-            test_metadata=ManifestNodeTestMetaData(
-                kwargs={"column_name": "f1", "field": "f2", "to": "ref('tabley')"}
-            ),
+            test_metadata=ManifestNodeTestMetaData(kwargs={"column_name": "f1", "field": "f2", "to": "ref('tabley')"}),
             meta={},
             columns={},
-            depends_on=ManifestNodeDependsOn(
-                nodes=["model.dbt_resto.tabley", "model.dbt_resto.tablex"]
-            ),
+            depends_on=ManifestNodeDependsOn(nodes=["model.dbt_resto.tabley", "model.dbt_resto.tablex"]),
         ),
         "test.dbt_resto.relationships_tablex": ManifestNode(
-            test_metadata=ManifestNodeTestMetaData(
-                kwargs={"column_name": "x", "field": "y", "to": "ref('y')"}
-            ),
+            test_metadata=ManifestNodeTestMetaData(kwargs={"column_name": "x", "field": "y", "to": "ref('y')"}),
             meta={"ignore_in_erd": 1},
             columns={},
-            depends_on=ManifestNodeDependsOn(
-                nodes=["model.dbt_resto.y", "model.dbt_resto.x"]
-            ),
+            depends_on=ManifestNodeDependsOn(nodes=["model.dbt_resto.y", "model.dbt_resto.x"]),
         ),
         "test.dbt_resto.foreign_key_table1": ManifestNode(
             test_metadata=ManifestNodeTestMetaData(
@@ -169,9 +146,7 @@ class DummyManifestRel:
             ),
             meta={},
             columns={},
-            depends_on=ManifestNodeDependsOn(
-                nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]
-            ),
+            depends_on=ManifestNodeDependsOn(nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]),
         ),
         "test.dbt_resto.relationships_table4": ManifestNode(
             test_metadata=ManifestNodeTestMetaData(
@@ -179,9 +154,7 @@ class DummyManifestRel:
             ),
             meta={"relationship_type": "one-to-one"},
             columns={},
-            depends_on=ManifestNodeDependsOn(
-                nodes=["model.dbt_resto.table-m2", "model.dbt_resto.table-m1"]
-            ),
+            depends_on=ManifestNodeDependsOn(nodes=["model.dbt_resto.table-m2", "model.dbt_resto.table-m1"]),
         ),
         "test.dbt_resto.relationships_table1_reverse": ManifestNode(
             test_metadata=ManifestNodeTestMetaData(
@@ -189,14 +162,10 @@ class DummyManifestRel:
             ),
             meta={},
             columns={},
-            depends_on=ManifestNodeDependsOn(
-                nodes=["model.dbt_resto.table-r1", "model.dbt_resto.table-r2"]
-            ),
+            depends_on=ManifestNodeDependsOn(nodes=["model.dbt_resto.table-r1", "model.dbt_resto.table-r2"]),
         ),
         "test.dbt_resto.relationships_table1_recursive": ManifestNode(
-            test_metadata=ManifestNodeTestMetaData(
-                kwargs={"column_name": "f1", "field": "f2", "to": "ref('table1')"}
-            ),
+            test_metadata=ManifestNodeTestMetaData(kwargs={"column_name": "f1", "field": "f2", "to": "ref('table1')"}),
             meta={},
             columns={},
             depends_on=ManifestNodeDependsOn(nodes=["model.dbt_resto.table1"]),
@@ -206,7 +175,7 @@ class DummyManifestRel:
 
 @dataclass
 class DummyManifestTable:
-    nodes = {
+    nodes: ClassVar[dict[str, "ManifestNode"]] = {
         "model.dbt_resto.table1": ManifestNode(
             test_metadata=ManifestNodeTestMetaData(kwargs={}),
             meta={},
@@ -235,7 +204,7 @@ class DummyManifestTable:
             },
         ),
     }
-    sources = {
+    sources: ClassVar[dict[str, "ManifestNode"]] = {
         "source.dummy.source_table": ManifestNode(
             test_metadata=ManifestNodeTestMetaData(kwargs={}),
             meta={},
@@ -251,11 +220,9 @@ class DummyManifestTable:
 
 @dataclass
 class DummyManifestWithExposure:
-    exposures = {
+    exposures: ClassVar[dict[str, "ManifestExposureNode"]] = {
         "exposure.dbt_resto.dummy": ManifestExposureNode(
-            depends_on=ManifestNodeDependsOn(
-                nodes=["model.dbt_resto.table1", "model.dbt_resto.table2"]
-            ),
+            depends_on=ManifestNodeDependsOn(nodes=["model.dbt_resto.table1", "model.dbt_resto.table2"]),
         )
     }
 
@@ -273,16 +240,10 @@ class CatalogNodeColumn:
 
 @dataclass
 class DummyCatalogTable:
-    nodes = {
-        "model.dbt_resto.table1": CatalogNode(
-            columns={"name1": CatalogNodeColumn(type="--name1-type--")}
-        ),
-        "model.dbt_resto.table2": CatalogNode(
-            columns={"name3": CatalogNodeColumn(type="--name3-type--")}
-        ),
+    nodes: ClassVar[dict[str, "ManifestNode"]] = {
+        "model.dbt_resto.table1": CatalogNode(columns={"name1": CatalogNodeColumn(type="--name1-type--")}),
+        "model.dbt_resto.table2": CatalogNode(columns={"name3": CatalogNodeColumn(type="--name3-type--")}),
     }
-    sources = {
-        "source.dummy.source_table": CatalogNode(
-            columns={"name1": CatalogNodeColumn(type="--name1-type--")}
-        ),
+    sources: ClassVar[dict[str, "ManifestNode"]] = {
+        "source.dummy.source_table": CatalogNode(columns={"name1": CatalogNodeColumn(type="--name1-type--")}),
     }

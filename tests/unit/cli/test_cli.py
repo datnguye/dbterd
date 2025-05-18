@@ -19,7 +19,7 @@ class TestCLI:
                 if not isinstance(param, click.Argument) and not param.hidden:
                     assert param.help is not None
             if type(command) is click.Group:
-                for command in command.commands.values():
-                    run_test(command)
+                for subcommand in command.commands.values():
+                    run_test(subcommand)
 
         run_test(dbterd)

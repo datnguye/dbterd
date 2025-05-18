@@ -1,4 +1,4 @@
-class ObjectView(object):
+class ObjectView:
     """
     Convert nested dict to dynamic object
     """

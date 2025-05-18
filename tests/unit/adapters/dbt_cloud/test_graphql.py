@@ -11,7 +11,7 @@ class MockResponse:
         self.data = data
 
     def json(self):
-        return dict(data=self.data)
+        return {"data": self.data}
 
 
 class TestGraphQL:
@@ -19,12 +19,12 @@ class TestGraphQL:
         "kwargs, expected",
         [
             (
-                dict(),
-                dict(host_url=None, service_token=None),
+                {},
+                {"host_url": None, "service_token": None},
             ),
             (
-                dict(dbt_cloud_host_url="host_url", dbt_cloud_service_token="token"),
-                dict(host_url="host_url", service_token="token"),
+                {"dbt_cloud_host_url": "host_url", "dbt_cloud_service_token": "token"},
+                {"host_url": "host_url", "service_token": "token"},
             ),
         ],
     )
@@ -40,19 +40,17 @@ class TestGraphQL:
     @mock.patch("dbterd.adapters.dbt_cloud.administrative.requests.post")
     def test_query(self, mock_requests_post):
         mock_requests_post.return_value = MockResponse(status_code=200, data={})
-        assert {} == GraphQLHelper().query(query="irrelevant", **dict())
+        assert {} == GraphQLHelper().query(query="irrelevant", **{})
         assert mock_requests_post.call_count == 1
 
     @mock.patch("dbterd.adapters.dbt_cloud.administrative.requests.post")
     def test_query_failed(self, mock_requests_post):
-        mock_requests_post.return_value = MockResponse(
-            status_code="irrelevant", data={}
-        )
-        assert GraphQLHelper().query(query="irrelevant", **dict()) is None
+        mock_requests_post.return_value = MockResponse(status_code="irrelevant", data={})
+        assert GraphQLHelper().query(query="irrelevant", **{}) is None
         assert mock_requests_post.call_count == 1
 
     @mock.patch("dbterd.adapters.dbt_cloud.administrative.requests.post")
     def test_query_with_exception(self, mock_requests_post):
         mock_requests_post.side_effect = Exception("any error")
-        assert GraphQLHelper().query(query="irrelevant", **dict()) is None
+        assert GraphQLHelper().query(query="irrelevant", **{}) is None
         assert mock_requests_post.call_count == 1

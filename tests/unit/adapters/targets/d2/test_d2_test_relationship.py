@@ -231,9 +231,7 @@ class TestD2TestRelationship:
             ),
         ],
     )
-    def test_parse(
-        self, tables, relationships, select, exclude, resource_type, expected
-    ):
+    def test_parse(self, tables, relationships, select, exclude, resource_type, expected):
         with mock.patch(
             "dbterd.adapters.algos.base.get_tables",
             return_value=tables,
@@ -252,9 +250,7 @@ class TestD2TestRelationship:
                 )
                 print("mermaid ", mermaid.replace(" ", "").replace("\n", ""))
                 print("expected", expected.replace(" ", "").replace("\n", ""))
-                assert mermaid.replace(" ", "").replace("\n", "") == str(
-                    expected
-                ).replace(" ", "").replace("\n", "")
+                assert mermaid.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
                 mock_get_tables.assert_called_once()
                 mock_get_relationships.assert_called_once()
 

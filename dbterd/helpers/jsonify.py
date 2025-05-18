@@ -1,5 +1,6 @@
 import dataclasses
 import json
+from typing import Optional
 
 
 class EnhancedJSONEncoder(json.JSONEncoder):  # pragma: no cover
@@ -11,7 +12,9 @@ class EnhancedJSONEncoder(json.JSONEncoder):  # pragma: no cover
         return super().default(o)
 
 
-def mask(obj: str, mask_keys: list = ["password", "secret"]):
+def mask(obj: str, mask_keys: Optional[list] = None):
+    if mask_keys is None:
+        mask_keys = ["password", "secret"]
     obj_dict = json.loads(obj)
     for key, value in obj_dict.items():
         print(key)
@@ -23,7 +26,9 @@ def mask(obj: str, mask_keys: list = ["password", "secret"]):
     return obj_dict
 
 
-def to_json(obj, mask_keys=[]):
+def to_json(obj, mask_keys=None):
+    if mask_keys is None:
+        mask_keys = []
     if not obj:
         return {}
     mask_dict = obj

@@ -14,6 +14,7 @@ from dbt_artifacts_parser.parsers.manifest.manifest_v10 import ManifestV10
 from dbt_artifacts_parser.parsers.manifest.manifest_v11 import ManifestV11
 from dbt_artifacts_parser.parsers.manifest.manifest_v12 import ManifestV12
 
+
 Manifest = Union[
     ManifestV1,
     ManifestV2,

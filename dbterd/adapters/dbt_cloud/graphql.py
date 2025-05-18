@@ -37,9 +37,7 @@ class GraphQLHelper:
             dict: Query data responses. None if any exceptions
         """
         try:
-            logger.debug(
-                f"Getting erd data...[URL: {self.api_endpoint}, VARS: {variables}]"
-            )
+            logger.debug(f"Getting erd data...[URL: {self.api_endpoint}, VARS: {variables}]")
             r = requests.post(
                 self.api_endpoint,
                 headers=self.request_headers,
@@ -51,7 +49,7 @@ class GraphQLHelper:
                 logger.error(f"Failed to query [error: {vars(r)}]")
                 return None
         except Exception as e:
-            logger.error(f"Error occurred while querying [error: {str(e)}]")
+            logger.error(f"Error occurred while querying [error: {e!s}]")
             return None
 
         return r.json().get("data")

@@ -17,7 +17,7 @@ def load_target(name: str):
         return import_module(name=f".{name}", package="dbterd.adapters.targets")
     except ModuleNotFoundError as exc:
         if exc.name == "dbterd.adapters.targets." + name:
-            raise Exception(f"Could not find adapter target type {name}!")
+            raise Exception(f"Could not find adapter target type {name}!") from exc
         raise  # pragma: no cover
 
 
@@ -38,5 +38,5 @@ def load_algo(name: str):
         return import_module(name=f".{module_name}", package="dbterd.adapters.algos")
     except ModuleNotFoundError as exc:
         if exc.name == "dbterd.adapters.algos." + module_name:
-            raise Exception(f"Could not find adapter algo {module_name}!")
+            raise Exception(f"Could not find adapter algo {module_name}!") from exc
         raise  # pragma: no cover

@@ -1,10 +1,8 @@
-from typing import Tuple
-
 from dbterd.adapters import adapter
 from dbterd.types import Catalog, Manifest
 
 
-def run(manifest: Manifest, catalog: Catalog, **kwargs) -> Tuple[str, str]:
+def run(manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[str, str]:
     """Parse dbt artifacts and export GraphViz file
 
     Args:
@@ -29,9 +27,7 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
         str: GraphViz content
     """
     algo_module = adapter.load_algo(name=kwargs["algo"])
-    tables, relationships = algo_module.parse(
-        manifest=manifest, catalog=catalog, **kwargs
-    )
+    tables, relationships = algo_module.parse(manifest=manifest, catalog=catalog, **kwargs)
 
     # Build GraphViz content
     # https://dreampuf.github.io/GraphvizOnline/, https://graphviz.org/
@@ -59,10 +55,7 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
         ).format(
             table=table.name,
             columns="\n".join(
-                [
-                    f'         <tr><td align="left">({x.data_type}) {x.name}</td></tr>'
-                    for x in table.columns
-                ]
+                [f'         <tr><td align="left">({x.data_type}) {x.name}</td></tr>' for x in table.columns]
             ),
         )
 

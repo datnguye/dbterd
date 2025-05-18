@@ -1,11 +1,11 @@
 import re
-from typing import Optional, Tuple
+from typing import Optional
 
 from dbterd.adapters import adapter
 from dbterd.types import Catalog, Manifest
 
 
-def run(manifest: Manifest, catalog: Catalog, **kwargs) -> Tuple[str, str]:
+def run(manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[str, str]:
     """Parse dbt artifacts and export Mermaid file
 
     Args:
@@ -40,7 +40,8 @@ def match_complex_column_type(column_type: str) -> Optional[str]:
         column_type (str): column type
 
     Returns:
-        Optional[str]: Returns root type if input type is nested complex type, otherwise returns `None` for primitive types
+        Optional[str]: Returns root type if input type is nested complex type,
+        otherwise returns `None` for primitive types
     """
     pattern = r"(\w+)<.*>"
     match = re.match(pattern, column_type)
@@ -51,7 +52,8 @@ def match_complex_column_type(column_type: str) -> Optional[str]:
 
 
 def replace_column_type(column_type: str) -> str:
-    """If type of column contains special characters that cannot be drawn by mermaid, replace them with strings that can be drawn.
+    """If type of column contains special characters that cannot be drawn by mermaid,
+    replace them with strings that can be drawn.
     If the type string contains a nested complex type, omit it to make it easier to read.
 
     Args:
@@ -60,7 +62,8 @@ def replace_column_type(column_type: str) -> str:
     Returns:
         str: Type of column with special characters are substituted or omitted
     """
-    # Some specific DWHs may have types that cannot be drawn in mermaid, such as `Struct<first_name string, last_name string>`.
+    # Some specific DWHs may have types that cannot be drawn in mermaid,
+    # such as `Struct<first_name string, last_name string>`.
     # These types may be nested and can be very long, so omit them
     complex_column_type = match_complex_column_type(column_type)
     if complex_column_type:
@@ -80,9 +83,7 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
         str: Mermaid content
     """
     algo_module = adapter.load_algo(name=kwargs["algo"])
-    tables, relationships = algo_module.parse(
-        manifest=manifest, catalog=catalog, **kwargs
-    )
+    tables, relationships = algo_module.parse(manifest=manifest, catalog=catalog, **kwargs)
 
     # Build Mermaid content
     # https://mermaid.js.org/syntax/entityRelationshipDiagram.html
@@ -90,17 +91,12 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
     for table in tables:
         table_name = table.name.upper()
         columns = "\n".join(
-            [
-                f"    {replace_column_type(x.data_type)} {replace_column_name(x.name)}"
-                for x in table.columns
-            ]
+            [f"    {replace_column_type(x.data_type)} {replace_column_name(x.name)}" for x in table.columns]
         )
         if kwargs.get("omit_columns", False):
-            mermaid += '  "{table_name}" {{\n  }}\n'.format(table_name=table_name)
+            mermaid += f'  "{table_name}" {{\n  }}\n'
         else:
-            mermaid += '  "{table_name}" {{\n{columns}\n  }}\n'.format(
-                table_name=table_name, columns=columns
-            )
+            mermaid += f'  "{table_name}" {{\n{columns}\n  }}\n'
 
     for rel in relationships:
         key_from = f'"{rel.table_map[1]}"'

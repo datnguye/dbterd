@@ -1,10 +1,9 @@
 import yaml
 
+
 # the C version is faster, but it doesn't always exist
 try:
-    from yaml import CDumper as Dumper
-    from yaml import CLoader as Loader
-    from yaml import CSafeLoader as SafeLoader
+    from yaml import CDumper as Dumper, CLoader as Loader, CSafeLoader as SafeLoader
 except ImportError:
     from yaml import Dumper, Loader, SafeLoader  # type: ignore  # noqa: F401
 
@@ -21,7 +20,7 @@ Raw Error:
 
 def line_no(i, line, width=3):
     line_number = str(i).ljust(width)
-    return "{}| {}".format(line_number, line)
+    return f"{line_number}| {line}"
 
 
 def prefix_with_line_numbers(string, no_start, no_end):
@@ -30,9 +29,7 @@ def prefix_with_line_numbers(string, no_start, no_end):
     numbers = range(no_start, no_end)
     relevant_lines = line_list[no_start:no_end]
 
-    return "\n".join(
-        [line_no(i + 1, line) for (i, line) in zip(numbers, relevant_lines)]
-    )
+    return "\n".join([line_no(i + 1, line) for (i, line) in zip(numbers, relevant_lines)])
 
 
 def contextualized_yaml_error(raw_contents, error):
@@ -43,9 +40,7 @@ def contextualized_yaml_error(raw_contents, error):
 
     nice_error = prefix_with_line_numbers(raw_contents, min_line, max_line)
 
-    return YAML_ERROR_MESSAGE.format(
-        line_number=mark.line + 1, nice_error=nice_error, raw_error=error
-    )
+    return YAML_ERROR_MESSAGE.format(line_number=mark.line + 1, nice_error=nice_error, raw_error=error)
 
 
 def safe_load(contents):
@@ -61,4 +56,4 @@ def load_yaml_text(contents, path=None):
         else:
             error = str(e)
 
-        raise error
+        raise error from e

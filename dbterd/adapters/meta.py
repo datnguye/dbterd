@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List, Optional, Tuple
+from typing import Optional
 
 
 @dataclass
@@ -19,10 +19,10 @@ class Table:
     name: str
     database: str
     schema: str
-    columns: Optional[List[Column]] = None
+    columns: Optional[list[Column]] = None
     raw_sql: Optional[str] = None
     resource_type: str = "model"
-    exposures: Optional[List[str]] = field(default_factory=lambda: [])
+    exposures: Optional[list[str]] = field(default_factory=lambda: [])
     node_name: str = None
     description: str = ""
 
@@ -32,8 +32,8 @@ class Ref:
     """Parsed Relationship object"""
 
     name: str
-    table_map: Tuple[str, str]
-    column_map: Tuple[str, str]
+    table_map: tuple[str, str]
+    column_map: tuple[str, str]
     type: str = "n1"
 
 

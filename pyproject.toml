@@ -9,15 +9,15 @@ license = {file = "LICENSE"}
 readme = "README.md"
 urls = {Homepage = "https://github.com/datnguye/dbterd", Repository = "https://github.com/datnguye/dbterd"}
 keywords = [
-    "dbt", 
-    "erd", 
-    "entity-relationship-diagram", 
-    "dbml", 
-    "mermaid", 
-    "plantuml", 
-    "graphviz", 
-    "d2", 
-    "data-modeling", 
+    "dbt",
+    "erd",
+    "entity-relationship-diagram",
+    "dbml",
+    "mermaid",
+    "plantuml",
+    "graphviz",
+    "d2",
+    "data-modeling",
     "data-documentation"
 ]
 classifiers = [
@@ -97,7 +97,9 @@ omit = ["tests/*"]
 
 [tool.ruff]
 target-version = "py39"
-line-length = 88
+line-length = 120
+
+[tool.ruff.lint]
 select = [
   "E",   # pycodestyle errors
   "F",   # pyflakes
@@ -113,7 +115,7 @@ select = [
 ignore = []
 unfixable = []
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 force-single-line = false
 lines-after-imports = 2
 force-sort-within-sections = true

@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 from dbterd.helpers.log import logger
 
@@ -12,7 +13,7 @@ class Query:
         """
         self.dir = f"{os.path.dirname(os.path.realpath(__file__))}/include"
 
-    def take(self, file_path: str = None, algo: str = None) -> str:
+    def take(self, file_path: Optional[str] = None, algo: Optional[str] = None) -> str:
         """Read the given file path and return the content as the query string
 
         Args:
@@ -35,8 +36,8 @@ class Query:
             str: Query string
         """
         try:
-            with open(file_path, "r") as content:
+            with open(file_path) as content:
                 return content.read()
         except Exception as e:
-            logger.error(f"Cannot read file: [{file_path}] with error: {str(e)}")
+            logger.error(f"Cannot read file: [{file_path}] with error: {e!s}")
             return None

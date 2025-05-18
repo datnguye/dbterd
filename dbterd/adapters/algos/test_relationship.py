@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union
+from typing import Optional, Union
 
 from dbterd.adapters.algos import base
 from dbterd.adapters.meta import Ref, Table
@@ -6,7 +6,7 @@ from dbterd.helpers.log import logger
 from dbterd.types import Catalog, Manifest
 
 
-def parse_metadata(data, **kwargs) -> Tuple[List[Table], List[Ref]]:
+def parse_metadata(data, **kwargs) -> tuple[list[Table], list[Ref]]:
     """Get all information (tables, relationships) needed for building diagram
     (from Metadata)
 
@@ -25,22 +25,16 @@ def parse_metadata(data, **kwargs) -> Tuple[List[Table], List[Ref]]:
 
     # Parse Ref
     relationships = base.get_relationships_from_metadata(data=data, **kwargs)
-    relationships = base.make_up_relationships(
-        relationships=relationships, tables=tables
-    )
+    relationships = base.make_up_relationships(relationships=relationships, tables=tables)
 
-    logger.info(
-        f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)"
-    )
+    logger.info(f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)")
     return (
         sorted(tables, key=lambda tbl: tbl.node_name),
         sorted(relationships, key=lambda rel: rel.name),
     )
 
 
-def parse(
-    manifest: Manifest, catalog: Union[str, Catalog], **kwargs
-) -> Tuple[List[Table], List[Ref]]:
+def parse(manifest: Manifest, catalog: Union[str, Catalog], **kwargs) -> tuple[list[Table], list[Ref]]:
     """Get all information (tables, relationships) needed for building diagram
 
     Args:
@@ -60,18 +54,12 @@ def parse(
 
     # Parse Ref
     relationships = base.get_relationships(manifest=manifest, **kwargs)
-    relationships = base.make_up_relationships(
-        relationships=relationships, tables=tables
-    )
+    relationships = base.make_up_relationships(relationships=relationships, tables=tables)
 
     # Fulfill columns in Tables (due to `select *`)
-    tables = base.enrich_tables_from_relationships(
-        tables=tables, relationships=relationships
-    )
+    tables = base.enrich_tables_from_relationships(tables=tables, relationships=relationships)
 
-    logger.info(
-        f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)"
-    )
+    logger.info(f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)")
     return (
         sorted(tables, key=lambda tbl: tbl.node_name),
         sorted(relationships, key=lambda rel: rel.name),
@@ -79,8 +67,11 @@ def parse(
 
 
 def find_related_nodes_by_id(
-    manifest: Union[Manifest, dict], node_unique_id: str, type: str = None, **kwargs
-) -> List[str]:
+    manifest: Union[Manifest, dict],
+    node_unique_id: str,
+    type: Optional[str] = None,
+    **kwargs,
+) -> list[str]:
     """Find the FK models which are related to the input model ID inclusively
 
     given the manifest data of dbt project
@@ -98,9 +89,7 @@ def find_related_nodes_by_id(
         return found_nodes  # not supported yet, returned input only
 
     rule = base.get_algo_rule(**kwargs)
-    test_nodes = base.get_test_nodes_by_rule_name(
-        manifest=manifest, rule_name=rule.get("name").lower()
-    )
+    test_nodes = base.get_test_nodes_by_rule_name(manifest=manifest, rule_name=rule.get("name").lower())
 
     for test_node in test_nodes:
         nodes = manifest.nodes[test_node].depends_on.nodes or []
