@@ -33,12 +33,18 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v3
 
+      - name: Cache UV dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: ubuntu-3.9-uv-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ubuntu-3.9-uv-
+
       - name: Install dependencies
         run: |
           uv venv
-          source .venv/bin/activate
-          uv pip install -e .
-          uv pip install ".[dev]"
+          uv sync --all-extras
 
       - name: Configure Git user
         run: |
@@ -47,5 +53,4 @@ jobs:
 
       - name: Publish site
         run: |
-          source .venv/bin/activate
-          mike deploy --push --update-aliases ${{ inputs.version }} latest
+          uv run mike deploy --push --update-aliases ${{ inputs.version }} latest

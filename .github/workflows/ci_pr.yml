@@ -24,63 +24,30 @@ jobs:
       - name: Install uv
         uses: astral-sh/setup-uv@v3
 
-      - name: Install dependencies (Unix)
-        if: runner.os != 'Windows'
-        run: |
-          uv venv
-          source .venv/bin/activate
-          uv pip install -e .
-          uv pip install ".[dev]"
-
-      - name: Install dependencies (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          uv venv
-          .venv\Scripts\activate
-          uv pip install -e .
-          uv pip install ".[dev]"
-
-      - name: Cache the dependencies
+      - name: Cache UV dependencies
         uses: actions/cache@v4
         with:
           path: ~/.cache/uv
           key: ${{ runner.os }}-${{ matrix.python-version }}-uv-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.python-version }}-uv-
 
-      - name: Code quality (Unix)
-        if: runner.os != 'Windows'
+      - name: Install dependencies
         run: |
-          source .venv/bin/activate
-          poe lint
+          uv venv
+          uv sync --all-extras
 
-      - name: Code quality (Windows)
-        if: runner.os == 'Windows'
+      - name: Code quality
         run: |
-          .venv\Scripts\activate
-          poe lint
+          uv run poe lint
 
-      - name: Run tests (Unix)
-        if: runner.os != 'Windows'
+      - name: Run tests
         run: |
-          source .venv/bin/activate
-          poe test-cov
+          uv run poe test-cov
 
-      - name: Run tests (Windows)
-        if: runner.os == 'Windows'
+      - name: Generate coverage report
         run: |
-          .venv\Scripts\activate
-          poe test-cov
-
-      - name: Generate coverage report (Unix)
-        if: runner.os != 'Windows'
-        run: |
-          source .venv/bin/activate
-          coverage xml -o coverage.xml
-
-      - name: Generate coverage report (Windows)
-        if: runner.os == 'Windows'
-        run: |
-          .venv\Scripts\activate
-          coverage xml -o coverage.xml
+          uv run coverage xml -o coverage.xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
