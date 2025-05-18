@@ -1,13 +1,25 @@
-[tool.poetry]
+[project]
 name = "dbterd"
-version = "0.0.0"
+dynamic = ["version"]
 description = "Generate the ERD-as-a-code from dbt artifacts"
-authors = ["Dat Nguyen <datnguyen.it09@gmail.com>"]
-license = "MIT"
+authors = [
+    {name = "Dat Nguyen", email = "datnguye.it09@gmail.com"}
+]
+license = {file = "LICENSE"}
 readme = "README.md"
-homepage = "https://github.com/datnguye/dbterd"
-repository = "https://github.com/datnguye/dbterd"
-keywords = ["flake8", "markdown", "lint"]
+urls = {Homepage = "https://github.com/datnguye/dbterd", Repository = "https://github.com/datnguye/dbterd"}
+keywords = [
+    "dbt", 
+    "erd", 
+    "entity-relationship-diagram", 
+    "dbml", 
+    "mermaid", 
+    "plantuml", 
+    "graphviz", 
+    "d2", 
+    "data-modeling", 
+    "data-documentation"
+]
 classifiers = [
     "Environment :: Console",
     "Operating System :: OS Independent",
@@ -15,73 +27,53 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Software Development :: Quality Assurance",
 ]
-include = [
-    "LICENSE",
-]
-packages = [
-  {include = "dbterd"},
-  {include = "README.md"},
+requires-python = ">=3.9"
+dependencies = [
+    "click>=8.1.7",
+    "dbt-artifacts-parser>=0.7.0",
+    "requests>=2.32.3",
 ]
 
-[tool.poetry.scripts]
+[project.scripts]
 dbterd = "dbterd.main:main"
 
-[tool.poetry.dependencies]
-python = "^3.9"
-click = "^8.1.3"
-requests = "^2.31.0"
-dbt-artifacts-parser = "^0"
-
-[tool.poetry.group.dev.dependencies]
-dbt-core = "^1.7.11"
-dbt-postgres = "^1.7.11"
-pytest = "^6.2.5"
-pytest-sugar = "^0.9.6"
-black = "^24.3.0"
-coverage = {version = "^6.5.0", extras = ["toml"]}
-poethepoet = "^0.16.4"
-pre-commit = "^2.20.0"
-flake8 = "^6.0.0"
-isort = "^5.12.0"
-autoflake = "^2.0.1"
-mkdocs = "^1.4.2"
-mkdocs-minify-plugin = "^0.6.4"
-mkdocs-material = "^9.1.5"
-mike = "^1.1.2"
-pdoc = "^14.4.0"
-
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
 
-[tool.isort]
-multi_line_output = 3
-force_to_top = ["os"]
-profile = "black"
-skip_gitignore = true
+[tool.pdm]
+version = {source = "scm"}
+package-dir = "."
+includes = ["dbterd", "README.md", "LICENSE"]
 
-[tool.autoflake]
-recursive = true
-in-place = true
-remove-all-unused-imports = true
-ignore-init-module-imports = true
-remove-unused-variables = true
-ignore-pass-statements = false
-
-[tool.coverage.run]
-omit = ["tests/*"]
+[tool.uv]
+dev-dependencies = [
+  "dbt-core >=1.7.11",
+  "dbt-postgres >=1.7.11",
+  "pytest >=6.2.5",
+  "pytest-sugar >=0.9.6",
+  "black >=24.3.0",
+  "coverage[toml] >=6.5.0",
+  "poethepoet >=0.16.4",
+  "pre-commit >=2.20.0",
+  "ruff >=0.2.0",
+  "mkdocs >=1.4.2",
+  "mkdocs-minify-plugin >=0.6.4",
+  "mkdocs-material >=9.1.5",
+  "mike >=1.1.2",
+  "pdoc >=14.4.0",
+  "pdm-backend"
+]
 
 [tool.poe.tasks]
 git-hooks = { shell = "pre-commit install --install-hooks && pre-commit install --hook-type commit-msg" }
 format = [
-  {cmd = "autoflake ."},
-  {cmd = "black ."},
-  {cmd = "isort ."},
+  {cmd = "ruff check --fix ."},
+  {cmd = "ruff format ."},
 ]
 lint = [
-  {cmd = "black --check ."},
-  {cmd = "isort --check-only ."},
-  {cmd = "flake8 ."},
+  {cmd = "ruff check ."},
+  {cmd = "ruff format --check ."},
 ]
 test = [
   {cmd = "pytest . -vv"},
@@ -96,3 +88,41 @@ build-doc-and-serve = [
   {cmd = "mkdocs build"},
   {cmd = "mkdocs serve"}
 ]
+install-dev = {shell = "uv pip install -e . && uv pip install --dev"}
+sync = {shell = "uv pip install -e . && uv pip install --dev"}
+update-deps = {shell = "uv pip freeze > requirements.txt"}
+
+[tool.coverage.run]
+omit = ["tests/*"]
+
+[tool.ruff]
+target-version = "py39"
+line-length = 88
+select = [
+  "E",   # pycodestyle errors
+  "F",   # pyflakes
+  "I",   # isort
+  "UP",  # pyupgrade
+  "N",   # pep8-naming
+  "YTT", # flake8-2020
+  "B",   # flake8-bugbear
+  "C4",  # flake8-comprehensions
+  "ISC", # flake8-implicit-str-concat
+  "RUF", # ruff-specific rules
+]
+ignore = []
+unfixable = []
+
+[tool.ruff.isort]
+force-single-line = false
+lines-after-imports = 2
+force-sort-within-sections = true
+known-first-party = ["dbterd"]
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
+combine-as-imports = true
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
+skip-magic-trailing-comma = false

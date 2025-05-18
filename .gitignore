@@ -133,3 +133,17 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# uv specific
+.uv/
+.pdm-build/
+__pypackages__/
+.pdm-python
+.ruff_cache/
+requirements.txt
+
+# Editor specific
+.vscode/
+.idea/
+*.swp
+*.swo
