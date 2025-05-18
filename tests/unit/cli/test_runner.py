@@ -14,20 +14,24 @@ class TestRunner:
 
     def test_runner_unhandled_exception(self, dbterd: DbterdRunner) -> None:
         with mock.patch("dbterd.cli.main.dbterd.make_context", side_effect=click.exceptions.Exit(-1)):
-            with pytest.raises(SystemExit):
+            with pytest.raises(Exception) as excinfo:
                 dbterd.invoke(["debug"])
+            assert "unhandled exit code" in str(excinfo.value)
 
     def test_group_invalid_option(self, dbterd: DbterdRunner) -> None:
-        with pytest.raises(click.UsageError):
+        with pytest.raises(Exception) as excinfo:
             dbterd.invoke(["--invalid-option"])
+        assert "No such option" in str(excinfo.value)
 
     def test_command_invalid_option(self, dbterd: DbterdRunner) -> None:
-        with pytest.raises(click.UsageError):
+        with pytest.raises(Exception) as excinfo:
             dbterd.invoke(["run", "--invalid-option"])
+        assert "No such option" in str(excinfo.value)
 
     def test_invalid_command(self, dbterd: DbterdRunner) -> None:
-        with pytest.raises(click.UsageError):
+        with pytest.raises(Exception) as excinfo:
             dbterd.invoke(["invalid-command"])
+        assert "No such command" in str(excinfo.value)
 
     def test_invoke_version(self, dbterd: DbterdRunner) -> None:
         dbterd.invoke(["--version"])
@@ -60,8 +64,9 @@ class TestRunner:
                     "dbterd.adapters.base.Executor._Executor__save_result",
                     return_value=None,
                 ) as mock_save:
-                    with pytest.raises(ValueError):
+                    with pytest.raises(Exception) as excinfo:
                         dbterd.invoke(["run", "--algo", invalid_strategy])
+                    assert "Could not find adapter algo" in str(excinfo.value)
                     mock_read_m.assert_called_once()
                     mock_read_c.assert_called_once()
                     assert mock_save.call_count == 0
@@ -97,8 +102,9 @@ class TestRunner:
                         mock_open_w.assert_called_with(f"/custom/path/{output}", "w")
 
     def test_command_invalid_selection_rule(self, dbterd: DbterdRunner) -> None:
-        with pytest.raises(click.UsageError):
+        with pytest.raises(Exception) as excinfo:
             dbterd.invoke(["run", "--select", "notexist:dummy"])
+        assert "Unsupported Selection found" in str(excinfo.value)
 
     @pytest.mark.parametrize(
         "target, output",

@@ -3,6 +3,7 @@
 /samples/local
 CHANGELOG.md
 /dbt_packages
+/.claude
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

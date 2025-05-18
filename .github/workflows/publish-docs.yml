@@ -35,8 +35,10 @@ jobs:
 
       - name: Install dependencies
         run: |
+          uv venv
+          source .venv/bin/activate
           uv pip install -e .
-          uv pip install --dev
+          uv pip install ".[dev]"
 
       - name: Configure Git user
         run: |
@@ -45,4 +47,5 @@ jobs:
 
       - name: Publish site
         run: |
-          uv run mike deploy --push --update-aliases ${{ inputs.version }} latest
+          source .venv/bin/activate
+          mike deploy --push --update-aliases ${{ inputs.version }} latest

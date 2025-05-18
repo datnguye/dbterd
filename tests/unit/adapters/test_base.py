@@ -30,10 +30,11 @@ class TestBase:
     @mock.patch("dbterd.adapters.base.DbtCloudMetadata.query_erd_data")
     @mock.patch("dbterd.adapters.base.Executor._Executor__save_result")
     def test___run_metadata_by_strategy_with_not_implemented_algo(self, mock_save_result, mock_query_erd_data):
-        with pytest.raises(ValueError):
+        with pytest.raises(Exception) as excinfo:
             Executor(ctx=click.Context(command=click.BaseCommand("dummy")))._Executor__run_metadata_by_strategy(
                 target="dbml", algo="notfound"
             )
+        assert "Could not find adapter algo" in str(excinfo.value)
         mock_query_erd_data.assert_called_once()
         assert mock_save_result.call_count == 0
 

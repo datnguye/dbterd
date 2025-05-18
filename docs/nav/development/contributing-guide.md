@@ -57,7 +57,7 @@ Then, set up your development environment:
 ```bash
 # Create virtual environment and activate it
 uv venv
-uv sync
+uv sync --all-extras
 uv pip install -e .
 source .venv/bin/activate  # Or activate using your shell's appropriate command
 

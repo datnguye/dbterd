@@ -46,8 +46,8 @@ version = {source = "scm"}
 package-dir = "."
 includes = ["dbterd", "README.md", "LICENSE"]
 
-[tool.uv]
-dev-dependencies = [
+[project.optional-dependencies]
+dev = [
   "dbt-core >=1.7.11",
   "dbt-postgres >=1.7.11",
   "pytest >=6.2.5",
@@ -88,8 +88,8 @@ build-doc-and-serve = [
   {cmd = "mkdocs build"},
   {cmd = "mkdocs serve"}
 ]
-install-dev = {shell = "uv pip install -e . && uv pip install --dev"}
-sync = {shell = "uv pip install -e . && uv pip install --dev"}
+install-dev = {shell = "uv pip install -e . && uv pip install '.[dev]'"}
+sync = {shell = "uv pip install -e . && uv pip install '.[dev]'"}
 update-deps = {shell = "uv pip freeze > requirements.txt"}
 
 [tool.coverage.run]

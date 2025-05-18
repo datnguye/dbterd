@@ -431,7 +431,7 @@ dependencies = [
     { name = "requests" },
 ]
 
-[package.dev-dependencies]
+[package.optional-dependencies]
 dev = [
     { name = "black" },
     { name = "coverage", extra = ["toml"] },
@@ -452,29 +452,26 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "black", marker = "extra == 'dev'", specifier = ">=24.3.0" },
     { name = "click", specifier = ">=8.1.7" },
+    { name = "coverage", extras = ["toml"], marker = "extra == 'dev'", specifier = ">=6.5.0" },
     { name = "dbt-artifacts-parser", specifier = ">=0.7.0" },
+    { name = "dbt-core", marker = "extra == 'dev'", specifier = ">=1.7.11" },
+    { name = "dbt-postgres", marker = "extra == 'dev'", specifier = ">=1.7.11" },
+    { name = "mike", marker = "extra == 'dev'", specifier = ">=1.1.2" },
+    { name = "mkdocs", marker = "extra == 'dev'", specifier = ">=1.4.2" },
+    { name = "mkdocs-material", marker = "extra == 'dev'", specifier = ">=9.1.5" },
+    { name = "mkdocs-minify-plugin", marker = "extra == 'dev'", specifier = ">=0.6.4" },
+    { name = "pdm-backend", marker = "extra == 'dev'" },
+    { name = "pdoc", marker = "extra == 'dev'", specifier = ">=14.4.0" },
+    { name = "poethepoet", marker = "extra == 'dev'", specifier = ">=0.16.4" },
+    { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=2.20.0" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=6.2.5" },
+    { name = "pytest-sugar", marker = "extra == 'dev'", specifier = ">=0.9.6" },
     { name = "requests", specifier = ">=2.32.3" },
+    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.2.0" },
 ]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "black", specifier = ">=24.3.0" },
-    { name = "coverage", extras = ["toml"], specifier = ">=6.5.0" },
-    { name = "dbt-core", specifier = ">=1.7.11" },
-    { name = "dbt-postgres", specifier = ">=1.7.11" },
-    { name = "mike", specifier = ">=1.1.2" },
-    { name = "mkdocs", specifier = ">=1.4.2" },
-    { name = "mkdocs-material", specifier = ">=9.1.5" },
-    { name = "mkdocs-minify-plugin", specifier = ">=0.6.4" },
-    { name = "pdm-backend" },
-    { name = "pdoc", specifier = ">=14.4.0" },
-    { name = "poethepoet", specifier = ">=0.16.4" },
-    { name = "pre-commit", specifier = ">=2.20.0" },
-    { name = "pytest", specifier = ">=6.2.5" },
-    { name = "pytest-sugar", specifier = ">=0.9.6" },
-    { name = "ruff", specifier = ">=0.2.0" },
-]
+provides-extras = ["dev"]
 
 [[package]]
 name = "deepdiff"
