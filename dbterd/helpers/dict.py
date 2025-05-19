@@ -18,7 +18,9 @@ class ObjectView:
 
     def has_field(self, field):
         fields = field.split(".")
-        if len(fields) == 0:
+        # This is a safeguard but actually never triggered in practice
+        # because split always returns at least one element (empty string for empty input)
+        if len(fields) == 0:  # pragma: no cover
             return False
 
         obj = self.origin

@@ -20,3 +20,16 @@ class TestDefault:
     @pytest.mark.parametrize("algo", [("test_relationship")])
     def test_default_algo(self, algo):
         assert default.default_algo() == os.environ.get("DBTERD_ALGO", algo)
+
+    def test_default_resource_types_with_list(self, monkeypatch):
+        """Test default_resource_types when DBTERD_RESOURCE_TYPES is a list."""
+        test_list = ["model", "source"]
+        monkeypatch.setattr(
+            os.environ, "get", lambda *args, **kwargs: test_list if args[0] == "DBTERD_RESOURCE_TYPES" else None
+        )
+        assert default.default_resource_types() == test_list
+
+    def test_default_entity_name_format(self):
+        """Test default_entity_name_format returns the expected value."""
+        expected = os.environ.get("DBTERD_ENTITY_NAME_FORMAT", "resource.package.model")
+        assert default.default_entity_name_format() == expected
