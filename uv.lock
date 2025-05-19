@@ -449,29 +449,47 @@ dev = [
     { name = "pytest-sugar" },
     { name = "ruff" },
 ]
+docs = [
+    { name = "mike" },
+    { name = "mkdocs" },
+    { name = "mkdocs-material" },
+    { name = "mkdocs-minify-plugin" },
+]
+test = [
+    { name = "coverage", extra = ["toml"] },
+    { name = "pytest" },
+    { name = "pytest-sugar" },
+]
 
 [package.metadata]
 requires-dist = [
     { name = "black", marker = "extra == 'dev'", specifier = ">=24.3.0" },
     { name = "click", specifier = ">=8.1.7" },
     { name = "coverage", extras = ["toml"], marker = "extra == 'dev'", specifier = ">=6.5.0" },
+    { name = "coverage", extras = ["toml"], marker = "extra == 'test'", specifier = ">=6.5.0" },
     { name = "dbt-artifacts-parser", specifier = ">=0.7.0" },
     { name = "dbt-core", marker = "extra == 'dev'", specifier = ">=1.7.11" },
     { name = "dbt-postgres", marker = "extra == 'dev'", specifier = ">=1.7.11" },
     { name = "mike", marker = "extra == 'dev'", specifier = ">=1.1.2" },
+    { name = "mike", marker = "extra == 'docs'", specifier = ">=1.1.2" },
     { name = "mkdocs", marker = "extra == 'dev'", specifier = ">=1.4.2" },
+    { name = "mkdocs", marker = "extra == 'docs'", specifier = ">=1.4.2" },
     { name = "mkdocs-material", marker = "extra == 'dev'", specifier = ">=9.1.5" },
+    { name = "mkdocs-material", marker = "extra == 'docs'", specifier = ">=9.1.5" },
     { name = "mkdocs-minify-plugin", marker = "extra == 'dev'", specifier = ">=0.6.4" },
+    { name = "mkdocs-minify-plugin", marker = "extra == 'docs'", specifier = ">=0.6.4" },
     { name = "pdm-backend", marker = "extra == 'dev'" },
     { name = "pdoc", marker = "extra == 'dev'", specifier = ">=14.4.0" },
     { name = "poethepoet", marker = "extra == 'dev'", specifier = ">=0.16.4" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=2.20.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=6.2.5" },
+    { name = "pytest", marker = "extra == 'test'", specifier = ">=6.2.5" },
     { name = "pytest-sugar", marker = "extra == 'dev'", specifier = ">=0.9.6" },
+    { name = "pytest-sugar", marker = "extra == 'test'", specifier = ">=0.9.6" },
     { name = "requests", specifier = ">=2.32.3" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.2.0" },
 ]
-provides-extras = ["dev"]
+provides-extras = ["dev", "test", "docs"]
 
 [[package]]
 name = "deepdiff"

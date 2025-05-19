@@ -1,32 +1,63 @@
 # CLI Reference (dbterd)
 
-Run `dbterd --help` or `dbterd -h` to see the basic guideline for CLI Reference
+Run `dbterd --help` or `dbterd -h` to see the basic guideline for CLI Reference.
+
+## Sample Datasets
+
+The project includes several sample datasets in the `samples/` directory that you can use to test and explore the CLI commands:
+
+- `samples/jaffle-shop/`: A simple dbt artifacts with customers, orders, and payments models
+- `samples/dbtresto/`: A more complex artifacts with dimension and fact tables for analysis
+- `samples/dbt-constraints/`: Demonstrates using constraints for relationships
+- `samples/facebookad/`, `samples/fivetranlog/`, `samples/shopify/`: Additional sample artifacts
+
+The examples below show how to use these sample datasets with dbterd commands.
 
 <div class="termynal" data-termynal data-ty-typeDelay="40" data-ty-lineDelay="700">
     <span data-ty="input" data-ty-prompt="$ ~/repo>">dbterd -h</span>
     <span data-ty>Usage: dbterd [OPTIONS] COMMAND [ARGS]...<br />
 <br />
-Tools for producing diagram-as-code<br />
+Tools for producing diagram-as-code from dbt artifacts<br />
 <br />
 Options:<br />
 --version   Show the version and exit.<br />
 -h, --help  Show this message and exit.<br />
 <br />
 Commands:<br />
-debug  Inspect the hidden magics<br />
-run    Run the convert<br />
+debug         Inspect the hidden magics<br />
+run           Generate ERD file from reading dbt artifact files<br />
+run-metadata  Generate ERD file from reading Discovery API (dbt Cloud)<br />
     </span>
 </div>
 
 ## dbterd run
 
-Command to generate diagram-as-a-code file
+Command to generate diagram-as-a-code file from dbt artifact files, optionally downloading from Administrative API (dbt Cloud).
 
 **Examples:**
+=== "CLI (with samples)"
+
+    ```bash
+    # Generate DBML ERD from jaffle-shop sample
+    dbterd run --artifacts-dir ./samples/jaffle-shop
+
+    # Generate Mermaid ERD from jaffle-shop sample
+    dbterd run --artifacts-dir ./samples/jaffle-shop --target mermaid
+
+    # Generate D2 ERD from dbtresto sample
+    dbterd run --artifacts-dir ./samples/dbtresto --target d2
+
+    # Generate GraphViz ERD without columns
+    dbterd run --artifacts-dir ./samples/dbtresto --target graphviz --omit-columns
+    ```
+
 === "CLI (within dbt project)"
 
     ```bash
+    # Generate artifacts first
     dbt docs generate
+
+    # Generate ERD in your preferred format
     dbterd run [-t dbml or -t mermaid]
     ```
 
@@ -78,21 +109,33 @@ Rules:
 
     ```bash
     dbterd run -s "model.package.partital_name"
+
+    # Example with jaffle-shop sample
+    dbterd run --artifacts-dir ./samples/jaffle-shop -s "model.jaffle_shop.order"
     ```
 === "CLI (by exact name)"
 
     ```bash
     dbterd run -s "exact:model.package.name"
+
+    # Example with jaffle-shop sample
+    dbterd run --artifacts-dir ./samples/jaffle-shop -s "exact:model.jaffle_shop.orders"
     ```
 === "CLI (by schema)"
 
     ```bash
     dbterd run -s "schema:my_schema_name"
+
+    # Example with dbtresto sample
+    dbterd run --artifacts-dir ./samples/dbtresto -s "schema:dbt_resto"
     ```
 === "CLI (by wildcard)"
 
     ```bash
     dbterd run -s "wildcard:*xyz"
+
+    # Example with dbtresto sample
+    dbterd run --artifacts-dir ./samples/dbtresto -s "wildcard:*fact_*"
     ```
 === "CLI (by exposure)"
 
@@ -201,7 +244,29 @@ Supported target, please visit [Generate the Targets](https://dbterd.datnguyen.d
 
     ```bash
     dbterd run -t dbml
+    dbterd run -t mermaid
+    dbterd run -t d2
+    dbterd run -t graphviz
+    dbterd run -t plantuml
+    dbterd run -t drawdb
     ```
+
+=== "Sample-specific examples"
+
+    ```bash
+    # Generate DBML output for jaffle-shop
+    dbterd run --artifacts-dir ./samples/jaffle-shop -t dbml
+
+    # Generate Mermaid ERD for dbtresto
+    dbterd run --artifacts-dir ./samples/dbtresto -t mermaid
+
+    # Generate D2 diagram for dbtresto
+    dbterd run --artifacts-dir ./samples/dbtresto -t d2
+
+    # Generate GraphViz output for jaffle-shop
+    dbterd run --artifacts-dir ./samples/jaffle-shop -t graphviz
+    ```
+
 === "CLI (long style)"
 
     ```bash
@@ -244,11 +309,17 @@ In the above:
 
     ```bash
     dbterd run -a test_relationship
+
+    # Example with jaffle-shop sample (using test_relationship algorithm)
+    dbterd run --artifacts-dir ./samples/jaffle-shop -a test_relationship -t mermaid
     ```
 === "CLI (semantic)"
 
     ```bash
     dbterd run -a semantic
+
+    # Example with dbtresto sample (using semantic algorithm)
+    dbterd run --artifacts-dir ./samples/dbtresto -a semantic -t d2
     ```
 === "CLI (long style)"
 
@@ -259,6 +330,9 @@ In the above:
 
     ```bash
     dbterd run --algo "test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)"
+
+    # Example with dbt-constraints sample (using foreign_key test)
+    dbterd run --artifacts-dir ./samples/dbt-constraints -a "test_relationship:(name:foreign_key)" -t mermaid
     ```
 
 ### dbterd run --omit-columns
@@ -272,6 +346,9 @@ Flag to omit columns in diagram. Currently only mermaid is supported
 
     ```bash
     dbterd run --target mermaid --omit-columns
+
+    # Example with dbtresto sample (omitting columns for a cleaner diagram)
+    dbterd run --artifacts-dir ./samples/dbtresto --target mermaid --omit-columns
     ```
 
 ### dbterd run --manifest-version (-mv)
@@ -415,6 +492,16 @@ Currently, it supports the following keys in the format:
     dbterd run --entity-name-format table # with table name only
     ```
 
+=== "Sample-specific examples"
+
+    ```bash
+    # Generate ERD with simplified entity names from jaffle-shop sample
+    dbterd run --artifacts-dir ./samples/jaffle-shop --entity-name-format schema.table -t mermaid
+
+    # Generate ERD with table names only from dbtresto sample
+    dbterd run --artifacts-dir ./samples/dbtresto --entity-name-format table -t d2
+    ```
+
 ### dbterd run --omit-entity-name-quotes
 
 Flag to omit the double quotes in the generated entity name. Currently only `dbml` is supported.
@@ -466,6 +553,19 @@ Check [this guideline](./dbt-cloud/read-artifact-from-an-environment.md) for mor
 === "CLI"
 
     ```bash
+    # Generate DBML ERD from dbt Cloud environment
+    dbterd run-metadata --dbt-cloud-environment-id 123456 --dbt-cloud-service-token your_token
+
+    # Generate Mermaid ERD from dbt Cloud with specific models
+    dbterd run-metadata --target mermaid --select model.project.customers --dbt-cloud-environment-id 123456
+
+    # Generate D2 ERD with custom query file
+    dbterd run-metadata --target d2 --dbt-cloud-environment-id 123456 --dbt-cloud-query-file-path ./my_query.gql
+    ```
+
+=== "Basic usage"
+
+    ```bash
     dbterd run-metadata [-t dbml or -t mermaid]
     ```
 
@@ -474,6 +574,16 @@ Check [this guideline](./dbt-cloud/read-artifact-from-an-environment.md) for mor
 Shows hidden configured values, which will help us to see what configs are passed into and how they are evaluated to be used.
 
 **Examples:**
+=== "CLI"
+
+    ```bash
+    # Show debug information for a run command
+    dbterd debug --artifacts-dir ./samples/jaffle-shop
+
+    # Show debug information for a run-metadata command
+    dbterd debug --dbt-cloud-environment-id 123456
+    ```
+
 === "Output"
 
     ```
