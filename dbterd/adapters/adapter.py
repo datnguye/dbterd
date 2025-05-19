@@ -2,7 +2,8 @@ from importlib import import_module
 
 
 def load_target(name: str):
-    """Import the target extension dynamically
+    """
+    Import the target extension dynamically.
 
     Args:
         name (str): Target name e.g. dbml, mermaid
@@ -12,6 +13,7 @@ def load_target(name: str):
 
     Returns:
         ModuleType: Imported module
+
     """
     try:
         return import_module(name=f".{name}", package="dbterd.adapters.targets")
@@ -22,7 +24,8 @@ def load_target(name: str):
 
 
 def load_algo(name: str):
-    """Import the algo extension dynamically
+    """
+    Import the algo extension dynamically.
 
     Args:
         name (str): Algo name e.g. test_relationship
@@ -32,6 +35,7 @@ def load_algo(name: str):
 
     Returns:
         ModuleType: Imported module
+
     """
     module_name = name.split(":")[0]
     try:

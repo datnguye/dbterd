@@ -10,14 +10,16 @@ from dbterd.helpers.log import logger
 
 
 class DbtInvocation:
-    """Runner of dbt (https://docs.getdbt.com/reference/programmatic-invocations)"""
+    """Runner of dbt (https://docs.getdbt.com/reference/programmatic-invocations)."""
 
     def __init__(self, dbt_project_dir: Optional[str] = None, dbt_target: Optional[str] = None) -> None:
-        """Initialization
+        """
+        Initialization.
 
         Args:
             dbt_project_dir (str, optional): Custom dbt project directory path. Defaults to None.
             dbt_target (str, optional): Custom dbt target name. Defaults to None - using default target
+
         """
         self.__ensure_dbt_installed()
         from dbt.cli.main import dbtRunner
@@ -28,7 +30,8 @@ class DbtInvocation:
         self.args = ["--quiet", "--log-level", "none"]
 
     def __invoke(self, runner_args: Optional[list[str]] = None):
-        """Base function of the dbt invocation
+        """
+        Base function of the dbt invocation.
 
         Args:
             runner_args (List[str], optional): Actual dbt arguments. Defaults to [].
@@ -38,6 +41,7 @@ class DbtInvocation:
 
         Returns:
             dbtRunnerResult.result: dbtRunnerResult.result
+
         """
         if runner_args is None:
             runner_args = []
@@ -52,10 +56,12 @@ class DbtInvocation:
         return r.result
 
     def __construct_arguments(self, *args) -> list[str]:
-        """Enrich the dbt arguments with the based options
+        """
+        Enrich the dbt arguments with the based options.
 
         Returns:
             List[str]: Actual dbt arguments
+
         """
         evaluated_args = args
         if self.args:
@@ -68,10 +74,12 @@ class DbtInvocation:
         return evaluated_args
 
     def __ensure_dbt_installed(self):
-        """Verify if dbt get installed
+        """
+        Verify if dbt get installed.
 
         Raises:
             click.UsageError: dbt is not installed
+
         """
         dbt_spec = util.find_spec("dbt")
         if dbt_spec and dbt_spec.loader:
@@ -91,7 +99,8 @@ class DbtInvocation:
         select_rules: Optional[list[str]] = None,
         exclude_rules: Optional[list[str]] = None,
     ) -> list[str]:
-        """Get dbt selected models
+        """
+        Get dbt selected models.
 
         Args:
             select_rules (List[str], optional): Model inclusives. Defaults to [].
@@ -99,6 +108,7 @@ class DbtInvocation:
 
         Returns:
             List[str]: Selected node names with 'exact' rule
+
         """
         if exclude_rules is None:
             exclude_rules = []
@@ -114,9 +124,11 @@ class DbtInvocation:
         return [f"exact:model.{str(x).split('.')[0]}.{str(x).split('.')[-1]}" for x in result]
 
     def get_artifacts_for_erd(self):
-        """Generate dbt artifacts using `dbt docs generate` command
+        """
+        Generate dbt artifacts using `dbt docs generate` command.
 
         Returns:
             dbtRunnerResult: dbtRunnerResult
+
         """
         return self.__invoke(runner_args=["docs", "generate"])

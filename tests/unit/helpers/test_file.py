@@ -45,10 +45,17 @@ class TestFile:
         mock_supports_long_paths.assert_called_once()
 
     def test_convert_path_not_supports_long_path_2(self):
+        import contextlib
+
         path_250_noprefix = 250 * "x"
-        with mock.patch("dbterd.helpers.file.supports_long_paths", return_value=False) as mock_supports_long_paths:
-            with mock.patch("dbterd.helpers.file.win_prepare_path", return_value="win/path") as mock_win_prepare_path:
-                assert file.convert_path(path=path_250_noprefix) == "\\\\?\\win/path"
+        with contextlib.ExitStack() as stack:
+            mock_supports_long_paths = stack.enter_context(
+                mock.patch("dbterd.helpers.file.supports_long_paths", return_value=False)
+            )
+            mock_win_prepare_path = stack.enter_context(
+                mock.patch("dbterd.helpers.file.win_prepare_path", return_value="win/path")
+            )
+            assert file.convert_path(path=path_250_noprefix) == "\\\\?\\win/path"
         mock_supports_long_paths.assert_called_once()
         mock_win_prepare_path.assert_called_with(path_250_noprefix)
 

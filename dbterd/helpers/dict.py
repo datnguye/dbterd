@@ -1,7 +1,5 @@
 class ObjectView:
-    """
-    Convert nested dict to dynamic object
-    """
+    """Convert nested dict to dynamic object."""
 
     def __init__(self, d, nested=True):
         self.origin = d

@@ -6,7 +6,8 @@ from dbterd.types import Catalog, Manifest
 
 
 def run(manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[str, str]:
-    """Parse dbt artifacts and export Mermaid file
+    """
+    Parse dbt artifacts and export Mermaid file.
 
     Args:
         manifest (dict): Manifest json
@@ -14,13 +15,15 @@ def run(manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[str, str]:
 
     Returns:
         Tuple(str, str): File name and the Mermaid content
+
     """
     output_file_name = kwargs.get("output_file_name") or "output.md"
     return (output_file_name, parse(manifest, catalog, **kwargs))
 
 
 def replace_column_name(column_name: str) -> str:
-    """Replace column names containing special characters.
+    """
+    Replace column names containing special characters.
     To prevent mermaid from not being able to render column names that may contain special characters.
 
     Args:
@@ -28,12 +31,14 @@ def replace_column_name(column_name: str) -> str:
 
     Returns:
         str: Column name with special characters substituted
+
     """
     return column_name.replace(" ", "-").replace(".", "__")
 
 
 def match_complex_column_type(column_type: str) -> Optional[str]:
-    """Returns the root type from nested complex types.
+    """
+    Returns the root type from nested complex types.
     As an example, if the input is `Struct<field1 string, field2 string>`, return `Struct`.
 
     Args:
@@ -42,6 +47,7 @@ def match_complex_column_type(column_type: str) -> Optional[str]:
     Returns:
         Optional[str]: Returns root type if input type is nested complex type,
         otherwise returns `None` for primitive types
+
     """
     pattern = r"(\w+)<.*>"
     match = re.match(pattern, column_type)
@@ -52,7 +58,8 @@ def match_complex_column_type(column_type: str) -> Optional[str]:
 
 
 def replace_column_type(column_type: str) -> str:
-    """If type of column contains special characters that cannot be drawn by mermaid,
+    """
+    If type of column contains special characters that cannot be drawn by mermaid,
     replace them with strings that can be drawn.
     If the type string contains a nested complex type, omit it to make it easier to read.
 
@@ -61,6 +68,7 @@ def replace_column_type(column_type: str) -> str:
 
     Returns:
         str: Type of column with special characters are substituted or omitted
+
     """
     # Some specific DWHs may have types that cannot be drawn in mermaid,
     # such as `Struct<first_name string, last_name string>`.
@@ -73,7 +81,8 @@ def replace_column_type(column_type: str) -> str:
 
 
 def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
-    """Get the Mermaid content from dbt artifacts
+    """
+    Get the Mermaid content from dbt artifacts.
 
     Args:
         manifest (dict): Manifest json
@@ -81,6 +90,7 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
 
     Returns:
         str: Mermaid content
+
     """
     algo_module = adapter.load_algo(name=kwargs["algo"])
     tables, relationships = algo_module.parse(manifest=manifest, catalog=catalog, **kwargs)
@@ -110,13 +120,15 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
 
 
 def get_rel_symbol(relationship_type: str) -> str:
-    """Get Mermaid relationship symbol
+    """
+    Get Mermaid relationship symbol.
 
     Args:
         relationship_type (str): relationship type
 
     Returns:
         str: Relation symbol supported in Mermaid
+
     """
     if relationship_type in ["01"]:
         return "}o--||"

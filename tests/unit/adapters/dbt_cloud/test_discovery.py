@@ -54,7 +54,7 @@ class TestDbtCloudMetadata:
     @mock.patch("dbterd.adapters.dbt_cloud.graphql.GraphQLHelper.query")
     def test_query_erd_data_no_polling(self, mock_graphql_query):
         mock_graphql_query.return_value = {}
-        assert [{}] == DbtCloudMetadata().query_erd_data(poll_until_end=False)
+        assert DbtCloudMetadata().query_erd_data(poll_until_end=False) == [{}]
         assert mock_graphql_query.call_count == 1
 
     @mock.patch("dbterd.adapters.dbt_cloud.graphql.GraphQLHelper.query")
@@ -87,7 +87,7 @@ class TestDbtCloudMetadata:
                 }
             },
         ]
-        assert [
+        assert DbtCloudMetadata().query_erd_data() == [
             {
                 "models": {"edges": [], "pageInfo": {"hasNextPage": True}},
                 "sources": {"edges": []},
@@ -102,5 +102,5 @@ class TestDbtCloudMetadata:
                 "tests": {"edges": []},
                 "semanticModels": {"edges": []},
             },
-        ] == DbtCloudMetadata().query_erd_data()
+        ]
         assert mock_graphql_query.call_count == 2

@@ -140,44 +140,48 @@ class TestAlgoSemantic:
         ) == sorted(
             semantic.find_related_nodes_by_id(manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.table1")
         )
-        assert ["model.dbt_resto.not-exists"] == semantic.find_related_nodes_by_id(
+        assert semantic.find_related_nodes_by_id(
             manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.not-exists"
-        )
+        ) == ["model.dbt_resto.not-exists"]
 
     def test_parse(self):
-        with mock.patch(
-            "dbterd.adapters.algos.base.get_tables",
-        ) as mock_get_tables:
-            with mock.patch(
+        with (
+            mock.patch(
+                "dbterd.adapters.algos.base.get_tables",
+            ) as mock_get_tables,
+            mock.patch(
                 "dbterd.adapters.algos.semantic._get_relationships",
-            ) as mock_get_relationships:
-                engine.parse(
-                    manifest="--manifest--",
-                    catalog="--catalog--",
-                    select=[],
-                    exclude=[],
-                    resource_type=["model"],
-                    algo="semantic",
-                    omit_entity_name_quotes=False,
-                )
-                mock_get_tables.assert_called_once()
-                mock_get_relationships.assert_called_once()
+            ) as mock_get_relationships,
+        ):
+            engine.parse(
+                manifest="--manifest--",
+                catalog="--catalog--",
+                select=[],
+                exclude=[],
+                resource_type=["model"],
+                algo="semantic",
+                omit_entity_name_quotes=False,
+            )
+            mock_get_tables.assert_called_once()
+            mock_get_relationships.assert_called_once()
 
     def test_parse_metadata(self):
-        with mock.patch(
-            "dbterd.adapters.algos.base.get_tables_from_metadata",
-        ) as mock_get_tables:
-            with mock.patch(
+        with (
+            mock.patch(
+                "dbterd.adapters.algos.base.get_tables_from_metadata",
+            ) as mock_get_tables,
+            mock.patch(
                 "dbterd.adapters.algos.semantic._get_relationships_from_metadata",
-            ) as mock_get_relationships:
-                engine.parse(
-                    manifest=[],
-                    catalog="metadata",
-                    select=[],
-                    exclude=[],
-                    resource_type=["model"],
-                    algo="semantic",
-                    omit_entity_name_quotes=False,
-                )
-                mock_get_tables.assert_called_once()
-                mock_get_relationships.assert_called_once()
+            ) as mock_get_relationships,
+        ):
+            engine.parse(
+                manifest=[],
+                catalog="metadata",
+                select=[],
+                exclude=[],
+                resource_type=["model"],
+                algo="semantic",
+                omit_entity_name_quotes=False,
+            )
+            mock_get_tables.assert_called_once()
+            mock_get_relationships.assert_called_once()

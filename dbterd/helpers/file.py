@@ -32,12 +32,13 @@ def load_file_contents(path: str, strip: bool = True) -> str:
 
 
 def open_json(fp):
-    """Json loading utility, leveraging long path fixes"""
+    """Json loading utility, leveraging long path fixes."""
     return json.loads(load_file_contents(fp))
 
 
 def convert_path(path: str) -> str:
-    """Convert a path which might be >260 characters long, to one that will be writable/readable on Windows.
+    """
+    Convert a path which might be >260 characters long, to one that will be writable/readable on Windows.
     On other platforms, this is a no-op.
 
     Args:
@@ -45,6 +46,7 @@ def convert_path(path: str) -> str:
 
     Returns:
         str: Converted path string
+
     """
     # some parts of python seem to append '\*.*' to strings, better safe than
     # sorry.
@@ -112,7 +114,8 @@ def win_prepare_path(path: str) -> str:  # pragma: no cover
 
 
 def read_manifest(path: str, version: Optional[int] = None) -> Manifest:
-    """Reads in the manifest.json file, with optional version specification
+    """
+    Reads in the manifest.json file, with optional version specification.
 
     Args:
         path (str): manifest.json file path
@@ -120,6 +123,7 @@ def read_manifest(path: str, version: Optional[int] = None) -> Manifest:
 
     Returns:
         dict: Manifest dict
+
     """
     _dict = open_json(f"{path}/manifest.json")
     default_parser = "parse_manifest"
@@ -137,7 +141,8 @@ def read_manifest(path: str, version: Optional[int] = None) -> Manifest:
 
 
 def read_catalog(path: str, version: Optional[int] = None) -> Catalog:
-    """Reads in the catalog.json file, with optional version specification
+    """
+    Reads in the catalog.json file, with optional version specification.
 
     Args:
         path (str): catalog.json file path
@@ -145,6 +150,7 @@ def read_catalog(path: str, version: Optional[int] = None) -> Catalog:
 
     Returns:
         dict: Catalog dict
+
     """
     _dict = open_json(f"{path}/catalog.json")
     default_parser = "parse_catalog"
@@ -162,11 +168,13 @@ def read_catalog(path: str, version: Optional[int] = None) -> Catalog:
 
 
 def write_json(data, path: str):
-    """Persist json data to file
+    """
+    Persist json data to file.
 
     Args:
         data (json): Json data
         path (str): File path
+
     """
     with open(path, "w") as file:
         file.write(data)

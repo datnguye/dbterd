@@ -4,19 +4,20 @@ from dbterd.helpers.log import logger
 
 
 class GraphQLHelper:
-    """GraphQL Helper class"""
+    """GraphQL Helper class."""
 
     def __init__(self, **kwargs) -> None:
-        """Initialize the required inputs:
+        """
+        Initialize the required inputs:
         - Host URL
-        - Bearer Token
+        - Bearer Token.
         """
         self.host_url = kwargs.get("dbt_cloud_host_url")
         self.service_token = kwargs.get("dbt_cloud_service_token")
 
     @property
     def request_headers(self) -> dict:
-        """API Header"""
+        """API Header."""
         return {
             "authorization": f"Bearer {self.service_token}",
             "content-type": "application/json",
@@ -24,17 +25,19 @@ class GraphQLHelper:
 
     @property
     def api_endpoint(self) -> dict:
-        """Base GraphQL API endpoint"""
+        """Base GraphQL API endpoint."""
         return f"https://{self.host_url}/graphql/"
 
     def query(self, query: str, **variables):
-        """POST Graph QL query
+        """
+        POST Graph QL query.
 
         Args:
             query (str): query string
 
         Returns:
             dict: Query data responses. None if any exceptions
+
         """
         try:
             logger.debug(f"Getting erd data...[URL: {self.api_endpoint}, VARS: {variables}]")

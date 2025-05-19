@@ -13,13 +13,14 @@ __version__ = importlib.metadata.version("dbterd")
 
 # Programmatic invocation
 class DbterdRunner:
-    """Support runner for the programmatic call"""
+    """Support runner for the programmatic call."""
 
     def __init__(self) -> None:
         pass
 
     def invoke(self, args: list[str]):
-        """Invoke a command of dbterd programmatically
+        """
+        Invoke a command of dbterd programmatically.
 
         Args:
             args (List[str]): dbterd arguments
@@ -27,6 +28,7 @@ class DbterdRunner:
         Raises:
             Exception: Unhandled exception
             Exception: Not Supported command exception
+
         """
         try:
             dbt_ctx = dbterd.make_context(dbterd.name, args)
@@ -50,7 +52,7 @@ class DbterdRunner:
 @click.version_option(__version__)
 @click.pass_context
 def dbterd(ctx, **kwargs):
-    """Tools for producing diagram-as-code"""
+    """Tools for producing diagram-as-code."""
     logger.info(f"Run with dbterd=={__version__}")
 
 
@@ -61,7 +63,7 @@ def dbterd(ctx, **kwargs):
 def run(ctx, **kwargs):
     """
     Generate ERD file from reading dbt artifact files,
-    optionally downloading from Administrative API (dbt Cloud) before hands
+    optionally downloading from Administrative API (dbt Cloud) before hands.
     """
     Executor(ctx).run(**kwargs)
 
@@ -71,7 +73,7 @@ def run(ctx, **kwargs):
 @click.pass_context
 @params.run_metadata_params
 def run_metadata(ctx, **kwargs):
-    """Generate ERD file from reading Discovery API (dbt Cloud)"""
+    """Generate ERD file from reading Discovery API (dbt Cloud)."""
     Executor(ctx).run_metadata(**kwargs)
 
 
@@ -81,7 +83,7 @@ def run_metadata(ctx, **kwargs):
 @params.run_params
 @params.run_metadata_params
 def debugx(ctx, **kwargs):
-    """Inspect the hidden magics"""
+    """Inspect the hidden magics."""
     logger.info("**Arguments used**")
     logger.debug(jsonify.to_json(kwargs))
     logger.info("**Arguments evaluated**")

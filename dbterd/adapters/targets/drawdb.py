@@ -6,7 +6,8 @@ from dbterd.types import Catalog, Manifest
 
 
 def run(manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[str, str]:
-    """Parse dbt artifacts and export DDB file
+    """
+    Parse dbt artifacts and export DDB file.
 
     Args:
         manifest (dict): Manifest json
@@ -14,13 +15,15 @@ def run(manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[str, str]:
 
     Returns:
         Tuple(str, str): File name and the DDB (json) content
+
     """
     output_file_name = kwargs.get("output_file_name") or "output.ddb"
     return (output_file_name, parse(manifest, catalog, **kwargs))
 
 
 def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
-    """Get the DDB content from dbt artifacts
+    """
+    Get the DDB content from dbt artifacts.
 
     Args:
         manifest (dict): Manifest json
@@ -28,8 +31,8 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
 
     Returns:
         str: DDB (json) content
-    """
 
+    """
     algo_module = adapter.load_algo(name=kwargs["algo"])
     tables, relationships = algo_module.parse(manifest=manifest, catalog=catalog, **kwargs)
 
@@ -92,7 +95,8 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
 
 
 def get_y(tables: list[Table], idx: int, graphic_tables: dict, column_size: int = 4) -> float:
-    """Get y value of a table
+    """
+    Get y value of a table.
 
     `y = S x (T's no of columns) + (T's y value if any)`
 
@@ -107,6 +111,7 @@ def get_y(tables: list[Table], idx: int, graphic_tables: dict, column_size: int 
 
     Returns:
         float: y value
+
     """
     if idx < column_size:
         return 0
@@ -122,13 +127,15 @@ def get_y(tables: list[Table], idx: int, graphic_tables: dict, column_size: int 
 
 
 def get_graphic_tables(tables: list[Table]) -> dict:
-    """Return the indexed and pre-layouted tables
+    """
+    Return the indexed and pre-layouted tables.
 
     Args:
         tables (List[Table]): List of parsed tables
 
     Returns:
         dict: Indexed and Layouted tables
+
     """
     graphic_tables = {}
     for idx, x in enumerate(tables):
@@ -146,13 +153,15 @@ def get_graphic_tables(tables: list[Table]) -> dict:
 
 
 def get_rel_symbol(relationship_type: str) -> str:
-    """Get DDB relationship symbol
+    """
+    Get DDB relationship symbol.
 
     Args:
         relationship_type (str): relationship type
 
     Returns:
         str: Relation symbol supported in DDB
+
     """
     if relationship_type in ["01", "11"]:
         return "One to one"

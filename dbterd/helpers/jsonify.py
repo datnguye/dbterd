@@ -20,8 +20,6 @@ def mask(obj: str, mask_keys: Optional[list] = None):
         print(key)
         if key in mask_keys or [x for x in mask_keys if key.startswith(x)]:
             obj_dict[key] = value[0:5] + "*" * 10
-        # if isinstance(value, dict):
-        #     obj_dict[key] = mask(json.dumps(value, cls=EnhancedJSONEncoder), mask_keys)
 
     return obj_dict
 
@@ -32,6 +30,4 @@ def to_json(obj, mask_keys=None):
     if not obj:
         return {}
     mask_dict = obj
-    # if isinstance(mask_dict, type):
-    #     mask_dict = mask(json.dumps(obj.__dict__, cls=EnhancedJSONEncoder), mask_keys)
     return json.dumps(mask_dict, indent=4, cls=EnhancedJSONEncoder)

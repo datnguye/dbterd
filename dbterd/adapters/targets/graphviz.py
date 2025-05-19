@@ -3,7 +3,8 @@ from dbterd.types import Catalog, Manifest
 
 
 def run(manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[str, str]:
-    """Parse dbt artifacts and export GraphViz file
+    """
+    Parse dbt artifacts and export GraphViz file.
 
     Args:
         manifest (dict): Manifest json
@@ -11,13 +12,15 @@ def run(manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[str, str]:
 
     Returns:
         Tuple(str, str): File name and the GraphViz content
+
     """
     output_file_name = kwargs.get("output_file_name") or "output.graphviz"
     return (output_file_name, parse(manifest, catalog, **kwargs))
 
 
 def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
-    """Get the GraphViz content from dbt artifacts
+    """
+    Get the GraphViz content from dbt artifacts.
 
     Args:
         manifest (dict): Manifest json
@@ -25,6 +28,7 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
 
     Returns:
         str: GraphViz content
+
     """
     algo_module = adapter.load_algo(name=kwargs["algo"])
     tables, relationships = algo_module.parse(manifest=manifest, catalog=catalog, **kwargs)
@@ -78,12 +82,14 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
 
 
 def get_rel_symbol(relationship_type: str) -> str:
-    """Get GraphViz relationship symbol
+    """
+    Get GraphViz relationship symbol.
 
     Args:
         relationship_type (str): relationship type
 
     Returns:
         str: Relation symbol supported in GraphViz
+
     """
     return "->"  # no supports for rel type

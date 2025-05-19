@@ -1,3 +1,4 @@
+import contextlib
 from unittest import mock
 
 import pytest
@@ -232,27 +233,32 @@ class TestD2TestRelationship:
         ],
     )
     def test_parse(self, tables, relationships, select, exclude, resource_type, expected):
-        with mock.patch(
-            "dbterd.adapters.algos.base.get_tables",
-            return_value=tables,
-        ) as mock_get_tables:
-            with mock.patch(
-                "dbterd.adapters.algos.base.get_relationships",
-                return_value=relationships,
-            ) as mock_get_relationships:
-                mermaid = engine.parse(
-                    manifest="--manifest--",
-                    catalog="--catalog--",
-                    select=select,
-                    exclude=exclude,
-                    resource_type=resource_type,
-                    algo="test_relationship",
+        with contextlib.ExitStack() as stack:
+            mock_get_tables = stack.enter_context(
+                mock.patch(
+                    "dbterd.adapters.algos.base.get_tables",
+                    return_value=tables,
                 )
-                print("mermaid ", mermaid.replace(" ", "").replace("\n", ""))
-                print("expected", expected.replace(" ", "").replace("\n", ""))
-                assert mermaid.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
-                mock_get_tables.assert_called_once()
-                mock_get_relationships.assert_called_once()
+            )
+            mock_get_relationships = stack.enter_context(
+                mock.patch(
+                    "dbterd.adapters.algos.base.get_relationships",
+                    return_value=relationships,
+                )
+            )
+            mermaid = engine.parse(
+                manifest="--manifest--",
+                catalog="--catalog--",
+                select=select,
+                exclude=exclude,
+                resource_type=resource_type,
+                algo="test_relationship",
+            )
+            print("mermaid ", mermaid.replace(" ", "").replace("\n", ""))
+            print("expected", expected.replace(" ", "").replace("\n", ""))
+            assert mermaid.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
+            mock_get_tables.assert_called_once()
+            mock_get_relationships.assert_called_once()
 
     @pytest.mark.parametrize(
         "relationship_type, symbol",

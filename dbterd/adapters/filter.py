@@ -11,13 +11,15 @@ RULE_FUNC_PREFIX = "is_satisfied_by_"
 def has_unsupported_rule(
     rules: Optional[list[str]] = None,
 ) -> tuple[bool, Optional[str]]:
-    """Verify if existing the unsupported selection rule
+    """
+    Verify if existing the unsupported selection rule.
 
     Args:
         rules (List[str]): Any (selection or/and exclusion) rules
 
     Returns:
         bool: True if existing any unsupported one
+
     """
     if rules is None:
         rules = []
@@ -38,7 +40,8 @@ def is_selected_table(
     exclude_rules: Optional[list[str]] = None,
     resource_types: Optional[list[str]] = None,
 ) -> bool:
-    """Check if Table is selected with defined selection criteria
+    """
+    Check if Table is selected with defined selection criteria.
 
     Args:
         table (Table): Table object
@@ -48,6 +51,7 @@ def is_selected_table(
 
     Returns:
         bool: True if Table is selected. False if Tables is excluded
+
     """
     # Selection
     if resource_types is None:
@@ -71,7 +75,8 @@ def is_selected_table(
 
 
 def evaluate_rule(table: Table, rule: str) -> bool:
-    """Evaluate selection/exclusion single rule with AND logic applied
+    """
+    Evaluate selection/exclusion single rule with AND logic applied.
 
     Args:
         table (Table): Table object to be evaluated
@@ -79,6 +84,7 @@ def evaluate_rule(table: Table, rule: str) -> bool:
 
     Returns:
         bool: True if satisfied all rules
+
     """
     and_parts = rule.split(",")
     results = []
@@ -96,7 +102,8 @@ def evaluate_rule(table: Table, rule: str) -> bool:
 
 
 def is_satisfied_by_name(table: Table, rule: str = "") -> bool:
-    """Evaluate rule by Name
+    """
+    Evaluate rule by Name.
 
     Args:
         table (Table): Table object
@@ -104,6 +111,7 @@ def is_satisfied_by_name(table: Table, rule: str = "") -> bool:
 
     Returns:
         bool: True if satisfied `starts with` logic applied to Node name
+
     """
     if not rule:
         return True
@@ -111,7 +119,8 @@ def is_satisfied_by_name(table: Table, rule: str = "") -> bool:
 
 
 def is_satisfied_by_exact(table: Table, rule: str = "") -> bool:
-    """Evaluate rule by model name with exact match
+    """
+    Evaluate rule by model name with exact match.
 
     Args:
         table (Table): Table object
@@ -119,6 +128,7 @@ def is_satisfied_by_exact(table: Table, rule: str = "") -> bool:
 
     Returns:
         bool: True if satisfied `equal` logic applied to Table name
+
     """
     if not rule:
         return True
@@ -126,7 +136,8 @@ def is_satisfied_by_exact(table: Table, rule: str = "") -> bool:
 
 
 def is_satisfied_by_schema(table: Table, rule: str = "") -> bool:
-    """Evaluate rule by Schema name
+    """
+    Evaluate rule by Schema name.
 
     Args:
         table (Table): Table object
@@ -134,6 +145,7 @@ def is_satisfied_by_schema(table: Table, rule: str = "") -> bool:
 
     Returns:
         bool: True if satisfied `starts with` logic applied to Table's schema
+
     """
     if not rule:
         return True
@@ -145,7 +157,8 @@ def is_satisfied_by_schema(table: Table, rule: str = "") -> bool:
 
 
 def is_satisfied_by_wildcard(table: Table, rule: str = "*") -> bool:
-    """Evaluate rule by Wildcard (Unix Style)
+    """
+    Evaluate rule by Wildcard (Unix Style).
 
     Args:
         table (Table): Table object
@@ -153,6 +166,7 @@ def is_satisfied_by_wildcard(table: Table, rule: str = "*") -> bool:
 
     Returns:
         bool: True if satisfied table name matched the pattern
+
     """
     if not rule:
         return True
@@ -160,7 +174,8 @@ def is_satisfied_by_wildcard(table: Table, rule: str = "*") -> bool:
 
 
 def is_satisfied_by_exposure(table: Table, rule: str = "") -> bool:
-    """Evaluate rule by dbt Exposure name
+    """
+    Evaluate rule by dbt Exposure name.
 
     Args:
         table (Table): Table object
@@ -168,6 +183,7 @@ def is_satisfied_by_exposure(table: Table, rule: str = "") -> bool:
 
     Returns:
         bool: True if satisfied exposure name exists in the table's exposures
+
     """
     if not rule:
         return True

@@ -70,18 +70,24 @@ class TestBase:
         assert worker.filename_catalog == "catalog.json"
 
     def test___read_manifest(self):
+        import contextlib
+
         worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
-        with mock.patch("dbterd.helpers.file.read_manifest", return_value={}) as mock_read_manifest:
-            with mock.patch("dbterd.helpers.cli_messaging.check_existence") as mock_check_existence:
-                assert worker._Executor__read_manifest(mp=Path.cwd()) == {}
+        with contextlib.ExitStack() as stack:
+            mock_read_manifest = stack.enter_context(mock.patch("dbterd.helpers.file.read_manifest", return_value={}))
+            mock_check_existence = stack.enter_context(mock.patch("dbterd.helpers.cli_messaging.check_existence"))
+            assert worker._Executor__read_manifest(mp=Path.cwd()) == {}
         mock_check_existence.assert_called_once_with(Path.cwd(), "manifest.json")
         mock_read_manifest.assert_called_once_with(path=Path.cwd(), version=None)
 
     def test___read_catalog(self):
+        import contextlib
+
         worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
-        with mock.patch("dbterd.helpers.file.read_catalog", return_value={}) as mock_read_catalog:
-            with mock.patch("dbterd.helpers.cli_messaging.check_existence") as mock_check_existence:
-                assert worker._Executor__read_catalog(cp=Path.cwd()) == {}
+        with contextlib.ExitStack() as stack:
+            mock_read_catalog = stack.enter_context(mock.patch("dbterd.helpers.file.read_catalog", return_value={}))
+            mock_check_existence = stack.enter_context(mock.patch("dbterd.helpers.cli_messaging.check_existence"))
+            assert worker._Executor__read_catalog(cp=Path.cwd()) == {}
         mock_check_existence.assert_called_once_with(Path.cwd(), "catalog.json")
         mock_read_catalog.assert_called_once_with(path=Path.cwd(), version=None)
 
@@ -89,7 +95,7 @@ class TestBase:
     def test__get_selection(self, mock_dbt_invocation):
         worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
         worker.dbt = DbtInvocation()
-        assert "dummy" == worker._Executor__get_selection(select_rules=[], exclude_rules=[])
+        assert worker._Executor__get_selection(select_rules=[], exclude_rules=[]) == "dummy"
         mock_dbt_invocation.assert_called_once()
 
     @mock.patch("dbterd.adapters.base.DbtInvocation.get_selection", return_value="dummy")

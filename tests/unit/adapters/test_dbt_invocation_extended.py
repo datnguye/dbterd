@@ -8,7 +8,7 @@ from dbterd.adapters.dbt_core.dbt_invocation import DbtInvocation
 class TestDbtInvocationExtended:
     @mock.patch("dbt.cli.main.dbtRunner.invoke")
     def test_invoke_with_none_args(self, mock_dbt_runner_invoke):
-        """Test __invoke with None runner_args parameter"""
+        """Test __invoke with None runner_args parameter."""
         with mock.patch("importlib.util.find_spec") as mock_find_spec:
             # Setup to avoid the dbt import error
             mock_spec = mock.MagicMock()
@@ -29,7 +29,7 @@ class TestDbtInvocationExtended:
 
     @mock.patch("dbt.cli.main.dbtRunner.invoke")
     def test_get_selection_with_none_params(self, mock_dbt_runner_invoke):
-        """Test get_selection with None parameters"""
+        """Test get_selection with None parameters."""
         with mock.patch("importlib.util.find_spec") as mock_find_spec:
             # Setup to avoid the dbt import error
             mock_spec = mock.MagicMock()

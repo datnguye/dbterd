@@ -15,13 +15,13 @@ class DbtErd:
     """
     dbt ERD official API functions.
 
-
     **Usage**:
 
     ## Get a whole ERD
 
     ```python
     from dbterd.api import DbtErd
+
     erd = DbtErd().get_erd()
     ```
 
@@ -29,6 +29,7 @@ class DbtErd:
 
     ```python
     from dbterd.api import DbtErd
+
     erd = DbtErd(select="exposure:my_exposure_name").get_erd()
     ```
     See the
@@ -46,8 +47,7 @@ class DbtErd:
     """
 
     def __init__(self, **kwargs) -> None:
-        """Initialize the main Executor given similar input CLI parameters"""
-
+        """Initialize the main Executor given similar input CLI parameters."""
         self.params: dict = kwargs
         """
         Mimic CLI params with overriding `api = True`.\n
@@ -65,7 +65,7 @@ class DbtErd:
         """
 
     def __set_params_default_if_not_specified(self) -> None:
-        """Set base params' default value (mimic CLI behaviors where possible)"""
+        """Set base params' default value (mimic CLI behaviors where possible)."""
         self.params["api"] = True
 
         self.params["select"] = self.params.get("select", [])
@@ -78,21 +78,25 @@ class DbtErd:
         self.params["target"] = self.params.get("target", default.default_target())
 
     def get_erd(self) -> str:
-        """Generate ERD code for a whole project
+        """
+        Generate ERD code for a whole project.
 
         Usage:
         ```python
         from dbterd.api import DbtErd
+
         erd = DbtErd().get_erd()
         ```
 
         Returns:
             str: ERD text
+
         """
         return self.executor.run(**self.params)
 
     def get_model_erd(self, node_unique_id: str) -> str:
-        """Generate ERD code for a model.
+        """
+        Generate ERD code for a model.
 
         Result contains the input model and 1 level relationship model(s) (if any).
 
@@ -100,9 +104,8 @@ class DbtErd:
 
             ```python
             from dbterd.api import DbtErd
-            erd = DbtErd().get_model_erd(
-                node_unique_id="model.jaffle_shop.my_model"
-            )
+
+            erd = DbtErd().get_model_erd(node_unique_id="model.jaffle_shop.my_model")
             ```
 
         Args:
@@ -110,5 +113,6 @@ class DbtErd:
 
         Returns:
             str: ERD text
+
         """
         return self.executor.run(node_unique_id=node_unique_id, **self.params)

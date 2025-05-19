@@ -3,7 +3,8 @@ from dbterd.types import Catalog, Manifest
 
 
 def run(manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[str, str]:
-    """Parse dbt artifacts and export PlantUML file
+    """
+    Parse dbt artifacts and export PlantUML file.
 
     Args:
         manifest (dict): Manifest json
@@ -11,13 +12,15 @@ def run(manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[str, str]:
 
     Returns:
         Tuple(str, str): File name and the PlantUML content
+
     """
     output_file_name = kwargs.get("output_file_name") or "output.plantuml"
     return (output_file_name, parse(manifest, catalog, **kwargs))
 
 
 def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
-    """Get the PlantUML content from dbt artifacts
+    """
+    Get the PlantUML content from dbt artifacts.
 
     Args:
         manifest (dict): Manifest json
@@ -25,6 +28,7 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
 
     Returns:
         str: PlantUML content
+
     """
     algo_module = adapter.load_algo(name=kwargs["algo"])
     tables, relationships = algo_module.parse(manifest=manifest, catalog=catalog, **kwargs)
@@ -52,13 +56,15 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
 
 
 def get_rel_symbol(relationship_type: str) -> str:
-    """Get PlantUML relationship symbol
+    """
+    Get PlantUML relationship symbol.
 
     Args:
         relationship_type (str): relationship type
 
     Returns:
         str: Relation symbol supported in PlantUML
+
     """
     if relationship_type in ["01"]:
         return "}o--||"

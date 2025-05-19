@@ -7,14 +7,22 @@ from dbterd.types import Catalog, Manifest
 
 
 def parse_metadata(data, **kwargs) -> tuple[list[Table], list[Ref]]:
-    """Get all information (tables, relationships) needed for building diagram
+    """
+    Get all information (tables, relationships) needed for building diagram.
+
     (from Metadata)
 
     Args:
         data (dict): metadata dict
+        **kwargs: Additional options including:
+            resource_type (list): Types of resources to include
+            entity_name_format (str): Format string for entity names
+            select (list): Selection rules to include tables
+            exclude (list): Rules to exclude tables
 
     Returns:
         Tuple(List[Table], List[Ref]): Info of parsed tables and relationships
+
     """
     tables = []
     relationships = []
@@ -35,14 +43,21 @@ def parse_metadata(data, **kwargs) -> tuple[list[Table], list[Ref]]:
 
 
 def parse(manifest: Manifest, catalog: Union[str, Catalog], **kwargs) -> tuple[list[Table], list[Ref]]:
-    """Get all information (tables, relationships) needed for building diagram
+    """
+    Get all information (tables, relationships) needed for building diagram.
 
     Args:
         manifest (dict): Manifest json
         catalog (dict): Catalog json
+        **kwargs: Additional options including:
+            resource_type (list): Types of resources to include
+            entity_name_format (str): Format string for entity names
+            select (list): Selection rules to include tables
+            exclude (list): Rules to exclude tables
 
     Returns:
         Tuple(List[Table], List[Ref]): Info of parsed tables and relationships
+
     """
     # Parse metadata
     if catalog == "metadata":
@@ -72,17 +87,20 @@ def find_related_nodes_by_id(
     type: Optional[str] = None,
     **kwargs,
 ) -> list[str]:
-    """Find the FK models which are related to the input model ID inclusively
+    """
+    Find the FK models which are related to the input model ID inclusively.
 
-    given the manifest data of dbt project
+    Given the manifest data of dbt project.
 
     Args:
         manifest (Union[Manifest, dict]): Manifest data
         node_unique_id (str): Manifest node unique ID
         type (str, optional): Manifest type (local file or metadata). Defaults to None.
+        **kwargs: Additional options that might be passed from parent functions
 
     Returns:
         List[str]: Manifest nodes' unique ID
+
     """
     found_nodes = [node_unique_id]
     if type == "metadata":

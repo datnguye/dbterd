@@ -1,3 +1,4 @@
+import contextlib
 from dataclasses import dataclass
 import json
 from unittest import mock
@@ -197,26 +198,31 @@ class TestDbmlTestRelationship:
         omit_entity_name_quotes,
         expected,
     ):
-        with mock.patch(
-            "dbterd.adapters.algos.base.get_tables",
-            return_value=tables,
-        ) as mock_get_tables:
-            with mock.patch(
-                "dbterd.adapters.algos.base.get_relationships",
-                return_value=relationships,
-            ) as mock_get_relationships:
-                drawdb = engine.parse(
-                    manifest=DummyManifest(metadata=DummyManifestMetadata(generated_at="dummy")),
-                    catalog="--catalog--",
-                    select=select,
-                    exclude=exclude,
-                    resource_type=resource_type,
-                    algo="test_relationship",
-                    omit_entity_name_quotes=omit_entity_name_quotes,
+        with contextlib.ExitStack() as stack:
+            mock_get_tables = stack.enter_context(
+                mock.patch(
+                    "dbterd.adapters.algos.base.get_tables",
+                    return_value=tables,
                 )
-                assert drawdb.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
-                mock_get_tables.assert_called_once()
-                mock_get_relationships.assert_called_once()
+            )
+            mock_get_relationships = stack.enter_context(
+                mock.patch(
+                    "dbterd.adapters.algos.base.get_relationships",
+                    return_value=relationships,
+                )
+            )
+            drawdb = engine.parse(
+                manifest=DummyManifest(metadata=DummyManifestMetadata(generated_at="dummy")),
+                catalog="--catalog--",
+                select=select,
+                exclude=exclude,
+                resource_type=resource_type,
+                algo="test_relationship",
+                omit_entity_name_quotes=omit_entity_name_quotes,
+            )
+            assert drawdb.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
+            mock_get_tables.assert_called_once()
+            mock_get_relationships.assert_called_once()
 
     @pytest.mark.parametrize(
         "relationship_type, symbol",
@@ -276,18 +282,18 @@ class TestDbmlTestRelationship:
                 raw_sql="--irrelevant--",
             ),
         ]
-        assert 0 == engine.get_y(tables, 0, {})
-        assert 0 == engine.get_y(tables, 1, {})
-        assert 0 == engine.get_y(tables, 2, {})
-        assert 0 == engine.get_y(tables, 3, {})
-        assert 100 == engine.get_y(tables, 4, {"model.dbt_resto.table1": {"y": 0}})
-        assert 100 + 5 == engine.get_y(tables, 4, {"model.dbt_resto.table1": {"y": 5}})
+        assert engine.get_y(tables, 0, {}) == 0
+        assert engine.get_y(tables, 1, {}) == 0
+        assert engine.get_y(tables, 2, {}) == 0
+        assert engine.get_y(tables, 3, {}) == 0
+        assert engine.get_y(tables, 4, {"model.dbt_resto.table1": {"y": 0}}) == 100
+        assert engine.get_y(tables, 4, {"model.dbt_resto.table1": {"y": 5}}) == 100 + 5
 
     def test_run(self):
         with mock.patch(
             "dbterd.adapters.targets.drawdb.parse",
             return_value="dummy",
         ) as mock_parse:
-            assert ("xyz", "dummy") == engine.run(manifest="irr", catalog="irr", output_file_name="xyz")
-            assert ("output.ddb", "dummy") == engine.run(manifest="irr", catalog="irr")
+            assert engine.run(manifest="irr", catalog="irr", output_file_name="xyz") == ("xyz", "dummy")
+            assert engine.run(manifest="irr", catalog="irr") == ("output.ddb", "dummy")
             assert mock_parse.call_count == 2

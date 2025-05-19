@@ -1,3 +1,4 @@
+import contextlib
 from unittest import mock
 
 import pytest
@@ -370,26 +371,31 @@ class TestDbmlTestRelationship:
         omit_entity_name_quotes,
         expected,
     ):
-        with mock.patch(
-            "dbterd.adapters.algos.base.get_tables",
-            return_value=tables,
-        ) as mock_get_tables:
-            with mock.patch(
-                "dbterd.adapters.algos.base.get_relationships",
-                return_value=relationships,
-            ) as mock_get_relationships:
-                dbml = engine.parse(
-                    manifest="--manifest--",
-                    catalog="--catalog--",
-                    select=select,
-                    exclude=exclude,
-                    resource_type=resource_type,
-                    algo="test_relationship",
-                    omit_entity_name_quotes=omit_entity_name_quotes,
+        with contextlib.ExitStack() as stack:
+            mock_get_tables = stack.enter_context(
+                mock.patch(
+                    "dbterd.adapters.algos.base.get_tables",
+                    return_value=tables,
                 )
-                assert dbml.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
-                mock_get_tables.assert_called_once()
-                mock_get_relationships.assert_called_once()
+            )
+            mock_get_relationships = stack.enter_context(
+                mock.patch(
+                    "dbterd.adapters.algos.base.get_relationships",
+                    return_value=relationships,
+                )
+            )
+            dbml = engine.parse(
+                manifest="--manifest--",
+                catalog="--catalog--",
+                select=select,
+                exclude=exclude,
+                resource_type=resource_type,
+                algo="test_relationship",
+                omit_entity_name_quotes=omit_entity_name_quotes,
+            )
+            assert dbml.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
+            mock_get_tables.assert_called_once()
+            mock_get_relationships.assert_called_once()
 
     @pytest.mark.parametrize(
         "relationship_type, symbol",

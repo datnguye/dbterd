@@ -40,7 +40,7 @@ class TestGraphQL:
     @mock.patch("dbterd.adapters.dbt_cloud.administrative.requests.post")
     def test_query(self, mock_requests_post):
         mock_requests_post.return_value = MockResponse(status_code=200, data={})
-        assert {} == GraphQLHelper().query(query="irrelevant", **{})
+        assert GraphQLHelper().query(query="irrelevant", **{}) == {}
         assert mock_requests_post.call_count == 1
 
     @mock.patch("dbterd.adapters.dbt_cloud.administrative.requests.post")

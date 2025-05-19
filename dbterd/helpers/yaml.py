@@ -51,9 +51,6 @@ def load_yaml_text(contents, path=None):
     try:
         return safe_load(contents)
     except (yaml.scanner.ScannerError, yaml.YAMLError) as e:
-        if hasattr(e, "problem_mark"):
-            error = contextualized_yaml_error(contents, e)
-        else:
-            error = str(e)
+        error = contextualized_yaml_error(contents, e) if hasattr(e, "problem_mark") else str(e)
 
         raise error from e

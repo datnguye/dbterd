@@ -14,14 +14,24 @@ from dbterd.helpers.log import logger
 from dbterd.types import Catalog, Manifest
 
 
+# Constants
+MAX_TEST_PARENTS = 2
+
+
 def get_tables_from_metadata(data=None, **kwargs) -> list[Table]:
-    """Extract tables from dbt metadata
+    """
+    Extract tables from dbt metadata.
 
     Args:
         data (dict): dbt metadata query result
+        **kwargs: Additional options including:
+            resource_type (list): Types of resources to include (model, source, etc.)
+            entity_name_format (str): Format string for entity names
+            omit_columns (bool): Whether to exclude columns from tables
 
     Returns:
         List[Table]: All parsed tables
+
     """
     if data is None:
         data = []
@@ -53,14 +63,19 @@ def get_tables_from_metadata(data=None, **kwargs) -> list[Table]:
 
 
 def get_tables(manifest: Manifest, catalog: Catalog, **kwargs) -> list[Table]:
-    """Extract tables from dbt artifacts
+    """
+    Extract tables from dbt artifacts.
 
     Args:
         manifest (dict): dbt manifest json
         catalog (dict): dbt catalog json
+        **kwargs: Additional options including:
+            entity_name_format (str): Format string for entity names
+            omit_columns (bool): Whether to exclude columns from tables
 
     Returns:
         List[Table]: All tables parsed from dbt artifacts
+
     """
     tables = []
 
@@ -96,13 +111,19 @@ def get_tables(manifest: Manifest, catalog: Catalog, **kwargs) -> list[Table]:
 
 
 def filter_tables_based_on_selection(tables: list[Table], **kwargs) -> list[Table]:
-    """Filter list of tables based on the Selection Rules
+    """
+    Filter list of tables based on the Selection Rules.
 
     Args:
         tables (List[Table]): Parsed tables
+        **kwargs: Additional options including:
+            select (list): Selection rules to include tables
+            exclude (list): Rules to exclude tables
+            resource_type (list): Types of resources to include
 
     Returns:
         List[Table]: Filtered tables
+
     """
     return [
         table
@@ -117,7 +138,8 @@ def filter_tables_based_on_selection(tables: list[Table], **kwargs) -> list[Tabl
 
 
 def enrich_tables_from_relationships(tables: list[Table], relationships: list[Ref]) -> list[Table]:
-    """Fulfill columns in Table due to `select *`
+    """
+    Fulfill columns in Table due to `select *`.
 
     Args:
         tables (List[Table]): List of Tables
@@ -125,6 +147,7 @@ def enrich_tables_from_relationships(tables: list[Table], relationships: list[Re
 
     Returns:
         List[Table]: Enriched tables
+
     """
     copied_tables = copy.deepcopy(tables)
     for relationship in relationships:
@@ -138,14 +161,19 @@ def enrich_tables_from_relationships(tables: list[Table], relationships: list[Re
 
 
 def get_table_from_metadata(model_metadata, exposures=None, **kwargs) -> Table:
-    """Construct a single Table object (for Metadata)
+    """
+    Construct a single Table object (for Metadata).
 
     Args:
         model_metadata (dict): Metadata model node
         exposures (list, optional): List of parsed exposures. Defaults to [].
+        **kwargs: Additional options including:
+            entity_name_format (str): Format string for entity names
+            omit_columns (bool): Whether to exclude columns from tables
 
     Returns:
         Table: Parsed table
+
     """
     if exposures is None:
         exposures = []
@@ -197,16 +225,21 @@ def get_table_from_metadata(model_metadata, exposures=None, **kwargs) -> Table:
 
 
 def get_table(node_name: str, manifest_node, catalog_node=None, exposures=None, **kwargs) -> Table:
-    """Construct a single Table object
+    """
+    Construct a single Table object.
 
     Args:
         node_name (str): Node name
         manifest_node (dict): Manifest node
         catalog_node (dict, optional): Catalog node. Defaults to None.
         exposures (List, optional): List of table-exposure mapping. Defaults to [].
+        **kwargs: Additional options including:
+            entity_name_format (str): Format string for entity names
+            omit_columns (bool): Whether to exclude columns from tables
 
     Returns:
         Table: Parsed table
+
     """
     if exposures is None:
         exposures = []
@@ -247,8 +280,8 @@ def get_table(node_name: str, manifest_node, catalog_node=None, exposures=None, 
                 )
             )
 
-    for column_name, column_metadata in manifest_node.columns.items():
-        column_name = column_name.strip('"')
+    for original_column_name, column_metadata in manifest_node.columns.items():
+        column_name = original_column_name.strip('"')
         find_columns = [c for c in table.columns if c.name.lower() == column_name.lower()]
         if not find_columns:
             table.columns.append(
@@ -268,13 +301,15 @@ def get_table(node_name: str, manifest_node, catalog_node=None, exposures=None, 
 
 
 def get_compiled_sql(manifest_node):
-    """Retrieve compiled SQL from manifest node
+    """
+    Retrieve compiled SQL from manifest node.
 
     Args:
         manifest_node (dict): Manifest node
 
     Returns:
         str: Compiled SQL
+
     """
     if hasattr(manifest_node, "compiled_sql"):  # up to v6
         return manifest_node.compiled_sql
@@ -294,13 +329,16 @@ def get_compiled_sql(manifest_node):
 
 
 def get_node_exposures_from_metadata(data=None, **kwargs):
-    """Get the mapping of table name and exposure name (for Metadata)
+    """
+    Get the mapping of table name and exposure name (for Metadata).
 
     Args:
         data (list, optional): Metadata result list. Defaults to [].
+        **kwargs: Additional options that might be passed from parent functions
 
     Returns:
         list: List of mapping dict {table_name:..., exposure_name=...}
+
     """
     if data is None:
         data = []
@@ -323,13 +361,15 @@ def get_node_exposures_from_metadata(data=None, **kwargs):
 
 
 def get_node_exposures(manifest: Manifest) -> list[dict[str, str]]:
-    """Get the mapping of table name and exposure name
+    """
+    Get the mapping of table name and exposure name.
 
     Args:
         manifest (dict): dbt manifest json
 
     Returns:
         list: List of mapping dict {table_name:..., exposure_name=...}
+
     """
     exposures = []
 
@@ -347,19 +387,23 @@ def get_node_exposures(manifest: Manifest) -> list[dict[str, str]]:
 
 
 def get_table_name(format: str, **kwargs) -> str:
-    """Get table name from the input format
+    """
+    Get table name from the input format.
 
     Args:
-        table_format (str): Table format string e.g. resource.package.model
+        format (str): Table format string e.g. resource.package.model
+        **kwargs: Dictionary containing values for each format part
 
     Returns:
         str: Qualified table name
+
     """
     return ".".join([kwargs.get(x.lower()) or "KEYNOTFOUND" for x in format.split(".")])
 
 
 def get_test_nodes_by_rule_name(manifest: Manifest, rule_name: str) -> list:
-    """Get manifest nodes given the algo rule name.
+    """
+    Get manifest nodes given the algo rule name.
 
     Default algo rule name is `relationship`,
     see `get_algo_rule` function for more details.
@@ -370,6 +414,7 @@ def get_test_nodes_by_rule_name(manifest: Manifest, rule_name: str) -> list:
 
     Returns:
         List: List of manifest nodes
+
     """
     return [
         x
@@ -383,13 +428,18 @@ def get_test_nodes_by_rule_name(manifest: Manifest, rule_name: str) -> list:
 
 
 def get_relationships_from_metadata(data=None, **kwargs) -> list[Ref]:
-    """Extract relationships from Metadata result list on test relationship
+    """
+    Extract relationships from Metadata result list on test relationship.
 
     Args:
-        data (_type_): Metadata result list. Defaults to [].
+        data (list, optional): Metadata result list. Defaults to [].
+        **kwargs: Additional options including:
+            rule_name (str): Custom rule name for the algorithm
+            rule_prefix (str): Prefix for the rule
 
     Returns:
         list[Ref]: List of parsed relationship
+
     """
     if data is None:
         data = []
@@ -434,13 +484,19 @@ def get_relationships_from_metadata(data=None, **kwargs) -> list[Ref]:
 
 
 def get_relationships(manifest: Manifest, **kwargs) -> list[Ref]:
-    """Extract relationships from dbt artifacts based on test relationship
+    """
+    Extract relationships from dbt artifacts based on test relationship.
 
     Args:
         manifest (dict): Manifest json
+        **kwargs: Additional options including:
+            rule_name (str): Custom rule name for the algorithm
+            rule_prefix (str): Prefix for the rule
+            entity_name_format (str): Format for entity names
 
     Returns:
         List[Ref]: List of parsed relationship
+
     """
     rule = get_algo_rule(**kwargs)
     refs = [
@@ -470,56 +526,9 @@ def get_relationships(manifest: Manifest, **kwargs) -> list[Ref]:
     return get_unique_refs(refs=refs)
 
 
-# def get_relationships_by_constraints(manifest: Manifest, **kwargs) -> List[Ref]:
-#     """Extract relationships from dbt artifacts based on model's configured constraints
-
-#     Args:
-#         manifest (dict): Manifest json
-
-#     Returns:
-#         List[Ref]: List of parsed relationship
-#     """
-#     wfk_nodes = [
-#         (node, constraint)
-#         for node in manifest.nodes
-#         if not node.startswith("test") and node.constraints is not None
-#         for constraint in node.constraints
-#         if constraint.type == "foreign_key"
-#     ]
-
-#     refs = []
-#     for x in wfk_nodes:
-#         to_model_expr = str(x[1].expression).split("(")
-#         to_model_columns_str = to_model_expr[1].strip()[:-1]
-#         to_model_name = to_model_expr[0].split(".")[-1].strip()
-#         find_to_models = [
-#             str(node)
-#             for node in manifest.nodes
-#             if str(node).endswith(f".{to_model_name}")
-#         ]
-#         if find_to_models:
-#             to_model_name = find_to_models[0]
-
-#         refs.append(
-#             Ref(
-#                 name=x[1].name,
-#                 table_map=[
-#                     to_model_name,
-#                     str(x[0]),
-#                 ],
-#                 column_map=[
-#                     to_model_columns_str.replace('"', "").lower(),
-#                     str(",".join(x[1].columns)).replace('"', "").lower(),
-#                 ],
-#                 type="1n",  # cannot add `relationship_type` meta to constraints
-#             )
-#         )
-
-#     return get_unique_refs(refs=refs)
-
-
 def make_up_relationships(relationships: Optional[list[Ref]] = None, tables: Optional[list[Table]] = None) -> list[Ref]:
-    """Filter Refs given by the parsed Tables & applied the entity name format
+    """
+    Filter Refs given by the parsed Tables & applied the entity name format.
 
     Args:
         relationships (List[Ref], optional): Parsed relationships. Defaults to [].
@@ -527,6 +536,7 @@ def make_up_relationships(relationships: Optional[list[Ref]] = None, tables: Opt
 
     Returns:
         List[Ref]: Cooked relationships
+
     """
     if tables is None:
         tables = []
@@ -551,13 +561,15 @@ def make_up_relationships(relationships: Optional[list[Ref]] = None, tables: Opt
 
 
 def get_unique_refs(refs: Optional[list[Ref]] = None) -> list[Ref]:
-    """Remove duplicates in the Relationship list
+    """
+    Remove duplicates in the Relationship list.
 
     Args:
         refs (list[Ref], optional): List of parsed relationship. Defaults to [].
 
     Returns:
         list[Ref]: Distinct parsed relationship
+
     """
     if refs is None:
         refs = []
@@ -574,21 +586,24 @@ def get_unique_refs(refs: Optional[list[Ref]] = None) -> list[Ref]:
 
 
 def get_algo_rule(**kwargs) -> dict[str, str]:
-    """Extract rule from the --algo option
+    """
+    Extract rule from the --algo option.
 
     Args:
-        kwargs.algo (str): |
-            Algorithm name and optional rules.
-            Samples:
-            - test_relationship
-            - test_relationship:(name:relationship|c_from:column_name|c_to:field)
-            - test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)
-            - test_relationship:(
-                name:foreign_key|
-                c_from:fk_column_name|
-                c_to:pk_column_name|
-                t_to:pk_table_name
-            )
+        **kwargs: Additional options including:
+            algo (str): Algorithm name and optional rules
+
+    Details:
+        Samples for algo parameter:
+        - test_relationship
+        - test_relationship:(name:relationship|c_from:column_name|c_to:field)
+        - test_relationship:(name:foreign_key|c_from:fk_column_name|c_to:pk_column_name)
+        - test_relationship:(
+            name:foreign_key|
+            c_from:fk_column_name|
+            c_to:pk_column_name|
+            t_to:pk_table_name
+        )
 
     Returns:
         dict: Rule object (
@@ -597,6 +612,7 @@ def get_algo_rule(**kwargs) -> dict[str, str]:
             c_to [default 'field'],
             t_to [default 'to']
         )
+
     """
     algo_parts = (kwargs.get("algo") or "").replace(" ", "").split(":", 1)
     rules, _ = (
@@ -609,17 +625,21 @@ def get_algo_rule(**kwargs) -> dict[str, str]:
 
 
 def get_table_map_from_metadata(test_node, **kwargs) -> list[str]:
-    """Get the table map with order of [to, from] guaranteed
+    """
+    Get the table map with order of [to, from] guaranteed.
+
     (for Metadata)
 
     Args:
         test_node (dict): Metadata test node
+        **kwargs: Additional options passed from parent functions
 
     Raises:
         click.BadParameter: A Ref must have 2 parents
 
     Returns:
         list: [to model, from model]
+
     """
     rule = get_algo_rule(**kwargs)
 
@@ -635,7 +655,7 @@ def get_table_map_from_metadata(test_node, **kwargs) -> list[str]:
     if len(test_parents) == 1:
         return [test_parents[0], test_parents[0]]  # self FK
 
-    if len(test_parents) > 2:
+    if len(test_parents) > MAX_TEST_PARENTS:
         logger.debug(f"Collected test parents: {test_parents}")
         raise click.BadParameter("Relationship test unexpectedly doesn't have >2 parents")
 
@@ -658,13 +678,16 @@ def get_table_map_from_metadata(test_node, **kwargs) -> list[str]:
 
 
 def get_table_map(test_node, **kwargs) -> list[str]:
-    """Get the table map with order of [to, from] guaranteed
+    """
+    Get the table map with order of [to, from] guaranteed.
 
     Args:
         test_node (dict): Manifest Test node
+        **kwargs: Additional options passed from parent functions
 
     Returns:
         list: [to model, from model]
+
     """
     map = test_node.depends_on.nodes or []
 
@@ -682,7 +705,8 @@ def get_table_map(test_node, **kwargs) -> list[str]:
 
 
 def get_relationship_type(meta: str) -> str:
-    """Get short form of the relationship type configured in test meta
+    """
+    Get short form of the relationship type configured in test meta.
 
     Args:
         meta (str): meta value
@@ -691,6 +715,7 @@ def get_relationship_type(meta: str) -> str:
         str: |
             Short relationship type. Accepted values: '0n','01','11','nn','n1' and '1n'.
             And `1n` is default/fallback value
+
     """
     if meta.lower() == "zero-to-many":
         return "0n"

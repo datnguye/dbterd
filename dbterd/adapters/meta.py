@@ -5,7 +5,7 @@ from typing import Optional
 
 @dataclass
 class Column:
-    """Parsed Column object"""
+    """Parsed Column object."""
 
     name: str = "unknown"
     data_type: str = "unknown"
@@ -14,7 +14,7 @@ class Column:
 
 @dataclass
 class Table:
-    """Parsed Table object"""
+    """Parsed Table object."""
 
     name: str
     database: str
@@ -29,7 +29,7 @@ class Table:
 
 @dataclass
 class Ref:
-    """Parsed Relationship object"""
+    """Parsed Relationship object."""
 
     name: str
     table_map: tuple[str, str]
@@ -39,7 +39,7 @@ class Ref:
 
 @dataclass
 class SemanticEntity:
-    """Parsed Semantic Model's Entity object"""
+    """Parsed Semantic Model's Entity object."""
 
     semantic_model: str
     model: str

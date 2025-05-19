@@ -6,7 +6,7 @@ from dbterd.adapters.base import Executor
 
 class TestBaseExtended:
     def test_check_if_any_unsupported_selection_with_none_params(self):
-        """Test __check_if_any_unsupported_selection with None parameters"""
+        """Test __check_if_any_unsupported_selection with None parameters."""
         worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
 
         # Test with None select and None exclude

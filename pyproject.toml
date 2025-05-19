@@ -248,37 +248,19 @@ select = [
   "ISC",  # flake8-implicit-str-concat
   "RUF",  # ruff-specific rules
   "W",    # pycodestyle warnings
-  "D",    # pydocstyle
+  #"D",    # pydocstyle
   "PL",   # pylint
   "SIM",  # flake8-simplify
   "ERA",  # eradicate commented-out code detection
 ]
 # Rules to ignore
 ignore = [
-  "D100",  # Missing docstring in public module
-  "D104",  # Missing docstring in public package
-  "D203",  # one-blank-line-before-class
-  "D212",  # multi-line-summary-first-line
-  "N806",  # Variable name should be lowercase
+  "PLR2004",  # Magic value used in comparison
   "PLR0913",  # Too many arguments to function call
 ]
 # Rules that will not be automatically fixed
 unfixable = [
-  "F401",  # Module imported but unused
   "B",     # flake8-bugbear rules (often involve too much code change)
-]
-# Per-file inclusion and exclusion of rules
-[tool.ruff.lint.per-file-ignores]
-"tests/**/*.py" = [
-  "D101",  # Missing docstring in public class
-  "D102",  # Missing docstring in public method
-  "D103",  # Missing docstring in public function
-  "D107",  # Missing docstring in __init__
-  "N802",  # Function name should be lowercase
-  "PLR2004", # Magic numbers allowed in tests
-]
-"*/__init__.py" = [
-  "F401", # Unused imports in __init__ files
 ]
 
 [tool.ruff.lint.isort]
@@ -288,10 +270,8 @@ force-sort-within-sections = true  # Sort imports within sections
 known-first-party = ["dbterd"]  # Treat package as first-party imports
 section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]  # Import ordering
 combine-as-imports = true  # Group "from X import a, b, c" statements
-show-diff = true  # Show a message about any files that needed to be reformed
 
-[tool.ruff.format]
-# Code formatting options
+[tool.ruff.format] # Code formatting options
 quote-style = "double"  # Use double quotes for strings
 indent-style = "space"  # Use spaces for indentation (not tabs)
 line-ending = "auto"    # Automatically determine line endings
@@ -299,8 +279,7 @@ skip-magic-trailing-comma = false  # Don't skip magic trailing commas
 docstring-code-format = true  # Format code blocks in docstrings
 docstring-code-line-length = 80  # Line length for code in docstrings
 
-[tool.pytest.ini_options]
-# Pytest configuration
+[tool.pytest.ini_options] # Pytest configuration
 testpaths = ["tests"]  # Directory to find tests
 python_files = "test_*.py"  # Pattern to recognize test files
 python_classes = "Test*"  # Pattern to recognize test classes
