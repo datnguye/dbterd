@@ -10,8 +10,9 @@ on:
           - PypiProd
           - PypiTest
         default: PypiTest
-  release:
-    types: [created]
+  push:
+    tags:
+      - '*'
 
 permissions: read-all
 
