@@ -15,12 +15,15 @@ on:
           - true
           - false
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: recursive
@@ -30,15 +33,26 @@ jobs:
           key: ${{ github.ref }}
           path: .cache
 
-      - uses: abatilo/actions-poetry@v2
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          poetry-version: 1.6.1
+          python-version: '3.9'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Cache UV dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: ubuntu-3.9-uv-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ubuntu-3.9-uv-
 
       - name: Install dependencies
         run: |
-          poetry config installer.max-workers 1
-          poetry config virtualenvs.in-project true
-          poetry install
+          uv venv
+          uv sync --all-extras
 
       - name: Configure Git user
         run: |
@@ -48,9 +62,9 @@ jobs:
       - name: Publish site version (non-stable)
         if: ${{ inputs.delete == 'false' }}
         run: |
-          poetry run mike deploy --push --update-aliases ${{ inputs.version }}
+          uv run mike deploy --push --update-aliases ${{ inputs.version }}
 
       - name: Delete site version
         if: ${{ inputs.delete == 'true' }}
         run: |
-          poetry run mike delete --push ${{ inputs.version }}
+          uv run mike delete --push ${{ inputs.version }}

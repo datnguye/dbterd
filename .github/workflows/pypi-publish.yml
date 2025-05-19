@@ -1,26 +1,53 @@
 name: Publish PYPI
 
 on:
+  workflow_dispatch:
+    inputs:
+      deploy-to:
+        type: choice
+        description: Choose where to publish (test/prod)
+        options:
+          - PypiProd
+          - PypiTest
+        default: PypiTest
   release:
     types: [created]
 
+permissions: read-all
+
 jobs:
   deploy:
-
+    name: PyPI - ${{ inputs.deploy-to || 'PypiProd' }}
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install poetry
-    - name: Build and publish
-      run: |
-        poetry version $(git describe --tags --abbrev=0)
-        poetry build
-        poetry publish --username ${{ secrets.PYPI_USERNAME }} --password ${{ secrets.PYPI_PASSWORD }}
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Cache UV dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: ubuntu-publish-uv-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ubuntu-publish-uv-
+
+      - name: Build artifacts
+        run: uv build
+
+      - name: Publish artifacts to PyPI Test
+        if: inputs.deploy-to == 'PypiTest'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+
+      - name: Publish artifacts to PyPI Prod
+        if: inputs.deploy-to == 'PypiProd' || github.event_name == 'push'
+        uses: pypa/gh-action-pypi-publish@release/v1

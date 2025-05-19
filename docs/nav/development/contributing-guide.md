@@ -16,7 +16,7 @@
 
 There are many ways to contribute to the ongoing development of `dbterd`, such as by participating in discussions and issues.
 
-The rest of this document serves as a more granular guide for contributing code changes to `dbterd` (this repository). It is not intended as a guide for using `dbterd`, and some pieces assume a level of familiarity with Python development with `poetry`. Specific code snippets in this guide assume you are using macOS or Linux and are comfortable with the command line.
+The rest of this document serves as a more granular guide for contributing code changes to `dbterd` (this repository). It is not intended as a guide for using `dbterd`, and some pieces assume a level of familiarity with Python development with `uv`. Specific code snippets in this guide assume you are using macOS or Linux and are comfortable with the command line.
 
 - **Branches:** All pull requests from community contributors should target the `main` branch (default). If the change is needed as a patch for a minor version of dbt that has already been released (or is already a release candidate), a maintainer will backport the changes in your PR to the relevant "latest" release branch (`1.0.<latest>`, `1.1.<latest>`, ...). If an issue fix applies to a release branch, that fix should be first committed to the development branch and then to the release branch (rarely release-branch fixes may not apply to `main`).
 - **Releases**: Before releasing a new minor version, we prepare a series of beta release candidates to allow users to test the new version in live environments. This is an important quality assurance step, as it exposes the new code to a wide variety of complicated deployments and can surface bugs before official release. Releases are accessible via pip.
@@ -44,27 +44,27 @@ There are some tools that will be helpful to you in developing locally. While th
 
 ### Tools
 
-We will buy `poetry` in `dbterd` development and testing.
+We use `uv` with `poethepoet` for `dbterd` development and testing.
 
-So first install poetry via the [official installer](https://python-poetry.org/docs/#installing-with-the-official-installer)
+First, install uv using the [official installation method](https://github.com/astral-sh/uv?tab=readme-ov-file#installation):
 
 ```bash
-curl -sSL https://install.python-poetry.org | python3 -
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-or via pip:
+Then, set up your development environment:
 
 ```bash
-python3 -m pip install poetry --upgrade
-```
+# Create virtual environment and activate it
+uv venv
+uv sync --all-extras
+uv pip install -e .
+source .venv/bin/activate  # Or activate using your shell's appropriate command
 
-then, start installing the local environment:
-
-```bash
-python3 -m poetry install
-python3 -m poetry shell
+# Install pre-commit hooks
 poe git-hooks
-pip install -e .
+
+# Verify installation
 dbterd -h
 ```
 
@@ -76,18 +76,20 @@ Once you're able to manually test that your code change is working as expected, 
 - Your code changes can handle all known edge cases
 - The functionality you're adding will _keep_ working in the future
 
-**Use `pytest`**
+**Use `pytest` with `poe`**
 
-Finally, you can also run a specific test or group of tests using [`pytest`](https://docs.pytest.org/en/latest/) directly. With a virtualenv active and dev dependencies installed you can do things like:
+You can run tests using the `poe` commands that are configured in the project:
 
 ```bash
+# Run all tests
 poe test
-```
 
-Run test with coverage report:
-
-```bash
+# Run tests with coverage report
 poe test-cov
+
+# Format and lint code
+poe format
+poe lint
 ```
 
 > See [pytest usage docs](https://docs.pytest.org/en/6.2.x/usage.html) for an overview of useful command-line options.

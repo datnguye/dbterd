@@ -2,8 +2,8 @@ from importlib.machinery import ModuleSpec
 from unittest import mock
 
 import click
-import pytest
 from dbt.cli.main import dbtRunnerResult
+import pytest
 
 from dbterd.adapters.dbt_core.dbt_invocation import DbtInvocation
 
@@ -16,7 +16,7 @@ class TestDbtInvocation:
             DbtInvocation()._DbtInvocation__ensure_dbt_installed()
 
     @pytest.mark.parametrize(
-        "select_rules, exclude_rules, mock_dbtRunner_invoke_rv, expected",
+        "select_rules, exclude_rules, mock_dbt_runner_invoke_rv, expected",
         [
             ([], [], dbtRunnerResult(success=True, result=[]), []),
             (
@@ -36,17 +36,15 @@ class TestDbtInvocation:
     @mock.patch("dbt.cli.main.dbtRunner.invoke")
     def test_get_selection(
         self,
-        mock_dbtRunner_invoke,
+        mock_dbt_runner_invoke,
         select_rules,
         exclude_rules,
-        mock_dbtRunner_invoke_rv,
+        mock_dbt_runner_invoke_rv,
         expected,
     ):
-        mock_dbtRunner_invoke.return_value = mock_dbtRunner_invoke_rv
+        mock_dbt_runner_invoke.return_value = mock_dbt_runner_invoke_rv
         invoker = DbtInvocation()
-        actual = invoker.get_selection(
-            select_rules=select_rules, exclude_rules=exclude_rules
-        )
+        actual = invoker.get_selection(select_rules=select_rules, exclude_rules=exclude_rules)
         assert actual == expected
 
         args = ["ls", "--resource-type", "model"]
@@ -54,7 +52,7 @@ class TestDbtInvocation:
             args.extend(["--select", " ".join(select_rules)])
         if exclude_rules:
             args.extend(["--exclude", " ".join(exclude_rules)])
-        mock_dbtRunner_invoke.assert_called_once_with(
+        mock_dbt_runner_invoke.assert_called_once_with(
             [
                 *["--quiet", "--log-level", "none"],
                 *args,
@@ -63,20 +61,18 @@ class TestDbtInvocation:
         )
 
     @mock.patch("dbt.cli.main.dbtRunner.invoke")
-    def test_get_selection__failed(self, mock_dbtRunner_invoke):
-        mock_dbtRunner_invoke.return_value = dbtRunnerResult(success=False)
+    def test_get_selection__failed(self, mock_dbt_runner_invoke):
+        mock_dbt_runner_invoke.return_value = dbtRunnerResult(success=False)
         with pytest.raises(click.UsageError):
-            DbtInvocation(dbt_target="dummy").get_selection(
-                select_rules=[], exclude_rules=[]
-            )
+            DbtInvocation(dbt_target="dummy").get_selection(select_rules=[], exclude_rules=[])
 
     @mock.patch("dbt.cli.main.dbtRunner.invoke")
-    def test_get_artifacts_for_erd(self, mock_dbtRunner_invoke):
+    def test_get_artifacts_for_erd(self, mock_dbt_runner_invoke):
         invoker = DbtInvocation()
         _ = invoker.get_artifacts_for_erd()
 
         args = ["docs", "generate"]
-        mock_dbtRunner_invoke.assert_called_once_with(
+        mock_dbt_runner_invoke.assert_called_once_with(
             [
                 *["--quiet", "--log-level", "none"],
                 *args,

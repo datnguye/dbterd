@@ -1,21 +1,28 @@
-import sys
 from fnmatch import fnmatch
-from typing import List, Optional, Tuple
+import sys
+from typing import Optional
 
 from dbterd.adapters.meta import Table
+
 
 RULE_FUNC_PREFIX = "is_satisfied_by_"
 
 
-def has_unsupported_rule(rules: List[str] = []) -> Tuple[bool, Optional[str]]:
-    """Verify if existing the unsupported selection rule
+def has_unsupported_rule(
+    rules: Optional[list[str]] = None,
+) -> tuple[bool, Optional[str]]:
+    """
+    Verify if existing the unsupported selection rule.
 
     Args:
         rules (List[str]): Any (selection or/and exclusion) rules
 
     Returns:
         bool: True if existing any unsupported one
+
     """
+    if rules is None:
+        rules = []
     for rule in rules:
         type = rule.split(":")
         if len(type) == 1:
@@ -29,11 +36,12 @@ def has_unsupported_rule(rules: List[str] = []) -> Tuple[bool, Optional[str]]:
 
 def is_selected_table(
     table: Table,
-    select_rules: List[str] = [],
-    exclude_rules: List[str] = [],
-    resource_types: List[str] = ["model"],
+    select_rules: Optional[list[str]] = None,
+    exclude_rules: Optional[list[str]] = None,
+    resource_types: Optional[list[str]] = None,
 ) -> bool:
-    """Check if Table is selected with defined selection criteria
+    """
+    Check if Table is selected with defined selection criteria.
 
     Args:
         table (Table): Table object
@@ -43,26 +51,32 @@ def is_selected_table(
 
     Returns:
         bool: True if Table is selected. False if Tables is excluded
+
     """
     # Selection
+    if resource_types is None:
+        resource_types = ["model"]
+    if exclude_rules is None:
+        exclude_rules = []
+    if select_rules is None:
+        select_rules = []
     selected = True
     if select_rules:
-        selected = any([evaluate_rule(table=table, rule=rule) for rule in select_rules])
+        selected = any(evaluate_rule(table=table, rule=rule) for rule in select_rules)
     if resource_types:
         selected = selected and table.resource_type in resource_types
 
     # Exclusion
     excluded = False
     if exclude_rules:
-        excluded = any(
-            [evaluate_rule(table=table, rule=rule) for rule in exclude_rules]
-        )
+        excluded = any(evaluate_rule(table=table, rule=rule) for rule in exclude_rules)
 
     return selected and not excluded
 
 
 def evaluate_rule(table: Table, rule: str) -> bool:
-    """Evaluate selection/exclusion single rule with AND logic applied
+    """
+    Evaluate selection/exclusion single rule with AND logic applied.
 
     Args:
         table (Table): Table object to be evaluated
@@ -70,6 +84,7 @@ def evaluate_rule(table: Table, rule: str) -> bool:
 
     Returns:
         bool: True if satisfied all rules
+
     """
     and_parts = rule.split(",")
     results = []
@@ -87,7 +102,8 @@ def evaluate_rule(table: Table, rule: str) -> bool:
 
 
 def is_satisfied_by_name(table: Table, rule: str = "") -> bool:
-    """Evaluate rule by Name
+    """
+    Evaluate rule by Name.
 
     Args:
         table (Table): Table object
@@ -95,6 +111,7 @@ def is_satisfied_by_name(table: Table, rule: str = "") -> bool:
 
     Returns:
         bool: True if satisfied `starts with` logic applied to Node name
+
     """
     if not rule:
         return True
@@ -102,7 +119,8 @@ def is_satisfied_by_name(table: Table, rule: str = "") -> bool:
 
 
 def is_satisfied_by_exact(table: Table, rule: str = "") -> bool:
-    """Evaluate rule by model name with exact match
+    """
+    Evaluate rule by model name with exact match.
 
     Args:
         table (Table): Table object
@@ -110,6 +128,7 @@ def is_satisfied_by_exact(table: Table, rule: str = "") -> bool:
 
     Returns:
         bool: True if satisfied `equal` logic applied to Table name
+
     """
     if not rule:
         return True
@@ -117,7 +136,8 @@ def is_satisfied_by_exact(table: Table, rule: str = "") -> bool:
 
 
 def is_satisfied_by_schema(table: Table, rule: str = "") -> bool:
-    """Evaluate rule by Schema name
+    """
+    Evaluate rule by Schema name.
 
     Args:
         table (Table): Table object
@@ -125,6 +145,7 @@ def is_satisfied_by_schema(table: Table, rule: str = "") -> bool:
 
     Returns:
         bool: True if satisfied `starts with` logic applied to Table's schema
+
     """
     if not rule:
         return True
@@ -132,13 +153,12 @@ def is_satisfied_by_schema(table: Table, rule: str = "") -> bool:
     parts = rule.split(".")
     selected_schema = parts[-1]
     selected_database = parts[0] if len(parts) > 1 else table.database
-    return f"{table.database}.{table.schema}".startswith(
-        f"{selected_database}.{selected_schema}"
-    )
+    return f"{table.database}.{table.schema}".startswith(f"{selected_database}.{selected_schema}")
 
 
 def is_satisfied_by_wildcard(table: Table, rule: str = "*") -> bool:
-    """Evaluate rule by Wildcard (Unix Style)
+    """
+    Evaluate rule by Wildcard (Unix Style).
 
     Args:
         table (Table): Table object
@@ -146,6 +166,7 @@ def is_satisfied_by_wildcard(table: Table, rule: str = "*") -> bool:
 
     Returns:
         bool: True if satisfied table name matched the pattern
+
     """
     if not rule:
         return True
@@ -153,7 +174,8 @@ def is_satisfied_by_wildcard(table: Table, rule: str = "*") -> bool:
 
 
 def is_satisfied_by_exposure(table: Table, rule: str = "") -> bool:
-    """Evaluate rule by dbt Exposure name
+    """
+    Evaluate rule by dbt Exposure name.
 
     Args:
         table (Table): Table object
@@ -161,6 +183,7 @@ def is_satisfied_by_exposure(table: Table, rule: str = "") -> bool:
 
     Returns:
         bool: True if satisfied exposure name exists in the table's exposures
+
     """
     if not rule:
         return True

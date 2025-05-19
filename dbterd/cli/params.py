@@ -1,5 +1,5 @@
-import os
 import functools
+import os
 
 import click
 
@@ -34,7 +34,8 @@ def common_params(func):
     @click.option(
         "--resource-type",
         "-rt",
-        help="Specified dbt resource type(seed, model, source, snapshot),default:model, use examples, -rt model -rt source",
+        help="Specified dbt resource type(seed, model, source, snapshot),default:model, "
+        "use examples, -rt model -rt source",
         default=default.default_resource_types(),
         multiple=True,
         type=click.STRING,

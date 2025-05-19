@@ -1,7 +1,5 @@
-class ObjectView(object):
-    """
-    Convert nested dict to dynamic object
-    """
+class ObjectView:
+    """Convert nested dict to dynamic object."""
 
     def __init__(self, d, nested=True):
         self.origin = d
@@ -20,7 +18,9 @@ class ObjectView(object):
 
     def has_field(self, field):
         fields = field.split(".")
-        if len(fields) == 0:
+        # This is a safeguard but actually never triggered in practice
+        # because split always returns at least one element (empty string for empty input)
+        if len(fields) == 0:  # pragma: no cover
             return False
 
         obj = self.origin

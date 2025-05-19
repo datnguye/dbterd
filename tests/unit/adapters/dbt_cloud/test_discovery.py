@@ -7,7 +7,7 @@ from dbterd.adapters.dbt_cloud.discovery import DbtCloudMetadata
 
 class TestDbtCloudMetadata:
     @pytest.fixture
-    def dbtCloudMetadata(self) -> DbtCloudMetadata:
+    def dbt_cloud_metadata(self) -> DbtCloudMetadata:
         return DbtCloudMetadata(
             dbt_cloud_host_url="irrelevant_url",
             dbt_cloud_service_token="irrelevant_st",
@@ -20,27 +20,27 @@ class TestDbtCloudMetadata:
         [
             ({}, [{}]),
             (
-                dict(
-                    environment=dict(
-                        definition=dict(
-                            semanticModels=dict(edges=[]),
-                        ),
-                        applied=dict(
-                            models=dict(edges=[]),
-                            sources=dict(edges=[]),
-                            exposures=dict(edges=[]),
-                            tests=dict(edges=[]),
-                        ),
-                    )
-                ),
+                {
+                    "environment": {
+                        "definition": {
+                            "semanticModels": {"edges": []},
+                        },
+                        "applied": {
+                            "models": {"edges": []},
+                            "sources": {"edges": []},
+                            "exposures": {"edges": []},
+                            "tests": {"edges": []},
+                        },
+                    }
+                },
                 [
-                    dict(
-                        models=dict(edges=[]),
-                        sources=dict(edges=[]),
-                        exposures=dict(edges=[]),
-                        tests=dict(edges=[]),
-                        semanticModels=dict(edges=[]),
-                    )
+                    {
+                        "models": {"edges": []},
+                        "sources": {"edges": []},
+                        "exposures": {"edges": []},
+                        "tests": {"edges": []},
+                        "semanticModels": {"edges": []},
+                    }
                 ],
             ),
         ],
@@ -54,53 +54,53 @@ class TestDbtCloudMetadata:
     @mock.patch("dbterd.adapters.dbt_cloud.graphql.GraphQLHelper.query")
     def test_query_erd_data_no_polling(self, mock_graphql_query):
         mock_graphql_query.return_value = {}
-        assert [{}] == DbtCloudMetadata().query_erd_data(poll_until_end=False)
+        assert DbtCloudMetadata().query_erd_data(poll_until_end=False) == [{}]
         assert mock_graphql_query.call_count == 1
 
     @mock.patch("dbterd.adapters.dbt_cloud.graphql.GraphQLHelper.query")
     def test_query_erd_data_polling_twice(self, mock_graphql_query):
         mock_graphql_query.side_effect = [
-            dict(
-                environment=dict(
-                    definition=dict(
-                        semanticModels=dict(edges=[]),
-                    ),
-                    applied=dict(
-                        models=dict(edges=[], pageInfo=dict(hasNextPage=True)),
-                        sources=dict(edges=[]),
-                        exposures=dict(edges=[]),
-                        tests=dict(edges=[]),
-                    ),
-                )
-            ),
-            dict(
-                environment=dict(
-                    definition=dict(
-                        semanticModels=dict(edges=[]),
-                    ),
-                    applied=dict(
-                        models=dict(edges=[]),
-                        sources=dict(edges=[]),
-                        exposures=dict(edges=[]),
-                        tests=dict(edges=[]),
-                    ),
-                )
-            ),
+            {
+                "environment": {
+                    "definition": {
+                        "semanticModels": {"edges": []},
+                    },
+                    "applied": {
+                        "models": {"edges": [], "pageInfo": {"hasNextPage": True}},
+                        "sources": {"edges": []},
+                        "exposures": {"edges": []},
+                        "tests": {"edges": []},
+                    },
+                }
+            },
+            {
+                "environment": {
+                    "definition": {
+                        "semanticModels": {"edges": []},
+                    },
+                    "applied": {
+                        "models": {"edges": []},
+                        "sources": {"edges": []},
+                        "exposures": {"edges": []},
+                        "tests": {"edges": []},
+                    },
+                }
+            },
         ]
-        assert [
-            dict(
-                models=dict(edges=[], pageInfo=dict(hasNextPage=True)),
-                sources=dict(edges=[]),
-                exposures=dict(edges=[]),
-                tests=dict(edges=[]),
-                semanticModels=dict(edges=[]),
-            ),
-            dict(
-                models=dict(edges=[]),
-                sources=dict(edges=[]),
-                exposures=dict(edges=[]),
-                tests=dict(edges=[]),
-                semanticModels=dict(edges=[]),
-            ),
-        ] == DbtCloudMetadata().query_erd_data()
+        assert DbtCloudMetadata().query_erd_data() == [
+            {
+                "models": {"edges": [], "pageInfo": {"hasNextPage": True}},
+                "sources": {"edges": []},
+                "exposures": {"edges": []},
+                "tests": {"edges": []},
+                "semanticModels": {"edges": []},
+            },
+            {
+                "models": {"edges": []},
+                "sources": {"edges": []},
+                "exposures": {"edges": []},
+                "tests": {"edges": []},
+                "semanticModels": {"edges": []},
+            },
+        ]
         assert mock_graphql_query.call_count == 2

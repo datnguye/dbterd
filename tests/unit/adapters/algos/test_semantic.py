@@ -15,36 +15,36 @@ class TestAlgoSemantic:
         [
             (
                 [
-                    dict(
-                        semanticModels=dict(edges=[]),
-                    ),
+                    {
+                        "semanticModels": {"edges": []},
+                    },
                 ],
                 [],
             ),
             (
                 [
-                    dict(
-                        semanticModels=dict(
-                            edges=[
-                                dict(
-                                    node=dict(
-                                        entities=[dict(name="one", type="primary")],
-                                        uniqueId="semantic_model.a.model1",
-                                        meta=None,
-                                        parents=[dict(uniqueId="model.a.model1")],
-                                    )
-                                ),
-                                dict(
-                                    node=dict(
-                                        entities=[dict(name="one", type="foreign")],
-                                        uniqueId="semantic_model.a.model2",
-                                        meta=None,
-                                        parents=[dict(uniqueId="model.a.model2")],
-                                    )
-                                ),
+                    {
+                        "semanticModels": {
+                            "edges": [
+                                {
+                                    "node": {
+                                        "entities": [{"name": "one", "type": "primary"}],
+                                        "uniqueId": "semantic_model.a.model1",
+                                        "meta": None,
+                                        "parents": [{"uniqueId": "model.a.model1"}],
+                                    }
+                                },
+                                {
+                                    "node": {
+                                        "entities": [{"name": "one", "type": "foreign"}],
+                                        "uniqueId": "semantic_model.a.model2",
+                                        "meta": None,
+                                        "parents": [{"uniqueId": "model.a.model2"}],
+                                    }
+                                },
                             ]
-                        ),
-                    ),
+                        },
+                    },
                 ],
                 [
                     Ref(
@@ -57,30 +57,34 @@ class TestAlgoSemantic:
             ),
             (
                 [
-                    dict(
-                        semanticModels=dict(
-                            edges=[
-                                dict(
-                                    node=dict(
-                                        entities=[dict(name="one", type="primary")],
-                                        uniqueId="semantic_model.a.model1",
-                                        meta=None,
-                                        parents=[dict(uniqueId="model.a.model1")],
-                                    )
-                                ),
-                                dict(
-                                    node=dict(
-                                        entities=[
-                                            dict(name="one", type="foreign", expr="two")
+                    {
+                        "semanticModels": {
+                            "edges": [
+                                {
+                                    "node": {
+                                        "entities": [{"name": "one", "type": "primary"}],
+                                        "uniqueId": "semantic_model.a.model1",
+                                        "meta": None,
+                                        "parents": [{"uniqueId": "model.a.model1"}],
+                                    }
+                                },
+                                {
+                                    "node": {
+                                        "entities": [
+                                            {
+                                                "name": "one",
+                                                "type": "foreign",
+                                                "expr": "two",
+                                            }
                                         ],
-                                        uniqueId="semantic_model.a.model2",
-                                        meta=None,
-                                        parents=[dict(uniqueId="model.a.model2")],
-                                    )
-                                ),
+                                        "uniqueId": "semantic_model.a.model2",
+                                        "meta": None,
+                                        "parents": [{"uniqueId": "model.a.model2"}],
+                                    }
+                                },
                             ]
-                        ),
-                    ),
+                        },
+                    },
                 ],
                 [
                     Ref(
@@ -125,9 +129,7 @@ class TestAlgoSemantic:
 
     def test_find_related_nodes_by_id(self):
         assert sorted(["model.dbt_resto.table1", "model.dbt_resto.table2"]) == sorted(
-            semantic.find_related_nodes_by_id(
-                manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.table2"
-            )
+            semantic.find_related_nodes_by_id(manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.table2")
         )
         assert sorted(
             [
@@ -136,48 +138,50 @@ class TestAlgoSemantic:
                 "model.dbt_resto.tablex",
             ]
         ) == sorted(
-            semantic.find_related_nodes_by_id(
-                manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.table1"
-            )
+            semantic.find_related_nodes_by_id(manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.table1")
         )
-        assert ["model.dbt_resto.not-exists"] == semantic.find_related_nodes_by_id(
+        assert semantic.find_related_nodes_by_id(
             manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.not-exists"
-        )
+        ) == ["model.dbt_resto.not-exists"]
 
     def test_parse(self):
-        with mock.patch(
-            "dbterd.adapters.algos.base.get_tables",
-        ) as mock_get_tables:
-            with mock.patch(
+        with (
+            mock.patch(
+                "dbterd.adapters.algos.base.get_tables",
+            ) as mock_get_tables,
+            mock.patch(
                 "dbterd.adapters.algos.semantic._get_relationships",
-            ) as mock_get_relationships:
-                engine.parse(
-                    manifest="--manifest--",
-                    catalog="--catalog--",
-                    select=[],
-                    exclude=[],
-                    resource_type=["model"],
-                    algo="semantic",
-                    omit_entity_name_quotes=False,
-                )
-                mock_get_tables.assert_called_once()
-                mock_get_relationships.assert_called_once()
+            ) as mock_get_relationships,
+        ):
+            engine.parse(
+                manifest="--manifest--",
+                catalog="--catalog--",
+                select=[],
+                exclude=[],
+                resource_type=["model"],
+                algo="semantic",
+                omit_entity_name_quotes=False,
+            )
+            mock_get_tables.assert_called_once()
+            mock_get_relationships.assert_called_once()
 
     def test_parse_metadata(self):
-        with mock.patch(
-            "dbterd.adapters.algos.base.get_tables_from_metadata",
-        ) as mock_get_tables:
-            with mock.patch(
+        with (
+            mock.patch(
+                "dbterd.adapters.algos.base.get_tables_from_metadata",
+            ) as mock_get_tables,
+            mock.patch(
                 "dbterd.adapters.algos.semantic._get_relationships_from_metadata",
-            ) as mock_get_relationships:
-                engine.parse(
-                    manifest=[],
-                    catalog="metadata",
-                    select=[],
-                    exclude=[],
-                    resource_type=["model"],
-                    algo="semantic",
-                    omit_entity_name_quotes=False,
-                )
-                mock_get_tables.assert_called_once()
-                mock_get_relationships.assert_called_once()
+            ) as mock_get_relationships,
+        ):
+            engine.parse(
+                manifest=[],
+                catalog="metadata",
+                select=[],
+                exclude=[],
+                resource_type=["model"],
+                algo="semantic",
+                omit_entity_name_quotes=False,
+            )
+            mock_get_tables.assert_called_once()
+            mock_get_relationships.assert_called_once()

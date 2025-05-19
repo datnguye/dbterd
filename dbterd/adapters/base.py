@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import List, Tuple
+from typing import Optional
 
 import click
 
@@ -11,13 +11,12 @@ from dbterd.adapters.dbt_cloud.discovery import DbtCloudMetadata
 from dbterd.adapters.dbt_core.dbt_invocation import DbtInvocation
 from dbterd.adapters.filter import has_unsupported_rule
 from dbterd.adapters.meta import Ref, Table
-from dbterd.helpers import cli_messaging
-from dbterd.helpers import file as file_handlers
+from dbterd.helpers import cli_messaging, file as file_handlers
 from dbterd.helpers.log import logger
 
 
 class Executor:
-    """Main Executor"""
+    """Main Executor."""
 
     ctx: click.Context
 
@@ -28,28 +27,28 @@ class Executor:
         self.filename_catalog = "catalog.json"
         self.dbt: DbtInvocation = None
 
-    def run(
-        self, node_unique_id: str = None, **kwargs
-    ) -> Tuple[List[Table], List[Ref]]:
-        """Generate ERD from files"""
+    def run(self, node_unique_id: Optional[str] = None, **kwargs) -> tuple[list[Table], list[Ref]]:
+        """Generate ERD from files."""
         logger.info(f"Using algorithm [{kwargs.get('algo')}]")
         kwargs = self.evaluate_kwargs(**kwargs)
         return self.__run_by_strategy(node_unique_id=node_unique_id, **kwargs)
 
-    def run_metadata(self, **kwargs) -> Tuple[List[Table], List[Ref]]:
-        """Generate ERD from API metadata"""
+    def run_metadata(self, **kwargs) -> tuple[list[Table], list[Ref]]:
+        """Generate ERD from API metadata."""
         logger.info(f"Using algorithm [{kwargs.get('algo')}]")
         kwargs = self.evaluate_kwargs(**kwargs)
         return self.__run_metadata_by_strategy(**kwargs)
 
     def evaluate_kwargs(self, **kwargs) -> dict:
-        """Re-calculate the options
+        """
+        Re-calculate the options.
 
         Raises:
             click.UsageError: Not Supported exception
 
         Returns:
             dict: kwargs dict
+
         """
         artifacts_dir, dbt_project_dir = self.__get_dir(**kwargs)
         command = self.ctx.command.name
@@ -70,9 +69,7 @@ class Executor:
                 select = self.__get_selection(**kwargs)
                 exclude = []
                 if not select:
-                    select = [
-                        "exact:none"
-                    ]  # 'cause [] is all, so let's select nothing here
+                    select = ["exact:none"]  # 'cause [] is all, so let's select nothing here
 
                 if kwargs.get("dbt_auto_artifacts"):
                     self.dbt.get_artifacts_for_erd()
@@ -88,11 +85,10 @@ class Executor:
 
         return kwargs
 
-    def __check_if_any_unsupported_selection(
-        self, select: list = [], exclude: list = []
-    ):
-        """Throw an error if detected any supported selections
-        which are built-in in dbterd (not dbt)
+    def __check_if_any_unsupported_selection(self, select: Optional[list] = None, exclude: Optional[list] = None):
+        """
+        Throw an error if detected any supported selections
+        which are built-in in dbterd (not dbt).
 
         Args:
             select (list, optional): Select rules. Defaults to [].
@@ -100,7 +96,12 @@ class Executor:
 
         Raises:
             click.UsageError: Unsupported selection
+
         """
+        if exclude is None:
+            exclude = []
+        if select is None:
+            select = []
         rules = list(select)
         rules.extend(exclude)
         unsupported, rule = has_unsupported_rule(rules=rules)
@@ -110,17 +111,15 @@ class Executor:
             raise click.UsageError(message)
 
     def __get_dir(self, **kwargs) -> str:
-        """Calculate the dbt artifact directory and dbt project directory
+        """
+        Calculate the dbt artifact directory and dbt project directory.
 
         Returns:
             tuple(str, str): Path to target directory and dbt project directory
+
         """
-        artifact_dir = (
-            f"{kwargs.get('artifacts_dir') or kwargs.get('dbt_project_dir')}"  # default
-        )
-        project_dir = (
-            f"{kwargs.get('dbt_project_dir') or kwargs.get('artifacts_dir')}"  # default
-        )
+        artifact_dir = f"{kwargs.get('artifacts_dir') or kwargs.get('dbt_project_dir')}"  # default
+        project_dir = f"{kwargs.get('dbt_project_dir') or kwargs.get('artifacts_dir')}"  # default
 
         if not artifact_dir:
             return (
@@ -136,8 +135,8 @@ class Executor:
 
         return (str(artifact_dir), str(project_dir))
 
-    def __get_selection(self, **kwargs) -> List[str]:
-        """Override the Selection using dbt's one with `--dbt`"""
+    def __get_selection(self, **kwargs) -> list[str]:
+        """Override the Selection using dbt's one with `--dbt`."""
         if not self.dbt:
             raise click.UsageError("Flag `--dbt` need to be enabled")
 
@@ -146,8 +145,9 @@ class Executor:
             exclude_rules=kwargs.get("exclude"),
         )
 
-    def __read_manifest(self, mp: str, mv: int = None):
-        """Read the Manifest content
+    def __read_manifest(self, mp: str, mv: Optional[int] = None):
+        """
+        Read the Manifest content.
 
         Args:
             mp (str): manifest.json json file path
@@ -155,14 +155,16 @@ class Executor:
 
         Returns:
             dict: Manifest dict
+
         """
         cli_messaging.check_existence(mp, self.filename_manifest)
         conditional = f" or provided version {mv} is incorrect" if mv else ""
         with cli_messaging.handle_read_errors(self.filename_manifest, conditional):
             return file_handlers.read_manifest(path=mp, version=mv)
 
-    def __read_catalog(self, cp: str, cv: int = None):
-        """Read the Catalog content
+    def __read_catalog(self, cp: str, cv: Optional[int] = None):
+        """
+        Read the Catalog content.
 
         Args:
             cp (str): catalog.json file path
@@ -170,22 +172,26 @@ class Executor:
 
         Returns:
             dict: Catalog dict
+
         """
         cli_messaging.check_existence(cp, self.filename_catalog)
         with cli_messaging.handle_read_errors(self.filename_catalog):
             return file_handlers.read_catalog(path=cp, version=cv)
 
     def __get_operation(self, kwargs):
-        """Get target's operation (aka.`parse` function)
+        """
+        Get target's operation (aka.`parse` function).
 
         Returns:
             func: Operation function
+
         """
         target = adapter.load_target(name=kwargs["target"])  # import {target}
-        return getattr(target, "run")
+        return target.run
 
     def __save_result(self, path, data):
-        """Save ERD data to file
+        """
+        Save ERD data to file.
 
         Args:
             path (str): Output file path
@@ -193,6 +199,7 @@ class Executor:
 
         Raises:
             click.FileError: Can not save the file
+
         """
         try:
             file_path = f"{path}/{data[0]}"
@@ -201,12 +208,11 @@ class Executor:
                 f.write(data[1])
         except Exception as e:
             logger.error(str(e))
-            raise click.FileError(f"Could not save the output: {str(e)}")
+            raise click.FileError(f"Could not save the output: {e!s}") from e
 
-    def __set_single_node_selection(
-        self, manifest, node_unique_id: str, type: str = None, **kwargs
-    ) -> dict:
-        """Override the Selection for the specific manifest node
+    def __set_single_node_selection(self, manifest, node_unique_id: str, type: Optional[str] = None, **kwargs) -> dict:
+        """
+        Override the Selection for the specific manifest node.
 
         Args:
             manifest (Union[Manifest, dict]): Manifest data of dbt project
@@ -217,6 +223,7 @@ class Executor:
 
         Returns:
             dict: Edited kwargs dict
+
         """
         if not node_unique_id:
             return kwargs
@@ -229,10 +236,8 @@ class Executor:
 
         return kwargs
 
-    def __run_by_strategy(
-        self, node_unique_id: str = None, **kwargs
-    ) -> Tuple[List[Table], List[Ref]]:
-        """Local File - Read artifacts and export the diagram file following the target"""
+    def __run_by_strategy(self, node_unique_id: Optional[str] = None, **kwargs) -> tuple[list[Table], list[Ref]]:
+        """Local File - Read artifacts and export the diagram file following the target."""
         if kwargs.get("dbt_cloud"):
             DbtCloudArtifact(**kwargs).get(artifacts_dir=kwargs.get("artifacts_dir"))
 
@@ -246,9 +251,7 @@ class Executor:
         )
 
         if node_unique_id:
-            kwargs = self.__set_single_node_selection(
-                manifest=manifest, node_unique_id=node_unique_id, **kwargs
-            )
+            kwargs = self.__set_single_node_selection(manifest=manifest, node_unique_id=node_unique_id, **kwargs)
         operation = self.__get_operation(kwargs)
         result = operation(manifest=manifest, catalog=catalog, **kwargs)
 
@@ -257,8 +260,8 @@ class Executor:
 
         return result[1]
 
-    def __run_metadata_by_strategy(self, **kwargs) -> Tuple[List[Table], List[Ref]]:
-        """Metadata - Read artifacts and export the diagram file following the target"""
+    def __run_metadata_by_strategy(self, **kwargs) -> tuple[list[Table], list[Ref]]:
+        """Metadata - Read artifacts and export the diagram file following the target."""
         data = DbtCloudMetadata(**kwargs).query_erd_data()
         operation = self.__get_operation(kwargs)
 
