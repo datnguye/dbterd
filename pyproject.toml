@@ -64,6 +64,7 @@ version = {source = "scm"}
 
 [tool.pdm.build]
 includes = ["dbterd"]
+excludes = ["tests", "tests/**/*"]
 
 [project.optional-dependencies]
 # Development dependencies
@@ -281,17 +282,13 @@ unfixable = [
 ]
 
 [tool.ruff.lint.isort]
-# isort settings
 force-single-line = false  # Don't force imports to be on separate lines
 lines-after-imports = 2    # Number of lines after import block
 force-sort-within-sections = true  # Sort imports within sections
 known-first-party = ["dbterd"]  # Treat package as first-party imports
-# Import ordering
-section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]
-# Group "from X import a, b, c" statements
-combine-as-imports = true
-# Show a message about any files that needed to be reformed
-show-diff = true
+section-order = ["future", "standard-library", "third-party", "first-party", "local-folder"]  # Import ordering
+combine-as-imports = true  # Group "from X import a, b, c" statements
+show-diff = true  # Show a message about any files that needed to be reformed
 
 [tool.ruff.format]
 # Code formatting options
