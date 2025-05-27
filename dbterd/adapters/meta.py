@@ -1,11 +1,11 @@
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import List, Optional, Tuple
+from typing import Optional
 
 
 @dataclass
 class Column:
-    """Parsed Column object"""
+    """Parsed Column object."""
 
     name: str = "unknown"
     data_type: str = "unknown"
@@ -14,15 +14,15 @@ class Column:
 
 @dataclass
 class Table:
-    """Parsed Table object"""
+    """Parsed Table object."""
 
     name: str
     database: str
     schema: str
-    columns: Optional[List[Column]] = None
+    columns: Optional[list[Column]] = None
     raw_sql: Optional[str] = None
     resource_type: str = "model"
-    exposures: Optional[List[str]] = field(default_factory=lambda: [])
+    exposures: Optional[list[str]] = field(default_factory=lambda: [])
     node_name: str = None
     description: str = ""
     label: Optional[str] = None
@@ -30,18 +30,18 @@ class Table:
 
 @dataclass
 class Ref:
-    """Parsed Relationship object"""
+    """Parsed Relationship object."""
 
     name: str
-    table_map: Tuple[str, str]
-    column_map: Tuple[str, str]
+    table_map: tuple[str, str]
+    column_map: tuple[str, str]
     type: str = "n1"
     label: Optional[str] = None
 
 
 @dataclass
 class SemanticEntity:
-    """Parsed Semantic Model's Entity object"""
+    """Parsed Semantic Model's Entity object."""
 
     semantic_model: str
     model: str

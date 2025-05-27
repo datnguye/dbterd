@@ -7,30 +7,44 @@ on:
         description: Document version e.g. 1.1, 1.2
         required: true
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
           submodules: recursive
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           key: ${{ github.ref }}
           path: .cache
 
-      - uses: abatilo/actions-poetry@v2
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          poetry-version: 1.6.1
+          python-version: '3.9'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Cache UV dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: ubuntu-3.9-uv-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ubuntu-3.9-uv-
 
       - name: Install dependencies
         run: |
-          poetry config installer.max-workers 1
-          poetry config virtualenvs.in-project true
-          poetry install
+          uv venv
+          uv sync --all-extras
 
       - name: Configure Git user
         run: |
@@ -39,4 +53,4 @@ jobs:
 
       - name: Publish site
         run: |
-          poetry run mike deploy --push --update-aliases ${{ inputs.version }} latest
+          uv run mike deploy --push --update-aliases ${{ inputs.version }} latest

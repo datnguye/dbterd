@@ -9,11 +9,11 @@ import click
 def handle_read_errors(filename, conditional_msg: str = ""):
     try:
         yield
-    except (json.JSONDecodeError, ValueError):
+    except (json.JSONDecodeError, ValueError) as e:
         raise click.FileError(
             filename,
             f"File {filename} is corrupted{conditional_msg}, please rebuild",
-        )
+        ) from e
 
 
 def check_existence(path_str: str, filename: str) -> None:
@@ -21,6 +21,4 @@ def check_existence(path_str: str, filename: str) -> None:
     if not path.is_dir():
         raise click.FileError(filename, f"Path {path_str} does not exist")
     elif not (path / filename).is_file():
-        raise click.FileError(
-            filename, f"File {filename} does not exist in directory {path_str}"
-        )
+        raise click.FileError(filename, f"File {filename} does not exist in directory {path_str}")

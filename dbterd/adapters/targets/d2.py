@@ -1,11 +1,10 @@
-from typing import Tuple
-
 from dbterd.adapters import adapter
 from dbterd.types import Catalog, Manifest
 
 
-def run(manifest: Manifest, catalog: Catalog, **kwargs) -> Tuple[str, str]:
-    """Parse dbt artifacts and export D2 file
+def run(manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[str, str]:
+    """
+    Parse dbt artifacts and export D2 file.
 
     Args:
         manifest (dict): Manifest json
@@ -13,13 +12,15 @@ def run(manifest: Manifest, catalog: Catalog, **kwargs) -> Tuple[str, str]:
 
     Returns:
         Tuple(str, str): File name and the D2 content
+
     """
     output_file_name = kwargs.get("output_file_name") or "output.d2"
     return (output_file_name, parse(manifest, catalog, **kwargs))
 
 
 def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
-    """Get the D2 content from dbt artifacts
+    """
+    Get the D2 content from dbt artifacts.
 
     Args:
         manifest (dict): Manifest json
@@ -27,11 +28,10 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
 
     Returns:
         str: D2 content
+
     """
     algo_module = adapter.load_algo(name=kwargs["algo"])
-    tables, relationships = algo_module.parse(
-        manifest=manifest, catalog=catalog, **kwargs
-    )
+    tables, relationships = algo_module.parse(manifest=manifest, catalog=catalog, **kwargs)
 
     # Build D2 content
     # https://play.d2lang.com/?script=qlDQtVOo5AIEAAD__w%3D%3D&, https://github.com/terrastruct/d2
@@ -52,12 +52,14 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
 
 
 def get_rel_symbol(relationship_type: str) -> str:
-    """Get D2 relationship symbol
+    """
+    Get D2 relationship symbol.
 
     Args:
         relationship_type (str): relationship type
 
     Returns:
         str: Relation symbol supported in D2
+
     """
     return "->"  # no supports for rel type

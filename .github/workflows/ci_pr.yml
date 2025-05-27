@@ -4,6 +4,8 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions: read-all
+
 jobs:
   build-and-test:
     runs-on: ${{ matrix.os }}
@@ -13,37 +15,43 @@ jobs:
         python-version: ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
-        run: |
-          pip install "poetry~=1.6.1"
-          poetry config installer.max-workers 1 # fix ChefBuildError
-          poetry config virtualenvs.in-project true
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
 
-      - name: Cache the virtualenv
+      - name: Cache UV dependencies
         uses: actions/cache@v4
         with:
-          path: ./.venv
-          key: ${{ runner.os }}-${{ matrix.python-version }}-venv-${{ hashFiles('**/poetry.lock') }}
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-${{ matrix.python-version }}-uv-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.python-version }}-uv-
 
       - name: Install dependencies
         run: |
-          poetry install
+          uv venv
+          uv sync --all-extras
 
       - name: Code quality
         run: |
-          poetry run poe lint
+          uv run poe lint
 
       - name: Run tests
         run: |
-          poetry run poe test-cov
+          uv run poe test-cov
+
+      - name: Generate coverage report
+        run: |
+          uv run coverage xml -o coverage.xml
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v2
+        uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./coverage.xml
+          fail_ci_if_error: true

@@ -22,10 +22,10 @@ class TestFile:
     @pytest.mark.parametrize(
         "input, output",
         [
-            ('{"data":"dummy"}', dict({"data": "dummy"})),
+            ('{"data":"dummy"}', {"data": "dummy"}),
             (
                 '{"password":"this is a secret password"}',
-                dict({"password": "this " + "*" * 10}),
+                {"password": "this " + "*" * 10},
             ),
         ],
     )
@@ -34,9 +34,10 @@ class TestFile:
 
     def test_mask_with_class(self):
         obj = Dummy(str="dummy", secret_str="this is a secret")
-        assert jsonify.mask(
-            json.dumps(obj.__dict__, cls=jsonify.EnhancedJSONEncoder)
-        ) == dict({"json_str": "dummy", "secret_json_str": "this " + "*" * 10})
+        assert jsonify.mask(json.dumps(obj.__dict__, cls=jsonify.EnhancedJSONEncoder)) == {
+            "json_str": "dummy",
+            "secret_json_str": "this " + "*" * 10,
+        }
 
     def test_to_json_none(self):
         assert jsonify.to_json(obj=None) == {}
@@ -44,9 +45,9 @@ class TestFile:
     @pytest.mark.parametrize(
         "input",
         [
-            (dict({"data": {"child_data": "dummy"}})),
-            (dict({"data": "dummy"})),
-            (dict({"data": {}})),
+            ({"data": {"child_data": "dummy"}}),
+            ({"data": "dummy"}),
+            ({"data": {}}),
         ],
     )
     def test_to_json_has_pretty_format(self, input):

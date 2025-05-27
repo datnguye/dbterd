@@ -4,8 +4,7 @@ from unittest.mock import MagicMock
 import click
 import pytest
 
-from dbterd.adapters.algos import base as base_algo
-from dbterd.adapters.algos import test_relationship
+from dbterd.adapters.algos import base as base_algo, test_relationship
 from dbterd.adapters.meta import Column, Ref, Table
 from tests.unit.adapters.algos import (
     DummyCatalogTable,
@@ -83,7 +82,7 @@ class TestAlgoTestRelationship:
                 base_algo.get_tables(
                     manifest,
                     catalog,
-                    **dict(entity_name_format="resource.package.model")
+                    **{"entity_name_format": "resource.package.model"},
                 )
                 == expected
             )
@@ -106,9 +105,9 @@ class TestAlgoTestRelationship:
         ],
     )
     def test_get_compiled(self, manifest, expected):
-        assert base_algo.get_compiled_sql(manifest_node=manifest).replace(
-            " ", ""
-        ).replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
+        assert base_algo.get_compiled_sql(manifest_node=manifest).replace(" ", "").replace("\n", "") == str(
+            expected
+        ).replace(" ", "").replace("\n", "")
 
     @pytest.mark.parametrize(
         "manifest, algorithm, expected",
@@ -166,9 +165,7 @@ class TestAlgoTestRelationship:
         ],
     )
     def test_get_relationships(self, manifest, algorithm, expected):
-        assert (
-            base_algo.get_relationships(manifest=manifest, algo=algorithm) == expected
-        )
+        assert base_algo.get_relationships(manifest=manifest, algo=algorithm) == expected
 
     @pytest.mark.parametrize(
         "meta, type",
@@ -191,8 +188,8 @@ class TestAlgoTestRelationship:
             (
                 DummyManifestWithExposure(),
                 [
-                    dict(node_name="model.dbt_resto.table1", exposure_name="dummy"),
-                    dict(node_name="model.dbt_resto.table2", exposure_name="dummy"),
+                    {"node_name": "model.dbt_resto.table1", "exposure_name": "dummy"},
+                    {"node_name": "model.dbt_resto.table2", "exposure_name": "dummy"},
                 ],
             ),
             (
@@ -222,9 +219,7 @@ class TestAlgoTestRelationship:
         data,
         expected,
     ):
-        assert expected == base_algo.get_tables_from_metadata(
-            data=data, resource_type=["model", "source"]
-        )
+        assert expected == base_algo.get_tables_from_metadata(data=data, resource_type=["model", "source"])
         mock_get_node_exposures_from_metadata.assert_called_once()
         assert mock_get_table_from_metadata.call_count == 0
 
@@ -280,10 +275,7 @@ class TestAlgoTestRelationship:
     ):
         base_algo.get_tables_from_metadata(data=data, resource_type=resource_type)
         mock_get_node_exposures_from_metadata.assert_called_once()
-        assert (
-            mock_get_table_from_metadata.call_count
-            == get_table_from_metadata_call_count
-        )
+        assert mock_get_table_from_metadata.call_count == get_table_from_metadata_call_count
 
     @pytest.mark.parametrize(
         "data, kwargs, expected",
@@ -306,17 +298,16 @@ class TestAlgoTestRelationship:
                         }
                     }
                 ],
-                dict(
-                    entity_name_format="resource.package.model", resource_type=["model"]
-                ),
+                {
+                    "entity_name_format": "resource.package.model",
+                    "resource_type": ["model"],
+                },
                 [
                     Table(
                         name="model.package.name1",
                         database="db1",
                         schema="sc1",
-                        columns=[
-                            Column(name="unknown", data_type="unknown", description="")
-                        ],
+                        columns=[Column(name="unknown", data_type="unknown", description="")],
                         raw_sql=None,
                         resource_type="model",
                         exposures=[],
@@ -347,28 +338,24 @@ class TestAlgoTestRelationship:
                                     "node": {
                                         "uniqueId": "exposure.package.e1",
                                         "name": "e1",
-                                        "parents": [
-                                            {"uniqueId": "model.package.name1"}
-                                        ],
+                                        "parents": [{"uniqueId": "model.package.name1"}],
                                     }
                                 },
                             ]
                         },
                     }
                 ],
-                dict(
-                    entity_name_format="resource.package.model",
-                    resource_type=["model"],
-                    select=["exposure:e1"],
-                ),
+                {
+                    "entity_name_format": "resource.package.model",
+                    "resource_type": ["model"],
+                    "select": ["exposure:e1"],
+                },
                 [
                     Table(
                         name="model.package.name1",
                         database="db1",
                         schema="sc1",
-                        columns=[
-                            Column(name="unknown", data_type="unknown", description="")
-                        ],
+                        columns=[Column(name="unknown", data_type="unknown", description="")],
                         raw_sql=None,
                         resource_type="model",
                         exposures=["e1"],
@@ -396,15 +383,13 @@ class TestAlgoTestRelationship:
                     }
                 },
                 [],
-                dict(entity_name_format="resource.package.model"),
+                {"entity_name_format": "resource.package.model"},
                 Table(
                     name="model.package.name1",
                     node_name="model.package.name1",
                     database="db1",
                     schema="sc1",
-                    columns=[
-                        Column(name="unknown", data_type="unknown", description="")
-                    ],
+                    columns=[Column(name="unknown", data_type="unknown", description="")],
                     raw_sql=None,
                     description=None,
                 ),
@@ -420,7 +405,7 @@ class TestAlgoTestRelationship:
                     }
                 },
                 [],
-                dict(entity_name_format="resource.package.model"),
+                {"entity_name_format": "resource.package.model"},
                 Table(
                     name="model.package.name1",
                     node_name="model.package.name1",
@@ -447,7 +432,7 @@ class TestAlgoTestRelationship:
                     }
                 },
                 [],
-                dict(entity_name_format="resource.package.model"),
+                {"entity_name_format": "resource.package.model"},
                 Table(
                     name="model.package.name1",
                     node_name="model.package.name1",
@@ -472,7 +457,7 @@ class TestAlgoTestRelationship:
                     }
                 },
                 [],
-                dict(entity_name_format="resource.package.model"),
+                {"entity_name_format": "resource.package.model"},
                 Table(
                     name="model.package.name1",
                     node_name="model.package.name1",
@@ -495,10 +480,10 @@ class TestAlgoTestRelationship:
     @pytest.mark.parametrize(
         "data, kwargs, expected",
         [
-            ([], dict(resource_type=["model", "source"]), []),
+            ([], {"resource_type": ["model", "source"]}, []),
             (
                 [{"exposures": {"edges": []}}],
-                dict(resource_type=["model", "source"]),
+                {"resource_type": ["model", "source"]},
                 [],
             ),
             (
@@ -516,8 +501,8 @@ class TestAlgoTestRelationship:
                         }
                     }
                 ],
-                dict(resource_type=["model", "source"]),
-                [dict(node_name="model.x", exposure_name="ex1")],
+                {"resource_type": ["model", "source"]},
+                [{"node_name": "model.x", "exposure_name": "ex1"}],
             ),
             (
                 [
@@ -538,26 +523,24 @@ class TestAlgoTestRelationship:
                         }
                     }
                 ],
-                dict(resource_type=["model"]),
+                {"resource_type": ["model"]},
                 [
-                    dict(node_name="model.x", exposure_name="ex1"),
-                    dict(node_name="model.y", exposure_name="ex1"),
+                    {"node_name": "model.x", "exposure_name": "ex1"},
+                    {"node_name": "model.y", "exposure_name": "ex1"},
                 ],
             ),
         ],
     )
     def test_get_node_exposures_from_metadata(self, data, kwargs, expected):
-        assert expected == base_algo.get_node_exposures_from_metadata(
-            data=data, **kwargs
-        )
+        assert expected == base_algo.get_node_exposures_from_metadata(data=data, **kwargs)
 
     @pytest.mark.parametrize(
         "data, kwargs, expected",
         [
-            ([], dict(algo="test_relationship"), []),
+            ([], {"algo": "test_relationship"}, []),
             (
                 [{"tests": {"edges": []}}],
-                dict(algo="test_relationship", resource_type=["model", "source"]),
+                {"algo": "test_relationship", "resource_type": ["model", "source"]},
                 [],
             ),
             (
@@ -582,7 +565,7 @@ class TestAlgoTestRelationship:
                         }
                     }
                 ],
-                dict(algo="test_relationship", resource_type=["model", "source"]),
+                {"algo": "test_relationship", "resource_type": ["model", "source"]},
                 [
                     Ref(
                         name="test.relationship_1",
@@ -618,7 +601,7 @@ class TestAlgoTestRelationship:
                         }
                     }
                 ],
-                dict(algo="test_relationship", resource_type=["model", "source"]),
+                {"algo": "test_relationship", "resource_type": ["model", "source"]},
                 [
                     Ref(
                         name="test.relationship_1",
@@ -654,7 +637,7 @@ class TestAlgoTestRelationship:
                         }
                     }
                 ],
-                dict(algo="test_relationship", resource_type=["model", "source"]),
+                {"algo": "test_relationship", "resource_type": ["model", "source"]},
                 [
                     Ref(
                         name="test.relationship_1",
@@ -689,7 +672,7 @@ class TestAlgoTestRelationship:
                         }
                     }
                 ],
-                dict(algo="test_relationship", resource_type=["model"]),
+                {"algo": "test_relationship", "resource_type": ["model"]},
                 [
                     Ref(
                         name="test.relationship_1",
@@ -702,9 +685,7 @@ class TestAlgoTestRelationship:
         ],
     )
     def test_get_relationships_from_metadata(self, data, kwargs, expected):
-        assert expected == base_algo.get_relationships_from_metadata(
-            data=data, **kwargs
-        )
+        assert expected == base_algo.get_relationships_from_metadata(data=data, **kwargs)
 
     @pytest.mark.parametrize(
         "data, kwargs",
@@ -736,7 +717,7 @@ class TestAlgoTestRelationship:
                         }
                     }
                 ],
-                dict(algo="test_relationship", resource_type=["model", "source"]),
+                {"algo": "test_relationship", "resource_type": ["model", "source"]},
             ),
         ],
     )
@@ -745,9 +726,9 @@ class TestAlgoTestRelationship:
             base_algo.get_relationships_from_metadata(data=data, **kwargs)
 
     def test_find_related_nodes_by_id_not_supported_type(self):
-        assert ["model.p.abc"] == test_relationship.find_related_nodes_by_id(
+        assert test_relationship.find_related_nodes_by_id(
             manifest="irrelevant", type="metadata", node_unique_id="model.p.abc"
-        )
+        ) == ["model.p.abc"]
 
     def test_find_related_nodes_by_id(self):
         assert sorted(["model.dbt_resto.table1", "model.dbt_resto.table2"]) == sorted(
@@ -755,8 +736,6 @@ class TestAlgoTestRelationship:
                 manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.table2"
             )
         )
-        assert [
-            "model.dbt_resto.not-exists"
-        ] == test_relationship.find_related_nodes_by_id(
+        assert test_relationship.find_related_nodes_by_id(
             manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.not-exists"
-        )
+        ) == ["model.dbt_resto.not-exists"]
