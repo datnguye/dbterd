@@ -480,7 +480,7 @@ def get_relationships_from_metadata(data=None, **kwargs) -> list[Ref]:
                             .lower(),
                         ],
                         type=get_relationship_type(test_meta.get(TEST_META_RELATIONSHIP_TYPE, "")),
-                        label=test_meta.get("label"),
+                        relationship_label=test_meta.get("relationship_label"),
                     )
                 )
 
@@ -523,7 +523,7 @@ def get_relationships(manifest: Manifest, **kwargs) -> list[Ref]:
                 .lower(),
             ],
             type=get_relationship_type(manifest.nodes[x].meta.get(TEST_META_RELATIONSHIP_TYPE, "")),
-            label=manifest.nodes[x].meta.get("label"),
+            relationship_label=manifest.nodes[x].meta.get("relationship_label"),
         )
         for x in get_test_nodes_by_rule_name(manifest=manifest, rule_name=rule.get("name").lower())
     ]
@@ -557,7 +557,7 @@ def make_up_relationships(relationships: Optional[list[Ref]] = None, tables: Opt
             ],
             column_map=x.column_map,
             type=x.type,
-            label=x.label,
+            relationship_label=x.relationship_label,
         )
         for x in relationships
         if x.table_map[0] in node_names and x.table_map[1] in node_names

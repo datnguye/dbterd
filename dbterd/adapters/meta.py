@@ -36,7 +36,7 @@ class Ref:
     table_map: tuple[str, str]
     column_map: tuple[str, str]
     type: str = "n1"
-    label: Optional[str] = None
+    relationship_label: Optional[str] = None
 
 
 @dataclass
