@@ -100,13 +100,15 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
     mermaid = "erDiagram\n"
     for table in tables:
         table_name = table.name.upper()
+        table_label = f'["{table.label.upper()}"]' if hasattr(table, "label") and table.label else ""
+
         columns = "\n".join(
             [f"    {replace_column_type(x.data_type)} {replace_column_name(x.name)}" for x in table.columns]
         )
         if kwargs.get("omit_columns", False):
-            mermaid += f'  "{table_name}" {{\n  }}\n'
+            mermaid += f'  "{table_name}"{table_label} {{\n  }}\n'
         else:
-            mermaid += f'  "{table_name}" {{\n{columns}\n  }}\n'
+            mermaid += f'  "{table_name}"{table_label} {{\n{columns}\n  }}\n'
 
     for rel in relationships:
         key_from = f'"{rel.table_map[1]}"'
@@ -114,6 +116,8 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
         reference_text = replace_column_name(rel.column_map[0])
         if rel.column_map[0] != rel.column_map[1]:
             reference_text += f"--{replace_column_name(rel.column_map[1])}"
+        if hasattr(rel, "relationship_label") and rel.relationship_label:
+            reference_text = replace_column_name(rel.relationship_label)
         mermaid += f"  {key_from.upper()} {get_rel_symbol(rel.type)} {key_to.upper()}: {reference_text}\n"
 
     return mermaid
