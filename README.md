@@ -17,18 +17,6 @@ Transform your dbt artifact files or metadata into stunning Entity Relationship 
 
 [![dbterd stars](https://img.shields.io/github/stars/datnguye/dbterd.svg?logo=github&style=for-the-badge&label=Star%20this%20repo)](https://github.com/datnguye/dbterd)
 
-
-### Why dbterd?
-
-- **🔗 Relationship Intelligence**: Automatically discovers entity relationships from your dbt project
-- **📊 Multiple Output Formats**: Generate diagrams in your preferred format
-- **⚡ Fast & Lightweight**: Quick processing of large dbt projects
-- **🎛️ Highly Configurable**: Fine-tune what gets included in your ERD
-- **🐍 Python Integration**: Use as CLI tool or integrate into your Python workflows
-- **☁️ Flexibility**: Works with both dbt Core and dbt Cloud
-
----
-
 ## 🎯 Entity Relationship Detection
 
 dbterd intelligently detects entity relationships through:
@@ -37,8 +25,6 @@ dbterd intelligently detects entity relationships through:
 - **🏛️ [Semantic Entities](https://docs.getdbt.com/docs/build/entities)** (use `-a` option)
 
 For detailed configuration options, see our [CLI References](https://dbterd.datnguyen.de/latest/nav/guide/cli-references.html#dbterd-run-algo-a).
-
----
 
 ## 🎨 Supported Output Formats
 
@@ -52,8 +38,6 @@ For detailed configuration options, see our [CLI References](https://dbterd.datn
 | **[DrawDB](https://drawdb.vercel.app/)** | Web-based database designer | Interactive database design |
 
 🎯 **[Try the Quick Demo](https://dbterd.datnguyen.de/latest/nav/guide/targets/generate-dbml.html)** with DBML format!
-
----
 
 ## 🚀 Quick Start
 
@@ -74,8 +58,6 @@ dbterd --version
 > ```bash
 > pip install dbt-artifacts-parser --upgrade
 > ```
-
----
 
 ## 💡 Examples
 
@@ -182,8 +164,6 @@ See our **[Contributing Guide](https://dbterd.datnguyen.de/latest/nav/developmen
 
 [![buy me a coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg?logo=buy-me-a-coffee&logoColor=white&labelColor=ff813f&style=for-the-badge)](https://www.buymeacoffee.com/datnguye)
 
----
-
 ## 👥 Contributors
 
 A huge thanks to our amazing contributors! 🙏
@@ -191,8 +171,6 @@ A huge thanks to our amazing contributors! 🙏
 <a href="https://github.com/datnguye/dbterd/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=datnguye/dbterd" />
 </a>
-
----
 
 ## 📧 Support
 

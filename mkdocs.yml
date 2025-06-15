@@ -11,7 +11,7 @@ copyright: Copyright &copy; 2023 Dat Nguyen
 
 nav:
   - dbterd:
-    - index.md
+    - Home: index.md
     - User Guide 📖:
       - Choose the Parser: nav/guide/choose-algo.md
       - Generate the Targets:
@@ -80,8 +80,8 @@ theme:
   font:
     text: Roboto
     code: Roboto Mono
-  favicon: assets/favicon.ico
-  logo: assets/favicon.ico
+  favicon: assets/favicon.svg
+  logo: assets/logo.svg
   icon:
     repo: fontawesome/brands/github
 
