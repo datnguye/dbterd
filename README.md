@@ -1,6 +1,4 @@
-<img src="docs/assets/logo.svg" alt="dbterd logo" width="100" height="40" style="float: right;">
-
-# dbterd
+# dbterd <img src="docs/assets/logo.svg" alt="dbterd logo" width="100" height="40" align="right">
 
 **Generate ERD-as-a-code from your dbt projects**
 
