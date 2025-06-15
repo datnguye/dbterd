@@ -1,6 +1,10 @@
-# dbterd <img src="docs/assets/logo.svg" alt="dbterd logo" width="100" height="40" align="right">
-
-**Generate ERD-as-a-code from your dbt projects**
+<div style="display: flex; align-items: center; justify-content: space-between;">
+  <div>
+    <h1 style="margin: 0;">dbterd</h1>
+    <p style="margin: 0; font-weight: bold;">Generate ERD-as-a-code from your dbt projects</p>
+  </div>
+  <img src="docs/assets/logo.svg" alt="dbterd logo" width="200" height="80">
+</div>
 
 Transform your dbt artifact files or metadata into stunning Entity Relationship Diagrams using multiple formats: DBML, Mermaid, PlantUML, GraphViz, D2, and DrawDB
 
