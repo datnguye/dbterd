@@ -17,6 +17,8 @@ Transform your dbt artifact files or metadata into stunning Entity Relationship 
 
 [![dbterd stars](https://img.shields.io/github/stars/datnguye/dbterd.svg?logo=github&style=for-the-badge&label=Star%20this%20repo)](https://github.com/datnguye/dbterd)
 
+---
+
 ## 🎯 Entity Relationship Detection
 
 dbterd intelligently detects entity relationships through:
@@ -36,6 +38,8 @@ For detailed configuration options, see our [CLI References](./nav/guide/cli-ref
 | **[GraphViz](https://graphviz.org/)** | DOT graph description | Complex relationship visualization |
 | **[D2](https://d2lang.com/)** | Modern diagram scripting | Beautiful, customizable diagrams |
 | **[DrawDB](https://drawdb.vercel.app/)** | Web-based database designer | Interactive database design |
+
+---
 
 ## 🚀 Quick Start
 

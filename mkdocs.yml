@@ -131,11 +131,13 @@ extra_css:
   - assets/css/termynal.css
   - assets/css/syntax-highlighting.css
   - assets/css/theme.css
+  - assets/css/ads.css
 
 extra_javascript:
   - assets/js/feedback.js
   - assets/js/termynal.js
   - assets/js/custom.js
+  - assets/js/adsense.js
 
 markdown_extensions:
   - abbr
