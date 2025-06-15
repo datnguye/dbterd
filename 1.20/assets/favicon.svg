@@ -1,0 +1,9 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Typography-focused design for favicon with transparent background -->
+  <text x="3" y="20" font-family="'JetBrains Mono', monospace, system-ui, sans-serif" font-size="10" font-weight="700" fill="#374151">
+    dbt
+  </text>
+  <text x="18" y="20" font-family="'JetBrains Mono', monospace, system-ui, sans-serif" font-size="10" font-weight="300" fill="#DC2626">
+    erd
+  </text>
+</svg>
