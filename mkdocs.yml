@@ -24,6 +24,7 @@ nav:
       - Metadata:
         - Ignore Tests: nav/metadata/ignore_in_erd.md
         - Relationship Types: nav/metadata/relationship_type.md
+        - Label Override: nav/metadata/label_override.md
       - dbt Cloud:
         - Download artifacts from a Job Run: nav/guide/dbt-cloud/download-artifact-from-a-job-run.md
         - Download the latest artifacts from a Job: nav/guide/dbt-cloud/download-artifact-from-a-job.md
