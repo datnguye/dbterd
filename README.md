@@ -13,8 +13,6 @@ Transform your dbt artifact files or metadata into stunning Entity Relationship 
 
 [![dbterd stars](https://img.shields.io/github/stars/datnguye/dbterd.svg?logo=github&style=for-the-badge&label=Star%20this%20repo)](https://github.com/datnguye/dbterd)
 
-</div>
----
 
 ### Why dbterd?
 
@@ -24,6 +22,17 @@ Transform your dbt artifact files or metadata into stunning Entity Relationship 
 - **🎛️ Highly Configurable**: Fine-tune what gets included in your ERD
 - **🐍 Python Integration**: Use as CLI tool or integrate into your Python workflows
 - **☁️ Flexibility**: Works with both dbt Core and dbt Cloud
+
+---
+
+## 🎯 Entity Relationship Detection
+
+dbterd intelligently detects entity relationships through:
+
+- **🧪 [Test Relationships](https://docs.getdbt.com/reference/resource-properties/data-tests#relationships)** (default method)
+- **🏛️ [Semantic Entities](https://docs.getdbt.com/docs/build/entities)** (use `-a` option)
+
+For detailed configuration options, see our [CLI References](https://dbterd.datnguyen.de/latest/nav/guide/cli-references.html#dbterd-run-algo-a).
 
 ---
 
@@ -61,17 +70,6 @@ dbterd --version
 > ```bash
 > pip install dbt-artifacts-parser --upgrade
 > ```
-
----
-
-## 🎯 Entity Relationship Detection
-
-dbterd intelligently detects entity relationships through:
-
-- **🧪 [Test Relationships](https://docs.getdbt.com/reference/resource-properties/data-tests#relationships)** (default method)
-- **🏛️ [Semantic Entities](https://docs.getdbt.com/docs/build/entities)** (use `-a` option)
-
-For detailed configuration options, see our [CLI References](https://dbterd.datnguyen.de/latest/nav/guide/cli-references.html#dbterd-run-algo-a).
 
 ---
 
