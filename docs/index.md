@@ -41,9 +41,7 @@ For detailed configuration options, see our [CLI References](./nav/guide/cli-ref
 
 ---
 
-## 🚀 Quick Start
-
-### Installation
+## 🚀 Installation
 
 <div class="termynal" data-termynal data-ty-typeDelay="40" data-ty-lineDelay="700">
     <span data-ty="input">pip install dbterd --upgrade</span>
@@ -52,7 +50,7 @@ For detailed configuration options, see our [CLI References](./nav/guide/cli-ref
     <a href="#" data-terminal-control="">restart ↻</a>
 </div>
 
-### Verify Installation
+Verify Installation:
 
 ```bash
 dbterd --version

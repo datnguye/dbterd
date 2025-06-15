@@ -39,15 +39,13 @@ For detailed configuration options, see our [CLI References](https://dbterd.datn
 
 🎯 **[Try the Quick Demo](https://dbterd.datnguyen.de/latest/nav/guide/targets/generate-dbml.html)** with DBML format!
 
-## 🚀 Quick Start
-
-### Installation
+## 🚀 Installation
 
 ```bash
 pip install dbterd --upgrade
 ```
 
-### Verify Installation
+Verify Installation:
 
 ```bash
 dbterd --version
