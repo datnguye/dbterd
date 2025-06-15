@@ -1,12 +1,10 @@
-<div style="display: flex; justify-content: space-between; align-items: flex-start;">
-<div>
+<div style="position: relative;">
+<img src="docs/assets/logo.svg" alt="dbterd logo" width="100" height="40" style="position: absolute; top: 0; right: 0;">
 
 # dbterd
 
 **Generate ERD-as-a-code from your dbt projects**
 
-</div>
-<img src="assets/logo.svg" alt="dbterd logo" width="100" height="40" style="flex-shrink: 0;">
 </div>
 
 Transform your dbt artifact files or metadata into stunning Entity Relationship Diagrams using multiple formats: DBML, Mermaid, PlantUML, GraphViz, D2, and DrawDB
@@ -21,24 +19,6 @@ Transform your dbt artifact files or metadata into stunning Entity Relationship 
 [![dbterd stars](https://img.shields.io/github/stars/datnguye/dbterd.svg?logo=github&style=for-the-badge&label=Star%20this%20repo)](https://github.com/datnguye/dbterd)
 
 </div>
-
----
-
-- [dbterd](#dbterd)
-    - [Why dbterd?](#why-dbterd)
-  - [🚀 Quick Start](#-quick-start)
-    - [Installation](#installation)
-    - [Verify Installation](#verify-installation)
-  - [🎯 Entity Relationship Detection](#-entity-relationship-detection)
-  - [💡 Examples](#-examples)
-    - [CLI Examples](#cli-examples)
-    - [Python API Examples](#python-api-examples)
-  - [🎨 Supported Output Formats](#-supported-output-formats)
-  - [🤝 Contributing](#-contributing)
-  - [👥 Contributors](#-contributors)
-  - [📧 Support](#-support)
-    - [Sponsored by GitAds](#sponsored-by-gitads)
-
 ---
 
 ### Why dbterd?
@@ -49,6 +29,21 @@ Transform your dbt artifact files or metadata into stunning Entity Relationship 
 - **🎛️ Highly Configurable**: Fine-tune what gets included in your ERD
 - **🐍 Python Integration**: Use as CLI tool or integrate into your Python workflows
 - **☁️ Flexibility**: Works with both dbt Core and dbt Cloud
+
+---
+
+## 🎨 Supported Output Formats
+
+| Format | Description | Use Case |
+|--------|-------------|----------|
+| **[DBML](https://dbdiagram.io/d)** | Database Markup Language | Interactive web diagrams |
+| **[Mermaid](https://mermaid-js.github.io/mermaid-live-editor/)** | Markdown-friendly diagrams | Documentation, GitHub |
+| **[PlantUML](https://plantuml.com/ie-diagram)** | Text-based UML | Technical documentation |
+| **[GraphViz](https://graphviz.org/)** | DOT graph description | Complex relationship visualization |
+| **[D2](https://d2lang.com/)** | Modern diagram scripting | Beautiful, customizable diagrams |
+| **[DrawDB](https://drawdb.vercel.app/)** | Web-based database designer | Interactive database design |
+
+🎯 **[Try the Quick Demo](https://dbterd.datnguyen.de/latest/nav/guide/targets/generate-dbml.html)** with DBML format!
 
 ---
 
@@ -171,21 +166,6 @@ erDiagram
   }
   "MODEL.DBT_RESTO.FACT_RESULT" }|--|| "MODEL.DBT_RESTO.DIM_PRIZE": prize_key
 ```
-
----
-
-## 🎨 Supported Output Formats
-
-| Format | Description | Use Case |
-|--------|-------------|----------|
-| **[DBML](https://dbdiagram.io/d)** | Database Markup Language | Interactive web diagrams |
-| **[Mermaid](https://mermaid-js.github.io/mermaid-live-editor/)** | Markdown-friendly diagrams | Documentation, GitHub |
-| **[PlantUML](https://plantuml.com/ie-diagram)** | Text-based UML | Technical documentation |
-| **[GraphViz](https://graphviz.org/)** | DOT graph description | Complex relationship visualization |
-| **[D2](https://d2lang.com/)** | Modern diagram scripting | Beautiful, customizable diagrams |
-| **[DrawDB](https://drawdb.vercel.app/)** | Web-based database designer | Interactive database design |
-
-🎯 **[Try the Quick Demo](https://dbterd.datnguyen.de/latest/nav/guide/targets/generate-dbml.html)** with DBML format!
 
 ---
 
