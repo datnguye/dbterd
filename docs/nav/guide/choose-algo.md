@@ -11,14 +11,14 @@ During the dbt development, the engineers are supposed to add the consistency ch
 
 Let's install the repo:
 
-```shell
+```bash
 git clone https://github.com/dbt-labs/jaffle-shop
 cd jaffle-shop
 ```
 
 Setup the environment, and install the deps including `dbterd`:
 
-```shell
+```bash
 python3 -m venv .env
 source .env/bin/activate
 pip install -r requirements.txt
@@ -27,7 +27,7 @@ pip install dbterd --upgrade
 
 In the `order_items.sql` model, we can see 1 sample test:
 
-```yml
+```yaml
 models:
   - name: order_items
     columns:
@@ -75,7 +75,7 @@ Since dbt v1.6, dbt has supported the Semantic Layer (SL) with Metric Flow ([doc
 
 Let's use the above [Jaffle Shop](https://github.com/dbt-labs/jaffle-shop) project again, here is the sample code which was implemented in the repo for the semantic models: `order_item` and `orders`:
 
-```yml
+```yaml
 semantic_models:
   - name: order_item
     ...
@@ -98,7 +98,7 @@ semantic_models:
 
 Now running `dbterd run -enf table` with the environment variable `DBTERD_ALGO=semantic` in advance, or we can use the command without it :
 
-```shell
+```bash
 dbterd run -enf table -a semantic
 ```
 

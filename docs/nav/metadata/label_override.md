@@ -6,7 +6,7 @@ Customize how tables and relationships appear in your ERD by using the `label` a
 
 Add `label` attribute to your model's meta to customize its display name in the ERD:
 
-```yml
+```yaml
 models:
   - name: axw_derived__rpt_ccd_customers_hist
     meta:
@@ -22,7 +22,7 @@ This will display the model as `customers` in the ERD instead of the actual mode
 
 Add `relationship_label` attribute to your test's meta to customize the relationship name:
 
-```yml
+```yaml
 models:
   - name: orders
     columns:
@@ -48,7 +48,7 @@ This will display the relationship as `placed_by` instead of the default relatio
 
 Here's a complete example showing both table and relationship label overrides:
 
-```yml
+```yaml
 models:
   - name: fct_daily_revenue_agg
     meta:

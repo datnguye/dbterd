@@ -2,7 +2,7 @@
 
 Add `relationship_type` attribute into your test's meta:
 
-```yml
+```yaml
 version: 2
 
 models:

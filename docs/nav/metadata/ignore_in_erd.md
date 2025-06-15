@@ -1,7 +1,7 @@
 ## Decide to exclude Relationship Tests from ERD generated
 
 Add `ignore_in_erd` attribute into your test's meta:
-```yml
+```yaml
 version: 2
 
 models:

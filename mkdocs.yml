@@ -129,7 +129,6 @@ extra:
 
 extra_css:
   - assets/css/termynal.css
-  - assets/css/syntax-highlighting.css
   - assets/css/theme.css
   - assets/css/ads.css
 
@@ -174,6 +173,7 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
           format: !!python/name:pymdownx.superfences.fence_code_format
+      preserve_tabs: true
   - pymdownx.tabbed:
       alternate_style: true
   - pymdownx.tasklist:

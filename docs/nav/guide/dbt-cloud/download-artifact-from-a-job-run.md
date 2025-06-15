@@ -57,7 +57,7 @@ export DBTERD_DBT_CLOUD_API_VERSION=your_value # optional, default = v2
 
 Or in Powershell:
 
-```bash
+```powershell
 $env:DBTERD_DBT_CLOUD_SERVICE_TOKEN="your_value"
 $env:DBTERD_DBT_CLOUD_ACCOUNT_ID="your_value"
 $env:DBTERD_DBT_CLOUD_RUN_ID="your_value"

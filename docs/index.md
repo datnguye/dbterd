@@ -104,7 +104,7 @@ dbterd run -ad samples/local -rt model -rt source
 
 ### Python API Examples
 
-#### Generate Complete ERD
+- Generate Complete ERD:
 
 ```python
 from dbterd.api import DbtErd
@@ -118,7 +118,7 @@ erd = DbtErd(target="mermaid").get_erd()
 print("ERD (Mermaid):", erd)
 ```
 
-#### Generate Single Model ERD
+- Generate Single Model ERD:
 
 ```python
 from dbterd.api import DbtErd

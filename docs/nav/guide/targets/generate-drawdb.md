@@ -15,7 +15,7 @@ Or we can use the generated files found in the [samples](https://github.com/datn
 
 In the same dbt project directory, let's run `dbterd` command to generate the `.ddb` file which is the supported import file format, actually it is `json` file
 
-```shell
+```bash
 dbterd run -t drawdb -enf table
 ```
 
