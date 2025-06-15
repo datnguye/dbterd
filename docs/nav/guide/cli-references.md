@@ -17,16 +17,18 @@ The examples below show how to use these sample datasets with dbterd commands.
     <span data-ty="input" data-ty-prompt="$ ~/repo>">dbterd -h</span>
     <span data-ty>Usage: dbterd [OPTIONS] COMMAND [ARGS]...<br />
 <br />
-Tools for producing diagram-as-code from dbt artifacts<br />
+Tools for producing diagram-as-code.<br />
 <br />
 Options:<br />
 --version   Show the version and exit.<br />
 -h, --help  Show this message and exit.<br />
 <br />
 Commands:<br />
-debug         Inspect the hidden magics<br />
-run           Generate ERD file from reading dbt artifact files<br />
-run-metadata  Generate ERD file from reading Discovery API (dbt Cloud)<br />
+debug         Inspect the hidden magics.<br />
+run           Generate ERD file from reading dbt artifact files,...<br />
+run-metadata  Generate ERD file from reading Discovery API (dbt Cloud).<br />
+<br />
+Specify one of these sub-commands and you can find more help from there.<br />
     </span>
 </div>
 
@@ -65,30 +67,74 @@ Command to generate diagram-as-a-code file from dbt artifact files, optionally d
     ```
     Usage: dbterd run [OPTIONS]
 
-    Run the convert
+    Generate ERD file from reading dbt artifact files, optionally downloading
+    from Administrative API (dbt Cloud) before hands.
 
     Options:
-        -ad, --artifacts-dir TEXT     Specified the full path to dbt artifacts path
-                                        which known as /target directory  [default:
-                                        C:\Users\DAT\Documents\Sources\dbterd\target]
-        -o, --output TEXT             Output the result file. Default to the same
-                                        target dir  [default:
-                                        C:\Users\DAT\Documents\Sources\dbterd\target]
-        -s, --select TEXT             Selecttion criteria
-        -ns, --exclude TEXT           Exclusion criteria
-        -t, --target TEXT             Target to the diagram-as-code platform
-                                        [default: dbml]
-        -a, --algo TEXT               Specified algorithm in the way to detect
-                                        diagram connectors  [default:
-                                        test_relationship]
-        -mv, --manifest-version TEXT  Specified dbt manifest.json version
-        -cv, --catalog-version TEXT   Specified dbt catalog.json version
-        -rt, --resource-type TEXT     Specified dbt resource type(seed, model,
-                                        source, snapshot),default:model, use examples,
-                                        -rt model -rt source
-        --omit-columns                Flag to omit columns in diagram. Currently
-                                        only mermaid is supported
-        -h, --help                    Show this message and exit.
+      -s, --select TEXT               Selecttion criteria
+      -ns, --exclude TEXT             Exclusion criteria
+      -t, --target TEXT               Target to the diagram-as-code platform
+                                      [default: dbml]
+      -rt, --resource-type TEXT       Specified dbt resource type(seed, model,
+                                      source, snapshot),default:model, use
+                                      examples, -rt model -rt source
+      -a, --algo TEXT                 Specified algorithm in the way to detect
+                                      diagram connectors  [default:
+                                      test_relationship]
+      -enf, --entity-name-format TEXT
+                                      Specified the format of the entity node's
+                                      name  [default: resource.package.model]
+      --omit-entity-name-quotes       Flag to omit double quotes in the entity
+                                      name. Currently only dbml is supported
+      -o, --output TEXT               Output the result file. Default to the
+                                      cwd/target
+      -ofn, --output-file-name TEXT   Output the result file name. Default is
+                                      defined in the target module
+      --omit-columns                  Flag to omit columns in diagram. Currently
+                                      only mermaid is supported
+      -ad, --artifacts-dir TEXT       Specified the path to dbt artifact directory
+                                      which known as /target directory
+      -mv, --manifest-version TEXT    Specified dbt manifest.json version
+      -cv, --catalog-version TEXT     Specified dbt catalog.json version
+      --dbt                           Flag to indicate the Selection to follow
+                                      dbt's one leveraging Programmatic Invocation
+      -dpd, --dbt-project-dir TEXT    Specified dbt project directory path
+      -dt, --dbt-target TEXT          Specified dbt target name
+      --dbt-auto-artifacts            Flag to force generating dbt artifact files
+                                      leveraging Programmatic Invocation
+      --dbt-cloud                     Flag to download dbt artifact files using
+                                      dbt Cloud API. This requires the additional
+                                      parameters to be able to connection to dbt
+                                      Cloud API
+      --dbt-cloud-host-url TEXT       Configure dbt Cloud's Host URL. Try to get
+                                      OS environment variable
+                                      (DBTERD_DBT_CLOUD_HOST_URL) if not
+                                      specified. Sample dbt Cloud Run URL: https:/
+                                      /<HOST_URL>/deploy/<ACCOUNT_ID>/projects/irr
+                                      elevant/runs/<RUN_ID>  [default:
+                                      cloud.getdbt.com]
+      --dbt-cloud-account-id TEXT     Configure dbt Cloud's Account ID. Try to get
+                                      OS environment variable
+                                      (DBTERD_DBT_CLOUD_ACCOUNT_ID) if not
+                                      specified
+      --dbt-cloud-run-id TEXT         Configure dbt Cloud's completed Run ID. Try
+                                      to get OS environment variable
+                                      (DBTERD_DBT_CLOUD_RUN_ID) if not specified
+      --dbt-cloud-job-id TEXT         Configure dbt Cloud's Job ID. Try to get OS
+                                      environment variable
+                                      (DBTERD_DBT_CLOUD_JOB_ID) if not specified
+      --dbt-cloud-service-token TEXT  Configure dbt Service Token (Permissions:
+                                      Job Admin). Try to get OS environment
+                                      variable (DBTERD_DBT_CLOUD_SERVICE_TOKEN) if
+                                      not specified. Visit
+                                      https://docs.getdbt.com/docs/dbt-cloud-
+                                      apis/service-tokens to see how to generate
+                                      it.
+      --dbt-cloud-api-version TEXT    Configure dbt Cloud Administrative API
+                                      version. Try to get OS environment variable
+                                      (DBTERD_DBT_CLOUD_API_VERSION) if not
+                                      specified.  [default: v2]
+      -h, --help                      Show this message and exit.
     ```
 
 ### dbterd run --select (-s)
@@ -569,6 +615,64 @@ Check [this guideline](./dbt-cloud/read-artifact-from-an-environment.md) for mor
     dbterd run-metadata [-t dbml or -t mermaid]
     ```
 
+=== "--help (-h)"
+
+    ```
+    Usage: dbterd run-metadata [OPTIONS]
+
+    Generate ERD file from reading Discovery API (dbt Cloud).
+
+    Options:
+      -s, --select TEXT               Selecttion criteria
+      -ns, --exclude TEXT             Exclusion criteria
+      -t, --target TEXT               Target to the diagram-as-code platform
+                                      [default: dbml]
+      -rt, --resource-type TEXT       Specified dbt resource type(seed, model,
+                                      source, snapshot),default:model, use
+                                      examples, -rt model -rt source
+      -a, --algo TEXT                 Specified algorithm in the way to detect
+                                      diagram connectors  [default:
+                                      test_relationship]
+      -enf, --entity-name-format TEXT
+                                      Specified the format of the entity node's
+                                      name  [default: resource.package.model]
+      --omit-entity-name-quotes       Flag to omit double quotes in the entity
+                                      name. Currently only dbml is supported
+      -o, --output TEXT               Output the result file. Default to the
+                                      cwd/target
+      -ofn, --output-file-name TEXT   Output the result file name. Default is
+                                      defined in the target module
+      --omit-columns                  Flag to omit columns in diagram. Currently
+                                      only mermaid is supported
+      --dbt-cloud-host-url TEXT       Configure dbt Cloud's Host URL. Try to get
+                                      OS environment variable
+                                      (DBTERD_DBT_CLOUD_HOST_URL) if not
+                                      specified. Sample dbt Cloud Run URL: https:/
+                                      /<HOST_URL>/deploy/<ACCOUNT_ID>/projects/irr
+                                      elevant/runs/<RUN_ID>  [default:
+                                      cloud.getdbt.com]
+      --dbt-cloud-service-token TEXT  Configure dbt Service Token (Permissions:
+                                      Job Admin). Try to get OS environment
+                                      variable (DBTERD_DBT_CLOUD_SERVICE_TOKEN) if
+                                      not specified. Visit
+                                      https://docs.getdbt.com/docs/dbt-cloud-
+                                      apis/service-tokens to see how to generate
+                                      it.
+      --dbt-cloud-environment-id TEXT
+                                      Configure dbt Cloud Environment ID - Used
+                                      for Metadata (Discovery) API. Try to get OS
+                                      environment variable
+                                      (DBTERD_DBT_CLOUD_ENVIRONMENT_ID) if not
+                                      specified.
+      --dbt-cloud-query-file-path TEXT
+                                      Configure dbt Cloud GraphQL query file path
+                                      - Used for Metadata (Discovery) API. Try to
+                                      get OS environment variable
+                                      (DBTERD_DBT_CLOUD_QUERY_FILE_PATH) if not
+                                      specified.
+      -h, --help                      Show this message and exit.
+    ```
+
 ## dbterd debug
 
 Shows hidden configured values, which will help us to see what configs are passed into and how they are evaluated to be used.
@@ -625,3 +729,91 @@ Shows hidden configured values, which will help us to see what configs are passe
         "dbt_target": null
     } (main.py:66)
     ```
+
+=== "--help (-h)"
+
+    ```
+    Usage: dbterd debug [OPTIONS]
+
+    Inspect the hidden magics.
+
+    Options:
+      -s, --select TEXT               Selecttion criteria
+      -ns, --exclude TEXT             Exclusion criteria
+      -t, --target TEXT               Target to the diagram-as-code platform
+                                      [default: dbml]
+      -rt, --resource-type TEXT       Specified dbt resource type(seed, model,
+                                      source, snapshot),default:model, use
+                                      examples, -rt model -rt source
+      -a, --algo TEXT                 Specified algorithm in the way to detect
+                                      diagram connectors  [default:
+                                      test_relationship]
+      -enf, --entity-name-format TEXT
+                                      Specified the format of the entity node's
+                                      name  [default: resource.package.model]
+      --omit-entity-name-quotes       Flag to omit double quotes in the entity
+                                      name. Currently only dbml is supported
+      -o, --output TEXT               Output the result file. Default to the
+                                      cwd/target
+      -ofn, --output-file-name TEXT   Output the result file name. Default is
+                                      defined in the target module
+      --omit-columns                  Flag to omit columns in diagram. Currently
+                                      only mermaid is supported
+      -ad, --artifacts-dir TEXT       Specified the path to dbt artifact directory
+                                      which known as /target directory
+      -mv, --manifest-version TEXT    Specified dbt manifest.json version
+      -cv, --catalog-version TEXT     Specified dbt catalog.json version
+      --dbt                           Flag to indicate the Selection to follow
+                                      dbt's one leveraging Programmatic Invocation
+      -dpd, --dbt-project-dir TEXT    Specified dbt project directory path
+      -dt, --dbt-target TEXT          Specified dbt target name
+      --dbt-auto-artifacts            Flag to force generating dbt artifact files
+                                      leveraging Programmatic Invocation
+      --dbt-cloud                     Flag to download dbt artifact files using
+                                      dbt Cloud API. This requires the additional
+                                      parameters to be able to connection to dbt
+                                      Cloud API
+      --dbt-cloud-host-url TEXT       Configure dbt Cloud's Host URL. Try to get
+                                      OS environment variable
+                                      (DBTERD_DBT_CLOUD_HOST_URL) if not
+                                      specified. Sample dbt Cloud Run URL: https:/
+                                      /<HOST_URL>/deploy/<ACCOUNT_ID>/projects/irr
+                                      elevant/runs/<RUN_ID>  [default:
+                                      cloud.getdbt.com]
+      --dbt-cloud-account-id TEXT     Configure dbt Cloud's Account ID. Try to get
+                                      OS environment variable
+                                      (DBTERD_DBT_CLOUD_ACCOUNT_ID) if not
+                                      specified
+      --dbt-cloud-run-id TEXT         Configure dbt Cloud's completed Run ID. Try
+                                      to get OS environment variable
+                                      (DBTERD_DBT_CLOUD_RUN_ID) if not specified
+      --dbt-cloud-job-id TEXT         Configure dbt Cloud's Job ID. Try to get OS
+                                      environment variable
+                                      (DBTERD_DBT_CLOUD_JOB_ID) if not specified
+      --dbt-cloud-service-token TEXT  Configure dbt Service Token (Permissions:
+                                      Job Admin). Try to get OS environment
+                                      variable (DBTERD_DBT_CLOUD_SERVICE_TOKEN) if
+                                      not specified. Visit
+                                      https://docs.getdbt.com/docs/dbt-cloud-
+                                      apis/service-tokens to see how to generate
+                                      it.
+      --dbt-cloud-api-version TEXT    Configure dbt Cloud Administrative API
+                                      version. Try to get OS environment variable
+                                      (DBTERD_DBT_CLOUD_API_VERSION) if not
+                                      specified.  [default: v2]
+      --dbt-cloud-environment-id TEXT
+                                      Configure dbt Cloud Environment ID - Used
+                                      for Metadata (Discovery) API. Try to get OS
+                                      environment variable
+                                      (DBTERD_DBT_CLOUD_ENVIRONMENT_ID) if not
+                                      specified.
+      --dbt-cloud-query-file-path TEXT
+                                      Configure dbt Cloud GraphQL query file path
+                                      - Used for Metadata (Discovery) API. Try to
+                                      get OS environment variable
+                                      (DBTERD_DBT_CLOUD_QUERY_FILE_PATH) if not
+                                      specified.
+      -h, --help                      Show this message and exit.
+    ```
+
+</div>
