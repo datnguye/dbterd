@@ -1,16 +1,22 @@
-<div align="center">
+<div style="display: flex; justify-content: space-between; align-items: flex-start;">
+<div>
 
-# 🔗 dbterd
+# dbterd
 
 **Generate ERD-as-a-code from your dbt projects**
 
+</div>
+<img src="assets/logo.svg" alt="dbterd logo" width="100" height="40" style="flex-shrink: 0;">
+</div>
+
 Transform your dbt artifact files or metadata into stunning Entity Relationship Diagrams using multiple formats: DBML, Mermaid, PlantUML, GraphViz, D2, and DrawDB
 
+[![docs](https://img.shields.io/badge/docs-visit%20site-blue?style=flat&logo=gitbook&logoColor=white)](https://dbterd.datnguyen.de/)
 [![PyPI version](https://badge.fury.io/py/dbterd.svg)](https://pypi.org/project/dbterd/)
 ![python-cli](https://img.shields.io/badge/CLI-Python-FFCE3E?labelColor=14354C&logo=python&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![python](https://img.shields.io/badge/Python-3.9|3.10|3.11|3.12-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
-[![codecov](https://codecov.io/gh/datnguye/dbterd/branch/main/graph/badge.svg?token=N7DMQBLH4P)](https://codecov.io/gh/datnguye/dbterd)
+[![codecov](https://img.shields.io/codecov/c/github/datnguye/dbterd?style=flat&logo=codecov&logoColor=white&label=coverage)](https://codecov.io/gh/datnguye/dbterd)
 
 [![dbterd stars](https://img.shields.io/github/stars/datnguye/dbterd.svg?logo=github&style=for-the-badge&label=Star%20this%20repo)](https://github.com/datnguye/dbterd)
 
@@ -18,10 +24,7 @@ Transform your dbt artifact files or metadata into stunning Entity Relationship 
 
 ---
 
-## 📋 Table of Contents
-
-- [🔗 dbterd](#-dbterd)
-  - [📋 Table of Contents](#-table-of-contents)
+- [dbterd](#dbterd)
     - [Why dbterd?](#why-dbterd)
   - [🚀 Quick Start](#-quick-start)
     - [Installation](#installation)
@@ -42,7 +45,7 @@ Transform your dbt artifact files or metadata into stunning Entity Relationship 
 
 - **🔗 Relationship Intelligence**: Automatically discovers entity relationships from your dbt project
 - **📊 Multiple Output Formats**: Generate diagrams in your preferred format
-- **⚡ Fast & Lightweight**: Quick processing of large dbt projects  
+- **⚡ Fast & Lightweight**: Quick processing of large dbt projects
 - **🎛️ Highly Configurable**: Fine-tune what gets included in your ERD
 - **🐍 Python Integration**: Use as CLI tool or integrate into your Python workflows
 - **☁️ Flexibility**: Works with both dbt Core and dbt Cloud

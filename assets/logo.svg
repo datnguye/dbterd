@@ -1,0 +1,9 @@
+<svg width="100" height="40" viewBox="0 0 100 40" xmlns="http://www.w3.org/2000/svg">
+  <!-- Typography-focused design -->
+  <text x="5" y="28" font-family="'JetBrains Mono', monospace, system-ui, sans-serif" font-size="24" font-weight="700" fill="#000000">
+    dbt
+  </text>
+  <text x="48" y="28" font-family="'JetBrains Mono', monospace, system-ui, sans-serif" font-size="24" font-weight="300" fill="#DC2626">
+    erd
+  </text>
+</svg>
