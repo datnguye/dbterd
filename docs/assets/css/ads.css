@@ -138,7 +138,7 @@
   right: 20px;
   bottom: 20px;
   z-index: 1000;
-  width: 340px;
+  width: 320px;
   background: transparent;
   border-radius: 8px;
   padding: 10px;
@@ -199,11 +199,16 @@
 
 .left-sidebar-ad {
   display: block !important;
-  width: 320px !important;
-  height: 60px !important;
+  width: 300px !important;
+  height: 300px !important;
   margin: 0 auto;
   background: #f8f9fa;
   border-radius: 4px;
+  aspect-ratio: 1 / 1 !important;
+  min-width: 250px;
+  min-height: 250px;
+  max-width: 300px;
+  max-height: 300px;
 }
 
 /* Dark Mode Fixed Left Ad */
@@ -231,12 +236,12 @@
 @media (min-width: 1400px) {
   .fixed-left-ad {
     right: 40px;
-    width: 370px;
+    width: 320px;
   }
 
   .left-sidebar-ad {
-    width: 350px !important;
-    height: 60px !important;
+    width: 300px !important;
+    height: 300px !important;
   }
 }
 
