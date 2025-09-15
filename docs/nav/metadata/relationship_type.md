@@ -30,4 +30,4 @@ List of accepted values:
 | many-to-one | n1 |
 | Not specified/Invalid value | n1 |
 
-> NOTE: Known as we could configure multiple relationship types but in the best practice we should always have `many-to-one`
+> NOTE: We know that we could configure multiple relationship types but in best practice we should always have `many-to-one`

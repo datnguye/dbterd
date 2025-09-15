@@ -21,7 +21,7 @@ Behind the scene, the API Endpoint will look like:
 https://{host_url}/api/{api_version}/accounts/{account_id}/runs/{run_id}/artifacts/{path}
 ```
 
-And the dbt Cloud's Job Rub will have the URL constructed as:
+And the dbt Cloud's Job Run will have the URL constructed as:
 
 ```log
 https://<host_url>/deploy/<account_id>/projects/irrelevant/runs/<run_id>
@@ -69,7 +69,7 @@ $env:DBTERD_DBT_CLOUD_API_VERSION="your_value" # optional, default = v2
 
 We're going to use `--dbt-cloud` option to tell `dbterd` to use dbt Cloud API with all above variables.
 
-The command will be looks like:
+The command will look like:
 
 ```bash
 dbterd run --dbt-cloud [-s <dbterd selection>]

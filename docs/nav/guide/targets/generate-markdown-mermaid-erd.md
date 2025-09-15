@@ -23,7 +23,7 @@
     <span data-ty data-ty-prompt="$ ~/repo>"></span>
 </div>
 
-### 3. Commit it and check it on Github
+### 3. Commit it and check it on GitHub
 
 Check out the [sample](https://github.com/datnguye/dbterd/blob/main/samples/dbtresto/ERD.md) output:
 

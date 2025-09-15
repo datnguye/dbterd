@@ -58,14 +58,14 @@ Ref: "order_items"."order_id" > "orders"."order_id"
 
 Awesome, job done here 🎉
 
-NO, not yet (maybe!), sometime this module is not going to work perfectly due to:
+NO, not yet (maybe!), sometimes this module is not going to work perfectly due to:
 
 - Some relationship tests are added from `mart` to `staging` just for ensuring no missing data when moving from a layer to another.
     - That's why we have the [ignore_in_erd](https://dbterd.datnguyen.de/1.15/nav/metadata/ignore_in_erd.html) metadata config.
 - We have the tests done in separate tools already (e.g. Soda), there is no reason to duplicate the (relationship) tests here.
     - No problem! Let's still add it with `where: 1=0` or with the dummy relationship tests (see this [blogpost](https://medium.com/@vaibhavchopda04/generating-erds-from-dbt-projects-a-code-driven-approach-83abb957f483))
 
-In case that we don't want to leverage the dbt tests still, let's move on the next section for the alternative 🏃
+In case we don't want to leverage the dbt tests still, let's move on to the next section for the alternative 🏃
 
 ## Semantic Entities
 

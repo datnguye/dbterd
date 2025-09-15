@@ -71,7 +71,7 @@ Command to generate diagram-as-a-code file from dbt artifact files, optionally d
     from Administrative API (dbt Cloud) before hands.
 
     Options:
-      -s, --select TEXT               Selecttion criteria
+      -s, --select TEXT               Selection criteria
       -ns, --exclude TEXT             Exclusion criteria
       -t, --target TEXT               Target to the diagram-as-code platform
                                       [default: dbml]
@@ -140,7 +140,7 @@ Command to generate diagram-as-a-code file from dbt artifact files, optionally d
 ### dbterd run --select (-s)
 
 Selection criteria.
-> Select all dbt models if not specified, supports multiple options
+> Selects all dbt models if not specified, supports multiple options
 
 Rules:
 
@@ -211,7 +211,7 @@ Rules:
 ### dbterd run --exclude (-ns)
 
 Exclusion criteria. Rules are the same as Selection Criteria.
-> Do not exclude any dbt models if not specified, supports multiple options
+> Does not exclude any dbt models if not specified, supports multiple options
 
 **Examples:**
 === "CLI"
@@ -229,7 +229,7 @@ Exclusion criteria. Rules are the same as Selection Criteria.
 
 Configure the path to directory containing dbt artifact files.
 
-It will take the the nested `/target` directory of `--dbt-project-dir` if not specified.
+It will take the nested `/target` directory of `--dbt-project-dir` if not specified.
 
 > Default to the current directory's `/target` if both this option and `--dbt-project-dir` option are not specified
 
@@ -321,7 +321,7 @@ Supported target, please visit [Generate the Targets](https://dbterd.datnguyen.d
 
 ### dbterd run --algo (-a)
 
-Specified algorithm in the way to detect diagram connectors
+Specified algorithm for detecting diagram connectors
 
 Check the [docs](./choose-algo.md) 📖
 
@@ -471,7 +471,7 @@ Flag to indicate the Selection to follow dbt's one leveraging Programmatic Invoc
 
 Flag to indicate force running `dbt docs generate` to the targeted project in order to produce the dbt artifact files.
 
-This option have to be enabled together with `--dbt` option, and will override the value of `--artifacts-dir` to be using the `/target` dir of the value of `--dbt-project-dir`.
+This option has to be enabled together with `--dbt` option, and will override the value of `--artifacts-dir` to use the `/target` dir of the value of `--dbt-project-dir`.
 
 > Default to `False`
 
@@ -486,7 +486,7 @@ This option have to be enabled together with `--dbt` option, and will override t
 
 Specified dbt project directory path
 
-You should specified this option if your CWD is not the dbt project dir, and normally used with `--dbt` enabled. It will take the value of `--artifacts-dir` if not specified.
+You should specify this option if your CWD is not the dbt project dir, and normally used with `--dbt` enabled. It will take the value of `--artifacts-dir` if not specified.
 
 > Default to the current directory if both this option and `--artifacts-dir` option are not specified
 
@@ -623,7 +623,7 @@ Check [this guideline](./dbt-cloud/read-artifact-from-an-environment.md) for mor
     Generate ERD file from reading Discovery API (dbt Cloud).
 
     Options:
-      -s, --select TEXT               Selecttion criteria
+      -s, --select TEXT               Selection criteria
       -ns, --exclude TEXT             Exclusion criteria
       -t, --target TEXT               Target to the diagram-as-code platform
                                       [default: dbml]
@@ -738,7 +738,7 @@ Shows hidden configured values, which will help us to see what configs are passe
     Inspect the hidden magics.
 
     Options:
-      -s, --select TEXT               Selecttion criteria
+      -s, --select TEXT               Selection criteria
       -ns, --exclude TEXT             Exclusion criteria
       -t, --target TEXT               Target to the diagram-as-code platform
                                       [default: dbml]

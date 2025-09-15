@@ -58,12 +58,12 @@ There we go, here is the sample output content:
 
 ## 3. Import to Draw DB Editor
 
-Go to the [Draw DB Editor](https://drawdb.vercel.app/editor) playaround:
+Go to the [Draw DB Editor](https://drawdb.vercel.app/editor) to play around:
 
 - Files > Import diagram
 - Choose the generated file e.g. `erd.ddb`
 - Click `Import`
 
-Voila 🎉, here the result:
+Voila 🎉, here's the result:
 
 ![import-ddb.png](./../../../assets/images/import-ddb.png)

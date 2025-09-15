@@ -1,8 +1,8 @@
 # Read the latest artifacts from an environment
 
-This is a guideline on how to query the dbt cloud metadata given an environment by using [dbt CLoud Discovery API](https://docs.getdbt.com/docs/dbt-cloud-apis/discovery-api). It's neither not requiring `JOB ID` nor `JOB RUN ID`, this is the dbt Cloud's `ENVIRONMENT ID`. Especially, with this method, `dbterd` doesn't require to download files before hands anymore, the ERD will be generated on fly 🚀.
+This is a guideline on how to query the dbt cloud metadata given an environment by using [dbt Cloud Discovery API](https://docs.getdbt.com/docs/dbt-cloud-apis/discovery-api). It doesn't require `JOB ID` or `JOB RUN ID`, but rather the dbt Cloud's `ENVIRONMENT ID`. Especially, with this method, `dbterd` doesn't require downloading files beforehand anymore, the ERD will be generated on the fly 🚀.
 
-`dbterd` is now understanding GraphQL connection which is exposed by dbt CLoud Discovery API endpoint:
+`dbterd` now understands GraphQL connections which are exposed by dbt Cloud Discovery API endpoint:
 
 ```log
 https://metadata.YOUR_ACCESS_URL/graphql
@@ -15,7 +15,7 @@ https://metadata.YOUR_ACCESS_URL/graphql
     - You must be on a [Team or Enterprise plan](https://www.getdbt.com/pricing/) 💰
     - Your projects must be on dbt version 1.0 or later 🏃
 
-The assumption is that you've already get the dbt Cloud project ready and is having at least 1 environment, and 1 job run successfully in this environment.
+The assumption is that you've already got the dbt Cloud project ready and have at least 1 environment, and 1 job run successfully in this environment.
 
 ## 1. Prepare the environment variables
 
@@ -68,13 +68,13 @@ $env:DBTERD_DBT_CLOUD_ENVIRONMENT_ID="your_value"
 
 We're going to use a new command as `dbterd run-metadata` to tell `dbterd` to use dbt Cloud Discovery API with all above variables.
 
-The command will be looks like:
+The command will look like:
 
 ```bash
 dbterd run-metadata [-s <dbterd selection>]
 ```
 
-> Behind the scenes, it will try use to the ERD GraphQL query built-in at [include/erd_query.gql](https://github.com/datnguye/dbterd/tree/main/dbterd/adapters/dbt_cloud/include/erd_query.gql)
+> Behind the scenes, it will try to use the ERD GraphQL query built-in at [include/erd_query.gql](https://github.com/datnguye/dbterd/tree/main/dbterd/adapters/dbt_cloud/include/erd_query.gql)
 
 and then, here is the sample console log:
 
