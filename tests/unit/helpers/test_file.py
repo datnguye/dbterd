@@ -101,8 +101,11 @@ class TestFile:
             mock_metadata.model_config = {"extra": "forbid"}
             mock_catalog = mock.MagicMock()
 
-            stack.enter_context(mock.patch("builtins.__import__", return_value=mock.MagicMock()))
-            stack.enter_context(mock.patch("dbterd.helpers.file.getattr", side_effect=[mock_metadata, mock_catalog]))
+            mock_module = mock.MagicMock()
+            mock_module.Metadata = mock_metadata
+            mock_module.CatalogV1 = mock_catalog
+
+            stack.enter_context(mock.patch("builtins.__import__", return_value=mock_module))
 
             file.patch_parser_compatibility(artifact="catalog", artifact_version=1)
 
@@ -116,8 +119,11 @@ class TestFile:
             mock_metadata.model_config = {"extra": "forbid"}
             mock_manifest = mock.MagicMock()
 
-            stack.enter_context(mock.patch("builtins.__import__", return_value=mock.MagicMock()))
-            stack.enter_context(mock.patch("dbterd.helpers.file.getattr", side_effect=[mock_metadata, mock_manifest]))
+            mock_module = mock.MagicMock()
+            mock_module.Metadata = mock_metadata
+            mock_module.ManifestV12 = mock_manifest
+
+            stack.enter_context(mock.patch("builtins.__import__", return_value=mock_module))
 
             file.patch_parser_compatibility(artifact="manifest", artifact_version=12)
 
