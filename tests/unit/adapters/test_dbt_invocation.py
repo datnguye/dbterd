@@ -35,7 +35,7 @@ class TestDbtInvocation:
                 ),
             ):
                 # Import the module which should catch the ImportError
-                import dbterd.adapters.dbt_core.dbt_invocation as reloaded_module
+                import dbterd.adapters.dbt_core.dbt_invocation as reloaded_module  # noqa: PLC0415
 
                 # Verify that DbtRunner is None when import fails
                 assert reloaded_module.DbtRunner is None
