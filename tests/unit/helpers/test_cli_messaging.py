@@ -1,3 +1,4 @@
+import contextlib
 from pathlib import Path
 from unittest import mock
 
@@ -19,8 +20,6 @@ class TestCliMessaging:
 
     @mock.patch("dbterd.helpers.file.open_json")
     def test_handle_read_errors(self, mock_file_open_json):
-        import contextlib
-
         mock_file_open_json.return_value = "not json"
         with contextlib.ExitStack() as stack:
             stack.enter_context(pytest.raises(click.FileError))

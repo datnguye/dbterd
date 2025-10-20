@@ -1,3 +1,4 @@
+import contextlib
 from unittest import mock
 
 import click
@@ -54,8 +55,6 @@ class TestRunner:
             assert str(e) == (f"Could not find adapter target type {invalid_target}!")
 
     def test_invoke_run_with_invalid_strategy(self, dbterd: DbterdRunner) -> None:
-        import contextlib
-
         invalid_strategy = "invalid-strategy"
         with contextlib.ExitStack() as stack:
             mock_read_m = stack.enter_context(
@@ -85,8 +84,6 @@ class TestRunner:
         ],
     )
     def test_invoke_run_ok(self, target, output, dbterd: DbterdRunner) -> None:
-        import contextlib
-
         with contextlib.ExitStack() as stack:
             mock_read_m = stack.enter_context(
                 mock.patch("dbterd.adapters.base.Executor._Executor__read_manifest", return_value=None)
@@ -119,8 +116,6 @@ class TestRunner:
         ],
     )
     def test_invoke_run_failed_to_write_output(self, target, output, dbterd: DbterdRunner) -> None:
-        import contextlib
-
         with contextlib.ExitStack() as stack:
             mock_read_m = stack.enter_context(
                 mock.patch("dbterd.adapters.base.Executor._Executor__read_manifest", return_value=None)

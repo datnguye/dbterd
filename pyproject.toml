@@ -45,7 +45,7 @@ classifiers = [
 requires-python = ">=3.9"
 dependencies = [
     "click>=8.1.7",      # CLI interface framework
-    "dbt-artifacts-parser>=0.7.0",  # Parse dbt artifacts (manifest.json and catalog.json)
+    "dbt-artifacts-parser>=0.10.0",  # Parse dbt artifacts (manifest.json and catalog.json) - requires 0.10.0+ for better dbt 1.10 support
     "requests>=2.32.3",  # HTTP requests for dbt Cloud API integration
 ]
 

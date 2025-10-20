@@ -36,6 +36,40 @@ def open_json(fp):
     return json.loads(load_file_contents(fp))
 
 
+def patch_parser_compatibility(artifact: str = "catalog", artifact_version: Optional[int] = None) -> None:
+    """
+    Conditionally monkey patch dbt-artifacts-parser Pydantic models for compatibility.
+
+    Modifies Metadata model configurations to use 'extra=ignore' instead of 'extra=forbid'
+    to handle fields added in newer dbt versions that aren't yet supported by the parser.
+
+    Args:
+        artifact: Artifact type ('manifest' or 'catalog'). Defaults to 'catalog'.
+        artifact_version: Artifact schema version (e.g., 12 for v12). Required for patching.
+
+    References:
+        https://github.com/yu-iskw/dbt-artifacts-parser/issues/160
+    """
+    try:
+        artifact_module = __import__(
+            f"dbt_artifacts_parser.parsers.{artifact}.{artifact}_v{artifact_version}",
+            fromlist=["Metadata"],
+        )
+        metadata_class = getattr(artifact_module, "Metadata", None)
+
+        if metadata_class and hasattr(metadata_class, "model_config"):
+            metadata_class.model_config["extra"] = "ignore"
+            metadata_class.model_rebuild(force=True)
+
+        artifact_class_name = f"{artifact.capitalize()}V{artifact_version}"
+        artifact_class = getattr(artifact_module, artifact_class_name, None)
+        if artifact_class and hasattr(artifact_class, "model_rebuild"):
+            artifact_class.model_rebuild(force=True)
+
+    except (ImportError, AttributeError) as e:
+        logger.debug(f"Could not patch {artifact} v{artifact_version} metadata: {e}")
+
+
 def convert_path(path: str) -> str:
     """
     Convert a path which might be >260 characters long, to one that will be writable/readable on Windows.
@@ -113,18 +147,23 @@ def win_prepare_path(path: str) -> str:  # pragma: no cover
     return path
 
 
-def read_manifest(path: str, version: Optional[int] = None) -> Manifest:
+def read_manifest(path: str, version: Optional[int] = None, enable_compat_patch: bool = False) -> Manifest:
     """
     Reads in the manifest.json file, with optional version specification.
 
     Args:
         path (str): manifest.json file path
-        version (int, optional): Manifest version. Defaults to None.
+        version (int, optional): Manifest version. Defaults to None (auto-detect).
+        enable_compat_patch (bool, optional): Enable compatibility monkey patching. Defaults to True.
 
     Returns:
         dict: Manifest dict
 
     """
+    if enable_compat_patch and version:
+        logger.info(f"Patching manifest v{version} for compatibility...")
+        patch_parser_compatibility(artifact="manifest", artifact_version=version)
+
     _dict = open_json(f"{path}/manifest.json")
     default_parser = "parse_manifest"
     parser_version = f"parse_manifest_v{version}" if version else default_parser
@@ -140,18 +179,23 @@ def read_manifest(path: str, version: Optional[int] = None) -> Manifest:
     return parse_func(manifest=_dict)
 
 
-def read_catalog(path: str, version: Optional[int] = None) -> Catalog:
+def read_catalog(path: str, version: Optional[int] = None, enable_compat_patch: bool = False) -> Catalog:
     """
     Reads in the catalog.json file, with optional version specification.
 
     Args:
         path (str): catalog.json file path
         version (int, optional): Catalog version. Defaults to None.
+        enable_compat_patch (bool, optional): Enable compatibility monkey patching. Defaults to True.
 
     Returns:
         dict: Catalog dict
 
     """
+    if enable_compat_patch and version:
+        logger.info(f"Patching catalog v{version} for compatibility...")
+        patch_parser_compatibility(artifact="catalog", artifact_version=version)
+
     _dict = open_json(f"{path}/catalog.json")
     default_parser = "parse_catalog"
     parser_version = f"parse_catalog_v{version}" if version else default_parser

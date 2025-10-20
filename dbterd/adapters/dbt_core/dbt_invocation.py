@@ -9,6 +9,12 @@ import click
 from dbterd.helpers.log import logger
 
 
+try:
+    from dbt.cli.main import dbtRunner as DbtRunner
+except ImportError:
+    DbtRunner = None
+
+
 class DbtInvocation:
     """Runner of dbt (https://docs.getdbt.com/reference/programmatic-invocations)."""
 
@@ -22,9 +28,7 @@ class DbtInvocation:
 
         """
         self.__ensure_dbt_installed()
-        from dbt.cli.main import dbtRunner
-
-        self.dbt = dbtRunner()
+        self.dbt = DbtRunner()
         self.project_dir = dbt_project_dir or os.environ.get("DBT_PROJECT_DIR") or str(Path.cwd())
         self.target = dbt_target
         self.args = ["--quiet", "--log-level", "none"]

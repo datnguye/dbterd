@@ -145,7 +145,7 @@ class Executor:
             exclude_rules=kwargs.get("exclude"),
         )
 
-    def __read_manifest(self, mp: str, mv: Optional[int] = None):
+    def __read_manifest(self, mp: str, mv: Optional[int] = None, bypass_validation: bool = False):
         """
         Read the Manifest content.
 
@@ -160,9 +160,9 @@ class Executor:
         cli_messaging.check_existence(mp, self.filename_manifest)
         conditional = f" or provided version {mv} is incorrect" if mv else ""
         with cli_messaging.handle_read_errors(self.filename_manifest, conditional):
-            return file_handlers.read_manifest(path=mp, version=mv)
+            return file_handlers.read_manifest(path=mp, version=mv, enable_compat_patch=bypass_validation)
 
-    def __read_catalog(self, cp: str, cv: Optional[int] = None):
+    def __read_catalog(self, cp: str, cv: Optional[int] = None, bypass_validation: bool = False):
         """
         Read the Catalog content.
 
@@ -176,7 +176,7 @@ class Executor:
         """
         cli_messaging.check_existence(cp, self.filename_catalog)
         with cli_messaging.handle_read_errors(self.filename_catalog):
-            return file_handlers.read_catalog(path=cp, version=cv)
+            return file_handlers.read_catalog(path=cp, version=cv, enable_compat_patch=bypass_validation)
 
     def __get_operation(self, kwargs):
         """
@@ -244,10 +244,12 @@ class Executor:
         manifest = self.__read_manifest(
             mp=kwargs.get("artifacts_dir"),
             mv=kwargs.get("manifest_version"),
+            bypass_validation=kwargs.get("bypass_validation"),
         )
         catalog = self.__read_catalog(
             cp=kwargs.get("artifacts_dir"),
             cv=kwargs.get("catalog_version"),
+            bypass_validation=kwargs.get("bypass_validation"),
         )
 
         if node_unique_id:
