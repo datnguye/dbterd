@@ -96,6 +96,9 @@ Command to generate diagram-as-a-code file from dbt artifact files, optionally d
                                       which known as /target directory
       -mv, --manifest-version TEXT    Specified dbt manifest.json version
       -cv, --catalog-version TEXT     Specified dbt catalog.json version
+      --bypass-validation             Flag to bypass the Pydantic Validation Error
+                                      by patching extra to ignored fields
+                                      [default: False]
       --dbt                           Flag to indicate the Selection to follow
                                       dbt's one leveraging Programmatic Invocation
       -dpd, --dbt-project-dir TEXT    Specified dbt project directory path
@@ -431,6 +434,24 @@ Specified dbt catalog.json version
     dbterd run -cv 7
     ```
 
+### dbterd run --bypass-validation
+
+Flag to bypass Pydantic validation errors by patching the parser to ignore extra fields.
+
+This option is useful when working with newer dbt versions that introduce fields not yet supported by the `dbt-artifacts-parser` library. When enabled, the parser will ignore unknown fields instead of raising validation errors, allowing you to continue generating ERDs even with newer artifact schemas.
+
+> Default to `False`
+
+!!! info "When to use this option"
+    You might encounter Pydantic validation errors like `"Error: Could not open file 'catalog.json': File catalog.json is corrupted, please rebuild"` when using artifact files from newer dbt versions. In such cases, enabling this flag can help you work around compatibility issues while waiting for the parser library to catch up with the latest dbt schema changes. Just be aware that any unsupported fields won't be included in the generated ERD (which is usually fine since relationship information remains intact).
+
+**Examples:**
+=== "CLI"
+
+    ```bash
+    dbterd run --bypass-validation -mv 12 -cv 1
+    ```
+
 ### dbterd run --resource-type (-rt)
 
 Specified dbt resource type(seed, model, source, snapshot).
@@ -763,6 +784,9 @@ Shows hidden configured values, which will help us to see what configs are passe
                                       which known as /target directory
       -mv, --manifest-version TEXT    Specified dbt manifest.json version
       -cv, --catalog-version TEXT     Specified dbt catalog.json version
+      --bypass-validation             Flag to bypass the Pydantic Validation Error
+                                      by patching extra to ignored fields
+                                      [default: False]
       --dbt                           Flag to indicate the Selection to follow
                                       dbt's one leveraging Programmatic Invocation
       -dpd, --dbt-project-dir TEXT    Specified dbt project directory path
