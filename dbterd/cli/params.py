@@ -110,6 +110,13 @@ def run_params(func):
         type=click.STRING,
     )
     @click.option(
+        "--bypass-validation",
+        help="Flag to bypass the Pydantic Validation Error by patching extra to ignored fields",
+        is_flag=True,
+        default=False,
+        show_default=True,
+    )
+    @click.option(
         "--catalog-version",
         "-cv",
         help="Specified dbt catalog.json version",

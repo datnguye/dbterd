@@ -1,14 +1,53 @@
+import importlib
 from importlib.machinery import ModuleSpec
+import sys
 from unittest import mock
 
 import click
 from dbt.cli.main import dbtRunnerResult
 import pytest
 
+from dbterd.adapters.dbt_core import dbt_invocation
 from dbterd.adapters.dbt_core.dbt_invocation import DbtInvocation
 
 
 class TestDbtInvocation:
+    def test_import_error_dbt_runner(self):
+        """Test that ImportError when importing DbtRunner is handled gracefully."""
+        # Save original modules
+        orig_dbt_cli_main = sys.modules.get("dbt.cli.main")
+        orig_dbt_invocation = sys.modules.get("dbterd.adapters.dbt_core.dbt_invocation")
+
+        try:
+            # Remove the module from cache to force reimport
+            if "dbt.cli.main" in sys.modules:
+                del sys.modules["dbt.cli.main"]
+            if "dbterd.adapters.dbt_core.dbt_invocation" in sys.modules:
+                del sys.modules["dbterd.adapters.dbt_core.dbt_invocation"]
+
+            # Mock the import to raise ImportError
+            with mock.patch(
+                "builtins.__import__",
+                side_effect=lambda name, *args, **kwargs: (
+                    (_ for _ in ()).throw(ImportError(f"No module named '{name}'"))
+                    if name == "dbt.cli.main"
+                    else importlib.__import__(name, *args, **kwargs)
+                ),
+            ):
+                # Import the module which should catch the ImportError
+                import dbterd.adapters.dbt_core.dbt_invocation as reloaded_module
+
+                # Verify that DbtRunner is None when import fails
+                assert reloaded_module.DbtRunner is None
+        finally:
+            # Restore original modules
+            if orig_dbt_cli_main:
+                sys.modules["dbt.cli.main"] = orig_dbt_cli_main
+            if orig_dbt_invocation:
+                sys.modules["dbterd.adapters.dbt_core.dbt_invocation"] = orig_dbt_invocation
+            # Reload to restore the normal state
+            importlib.reload(dbt_invocation)
+
     @mock.patch("importlib.util.find_spec")
     def test__ensure_dbt_installed__no_dbt_installed(self, mock_find_spec):
         mock_find_spec.return_value = ModuleSpec(name="dbt", loader=None)

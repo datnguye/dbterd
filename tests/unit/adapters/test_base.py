@@ -1,3 +1,4 @@
+import contextlib
 from pathlib import Path
 from unittest import mock
 
@@ -70,26 +71,22 @@ class TestBase:
         assert worker.filename_catalog == "catalog.json"
 
     def test___read_manifest(self):
-        import contextlib
-
         worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
         with contextlib.ExitStack() as stack:
             mock_read_manifest = stack.enter_context(mock.patch("dbterd.helpers.file.read_manifest", return_value={}))
             mock_check_existence = stack.enter_context(mock.patch("dbterd.helpers.cli_messaging.check_existence"))
             assert worker._Executor__read_manifest(mp=Path.cwd()) == {}
         mock_check_existence.assert_called_once_with(Path.cwd(), "manifest.json")
-        mock_read_manifest.assert_called_once_with(path=Path.cwd(), version=None)
+        mock_read_manifest.assert_called_once_with(path=Path.cwd(), version=None, enable_compat_patch=False)
 
     def test___read_catalog(self):
-        import contextlib
-
         worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
         with contextlib.ExitStack() as stack:
             mock_read_catalog = stack.enter_context(mock.patch("dbterd.helpers.file.read_catalog", return_value={}))
             mock_check_existence = stack.enter_context(mock.patch("dbterd.helpers.cli_messaging.check_existence"))
             assert worker._Executor__read_catalog(cp=Path.cwd()) == {}
         mock_check_existence.assert_called_once_with(Path.cwd(), "catalog.json")
-        mock_read_catalog.assert_called_once_with(path=Path.cwd(), version=None)
+        mock_read_catalog.assert_called_once_with(path=Path.cwd(), version=None, enable_compat_patch=False)
 
     @mock.patch("dbterd.adapters.base.DbtInvocation.get_selection", return_value="dummy")
     def test__get_selection(self, mock_dbt_invocation):
@@ -285,8 +282,8 @@ class TestBase:
 
         assert worker._Executor__run_by_strategy(node_unique_id="irr") == {"i": "irr"}
         assert mock_parent.mock_calls == [
-            mock.call.mock_read_manifest(mp=None, mv=None),
-            mock.call.mock_read_catalog(cp=None, cv=None),
+            mock.call.mock_read_manifest(mp=None, mv=None, bypass_validation=None),
+            mock.call.mock_read_catalog(cp=None, cv=None, bypass_validation=None),
             mock.call.mock_set_single_node_selection(manifest={}, node_unique_id="irr"),
             mock.call.mock_get_operation({"api": True}),
             mock.call.mock_dbml_run(manifest={}, catalog={}, **{"api": True}),
