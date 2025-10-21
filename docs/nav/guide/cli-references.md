@@ -469,6 +469,22 @@ Specified dbt resource type(seed, model, source, snapshot).
     dbterd run --resource-type model
     ```
 
+=== "Working with sources"
+
+    ```bash
+    # Generate ERD for sources only
+    dbterd run -rt source -t mermaid
+
+    # For proper table separation in source ERDs, combine with --entity-name-format
+    dbterd run -rt source -t mermaid -enf resource.package.table
+
+    # Include both models and sources in the same diagram
+    dbterd run -rt model -rt source -enf database.schema.table
+    ```
+
+    !!! info "Source table naming"
+        When working with sources, it's recommended to use `--entity-name-format` with formats that include the table name (e.g., `resource.package.table` or `database.schema.table`) to ensure each source table appears as a distinct node. See the [`--entity-name-format`](#dbterd-run-entity-name-format-enf) section for more details.
+
 ### dbterd run --dbt
 
 Flag to indicate the Selection to follow dbt's one leveraging Programmatic Invocation
@@ -548,6 +564,26 @@ Currently, it supports the following keys in the format:
 - `resource.package.model` (by default)
 - `database.schema.table`
 - Or any other partial forms e.g. `schema.table`, `resource.model`
+
+!!! tip "Working with Sources"
+    When generating ERDs for sources (using `-rt source`), you may encounter an issue where the source node name doesn't include the table name, resulting in all tables from the same source appearing as a single node with circular relationships.
+
+    **Solution:** Use one of these entity name formats to ensure proper table-level separation:
+
+    - `resource.package.table` - Shows resource type, package, and table name
+    - `resource.package.model.table` - Shows resource type, package, model (source name), and table name
+    - `database.schema.table` - Shows the fully qualified physical table name
+
+    For example:
+    ```bash
+    # This will properly separate source tables
+    dbterd run -t mermaid -rt source -enf resource.package.table
+
+    # This will also work and include the source name
+    dbterd run -t mermaid -rt source -enf resource.package.model.table
+    ```
+
+    Note: dbterd doesn't yet have native support for extracting the source name independently, but these workarounds ensure each source table appears as its own distinct node in the diagram.
 
 **Examples:**
 === "CLI"
