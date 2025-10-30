@@ -10,7 +10,7 @@ from dbterd.helpers.log import logger
 from dbterd.types import Catalog, Manifest
 
 
-def extract_artifact_version_from_file(schema_version: str) -> str | None:
+def extract_artifact_version_from_file(schema_version: str) -> Optional[str]:
     """Extract version number from dbt_schema_version URL.
 
     Args:

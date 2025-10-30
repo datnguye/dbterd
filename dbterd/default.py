@@ -1,6 +1,7 @@
 import json
 import os
 from pathlib import Path
+from typing import Optional
 
 from dbterd.helpers.file import extract_artifact_version_from_file
 
@@ -64,27 +65,27 @@ def default_dbt_cloud_api_version() -> str:
     return os.environ.get("DBTERD_DBT_CLOUD_API_VERSION", "v2")
 
 
-def default_dbt_cloud_account_id() -> str | None:
+def default_dbt_cloud_account_id() -> Optional[str]:
     return os.environ.get("DBTERD_DBT_CLOUD_ACCOUNT_ID")
 
 
-def default_dbt_cloud_run_id() -> str | None:
+def default_dbt_cloud_run_id() -> Optional[str]:
     return os.environ.get("DBTERD_DBT_CLOUD_RUN_ID")
 
 
-def default_dbt_cloud_job_id() -> str | None:
+def default_dbt_cloud_job_id() -> Optional[str]:
     return os.environ.get("DBTERD_DBT_CLOUD_JOB_ID")
 
 
-def default_dbt_cloud_service_token() -> str | None:
+def default_dbt_cloud_service_token() -> Optional[str]:
     return os.environ.get("DBTERD_DBT_CLOUD_SERVICE_TOKEN")
 
 
-def default_dbt_cloud_environment_id() -> str | None:
+def default_dbt_cloud_environment_id() -> Optional[str]:
     return os.environ.get("DBTERD_DBT_CLOUD_ENVIRONMENT_ID")
 
 
-def default_dbt_cloud_query_file_path() -> str | None:
+def default_dbt_cloud_query_file_path() -> Optional[str]:
     return os.environ.get("DBTERD_DBT_CLOUD_QUERY_FILE_PATH")
 
 
@@ -104,7 +105,7 @@ def default_init_force() -> bool:
     return os.environ.get("DBTERD_INIT_FORCE", "false").lower() in ["true", "yes", "1"]
 
 
-def default_manifest_version(artifacts_dir: str | None = None) -> str | None:
+def default_manifest_version(artifacts_dir: Optional[str] = None) -> Optional[str]:
     """Auto-detect manifest.json version from metadata.
 
     Args:
@@ -135,7 +136,7 @@ def default_manifest_version(artifacts_dir: str | None = None) -> str | None:
     return None
 
 
-def default_catalog_version(artifacts_dir: str | None = None) -> str | None:
+def default_catalog_version(artifacts_dir: Optional[str] = None) -> Optional[str]:
     """Auto-detect catalog.json version from metadata.
 
     Args:
@@ -166,7 +167,7 @@ def default_catalog_version(artifacts_dir: str | None = None) -> str | None:
     return None
 
 
-def default_output_file_name() -> str | None:
+def default_output_file_name() -> Optional[str]:
     """Default output file name.
 
     Returns:
@@ -175,7 +176,7 @@ def default_output_file_name() -> str | None:
     return os.environ.get("DBTERD_OUTPUT_FILE_NAME")
 
 
-def default_dbt_target() -> str | None:
+def default_dbt_target() -> Optional[str]:
     """Default dbt target name.
 
     Returns:
