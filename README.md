@@ -52,7 +52,11 @@ dbterd --version
 ```
 
 > [!TIP]
-> **For dbt-core v1.10.x Users**: If you encounter validation errors with artifacts, use the bypass flag:
+> **For dbt-core v1.10.x Users**: If you encounter validation errors with artifacts, error message might be misleading as:
+>
+> `Error: Could not open file 'catalog.json': File catalog.json is corrupted, please rebuild`
+>
+> please use the bypass flag:
 > ```bash
 > dbterd run --bypass-validation -mv 12 -cv 1
 > ```
