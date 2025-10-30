@@ -57,7 +57,15 @@ dbterd --version
 ```
 
 !!! Tip "For `dbt-core` users"
-    It's highly recommended to update [`dbt-artifacts-parser`](https://github.com/yu-iskw/dbt-artifacts-parser) to the latest version
+    **For dbt-core v1.10.x**: If you encounter validation errors with artifacts, use the bypass flag:
+
+    ```bash
+    dbterd run --bypass-validation -mv 12 -cv 1
+    ```
+
+    This workaround will become the default behavior in the next release ⚠️.
+
+    **For older dbt-core versions**: It's highly recommended to update [`dbt-artifacts-parser`](https://github.com/yu-iskw/dbt-artifacts-parser) to the latest version
     in order to support the newer `dbt-core` version which would cause to have
     the [new manifest / catalog json schema](https://schemas.getdbt.com/):
 

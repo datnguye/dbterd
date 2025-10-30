@@ -52,7 +52,13 @@ dbterd --version
 ```
 
 > [!TIP]
-> **For dbt-core Users**: Upgrade `dbt-artifacts-parser` to support newer dbt-core versions:
+> **For dbt-core v1.10.x Users**: If you encounter validation errors with artifacts, use the bypass flag:
+> ```bash
+> dbterd run --bypass-validation -mv 12 -cv 1
+> ```
+> This workaround will become the default behavior in the next release ⚠️.
+>
+> **For older dbt-core versions**: Upgrade [`dbt-artifacts-parser`](https://github.com/yu-iskw/dbt-artifacts-parser) to support newer dbt-core versions:
 > ```bash
 > pip install dbt-artifacts-parser --upgrade
 > ```
