@@ -137,7 +137,7 @@ def init(template: str, force: bool):
     try:
         with open(config_path, "w") as f:
             f.write(config_content)
-        click.echo(f"Created configuration file: {config_path} | Template type: {template}")
+        logger.info(f"Created configuration file: {config_path} | Template type: {template}")
     except Exception as e:
         logger.error(f"Failed to create configuration file: {e}")
         raise click.ClickException(f"Failed to create configuration file: {e}") from e
