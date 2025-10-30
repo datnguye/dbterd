@@ -67,6 +67,56 @@ dbterd --version
 
 ## 💡 Examples
 
+### Configuration Files
+
+Tired of typing the same CLI arguments? dbterd now supports configuration files!
+
+<details>
+<summary>🎉 <strong>Click to learn about configuration files</strong></summary>
+
+Create a configuration file to set your defaults:
+
+```bash
+# Initialize a configuration file with helpful comments
+dbterd init
+
+# Or for dbt Cloud projects
+dbterd init --template dbt-cloud
+```
+
+This creates a `.dbterd.yml` file you can customize:
+
+```yaml
+# .dbterd.yml
+target: mermaid
+output: ./docs/erd
+select:
+  - fct_*
+  - dim_*
+exclude:
+  - stg_*
+resource-type:
+  - model
+  - source
+entity-name-format: schema.table
+```
+
+Then just run:
+
+```bash
+dbterd run  # Uses config file defaults!
+```
+
+You can still override any setting with CLI arguments:
+
+```bash
+dbterd run --target dbml  # Overrides config file
+```
+
+📖 **[Learn more about Configuration Files](./nav/guide/configuration-file.md)**
+
+</details>
+
 ### CLI Examples
 
 <details>
