@@ -151,12 +151,19 @@ class Executor:
 
         Args:
             mp (str): manifest.json json file path
-            mv (int, optional): Manifest version. Defaults to None.
+            mv (int, optional): Manifest version. Defaults to None (auto-detect).
 
         Returns:
             dict: Manifest dict
 
         """
+        # Auto-detect version if not provided
+        if mv is None:
+            detected_version = default.default_manifest_version(artifacts_dir=mp)
+            if detected_version:
+                mv = int(detected_version)
+                logger.info(f"Auto-detected manifest version: {mv}")
+
         cli_messaging.check_existence(mp, self.filename_manifest)
         conditional = f" or provided version {mv} is incorrect" if mv else ""
         with cli_messaging.handle_read_errors(self.filename_manifest, conditional):
@@ -168,12 +175,19 @@ class Executor:
 
         Args:
             cp (str): catalog.json file path
-            cv (int, optional): Catalog version. Defaults to None.
+            cv (int, optional): Catalog version. Defaults to None (auto-detect).
 
         Returns:
             dict: Catalog dict
 
         """
+        # Auto-detect version if not provided
+        if cv is None:
+            detected_version = default.default_catalog_version(artifacts_dir=cp)
+            if detected_version:
+                cv = int(detected_version)
+                logger.info(f"Auto-detected catalog version: {cv}")
+
         cli_messaging.check_existence(cp, self.filename_catalog)
         with cli_messaging.handle_read_errors(self.filename_catalog):
             return file_handlers.read_catalog(path=cp, version=cv, enable_compat_patch=bypass_validation)

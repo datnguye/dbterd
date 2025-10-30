@@ -70,23 +70,53 @@ class TestBase:
         assert worker.filename_manifest == "manifest.json"
         assert worker.filename_catalog == "catalog.json"
 
-    def test___read_manifest(self):
+    @pytest.mark.parametrize(
+        "mv, default_version_return, expected_version, should_call_default",
+        [
+            (None, None, None, True),
+            (None, "12", 12, True),
+            (10, "12", 10, False),
+        ],
+    )
+    def test___read_manifest(self, mv, default_version_return, expected_version, should_call_default):
         worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
         with contextlib.ExitStack() as stack:
             mock_read_manifest = stack.enter_context(mock.patch("dbterd.helpers.file.read_manifest", return_value={}))
             mock_check_existence = stack.enter_context(mock.patch("dbterd.helpers.cli_messaging.check_existence"))
-            assert worker._Executor__read_manifest(mp=Path.cwd()) == {}
+            mock_default_manifest_version = stack.enter_context(
+                mock.patch("dbterd.default.default_manifest_version", return_value=default_version_return)
+            )
+            assert worker._Executor__read_manifest(mp=Path.cwd(), mv=mv) == {}
         mock_check_existence.assert_called_once_with(Path.cwd(), "manifest.json")
-        mock_read_manifest.assert_called_once_with(path=Path.cwd(), version=None, enable_compat_patch=False)
+        if should_call_default:
+            mock_default_manifest_version.assert_called_once_with(artifacts_dir=Path.cwd())
+        else:
+            assert mock_default_manifest_version.call_count == 0
+        mock_read_manifest.assert_called_once_with(path=Path.cwd(), version=expected_version, enable_compat_patch=False)
 
-    def test___read_catalog(self):
+    @pytest.mark.parametrize(
+        "cv, default_version_return, expected_version, should_call_default",
+        [
+            (None, None, None, True),
+            (None, "12", 12, True),
+            (10, "12", 10, False),
+        ],
+    )
+    def test___read_catalog(self, cv, default_version_return, expected_version, should_call_default):
         worker = Executor(ctx=click.Context(command=click.BaseCommand("dummy")))
         with contextlib.ExitStack() as stack:
             mock_read_catalog = stack.enter_context(mock.patch("dbterd.helpers.file.read_catalog", return_value={}))
             mock_check_existence = stack.enter_context(mock.patch("dbterd.helpers.cli_messaging.check_existence"))
-            assert worker._Executor__read_catalog(cp=Path.cwd()) == {}
+            mock_default_catalog_version = stack.enter_context(
+                mock.patch("dbterd.default.default_catalog_version", return_value=default_version_return)
+            )
+            assert worker._Executor__read_catalog(cp=Path.cwd(), cv=cv) == {}
         mock_check_existence.assert_called_once_with(Path.cwd(), "catalog.json")
-        mock_read_catalog.assert_called_once_with(path=Path.cwd(), version=None, enable_compat_patch=False)
+        if should_call_default:
+            mock_default_catalog_version.assert_called_once_with(artifacts_dir=Path.cwd())
+        else:
+            assert mock_default_catalog_version.call_count == 0
+        mock_read_catalog.assert_called_once_with(path=Path.cwd(), version=expected_version, enable_compat_patch=False)
 
     @mock.patch("dbterd.adapters.base.DbtInvocation.get_selection", return_value="dummy")
     def test__get_selection(self, mock_dbt_invocation):

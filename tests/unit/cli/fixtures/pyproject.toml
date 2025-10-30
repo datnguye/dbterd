@@ -1,0 +1,12 @@
+[project]
+name = "test-project"
+version = "0.1.0"
+
+[tool.dbterd]
+target = "dbml"
+output = "./toml_output"
+select = ["model_*"]
+resource-type = ["model"]
+algo = "test_relationship"
+dbt-cloud-host-url = "test.cloud.getdbt.com"
+dbt-cloud-account-id = "12345"

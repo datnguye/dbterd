@@ -1,0 +1,14 @@
+# Test configuration file
+target: mermaid
+output: ./test_output
+select:
+  - fct_*
+  - dim_*
+exclude:
+  - stg_*
+resource-type:
+  - model
+  - source
+algo: semantic
+entity-name-format: schema.table
+omit-columns: true

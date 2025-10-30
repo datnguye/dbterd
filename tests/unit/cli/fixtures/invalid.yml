@@ -1,0 +1,3 @@
+target: mermaid
+  invalid indentation:
+    - this is wrong
