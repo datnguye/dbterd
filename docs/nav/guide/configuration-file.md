@@ -141,14 +141,11 @@ For projects using dbt Cloud:
 
     # dbt Cloud Settings
     dbt-cloud: true
-
-    # Nested dbt-cloud configuration
-    dbt-cloud:
-      host-url: cloud.getdbt.com
-      account-id: "12345"
-      job-id: "67890"
-      # Note: Store service-token in environment variable DBTERD_DBT_CLOUD_SERVICE_TOKEN
-      api-version: v2
+    dbt-cloud-host-url: cloud.getdbt.com
+    dbt-cloud-account-id: "12345"
+    dbt-cloud-job-id: "67890"
+    # Note: Store service-token in environment variable DBTERD_DBT_CLOUD_SERVICE_TOKEN
+    dbt-cloud-api-version: v2
 
     # Selection
     select:
@@ -166,19 +163,14 @@ For projects using dbt Cloud:
     target = "dbml"
     output = "./target"
     dbt-cloud = true
-
-    [tool.dbterd.dbt-cloud]
-    host-url = "cloud.getdbt.com"
-    account-id = "12345"
-    job-id = "67890"
+    dbt-cloud-host-url = "cloud.getdbt.com"
+    dbt-cloud-account-id = "12345"
+    dbt-cloud-job-id = "67890"
     # Note: Store service-token in environment variable DBTERD_DBT_CLOUD_SERVICE_TOKEN
-    api-version = "v2"
+    dbt-cloud-api-version = "v2"
 
-    [[tool.dbterd.select]]
-    "wildcard:*transaction*"
-
-    [[tool.dbterd.resource-type]]
-    "model"
+    select = ["wildcard:*transaction*"]
+    resource-type = ["model"]
     ```
 
 !!! warning "Security Best Practice"
@@ -205,7 +197,7 @@ All CLI parameters can be configured in files. Here's the complete reference:
 |--------|------|---------|-------------|
 | `select` | list | `[]` | Model/resource selection criteria |
 | `exclude` | list | `[]` | Model/resource exclusion criteria |
-| `resource-type` | list | `["model"]` | Resource types to include (model, source, seed, snapshot) |
+| `resource-type` | list | `["model"]` | Resource types to include (model, source) |
 
 ### Relationship Detection
 
@@ -244,14 +236,14 @@ All CLI parameters can be configured in files. Here's the complete reference:
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `dbt-cloud` | boolean | `false` | Enable dbt Cloud API integration |
-| `dbt-cloud.host-url` | string | `cloud.getdbt.com` | dbt Cloud host URL |
-| `dbt-cloud.account-id` | string | - | dbt Cloud account ID |
-| `dbt-cloud.run-id` | string | - | dbt Cloud run ID |
-| `dbt-cloud.job-id` | string | - | dbt Cloud job ID |
-| `dbt-cloud.service-token` | string | - | dbt Cloud service token (use env var!) |
-| `dbt-cloud.api-version` | string | `v2` | dbt Cloud API version |
-| `dbt-cloud.environment-id` | string | - | Environment ID (for run-metadata) |
-| `dbt-cloud.query-file-path` | string | - | Custom GraphQL query file path |
+| `dbt-cloud-host-url` | string | `cloud.getdbt.com` | dbt Cloud host URL |
+| `dbt-cloud-account-id` | string | - | dbt Cloud account ID |
+| `dbt-cloud-run-id` | string | - | dbt Cloud run ID |
+| `dbt-cloud-job-id` | string | - | dbt Cloud job ID |
+| `dbt-cloud-service-token` | string | - | dbt Cloud service token (use env var!) |
+| `dbt-cloud-api-version` | string | `v2` | dbt Cloud API version |
+| `dbt-cloud-environment-id` | string | - | Environment ID (for Discovery API) |
+| `dbt-cloud-query-file-path` | string | - | Custom GraphQL query file path (for Discovery API) |
 
 !!! info "Environment Variables"
     All options support environment variable overrides with the `DBTERD_*` prefix. For example:

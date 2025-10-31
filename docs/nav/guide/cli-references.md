@@ -129,9 +129,9 @@ Command to generate diagram-as-a-code file from dbt artifact files, optionally d
       -ns, --exclude TEXT             Exclusion criteria
       -t, --target TEXT               Target to the diagram-as-code platform
                                       [default: dbml]
-      -rt, --resource-type TEXT       Specified dbt resource type(seed, model,
-                                      source, snapshot),default:model, use
-                                      examples, -rt model -rt source
+      -rt, --resource-type TEXT       Specified dbt resource type(model,
+                                      source), default:model, use examples,
+                                      -rt model -rt source
       -a, --algo TEXT                 Specified algorithm in the way to detect
                                       diagram connectors  [default:
                                       test_relationship]
@@ -508,7 +508,7 @@ This option is useful when working with newer dbt versions that introduce fields
 
 ### dbterd run --resource-type (-rt)
 
-Specified dbt resource type(seed, model, source, snapshot).
+Specified dbt resource type(model, source).
 > Default to `["model"]`, supports multiple options
 
 **Examples:**
@@ -738,9 +738,9 @@ Check [this guideline](./dbt-cloud/read-artifact-from-an-environment.md) for mor
       -ns, --exclude TEXT             Exclusion criteria
       -t, --target TEXT               Target to the diagram-as-code platform
                                       [default: dbml]
-      -rt, --resource-type TEXT       Specified dbt resource type(seed, model,
-                                      source, snapshot),default:model, use
-                                      examples, -rt model -rt source
+      -rt, --resource-type TEXT       Specified dbt resource type(model,
+                                      source), default:model, use examples,
+                                      -rt model -rt source
       -a, --algo TEXT                 Specified algorithm in the way to detect
                                       diagram connectors  [default:
                                       test_relationship]
@@ -853,9 +853,9 @@ Shows hidden configured values, which will help us to see what configs are passe
       -ns, --exclude TEXT             Exclusion criteria
       -t, --target TEXT               Target to the diagram-as-code platform
                                       [default: dbml]
-      -rt, --resource-type TEXT       Specified dbt resource type(seed, model,
-                                      source, snapshot),default:model, use
-                                      examples, -rt model -rt source
+      -rt, --resource-type TEXT       Specified dbt resource type(model,
+                                      source), default:model, use examples,
+                                      -rt model -rt source
       -a, --algo TEXT                 Specified algorithm in the way to detect
                                       diagram connectors  [default:
                                       test_relationship]

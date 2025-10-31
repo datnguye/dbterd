@@ -9,7 +9,7 @@ def common_params(func):
     @click.option(
         "--select",
         "-s",
-        help="Selecttion criteria",
+        help="Selection criteria",
         default=[],
         multiple=True,
         type=click.STRING,
@@ -33,8 +33,7 @@ def common_params(func):
     @click.option(
         "--resource-type",
         "-rt",
-        help="Specified dbt resource type(seed, model, source, snapshot),default:model, "
-        "use examples, -rt model -rt source",
+        help=("Specified dbt resource type(model, source), default:model, use examples, -rt model -rt source"),
         default=default.default_resource_types(),
         multiple=True,
         type=click.STRING,

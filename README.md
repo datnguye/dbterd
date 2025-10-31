@@ -52,20 +52,30 @@ dbterd --version
 ```
 
 > [!TIP]
-> **For dbt-core v1.10.x Users**: If you encounter validation errors with artifacts, error message might be misleading as:
->
-> `Error: Could not open file 'catalog.json': File catalog.json is corrupted, please rebuild`
->
-> please use the bypass flag:
-> ```bash
-> dbterd run --bypass-validation -mv 12 -cv 1
-> ```
-> This workaround will become the default behavior in the next release ⚠️.
->
-> **For older dbt-core versions**: Upgrade [`dbt-artifacts-parser`](https://github.com/yu-iskw/dbt-artifacts-parser) to support newer dbt-core versions:
+> **For dbt-core users**: It's highly recommended to keep [`dbt-artifacts-parser`](https://github.com/yu-iskw/dbt-artifacts-parser) updated to the latest version to support newer `dbt-core` versions and their [manifest/catalog json schemas](https://schemas.getdbt.com/):
 > ```bash
 > pip install dbt-artifacts-parser --upgrade
 > ```
+>
+> **Note**: `dbterd` now automatically bypasses Pydantic validation errors by default, which helps with compatibility when using newer dbt artifact schemas.
+
+## ⚙️ Configuration Files
+
+Tired of typing the same CLI arguments repeatedly? `dbterd` supports configuration files to streamline your workflow!
+
+```bash
+# Initialize a configuration file
+dbterd init
+
+# Now just run with your saved settings
+dbterd run
+```
+
+**Supported formats:**
+- `.dbterd.yml` - YAML configuration (recommended)
+- `pyproject.toml` - Add `[tool.dbterd]` section to your existing Python project config
+
+Learn more in the [Configuration Files Guide](https://dbterd.datnguyen.de/latest/nav/guide/configuration-file.html).
 
 ## 💡 Examples
 
