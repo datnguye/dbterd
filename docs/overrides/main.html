@@ -1,52 +1,8 @@
 {% extends "base.html" %}
 
-{% block extrahead %}
-  <!-- Google AdSense -->
-  <!--
-    Instructions for setup:
-    1. Replace 'ca-pub-XXXXXXXXXX' with your actual AdSense publisher ID
-    2. Apply for Google AdSense at https://www.google.com/adsense/
-    3. Get approved and configure ad units in AdSense dashboard
-  -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9818368894527523"
-     crossorigin="anonymous"></script>
-
-  <!-- AdSense Auto Ads (optional - can be managed via adsense.js) -->
-  <script>
-    (adsbygoogle = window.adsbygoogle || []).push({
-      google_ad_client: "ca-pub-9818368894527523",
-      enable_page_level_ads: true
-    });
-  </script>
-
-  <!-- Custom meta tags for better ad targeting -->
-  <meta name="google-adsense-account" content="ca-pub-9818368894527523">
-  <meta name="ads.txt" content="google.com, pub-9818368894527523, DIRECT, f08c47fec0942fa0">
-{% endblock %}
-
 {% block outdated %}
   You're not viewing the latest version.
   <a href="{{ '../' ~ base_url }}">
     <strong>Click here to go to latest.</strong>
   </a>
-{% endblock %}
-
-{% block content %}
-  <!-- Fixed Left Sidebar Ad -->
-  <div class="fixed-left-ad" id="sidebar-ad">
-    <div class="fixed-ad-wrapper">
-      <button class="ad-close-btn" onclick="closeAd()" aria-label="Close advertisement">×</button>
-      <ins class="adsbygoogle left-sidebar-ad"
-           style="display:block; width:300px; height:300px;"
-           data-ad-client="ca-pub-9818368894527523"
-           data-ad-slot="7345696411"
-           data-ad-format="square"
-           data-full-width-responsive="true"></ins>
-      <script>
-           (adsbygoogle = window.adsbygoogle || []).push({});
-      </script>
-    </div>
-  </div>
-
-  {{ super() }}
 {% endblock %}

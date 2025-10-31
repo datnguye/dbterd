@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import sys
 from typing import Optional
 
@@ -7,6 +8,22 @@ from dbt_artifacts_parser import parser
 
 from dbterd.helpers.log import logger
 from dbterd.types import Catalog, Manifest
+
+
+def extract_artifact_version_from_file(schema_version: str) -> Optional[str]:
+    """Extract version number from dbt_schema_version URL.
+
+    Args:
+        schema_version: Schema version URL like "https://schemas.getdbt.com/dbt/manifest/v12.json"
+
+    Returns:
+        Version string like "12", or None if extraction fails
+    """
+    # Match pattern like /v12.json or /v12/ with optional leading slash
+    match = re.search(r"/?v(\d+)(?:\.json)?(?:/|$)", schema_version)
+    if match:
+        return match.group(1)
+    return None
 
 
 def get_sys_platform():  # pragma: no cover

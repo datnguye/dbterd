@@ -12,7 +12,9 @@ class Query:
         Initialize the required input:
         - Query directory.
         """
-        self.dir = f"{os.path.dirname(os.path.realpath(__file__))}/include"
+        # Point to centralized include directory at dbterd/include/graphql_queries
+        dbterd_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
+        self.dir = f"{dbterd_root}/include/graphql_queries"
 
     def take(self, file_path: Optional[str] = None, algo: Optional[str] = None) -> str:
         """

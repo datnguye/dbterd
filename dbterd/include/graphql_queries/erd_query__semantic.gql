@@ -29,7 +29,7 @@ query (
           endCursor,
           hasNextPage
         }
-        totalCount 
+        totalCount
       }
     }
     applied {

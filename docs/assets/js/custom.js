@@ -128,6 +128,27 @@ function setupTermynal() {
     loadVisibleTermynals();
 }
 
+function expandFirstNavItem() {
+    document.addEventListener('DOMContentLoaded', function() {
+        const firstNestedNav = document.querySelector('.md-nav__item--nested');
+        if (firstNestedNav) {
+            const input = firstNestedNav.querySelector('input.md-nav__toggle');
+            if (input) {
+                input.checked = true;
+
+                // Find and expand the first child nested item
+                const childNav = firstNestedNav.querySelector('.md-nav__item--nested');
+                if (childNav) {
+                    const childInput = childNav.querySelector('input.md-nav__toggle');
+                    if (childInput) {
+                        childInput.checked = true;
+                    }
+                }
+            }
+        }
+    });
+}
+
 async function main() {
     if (div) {
         data = await getData()
@@ -144,6 +165,7 @@ async function main() {
     }
 
     setupTermynal();
+    expandFirstNavItem();
 }
 
 main()

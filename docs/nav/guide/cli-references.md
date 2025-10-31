@@ -25,12 +25,66 @@ Options:<br />
 <br />
 Commands:<br />
 debug         Inspect the hidden magics.<br />
+init          Initialize a dbterd configuration file.<br />
 run           Generate ERD file from reading dbt artifact files,...<br />
 run-metadata  Generate ERD file from reading Discovery API (dbt Cloud).<br />
 <br />
 Specify one of these sub-commands and you can find more help from there.<br />
     </span>
 </div>
+
+## dbterd init
+
+Command to initialize a dbterd configuration file with documented defaults and examples.
+
+Creates `.dbterd.yml` in the current directory with all available configuration options. For more details on configuration files, see the [Configuration Files Guide](./configuration-file.md).
+
+**Examples:**
+
+=== "Basic usage"
+
+    ```bash
+    # Create .dbterd.yml with dbt Core template
+    dbterd init
+    ```
+
+=== "dbt Cloud template"
+
+    ```bash
+    # Create .dbterd.yml with dbt Cloud template
+    dbterd init --template dbt-cloud
+    ```
+
+=== "Force overwrite"
+
+    ```bash
+    # Overwrite existing configuration file
+    dbterd init --force
+    ```
+
+=== "--help (-h)"
+
+    ```
+    Usage: dbterd init [OPTIONS]
+
+    Initialize a dbterd configuration file.
+
+    Creates .dbterd.yml with common parameters and helpful comments.
+    For pyproject.toml configuration, manually add [tool.dbterd] section.
+
+    Use --template to choose between dbt-core and dbt-cloud configurations.
+
+    Options:
+      --template, -tmpl [dbt-core|dbt-cloud]
+                                  Configuration template type (dbt-core or dbt-
+                                  cloud)  [default: dbt-core]
+      --force                     Overwrite existing configuration file if
+                                  present
+      -h, --help                  Show this message and exit.
+    ```
+
+!!! tip "Configuration Files"
+    Once you create a configuration file, all CLI arguments become optional. The config file provides defaults, and you can override any setting with CLI arguments. Learn more in the [Configuration Files Guide](./configuration-file.md).
 
 ## dbterd run
 
@@ -75,9 +129,9 @@ Command to generate diagram-as-a-code file from dbt artifact files, optionally d
       -ns, --exclude TEXT             Exclusion criteria
       -t, --target TEXT               Target to the diagram-as-code platform
                                       [default: dbml]
-      -rt, --resource-type TEXT       Specified dbt resource type(seed, model,
-                                      source, snapshot),default:model, use
-                                      examples, -rt model -rt source
+      -rt, --resource-type TEXT       Specified dbt resource type(model,
+                                      source), default:model, use examples,
+                                      -rt model -rt source
       -a, --algo TEXT                 Specified algorithm in the way to detect
                                       diagram connectors  [default:
                                       test_relationship]
@@ -454,7 +508,7 @@ This option is useful when working with newer dbt versions that introduce fields
 
 ### dbterd run --resource-type (-rt)
 
-Specified dbt resource type(seed, model, source, snapshot).
+Specified dbt resource type(model, source).
 > Default to `["model"]`, supports multiple options
 
 **Examples:**
@@ -684,9 +738,9 @@ Check [this guideline](./dbt-cloud/read-artifact-from-an-environment.md) for mor
       -ns, --exclude TEXT             Exclusion criteria
       -t, --target TEXT               Target to the diagram-as-code platform
                                       [default: dbml]
-      -rt, --resource-type TEXT       Specified dbt resource type(seed, model,
-                                      source, snapshot),default:model, use
-                                      examples, -rt model -rt source
+      -rt, --resource-type TEXT       Specified dbt resource type(model,
+                                      source), default:model, use examples,
+                                      -rt model -rt source
       -a, --algo TEXT                 Specified algorithm in the way to detect
                                       diagram connectors  [default:
                                       test_relationship]
@@ -799,9 +853,9 @@ Shows hidden configured values, which will help us to see what configs are passe
       -ns, --exclude TEXT             Exclusion criteria
       -t, --target TEXT               Target to the diagram-as-code platform
                                       [default: dbml]
-      -rt, --resource-type TEXT       Specified dbt resource type(seed, model,
-                                      source, snapshot),default:model, use
-                                      examples, -rt model -rt source
+      -rt, --resource-type TEXT       Specified dbt resource type(model,
+                                      source), default:model, use examples,
+                                      -rt model -rt source
       -a, --algo TEXT                 Specified algorithm in the way to detect
                                       diagram connectors  [default:
                                       test_relationship]

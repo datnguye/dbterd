@@ -7,6 +7,21 @@ from dbterd.helpers import file
 
 
 class TestFile:
+    @pytest.mark.parametrize(
+        "schema_version, expected",
+        [
+            ("https://schemas.getdbt.com/dbt/manifest/v12.json", "12"),
+            ("https://schemas.getdbt.com/dbt/catalog/v1.json", "1"),
+            ("https://schemas.getdbt.com/dbt/manifest/v10/", "10"),
+            ("v12.json", "12"),
+            ("v12", "12"),
+            ("invalid", None),
+            ("", None),
+        ],
+    )
+    def test_extract_artifact_version_from_file(self, schema_version, expected):
+        assert file.extract_artifact_version_from_file(schema_version) == expected
+
     def test_load_file_contents(self):
         with mock.patch(
             "builtins.open",

@@ -1,0 +1,85 @@
+# dbterd Configuration File (dbt Core)
+# CLI arguments take precedence over these settings
+# See https://dbterd.datnguyen.de for full documentation
+
+# Output Settings
+# ---------------
+# Target platform for diagram generation
+# Available options: dbml, mermaid, plantuml, graphviz, d2, drawdb
+target: {default_target}
+
+# Output directory path (default: ./target)
+output: {default_output}
+
+# Output file name (optional - defaults are defined per target)
+# Examples: schema.dbml, diagram.md, schema.puml
+# output-file-name: {default_output_file_name}
+
+# Selection & Filtering
+# ---------------------
+# Include specific models/resources (supports wildcards)
+select:
+  # - fct_*
+  # - dim_*
+
+# Exclude specific models/resources (supports wildcards)
+exclude:
+  # - stg_*
+
+# Resource types to include in diagram
+# Available options: model, source
+resource-type:
+{resource_types}
+
+# Relationship Detection
+# ----------------------
+# Algorithm for detecting relationships between entities
+# Available options: test_relationship, semantic
+# - test_relationship: Parses relationships from dbt relationship tests or constraints (default)
+# - semantic: Parses relationships from dbt Semantic Layer entities (requires dbt v1.6+)
+algo: {default_algo}
+
+# Entity Naming
+# -------------
+# Format for entity node names (dot-separated combination of keys)
+# Available keys: resource, package, model, database, schema, table
+# Common formats:
+# - resource.package.model (default)
+# - database.schema.table (fully qualified physical name)
+# - schema.table (schema and table name)
+# - table (table name only)
+entity-name-format: {default_entity_name_format}
+
+# Omit double quotes in entity names (dbml only)
+omit-entity-name-quotes: {default_omit_entity_name_quotes}
+
+# Display Options
+# ---------------
+# Omit columns in diagram (mermaid only)
+omit-columns: {default_omit_columns}
+
+# dbt Core Integration
+# --------------------
+# Path to dbt artifact directory (default: ./target)
+artifacts-dir: {default_artifact_path}
+
+# dbt manifest.json version (optional - auto-detected from metadata if not specified)
+# manifest-version: {default_manifest_version}
+
+# dbt catalog.json version (optional - auto-detected from metadata if not specified)
+# catalog-version: {default_catalog_version}
+
+# Flag to bypass Pydantic validation errors by ignoring extra fields
+bypass-validation: {default_bypass_validation}
+
+# dbt project directory for programmatic invocation
+dbt-project-dir: {default_dbt_project_dir}
+
+# Use dbt's selection syntax with programmatic invocation
+dbt: {default_dbt}
+
+# Auto-generate dbt artifacts before running
+dbt-auto-artifacts: {default_dbt_auto_artifacts}
+
+# dbt target name (optional - uses dbt's default target if not specified)
+# dbt-target: {default_dbt_target}

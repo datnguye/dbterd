@@ -1,9 +1,12 @@
 import importlib.metadata
+from pathlib import Path
 
 import click
 
 from dbterd.adapters.base import Executor
 from dbterd.cli import params
+from dbterd.cli.config import ConfigError, get_yaml_template, load_config
+from dbterd.constants import CONFIG_FILE_DBTERD_YML
 from dbterd.helpers import jsonify
 from dbterd.helpers.log import logger
 
@@ -51,9 +54,25 @@ class DbterdRunner:
 )
 @click.version_option(__version__)
 @click.pass_context
-def dbterd(ctx, **kwargs):
+def dbterd(ctx):
     """Tools for producing diagram-as-code."""
     logger.info(f"Run with dbterd=={__version__}")
+
+    # Load configuration file and set as default_map
+    # This allows CLI arguments to override config file values
+    ctx.ensure_object(dict)
+    try:
+        config = load_config()
+        if config:
+            ctx.default_map = ctx.default_map or {}
+            # Apply config to all subcommands
+            for command_name in ctx.command.commands:
+                if command_name not in ctx.default_map:
+                    ctx.default_map[command_name] = {}
+                ctx.default_map[command_name].update(config)
+    except ConfigError as e:
+        logger.error(f"Configuration error: {e}")
+        raise click.ClickException(str(e)) from e
 
 
 # dbterd run
@@ -80,11 +99,38 @@ def run_metadata(ctx, **kwargs):
 # dbterd debug
 @dbterd.command(name="debug")
 @click.pass_context
-@params.run_params
-@params.run_metadata_params
+@params.debug_params
 def debugx(ctx, **kwargs):
     """Inspect the hidden magics."""
     logger.info("**Arguments used**")
     logger.debug(jsonify.to_json(kwargs))
     logger.info("**Arguments evaluated**")
     logger.debug(jsonify.to_json(Executor(ctx).evaluate_kwargs(**kwargs)))
+
+
+# dbterd init
+@dbterd.command(name="init")
+@params.init_params
+def init(template: str, force: bool):
+    """Initialize a dbterd configuration file.
+
+    Creates .dbterd.yml with common parameters and helpful comments.
+    For pyproject.toml configuration, manually add [tool.dbterd] section.
+
+    Use --template to choose between dbt-core and dbt-cloud configurations.
+    """
+    config_path = Path.cwd() / CONFIG_FILE_DBTERD_YML
+    config_content = get_yaml_template(template_type=template)
+
+    if config_path.exists() and not force:
+        logger.error(f"Configuration file already exists: {config_path}. Use --force to overwrite.")
+        raise click.ClickException("Configuration file already exists")
+
+    # Write configuration file
+    try:
+        with open(config_path, "w") as f:
+            f.write(config_content)
+        logger.info(f"Created configuration file: {config_path} | Template type: {template}")
+    except Exception as e:
+        logger.error(f"Failed to create configuration file: {e}")
+        raise click.ClickException(f"Failed to create configuration file: {e}") from e
