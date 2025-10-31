@@ -64,12 +64,6 @@ def dbterd(ctx):
     try:
         config = load_config()
         if config:
-            # Flatten nested dbt_cloud config if present (and if it's a dict, not a boolean)
-            if "dbt_cloud" in config and isinstance(config["dbt_cloud"], dict):
-                dbt_cloud = config.pop("dbt_cloud")
-                for key, value in dbt_cloud.items():
-                    config[f"dbt_cloud_{key}"] = value
-
             ctx.default_map = ctx.default_map or {}
             # Apply config to all subcommands
             for command_name in ctx.command.commands:

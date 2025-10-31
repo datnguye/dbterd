@@ -21,10 +21,10 @@
 
 ### Initialize Configuration
 
-The easiest way to get started is using the `dbterd` init` command:
+The easiest way to get started is using the `dbterd init` command:
 
 <div class="termynal" data-termynal data-ty-typeDelay="40" data-ty-lineDelay="700">
-    <span data-ty="input">`dbterd` init</span>
+    <span data-ty="input">dbterd init</span>
     <span data-ty>Created configuration file: .dbterd.yml | Template type: dbt-core</span>
     <a href="#" data-terminal-control="">restart ↻</a>
 </div>
@@ -36,7 +36,7 @@ This creates a `.dbterd.yml` file with all available options documented and read
 === "dbt Core (default)"
 
     ```bash
-    `dbterd` init --template dbt-core
+    `dbterd` init [--template dbt-core]
     ```
 
     Creates configuration for local dbt projects using artifact files.
@@ -315,7 +315,7 @@ Configuration files work great in CI/CD pipelines:
 # GitHub Actions example
 - name: Generate ERD
   run: |
-    `dbterd` run
+    dbterd run
   env:
     DBTERD_DBT_CLOUD_SERVICE_TOKEN: ${{ secrets.DBT_CLOUD_TOKEN }}
 ```
@@ -416,7 +416,7 @@ TOML support requires 'tomli' package for Python < 3.11
 2. **Store secrets in environment variables** - Never commit tokens or credentials
 3. **Override with CLI for one-off changes** - No need to edit the config for quick experiments
 4. **Document your configuration** - Use YAML comments to explain why certain options are set
-5. **Start with `dbterd` init`** - Let `dbterd` generate a well-documented template for you
+5. **Start with `dbterd init`** - Let `dbterd` generate a well-documented template for you
 
 ## Learn More
 
