@@ -99,8 +99,7 @@ def run_metadata(ctx, **kwargs):
 # dbterd debug
 @dbterd.command(name="debug")
 @click.pass_context
-@params.run_params
-@params.run_metadata_params
+@params.debug_params
 def debugx(ctx, **kwargs):
     """Inspect the hidden magics."""
     logger.info("**Arguments used**")
