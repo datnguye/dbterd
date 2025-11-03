@@ -36,7 +36,7 @@ This creates a `.dbterd.yml` file with all available options documented and read
 === "dbt Core (default)"
 
     ```bash
-    `dbterd` init [--template dbt-core]
+    dbterd init [--template dbt-core]
     ```
 
     Creates configuration for local dbt projects using artifact files.
@@ -44,7 +44,7 @@ This creates a `.dbterd.yml` file with all available options documented and read
 === "dbt Cloud"
 
     ```bash
-    `dbterd` init --template dbt-cloud
+    dbterd init --template dbt-cloud
     ```
 
     Creates configuration for dbt Cloud with API connection settings.
@@ -52,7 +52,7 @@ This creates a `.dbterd.yml` file with all available options documented and read
 !!! note "Overwrite existing config"
     Use `--force` to overwrite an existing configuration file:
     ```bash
-    `dbterd` init --force
+    dbterd init --force
     ```
 
 ## Configuration File Examples
@@ -261,7 +261,7 @@ Configuration files provide defaults, but CLI arguments always take precedence:
 ```bash
 # Config says target: dbml
 # CLI overrides to mermaid
-`dbterd` run --target mermaid
+dbterd run --target mermaid
 ```
 
 ### Multiple Environments
@@ -280,7 +280,7 @@ Use different config files for different environments:
 
     ```bash
     # Use explicitly
-    `dbterd` run  # Uses default config if exists
+    dbterd run  # Uses default config if exists
     ```
 
 === "Production"
@@ -386,7 +386,7 @@ If your config seems ignored:
 
 1. CLI arguments override config files – check your command
 2. Environment variables override config files – check `env | grep DBTERD`
-3. Use `dbterd` debug` to see evaluated configuration values
+3. Use `dbterd debug` to see evaluated configuration values
 
 ### Python < 3.11 TOML Support
 
