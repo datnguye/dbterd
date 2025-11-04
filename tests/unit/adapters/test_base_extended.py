@@ -1,7 +1,7 @@
 import click
 import pytest
 
-from dbterd.adapters.base import Executor
+from dbterd.core.base import Executor
 
 
 class TestBaseExtended:

@@ -1,14 +1,18 @@
 from unittest import mock
 
-from dbterd.adapters.algos import semantic
-from dbterd.adapters.meta import SemanticEntity
+from dbterd.adapters.algos.semantic import SemanticAlgorithm
+from dbterd.core.meta import SemanticEntity
+
+
+# Create test algorithm instance
+semantic = SemanticAlgorithm()
 
 
 class TestSemanticExtended:
     def test_get_relationships_from_metadata_with_none_data(self):
         """Test _get_relationships_from_metadata with None data parameter."""
         # Test with None data
-        result = semantic._get_relationships_from_metadata(data=None)
+        result = semantic.get_relationships_from_metadata(data=None)
         assert isinstance(result, list)
         assert result == []
 
@@ -33,7 +37,7 @@ class TestSemanticExtended:
         result = semantic.find_related_nodes_by_id(manifest={}, node_unique_id=node_id, type="metadata")
         assert result == [node_id]
 
-    @mock.patch("dbterd.adapters.algos.semantic._get_linked_semantic_entities")
+    @mock.patch.object(semantic, "_get_linked_semantic_entities")
     def test_find_related_nodes_by_id_with_linked_entities(self, mock_get_linked_entities):
         """Test find_related_nodes_by_id with linked entities."""
         # Mock the _get_linked_semantic_entities function to return some entities

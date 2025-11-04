@@ -1,338 +1,254 @@
 from typing import Optional, Union
 
-from dbterd.adapters.algos import base
-from dbterd.adapters.meta import Ref, SemanticEntity, Table
+from dbterd.adapters.algos._protocol import AlgorithmProtocol
 from dbterd.constants import TEST_META_RELATIONSHIP_TYPE
+from dbterd.core.meta import Ref, SemanticEntity
+from dbterd.core.registry import register_algorithm
 from dbterd.helpers.log import logger
-from dbterd.types import Catalog, Manifest
+from dbterd.types import Manifest
 
 
-def parse_metadata(data, **kwargs) -> tuple[list[Table], list[Ref]]:
+@register_algorithm("semantic")
+class SemanticAlgorithm(AlgorithmProtocol):
+    """Semantic algorithm for detecting relationships based on dbt semantic entities.
+
+    This algorithm analyzes dbt semantic models to extract relationships between
+    tables based on foreign key and primary key entity definitions.
     """
-    Get all information (tables, relationships) needed for building diagram.
 
-    (from Metadata, with Semantic Entities)
+    @property
+    def name(self) -> str:
+        """Return the algorithm name."""
+        return "semantic"
 
-    Args:
-        data (dict): metadata dict
-        **kwargs: Additional options including:
-            resource_type (list): Types of resources to include
-            entity_name_format (str): Format string for entity names
-            select (list): Selection rules to include tables
-            exclude (list): Rules to exclude tables
+    @property
+    def description(self) -> str:
+        """Return a human-readable description."""
+        return "Detect relationships based on dbt semantic entities"
 
-    Returns:
-        Tuple(List[Table], List[Ref]): Info of parsed tables and relationships
+    def find_related_nodes_by_id(
+        self,
+        manifest: Union[Manifest, dict],
+        node_unique_id: str,
+        type: Optional[str] = None,
+        **kwargs,
+    ) -> list[str]:
+        """Find FK/PK nodes which are linked to the given node.
 
-    """
-    tables = []
-    relationships = []
+        Args:
+            manifest: dbt manifest data
+            node_unique_id: Unique identifier of the node
+            type: Optional node type filter (e.g., "metadata")
+            **kwargs: Additional algorithm-specific parameters
 
-    # Parse Table
-    tables = base.get_tables_from_metadata(data=data, **kwargs)
-    tables = base.filter_tables_based_on_selection(tables=tables, **kwargs)
+        Returns:
+            List of related node unique IDs
+        """
+        found_nodes = [node_unique_id]
+        if type == "metadata":  # pragma: no cover
+            return found_nodes  # not supported yet, returned input only
 
-    # Parse Ref
-    relationships = _get_relationships_from_metadata(data=data, **kwargs)
-    relationships = base.make_up_relationships(relationships=relationships, tables=tables)
+        entities = self._get_linked_semantic_entities(manifest=manifest)
+        for foreign, primary in entities:
+            if primary.model == node_unique_id:
+                found_nodes.append(foreign.model)
+            if foreign.model == node_unique_id:
+                found_nodes.append(primary.model)
 
-    logger.info(f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)")
-    return (
-        sorted(tables, key=lambda tbl: tbl.node_name),
-        sorted(relationships, key=lambda rel: rel.name),
-    )
+        return list(set(found_nodes))
 
+    def get_relationships_from_metadata(self, data: list | None = None, **kwargs) -> list[Ref]:
+        """Extract relationships from Metadata result list on Semantic Entities.
 
-def parse(manifest: Manifest, catalog: Union[str, Catalog], **kwargs) -> tuple[list[Table], list[Ref]]:
-    """
-    Get all information (tables, relationships) needed for building diagram.
+        Args:
+            data: Metadata result list. Defaults to [].
+            **kwargs: Additional options that might be passed from parent functions
 
-    Args:
-        manifest (Manifest): dbt manifest json
-        catalog (Union[str, Catalog]): Either "metadata" or a catalog object
-        **kwargs: Additional options including:
-            resource_type (list): Types of resources to include
-            entity_name_format (str): Format string for entity names
-            select (list): Selection rules to include tables
-            exclude (list): Rules to exclude tables
-
-    Returns:
-        Tuple(List[Table], List[Ref]): Info of parsed tables and relationships
-
-    """
-    # Parse metadata
-    if catalog == "metadata":
-        return parse_metadata(data=manifest, **kwargs)
-
-    # Parse Table
-    tables = base.get_tables(manifest=manifest, catalog=catalog, **kwargs)
-    tables = base.filter_tables_based_on_selection(tables=tables, **kwargs)
-
-    # Parse Ref
-    relationships = _get_relationships(manifest=manifest, **kwargs)
-    relationships = base.make_up_relationships(relationships=relationships, tables=tables)
-
-    # Fulfill columns in Tables (due to `select *`)
-    tables = base.enrich_tables_from_relationships(tables=tables, relationships=relationships)
-
-    logger.info(f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)")
-    return (
-        sorted(tables, key=lambda tbl: tbl.node_name),
-        sorted(relationships, key=lambda rel: rel.name),
-    )
-
-
-def find_related_nodes_by_id(
-    manifest: Union[Manifest, dict],
-    node_unique_id: str,
-    type: Optional[str] = None,
-    **kwargs,
-) -> list[str]:
-    """
-    Find FK/PK nodes which are linked to the given node.
-
-    Args:
-        manifest (Union[Manifest, dict]): Manifest data
-        node_unique_id (str): Manifest model node unique id
-        type (str, optional): Manifest type (local file or metadata). Defaults to None.
-        **kwargs: Additional options that might be passed from parent functions
-
-    Returns:
-        List[str]: Manifest nodes' unique ID
-
-    """
-    found_nodes = [node_unique_id]
-    if type == "metadata":  # pragma: no cover
-        return found_nodes  # not supported yet, returned input only
-
-    entities = _get_linked_semantic_entities(manifest=manifest)
-    for foreign, primary in entities:
-        if primary.model == node_unique_id:
-            found_nodes.append(foreign.model)
-        if foreign.model == node_unique_id:
-            found_nodes.append(primary.model)
-
-    return list(set(found_nodes))
-
-
-def _get_relationships_from_metadata(data=None, **kwargs) -> list[Ref]:
-    """
-    Extract relationships from Metadata result list on Semantic Entities.
-
-    Args:
-        data (List): Metadata result list. Defaults to [].
-        **kwargs: Additional options that might be passed from parent functions
-
-    Returns:
-        list[Ref]: List of parsed relationship
-
-    """
-    if data is None:
-        data = []
-    entities = _get_linked_semantic_entities_from_metadata(data=data)
-    return base.get_unique_refs(
-        refs=[
-            Ref(
-                name=primary_entity.semantic_model,
-                table_map=(primary_entity.model, foreign_entity.model),
-                column_map=(
-                    primary_entity.column_name,
-                    foreign_entity.column_name,
-                ),
-                type=primary_entity.relationship_type,
-            )
-            for foreign_entity, primary_entity in entities
-        ]
-    )
-
-
-def _get_relationships(manifest: Manifest, **kwargs) -> list[Ref]:
-    """
-    Extract relationships from dbt artifacts based on Semantic Entities.
-
-    Args:
-        manifest (Manifest): Extract relationships from dbt artifacts based on Semantic Entities
-        **kwargs: Additional options that might be passed from parent functions
-
-    Returns:
-        List[Ref]: List of parsed relationship
-
-    """
-    entities = _get_linked_semantic_entities(manifest=manifest)
-    return base.get_unique_refs(
-        refs=[
-            Ref(
-                name=primary_entity.semantic_model,
-                table_map=(primary_entity.model, foreign_entity.model),
-                column_map=(
-                    primary_entity.column_name,
-                    foreign_entity.column_name,
-                ),
-                type=primary_entity.relationship_type,
-            )
-            for foreign_entity, primary_entity in entities
-        ]
-    )
-
-
-def _get_linked_semantic_entities_from_metadata(
-    data=None,
-) -> list[tuple[SemanticEntity, SemanticEntity]]:
-    """
-    Get filtered list of Semantic Entities which are linked.
-
-    (Metadata)
-
-    Args:
-        data (List): Metadata result list. Defaults to [].
-
-    Returns:
-        List[Tuple[SemanticEntity, SemanticEntity]]: List of (FK, PK) objects
-
-    """
-    if data is None:
-        data = []
-    foreigns, primaries = _get_semantic_entities_from_metadata(data=data)
-    linked_entities = []
-    for foreign_entity in foreigns:
-        for primary_entity in primaries:
-            if foreign_entity.entity_name == primary_entity.entity_name:
-                linked_entities.append((foreign_entity, primary_entity))
-    return linked_entities
-
-
-def _get_linked_semantic_entities(
-    manifest: Manifest,
-) -> list[tuple[SemanticEntity, SemanticEntity]]:
-    """
-    Get filtered list of Semantic Entities which are linked.
-
-    Args:
-        manifest (Manifest): Manifest data
-
-    Returns:
-        List[Tuple[SemanticEntity, SemanticEntity]]: List of (FK, PK) objects
-
-    """
-    foreigns, primaries = _get_semantic_entities(manifest=manifest)
-    linked_entities = []
-    for foreign_entity in foreigns:
-        for primary_entity in primaries:
-            if foreign_entity.entity_name == primary_entity.entity_name:
-                linked_entities.append((foreign_entity, primary_entity))
-    return linked_entities
-
-
-def _get_semantic_entities_from_metadata(
-    data=None,
-) -> tuple[list[SemanticEntity], list[SemanticEntity]]:
-    """
-    Get all Semantic Entities.
-
-    (Metadata)
-
-    Args:
-        data (List): Metadata result list. Defaults to [].
-
-    Returns:
-        Tuple[List[SemanticEntity], List[SemanticEntity]]: FK list and PK list
-
-    """
-    if data is None:
-        data = []
-    fk_type = "foreign"
-    pk_type = "primary"
-
-    semantic_entities = []
-    for data_item in data:
-        for semantic_model in data_item.get("semanticModels", {}).get("edges", []):
-            id = semantic_model.get("node", {}).get("uniqueId", "")
-            meta = semantic_model.get("node", {}).get("meta", {}) or {}
-            # currently only 1 parent with rs type of "model"
-            model_id = semantic_model.get("node", {}).get("parents", {})[0].get("uniqueId", "")
-
-            entities = semantic_model.get("node", {}).get("entities", [])
-            for e in entities:
-                entity_name = e.get("name")
-                semantic_entities.append(
-                    SemanticEntity(
-                        semantic_model=id,
-                        model=model_id,
-                        entity_name=entity_name,
-                        entity_type=e.get("type"),
-                        column_name=e.get("expr") or entity_name,
-                        relationship_type=(meta.get(TEST_META_RELATIONSHIP_TYPE, "") if meta else ""),
-                    )
+        Returns:
+            List of parsed relationship objects
+        """
+        if data is None:
+            data = []
+        entities = self._get_linked_semantic_entities_from_metadata(data=data)
+        return self.get_unique_refs(
+            refs=[
+                Ref(
+                    name=primary_entity.semantic_model,
+                    table_map=(primary_entity.model, foreign_entity.model),
+                    column_map=(
+                        primary_entity.column_name,
+                        foreign_entity.column_name,
+                    ),
+                    type=primary_entity.relationship_type,
                 )
+                for foreign_entity, primary_entity in entities
+            ]
+        )
 
-    return (
-        [x for x in semantic_entities if x.entity_type == fk_type],
-        [x for x in semantic_entities if x.entity_type == pk_type],
-    )
+    def get_relationships(self, manifest: Manifest, **kwargs) -> list[Ref]:
+        """Extract relationships from dbt artifacts based on Semantic Entities.
 
+        Args:
+            manifest: dbt manifest data
+            **kwargs: Additional options that might be passed from parent functions
 
-def _get_semantic_entities(
-    manifest: Manifest,
-) -> tuple[list[SemanticEntity], list[SemanticEntity]]:
-    """
-    Get all Semantic Entities.
+        Returns:
+            List of parsed relationship objects
+        """
+        entities = self._get_linked_semantic_entities(manifest=manifest)
+        return self.get_unique_refs(
+            refs=[
+                Ref(
+                    name=primary_entity.semantic_model,
+                    table_map=(primary_entity.model, foreign_entity.model),
+                    column_map=(
+                        primary_entity.column_name,
+                        foreign_entity.column_name,
+                    ),
+                    type=primary_entity.relationship_type,
+                )
+                for foreign_entity, primary_entity in entities
+            ]
+        )
 
-    Args:
-        manifest (Manifest): Manifest data
+    def _get_linked_semantic_entities_from_metadata(
+        self, data: list | None = None
+    ) -> list[tuple[SemanticEntity, SemanticEntity]]:
+        """Get filtered list of Semantic Entities which are linked (Metadata).
 
-    Returns:
-        Tuple[List[SemanticEntity], List[SemanticEntity]]: FK list and PK list
+        Args:
+            data: Metadata result list. Defaults to [].
 
-    """
-    fk_type = "foreign"
-    pk_type = "primary"
+        Returns:
+            List of (FK, PK) tuples
+        """
+        if data is None:
+            data = []
+        foreigns, primaries = self._get_semantic_entities_from_metadata(data=data)
+        linked_entities = []
+        for foreign_entity in foreigns:
+            for primary_entity in primaries:
+                if foreign_entity.entity_name == primary_entity.entity_name:
+                    linked_entities.append((foreign_entity, primary_entity))
+        return linked_entities
 
-    semantic_entities = []
-    for x in _get_semantic_nodes(manifest=manifest):
-        semantic_node = manifest.semantic_models[x]
-        for e in semantic_node.entities:
-            if e.type.value in [pk_type, fk_type]:
+    def _get_linked_semantic_entities(self, manifest: Manifest) -> list[tuple[SemanticEntity, SemanticEntity]]:
+        """Get filtered list of Semantic Entities which are linked.
+
+        Args:
+            manifest: dbt manifest data
+
+        Returns:
+            List of (FK, PK) tuples
+        """
+        foreigns, primaries = self._get_semantic_entities(manifest=manifest)
+        linked_entities = []
+        for foreign_entity in foreigns:
+            for primary_entity in primaries:
+                if foreign_entity.entity_name == primary_entity.entity_name:
+                    linked_entities.append((foreign_entity, primary_entity))
+        return linked_entities
+
+    def _get_semantic_entities_from_metadata(
+        self, data: list | None = None
+    ) -> tuple[list[SemanticEntity], list[SemanticEntity]]:
+        """Get all Semantic Entities (Metadata).
+
+        Args:
+            data: Metadata result list. Defaults to [].
+
+        Returns:
+            Tuple of (FK list, PK list)
+        """
+        if data is None:
+            data = []
+        fk_type = "foreign"
+        pk_type = "primary"
+
+        semantic_entities = []
+        for data_item in data:
+            for semantic_model in data_item.get("semanticModels", {}).get("edges", []):
+                id = semantic_model.get("node", {}).get("uniqueId", "")
+                meta = semantic_model.get("node", {}).get("meta", {}) or {}
+                # currently only 1 parent with rs type of "model"
+                model_id = semantic_model.get("node", {}).get("parents", {})[0].get("uniqueId", "")
+
+                entities = semantic_model.get("node", {}).get("entities", [])
+                for e in entities:
+                    entity_name = e.get("name")
+                    semantic_entities.append(
+                        SemanticEntity(
+                            semantic_model=id,
+                            model=model_id,
+                            entity_name=entity_name,
+                            entity_type=e.get("type"),
+                            column_name=e.get("expr") or entity_name,
+                            relationship_type=(meta.get(TEST_META_RELATIONSHIP_TYPE, "") if meta else ""),
+                        )
+                    )
+
+        return (
+            [x for x in semantic_entities if x.entity_type == fk_type],
+            [x for x in semantic_entities if x.entity_type == pk_type],
+        )
+
+    def _get_semantic_entities(self, manifest: Manifest) -> tuple[list[SemanticEntity], list[SemanticEntity]]:
+        """Get all Semantic Entities.
+
+        Args:
+            manifest: dbt manifest data
+
+        Returns:
+            Tuple of (FK list, PK list)
+        """
+        fk_type = "foreign"
+        pk_type = "primary"
+
+        semantic_entities = []
+        for x in self._get_semantic_nodes(manifest=manifest):
+            semantic_node = manifest.semantic_models[x]
+            for e in semantic_node.entities:
+                if e.type.value in [pk_type, fk_type]:
+                    semantic_entities.append(
+                        SemanticEntity(
+                            semantic_model=x,
+                            model=semantic_node.depends_on.nodes[0],
+                            entity_name=e.name,
+                            entity_type=e.type.value,
+                            column_name=e.expr or e.name,
+                            relationship_type=semantic_node.config.meta.get(TEST_META_RELATIONSHIP_TYPE, ""),
+                        )
+                    )
+            if semantic_node.primary_entity:
                 semantic_entities.append(
                     SemanticEntity(
                         semantic_model=x,
                         model=semantic_node.depends_on.nodes[0],
-                        entity_name=e.name,
-                        entity_type=e.type.value,
-                        column_name=e.expr or e.name,
+                        entity_name=semantic_node.primary_entity,
+                        entity_type=pk_type,
+                        column_name=semantic_node.primary_entity,
                         relationship_type=semantic_node.config.meta.get(TEST_META_RELATIONSHIP_TYPE, ""),
                     )
                 )
-        if semantic_node.primary_entity:
-            semantic_entities.append(
-                SemanticEntity(
-                    semantic_model=x,
-                    model=semantic_node.depends_on.nodes[0],
-                    entity_name=semantic_node.primary_entity,
-                    entity_type=pk_type,
-                    column_name=semantic_node.primary_entity,
-                    relationship_type=semantic_node.config.meta.get(TEST_META_RELATIONSHIP_TYPE, ""),
-                )
+
+        return (
+            [x for x in semantic_entities if x.entity_type == fk_type],
+            [x for x in semantic_entities if x.entity_type == pk_type],
+        )
+
+    def _get_semantic_nodes(self, manifest: Manifest) -> list:
+        """Extract the Semantic Models.
+
+        Args:
+            manifest: dbt manifest data
+
+        Returns:
+            List of Semantic Model IDs
+        """
+        if not hasattr(manifest, "semantic_models"):
+            logger.warning(
+                "No relationships will be captured since dbt version is NOT supported for the Semantic Models"
             )
+            return []
 
-    return (
-        [x for x in semantic_entities if x.entity_type == fk_type],
-        [x for x in semantic_entities if x.entity_type == pk_type],
-    )
-
-
-def _get_semantic_nodes(manifest: Manifest) -> list:
-    """
-    Extract the Semantic Models.
-
-    Args:
-        manifest (Manifest): Manifest data
-
-    Returns:
-        List: List of Semantic Models
-
-    """
-    if not hasattr(manifest, "semantic_models"):
-        logger.warning("No relationships will be captured since dbt version is NOT supported for the Semantic Models")
-        return []
-
-    return [x for x in manifest.semantic_models if len(manifest.semantic_models[x].depends_on.nodes)]
+        return [x for x in manifest.semantic_models if len(manifest.semantic_models[x].depends_on.nodes)]

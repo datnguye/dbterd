@@ -5,14 +5,14 @@ from typing import Optional
 import click
 
 from dbterd import default
-from dbterd.adapters import adapter
-from dbterd.adapters.dbt_cloud.administrative import DbtCloudArtifact
-from dbterd.adapters.dbt_cloud.discovery import DbtCloudMetadata
-from dbterd.adapters.dbt_core.dbt_invocation import DbtInvocation
-from dbterd.adapters.filter import has_unsupported_rule
-from dbterd.adapters.meta import Ref, Table
+from dbterd.core.filter import has_unsupported_rule
+from dbterd.core.meta import Ref, Table
+from dbterd.core.registry import registry
 from dbterd.helpers import cli_messaging, file as file_handlers
 from dbterd.helpers.log import logger
+from dbterd.plugins.dbt_cloud.administrative import DbtCloudArtifact
+from dbterd.plugins.dbt_cloud.discovery import DbtCloudMetadata
+from dbterd.plugins.dbt_core.dbt_invocation import DbtInvocation
 
 
 class Executor:
@@ -200,7 +200,7 @@ class Executor:
             func: Operation function
 
         """
-        target = adapter.load_target(name=kwargs["target"])  # import {target}
+        target = registry.get_target(name=kwargs["target"])
         return target.run
 
     def __save_result(self, path, data):
@@ -242,8 +242,8 @@ class Executor:
         if not node_unique_id:
             return kwargs
 
-        algo_module = adapter.load_algo(name=kwargs["algo"])
-        kwargs["select"] = algo_module.find_related_nodes_by_id(
+        algorithm = registry.get_parser(name=kwargs["algo"])
+        kwargs["select"] = algorithm.find_related_nodes_by_id(
             manifest=manifest, node_unique_id=node_unique_id, type=type, **kwargs
         )
         kwargs["exclude"] = []

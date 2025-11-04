@@ -1,117 +1,150 @@
 from typing import Optional, Union
 
-from dbterd.adapters.algos import base
-from dbterd.adapters.meta import Ref, Table
-from dbterd.helpers.log import logger
-from dbterd.types import Catalog, Manifest
+from dbterd.adapters.algos._protocol import AlgorithmProtocol
+from dbterd.constants import TEST_META_IGNORE_IN_ERD, TEST_META_RELATIONSHIP_TYPE
+from dbterd.core.meta import Ref
+from dbterd.core.registry import register_algorithm
+from dbterd.types import Manifest
 
 
-def parse_metadata(data, **kwargs) -> tuple[list[Table], list[Ref]]:
+@register_algorithm("test_relationship")
+class TestRelationshipAlgorithm(AlgorithmProtocol):
+    """Test relationship algorithm for detecting relationships based on dbt tests.
+
+    This algorithm analyzes dbt relationship tests to extract foreign key
+    relationships between tables.
     """
-    Get all information (tables, relationships) needed for building diagram.
 
-    (from Metadata)
+    @property
+    def name(self) -> str:
+        """Return the algorithm name."""
+        return "test_relationship"
 
-    Args:
-        data (dict): metadata dict
-        **kwargs: Additional options including:
-            resource_type (list): Types of resources to include
-            entity_name_format (str): Format string for entity names
-            select (list): Selection rules to include tables
-            exclude (list): Rules to exclude tables
+    @property
+    def description(self) -> str:
+        """Return a human-readable description."""
+        return "Detect relationships based on dbt test configurations"
 
-    Returns:
-        Tuple(List[Table], List[Ref]): Info of parsed tables and relationships
+    def get_relationships_from_metadata(self, data: dict | None = None, **kwargs) -> list[Ref]:
+        """Extract relationships from metadata based on test relationships.
 
-    """
-    tables = []
-    relationships = []
+        Args:
+            data: Metadata dictionary
+            **kwargs: Additional algorithm-specific parameters
 
-    # Parse Table
-    tables = base.get_tables_from_metadata(data=data, **kwargs)
-    tables = base.filter_tables_based_on_selection(tables=tables, **kwargs)
+        Returns:
+            List of parsed relationship objects
+        """
+        if data is None:
+            data = []
+        refs = []
+        rule = self.get_algo_rule(**kwargs)
 
-    # Parse Ref
-    relationships = base.get_relationships_from_metadata(data=data, **kwargs)
-    relationships = base.make_up_relationships(relationships=relationships, tables=tables)
+        for data_item in data:
+            for test in data_item.get("tests", {}).get("edges", []):
+                test_id = test.get("node", {}).get("uniqueId", "")
+                test_meta = test.get("node", {}).get("meta", {})
+                if (
+                    test_id.startswith("test")
+                    and rule.get("name").lower() in test_id.lower()
+                    and test_meta is not None
+                    and test_meta.get(TEST_META_IGNORE_IN_ERD, "0") == "0"
+                ):
+                    test_metadata_kwargs = test.get("node", {}).get("testMetadata", {}).get("kwargs", {})
+                    refs.append(
+                        Ref(
+                            name=test_id,
+                            table_map=self.get_table_map_from_metadata(test_node=test, **kwargs),
+                            column_map=[
+                                (
+                                    test_metadata_kwargs.get(rule.get("c_to"))
+                                    or "_and_".join(test_metadata_kwargs.get(f"{rule.get('c_to')}s", "unknown"))
+                                )
+                                .replace('"', "")
+                                .lower(),
+                                (
+                                    test_metadata_kwargs.get("columnName")
+                                    or test_metadata_kwargs.get(rule.get("c_from"))
+                                    or "_and_".join(test_metadata_kwargs.get(f"{rule.get('c_from')}s", "unknown"))
+                                )
+                                .replace('"', "")
+                                .lower(),
+                            ],
+                            type=self.get_relationship_type(test_meta.get(TEST_META_RELATIONSHIP_TYPE, "")),
+                            relationship_label=test_meta.get("relationship_label"),
+                        )
+                    )
 
-    logger.info(f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)")
-    return (
-        sorted(tables, key=lambda tbl: tbl.node_name),
-        sorted(relationships, key=lambda rel: rel.name),
-    )
+        return self.get_unique_refs(refs=refs)
 
+    def get_relationships(self, manifest: Manifest, **kwargs) -> list[Ref]:
+        """Extract relationships from dbt artifacts based on test relationships.
 
-def parse(manifest: Manifest, catalog: Union[str, Catalog], **kwargs) -> tuple[list[Table], list[Ref]]:
-    """
-    Get all information (tables, relationships) needed for building diagram.
+        Args:
+            manifest: dbt manifest data
+            **kwargs: Additional algorithm-specific parameters
 
-    Args:
-        manifest (dict): Manifest json
-        catalog (dict): Catalog json
-        **kwargs: Additional options including:
-            resource_type (list): Types of resources to include
-            entity_name_format (str): Format string for entity names
-            select (list): Selection rules to include tables
-            exclude (list): Rules to exclude tables
+        Returns:
+            List of parsed relationship objects
+        """
+        rule = self.get_algo_rule(**kwargs)
+        refs = [
+            Ref(
+                name=x,
+                table_map=self.get_table_map(test_node=manifest.nodes[x], **kwargs),
+                column_map=[
+                    str(
+                        manifest.nodes[x].test_metadata.kwargs.get(rule.get("c_to"))
+                        or "_and_".join(manifest.nodes[x].test_metadata.kwargs.get(f"{rule.get('c_to')}s", "unknown"))
+                    )
+                    .replace('"', "")
+                    .lower(),
+                    str(
+                        manifest.nodes[x].test_metadata.kwargs.get("column_name")
+                        or manifest.nodes[x].test_metadata.kwargs.get(rule.get("c_from"))
+                        or "_and_".join(manifest.nodes[x].test_metadata.kwargs.get(f"{rule.get('c_from')}s", "unknown"))
+                    )
+                    .replace('"', "")
+                    .lower(),
+                ],
+                type=self.get_relationship_type(manifest.nodes[x].meta.get(TEST_META_RELATIONSHIP_TYPE, "")),
+                relationship_label=manifest.nodes[x].meta.get("relationship_label"),
+            )
+            for x in self.get_test_nodes_by_rule_name(manifest=manifest, rule_name=rule.get("name").lower())
+        ]
 
-    Returns:
-        Tuple(List[Table], List[Ref]): Info of parsed tables and relationships
+        return self.get_unique_refs(refs=refs)
 
-    """
-    # Parse metadata
-    if catalog == "metadata":
-        return parse_metadata(data=manifest, **kwargs)
+    def find_related_nodes_by_id(
+        self,
+        manifest: Union[Manifest, dict],
+        node_unique_id: str,
+        type: Optional[str] = None,
+        **kwargs,
+    ) -> list[str]:
+        """Find the FK models which are related to the input model ID inclusively.
 
-    # Parse Table
-    tables = base.get_tables(manifest=manifest, catalog=catalog, **kwargs)
-    tables = base.filter_tables_based_on_selection(tables=tables, **kwargs)
+        Given the manifest data of dbt project.
 
-    # Parse Ref
-    relationships = base.get_relationships(manifest=manifest, **kwargs)
-    relationships = base.make_up_relationships(relationships=relationships, tables=tables)
+        Args:
+            manifest: Manifest data
+            node_unique_id: Manifest node unique ID
+            type: Manifest type (local file or metadata). Defaults to None.
+            **kwargs: Additional options that might be passed from parent functions
 
-    # Fulfill columns in Tables (due to `select *`)
-    tables = base.enrich_tables_from_relationships(tables=tables, relationships=relationships)
+        Returns:
+            List[str]: Manifest nodes' unique ID
+        """
+        found_nodes = [node_unique_id]
+        if type == "metadata":
+            return found_nodes  # not supported yet, returned input only
 
-    logger.info(f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)")
-    return (
-        sorted(tables, key=lambda tbl: tbl.node_name),
-        sorted(relationships, key=lambda rel: rel.name),
-    )
+        rule = self.get_algo_rule(**kwargs)
+        test_nodes = self.get_test_nodes_by_rule_name(manifest=manifest, rule_name=rule.get("name").lower())
 
+        for test_node in test_nodes:
+            nodes = manifest.nodes[test_node].depends_on.nodes or []
+            if node_unique_id in nodes:
+                found_nodes.extend(nodes)
 
-def find_related_nodes_by_id(
-    manifest: Union[Manifest, dict],
-    node_unique_id: str,
-    type: Optional[str] = None,
-    **kwargs,
-) -> list[str]:
-    """
-    Find the FK models which are related to the input model ID inclusively.
-
-    Given the manifest data of dbt project.
-
-    Args:
-        manifest (Union[Manifest, dict]): Manifest data
-        node_unique_id (str): Manifest node unique ID
-        type (str, optional): Manifest type (local file or metadata). Defaults to None.
-        **kwargs: Additional options that might be passed from parent functions
-
-    Returns:
-        List[str]: Manifest nodes' unique ID
-
-    """
-    found_nodes = [node_unique_id]
-    if type == "metadata":
-        return found_nodes  # not supported yet, returned input only
-
-    rule = base.get_algo_rule(**kwargs)
-    test_nodes = base.get_test_nodes_by_rule_name(manifest=manifest, rule_name=rule.get("name").lower())
-
-    for test_node in test_nodes:
-        nodes = manifest.nodes[test_node].depends_on.nodes or []
-        if node_unique_id in nodes:
-            found_nodes.extend(nodes)
-
-    return list(set(found_nodes))
+        return list(set(found_nodes))

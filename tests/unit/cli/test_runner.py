@@ -62,17 +62,17 @@ class TestRunner:
         invalid_strategy = "invalid-strategy"
         with contextlib.ExitStack() as stack:
             mock_read_m = stack.enter_context(
-                mock.patch("dbterd.adapters.base.Executor._Executor__read_manifest", return_value=None)
+                mock.patch("dbterd.core.base.Executor._Executor__read_manifest", return_value=None)
             )
             mock_read_c = stack.enter_context(
-                mock.patch("dbterd.adapters.base.Executor._Executor__read_catalog", return_value=None)
+                mock.patch("dbterd.core.base.Executor._Executor__read_catalog", return_value=None)
             )
             mock_save = stack.enter_context(
-                mock.patch("dbterd.adapters.base.Executor._Executor__save_result", return_value=None)
+                mock.patch("dbterd.core.base.Executor._Executor__save_result", return_value=None)
             )
             with pytest.raises(Exception) as excinfo:
                 dbterd.invoke(["run", "--algo", invalid_strategy])
-            assert "Could not find adapter algo" in str(excinfo.value)
+            assert "Parser 'invalid-strategy' not found in registry" in str(excinfo.value)
             mock_read_m.assert_called_once()
             mock_read_c.assert_called_once()
             assert mock_save.call_count == 0
@@ -91,19 +91,22 @@ class TestRunner:
         with contextlib.ExitStack() as stack:
             stack.enter_context(mock.patch("dbterd.cli.main.load_config", return_value={}))
             mock_read_m = stack.enter_context(
-                mock.patch("dbterd.adapters.base.Executor._Executor__read_manifest", return_value=None)
+                mock.patch("dbterd.core.base.Executor._Executor__read_manifest", return_value=None)
             )
             mock_read_c = stack.enter_context(
-                mock.patch("dbterd.adapters.base.Executor._Executor__read_catalog", return_value=None)
+                mock.patch("dbterd.core.base.Executor._Executor__read_catalog", return_value=None)
             )
-            mock_engine_parse = stack.enter_context(
-                mock.patch(f"dbterd.adapters.targets.{target}.parse", return_value="--irrelevant--")
-            )
+            # Mock the target's run method to return (filename, content)
+            mock_target_run = stack.enter_context(mock.patch("dbterd.core.registry.manager.registry.get_target"))
+            mock_target_instance = mock.Mock()
+            mock_target_instance.run.return_value = (output, "--irrelevant--")
+            mock_target_run.return_value = mock_target_instance
+
             mock_open_w = stack.enter_context(mock.patch("builtins.open", mock.mock_open()))
             dbterd.invoke(["run", "--target", target])
             mock_read_m.assert_called_once()
             mock_read_c.assert_called_once()
-            mock_engine_parse.assert_called_once()
+            mock_target_instance.run.assert_called_once()
             # Check that open was called with the output file (version detection also calls open for manifest/catalog)
             mock_open_w.assert_any_call(f"{default_output_path()}/{output}", "w")
 
@@ -125,14 +128,16 @@ class TestRunner:
         with contextlib.ExitStack() as stack:
             stack.enter_context(mock.patch("dbterd.cli.main.load_config", return_value={}))
             mock_read_m = stack.enter_context(
-                mock.patch("dbterd.adapters.base.Executor._Executor__read_manifest", return_value=None)
+                mock.patch("dbterd.core.base.Executor._Executor__read_manifest", return_value=None)
             )
             mock_read_c = stack.enter_context(
-                mock.patch("dbterd.adapters.base.Executor._Executor__read_catalog", return_value=None)
+                mock.patch("dbterd.core.base.Executor._Executor__read_catalog", return_value=None)
             )
-            mock_engine_parse = stack.enter_context(
-                mock.patch(f"dbterd.adapters.targets.{target}.parse", return_value="--irrelevant--")
-            )
+            # Mock the target's run method to return (filename, content)
+            mock_target_run = stack.enter_context(mock.patch("dbterd.core.registry.manager.registry.get_target"))
+            mock_target_instance = mock.Mock()
+            mock_target_instance.run.return_value = (output, "--irrelevant--")
+            mock_target_run.return_value = mock_target_instance
 
             # Mock open to raise PermissionError only for write mode (version detection uses read mode)
             def mock_open_side_effect(filename, mode="r", *args, **kwargs):
@@ -145,7 +150,7 @@ class TestRunner:
                 dbterd.invoke(["run", "--target", target])
             mock_read_m.assert_called_once()
             mock_read_c.assert_called_once()
-            mock_engine_parse.assert_called_once()
+            mock_target_instance.run.assert_called_once()
             # Check that open was called with write mode for the output file
             mock_open_w.assert_any_call(f"{default_output_path()}/{output}", "w")
 

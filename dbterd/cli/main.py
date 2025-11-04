@@ -3,10 +3,10 @@ from pathlib import Path
 
 import click
 
-from dbterd.adapters.base import Executor
 from dbterd.cli import params
 from dbterd.cli.config import ConfigError, get_yaml_template, load_config
 from dbterd.constants import CONFIG_FILE_DBTERD_YML
+from dbterd.core.base import Executor
 from dbterd.helpers import jsonify
 from dbterd.helpers.log import logger
 

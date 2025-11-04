@@ -7,8 +7,8 @@ import click
 from dbt.cli.main import dbtRunnerResult
 import pytest
 
-from dbterd.adapters.dbt_core import dbt_invocation
-from dbterd.adapters.dbt_core.dbt_invocation import DbtInvocation
+from dbterd.plugins.dbt_core import dbt_invocation
+from dbterd.plugins.dbt_core.dbt_invocation import DbtInvocation
 
 
 class TestDbtInvocation:
@@ -16,14 +16,14 @@ class TestDbtInvocation:
         """Test that ImportError when importing DbtRunner is handled gracefully."""
         # Save original modules
         orig_dbt_cli_main = sys.modules.get("dbt.cli.main")
-        orig_dbt_invocation = sys.modules.get("dbterd.adapters.dbt_core.dbt_invocation")
+        orig_dbt_invocation = sys.modules.get("dbterd.plugins.dbt_core.dbt_invocation")
 
         try:
             # Remove the module from cache to force reimport
             if "dbt.cli.main" in sys.modules:
                 del sys.modules["dbt.cli.main"]
-            if "dbterd.adapters.dbt_core.dbt_invocation" in sys.modules:
-                del sys.modules["dbterd.adapters.dbt_core.dbt_invocation"]
+            if "dbterd.plugins.dbt_core.dbt_invocation" in sys.modules:
+                del sys.modules["dbterd.plugins.dbt_core.dbt_invocation"]
 
             # Mock the import to raise ImportError
             with mock.patch(
@@ -35,7 +35,7 @@ class TestDbtInvocation:
                 ),
             ):
                 # Import the module which should catch the ImportError
-                import dbterd.adapters.dbt_core.dbt_invocation as reloaded_module  # noqa: PLC0415
+                import dbterd.plugins.dbt_core.dbt_invocation as reloaded_module  # noqa: PLC0415
 
                 # Verify that DbtRunner is None when import fails
                 assert reloaded_module.DbtRunner is None
@@ -44,7 +44,7 @@ class TestDbtInvocation:
             if orig_dbt_cli_main:
                 sys.modules["dbt.cli.main"] = orig_dbt_cli_main
             if orig_dbt_invocation:
-                sys.modules["dbterd.adapters.dbt_core.dbt_invocation"] = orig_dbt_invocation
+                sys.modules["dbterd.plugins.dbt_core.dbt_invocation"] = orig_dbt_invocation
             # Reload to restore the normal state
             importlib.reload(dbt_invocation)
 

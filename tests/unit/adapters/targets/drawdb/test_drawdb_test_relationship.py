@@ -1,12 +1,15 @@
-import contextlib
 from dataclasses import dataclass
 import json
 from unittest import mock
 
 import pytest
 
-from dbterd.adapters.meta import Column, Ref, Table
-from dbterd.adapters.targets import drawdb as engine
+from dbterd.adapters.targets.drawdb import DrawDBTarget
+from dbterd.core.meta import Column, Ref, Table
+
+
+# Create target instance for tests
+target = DrawDBTarget()
 
 
 @dataclass
@@ -198,20 +201,12 @@ class TestDbmlTestRelationship:
         omit_entity_name_quotes,
         expected,
     ):
-        with contextlib.ExitStack() as stack:
-            mock_get_tables = stack.enter_context(
-                mock.patch(
-                    "dbterd.adapters.algos.base.get_tables",
-                    return_value=tables,
-                )
-            )
-            mock_get_relationships = stack.enter_context(
-                mock.patch(
-                    "dbterd.adapters.algos.base.get_relationships",
-                    return_value=relationships,
-                )
-            )
-            drawdb = engine.parse(
+        # Create a mock algorithm that returns the test data
+        mock_algo = mock.Mock()
+        mock_algo.parse.return_value = (tables, relationships)
+
+        with mock.patch.object(target, "get_algorithm", return_value=mock_algo):
+            drawdb = target.get_erd_text(
                 manifest=DummyManifest(metadata=DummyManifestMetadata(generated_at="dummy")),
                 catalog="--catalog--",
                 select=select,
@@ -221,8 +216,7 @@ class TestDbmlTestRelationship:
                 omit_entity_name_quotes=omit_entity_name_quotes,
             )
             assert drawdb.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
-            mock_get_tables.assert_called_once()
-            mock_get_relationships.assert_called_once()
+            mock_algo.parse.assert_called_once()
 
     @pytest.mark.parametrize(
         "relationship_type, symbol",
@@ -237,7 +231,7 @@ class TestDbmlTestRelationship:
         ],
     )
     def test_get_rel_symbol(self, relationship_type, symbol):
-        assert engine.get_rel_symbol(relationship_type=relationship_type) == symbol
+        assert target.get_rel_symbol(relationship_type=relationship_type) == symbol
 
     def test_get_y(self):
         tables = [
@@ -282,18 +276,15 @@ class TestDbmlTestRelationship:
                 raw_sql="--irrelevant--",
             ),
         ]
-        assert engine.get_y(tables, 0, {}) == 0
-        assert engine.get_y(tables, 1, {}) == 0
-        assert engine.get_y(tables, 2, {}) == 0
-        assert engine.get_y(tables, 3, {}) == 0
-        assert engine.get_y(tables, 4, {"model.dbt_resto.table1": {"y": 0}}) == 100
-        assert engine.get_y(tables, 4, {"model.dbt_resto.table1": {"y": 5}}) == 100 + 5
+        assert target.get_y(tables, 0, {}) == 0
+        assert target.get_y(tables, 1, {}) == 0
+        assert target.get_y(tables, 2, {}) == 0
+        assert target.get_y(tables, 3, {}) == 0
+        assert target.get_y(tables, 4, {"model.dbt_resto.table1": {"y": 0}}) == 100
+        assert target.get_y(tables, 4, {"model.dbt_resto.table1": {"y": 5}}) == 100 + 5
 
     def test_run(self):
-        with mock.patch(
-            "dbterd.adapters.targets.drawdb.parse",
-            return_value="dummy",
-        ) as mock_parse:
-            assert engine.run(manifest="irr", catalog="irr", output_file_name="xyz") == ("xyz", "dummy")
-            assert engine.run(manifest="irr", catalog="irr") == ("output.ddb", "dummy")
-            assert mock_parse.call_count == 2
+        with mock.patch.object(target, "get_erd_text", return_value="dummy") as mock_get_erd_text:
+            assert target.run(manifest="irr", catalog="irr", output_file_name="xyz") == ("xyz", "dummy")
+            assert target.run(manifest="irr", catalog="irr") == ("output.ddb", "dummy")
+            assert mock_get_erd_text.call_count == 2

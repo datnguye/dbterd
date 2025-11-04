@@ -2,7 +2,7 @@ from unittest import mock
 
 import pytest
 
-from dbterd.adapters.dbt_cloud.graphql import GraphQLHelper
+from dbterd.plugins.dbt_cloud.graphql import GraphQLHelper
 
 
 class MockResponse:
@@ -37,19 +37,19 @@ class TestGraphQL:
         }
         assert helper.api_endpoint == f"https://{helper.host_url}/graphql/"
 
-    @mock.patch("dbterd.adapters.dbt_cloud.administrative.requests.post")
+    @mock.patch("dbterd.plugins.dbt_cloud.administrative.requests.post")
     def test_query(self, mock_requests_post):
         mock_requests_post.return_value = MockResponse(status_code=200, data={})
         assert GraphQLHelper().query(query="irrelevant", **{}) == {}
         assert mock_requests_post.call_count == 1
 
-    @mock.patch("dbterd.adapters.dbt_cloud.administrative.requests.post")
+    @mock.patch("dbterd.plugins.dbt_cloud.administrative.requests.post")
     def test_query_failed(self, mock_requests_post):
         mock_requests_post.return_value = MockResponse(status_code="irrelevant", data={})
         assert GraphQLHelper().query(query="irrelevant", **{}) is None
         assert mock_requests_post.call_count == 1
 
-    @mock.patch("dbterd.adapters.dbt_cloud.administrative.requests.post")
+    @mock.patch("dbterd.plugins.dbt_cloud.administrative.requests.post")
     def test_query_with_exception(self, mock_requests_post):
         mock_requests_post.side_effect = Exception("any error")
         assert GraphQLHelper().query(query="irrelevant", **{}) is None

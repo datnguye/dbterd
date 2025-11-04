@@ -1,10 +1,13 @@
-import contextlib
 from unittest import mock
 
 import pytest
 
-from dbterd.adapters.meta import Column, Ref, Table
-from dbterd.adapters.targets import plantuml as engine
+from dbterd.adapters.targets.plantuml import PlantUMLTarget
+from dbterd.core.meta import Column, Ref, Table
+
+
+# Create target instance for tests
+target = PlantUMLTarget()
 
 
 class TestPlantUMLTestRelationship:
@@ -231,20 +234,12 @@ class TestPlantUMLTestRelationship:
         ],
     )
     def test_parse(self, tables, relationships, select, exclude, resource_type, expected):
-        with contextlib.ExitStack() as stack:
-            mock_get_tables = stack.enter_context(
-                mock.patch(
-                    "dbterd.adapters.algos.base.get_tables",
-                    return_value=tables,
-                )
-            )
-            mock_get_relationships = stack.enter_context(
-                mock.patch(
-                    "dbterd.adapters.algos.base.get_relationships",
-                    return_value=relationships,
-                )
-            )
-            plantuml = engine.parse(
+        # Create a mock algorithm that returns the test data
+        mock_algo = mock.Mock()
+        mock_algo.parse.return_value = (tables, relationships)
+
+        with mock.patch.object(target, "get_algorithm", return_value=mock_algo):
+            plantuml = target.get_erd_text(
                 manifest="--manifest--",
                 catalog="--catalog--",
                 select=select,
@@ -255,8 +250,7 @@ class TestPlantUMLTestRelationship:
             print("plantuml ", plantuml.replace(" ", "").replace("\n", ""))
             print("expected", expected.replace(" ", "").replace("\n", ""))
             assert plantuml.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
-            mock_get_tables.assert_called_once()
-            mock_get_relationships.assert_called_once()
+            mock_algo.parse.assert_called_once()
 
     @pytest.mark.parametrize(
         "relationship_type, symbol",
@@ -271,4 +265,4 @@ class TestPlantUMLTestRelationship:
         ],
     )
     def test_get_rel_symbol(self, relationship_type, symbol):
-        assert engine.get_rel_symbol(relationship_type=relationship_type) == symbol
+        assert target.get_rel_symbol(relationship_type=relationship_type) == symbol

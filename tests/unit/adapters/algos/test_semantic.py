@@ -3,10 +3,14 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from dbterd.adapters.algos import semantic
-from dbterd.adapters.meta import Ref
+from dbterd.adapters.algos.semantic import SemanticAlgorithm
 from dbterd.adapters.targets import dbml as engine
+from dbterd.core.meta import Ref
 from tests.unit.adapters.algos import DummyManifestRel, DummyManifestTable
+
+
+# Create instance for tests
+semantic_algorithm = SemanticAlgorithm()
 
 
 class TestAlgoSemantic:
@@ -98,7 +102,8 @@ class TestAlgoSemantic:
         ],
     )
     def test_get_relationships_from_metadata(self, data, expected):
-        assert semantic._get_relationships_from_metadata(data=data) == expected
+        semantic_algorithm = SemanticAlgorithm()
+        assert semantic_algorithm.get_relationships_from_metadata(data=data) == expected
 
     @pytest.mark.parametrize(
         "manifest, expected",
@@ -125,11 +130,13 @@ class TestAlgoSemantic:
         ],
     )
     def test_get_relationships(self, manifest, expected):
-        assert semantic._get_relationships(manifest=manifest) == expected
+        assert semantic_algorithm.get_relationships(manifest=manifest) == expected
 
     def test_find_related_nodes_by_id(self):
         assert sorted(["model.dbt_resto.table1", "model.dbt_resto.table2"]) == sorted(
-            semantic.find_related_nodes_by_id(manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.table2")
+            semantic_algorithm.find_related_nodes_by_id(
+                manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.table2"
+            )
         )
         assert sorted(
             [
@@ -138,22 +145,22 @@ class TestAlgoSemantic:
                 "model.dbt_resto.tablex",
             ]
         ) == sorted(
-            semantic.find_related_nodes_by_id(manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.table1")
+            semantic_algorithm.find_related_nodes_by_id(
+                manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.table1"
+            )
         )
-        assert semantic.find_related_nodes_by_id(
+        assert semantic_algorithm.find_related_nodes_by_id(
             manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.not-exists"
         ) == ["model.dbt_resto.not-exists"]
 
     def test_parse(self):
         with (
-            mock.patch(
-                "dbterd.adapters.algos.base.get_tables",
-            ) as mock_get_tables,
-            mock.patch(
-                "dbterd.adapters.algos.semantic._get_relationships",
-            ) as mock_get_relationships,
+            mock.patch("dbterd.core.registry.manager.registry.get_parser", return_value=semantic_algorithm),
+            mock.patch.object(semantic_algorithm, "get_tables") as mock_get_tables,
+            mock.patch.object(semantic_algorithm, "get_relationships") as mock_get_relationships,
         ):
-            engine.parse(
+            dbml_target = engine.DBMLTarget()
+            dbml_target.get_erd_data(
                 manifest="--manifest--",
                 catalog="--catalog--",
                 select=[],
@@ -167,14 +174,12 @@ class TestAlgoSemantic:
 
     def test_parse_metadata(self):
         with (
-            mock.patch(
-                "dbterd.adapters.algos.base.get_tables_from_metadata",
-            ) as mock_get_tables,
-            mock.patch(
-                "dbterd.adapters.algos.semantic._get_relationships_from_metadata",
-            ) as mock_get_relationships,
+            mock.patch("dbterd.core.registry.manager.registry.get_parser", return_value=semantic_algorithm),
+            mock.patch.object(semantic_algorithm, "get_tables_from_metadata") as mock_get_tables,
+            mock.patch.object(semantic_algorithm, "get_relationships_from_metadata") as mock_get_relationships,
         ):
-            engine.parse(
+            dbml_target = engine.DBMLTarget()
+            dbml_target.get_erd_data(
                 manifest=[],
                 catalog="metadata",
                 select=[],

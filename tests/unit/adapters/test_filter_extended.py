@@ -1,5 +1,5 @@
-from dbterd.adapters import filter
-from dbterd.adapters.meta import Table
+from dbterd.core import filter
+from dbterd.core.meta import Table
 
 
 class TestFilterExtended:

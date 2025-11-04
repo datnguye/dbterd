@@ -6,21 +6,20 @@ import click
 import pytest
 
 from dbterd import default
-from dbterd.adapters.base import Executor
-from dbterd.adapters.dbt_core.dbt_invocation import DbtInvocation
-from dbterd.adapters.targets import dbml
+from dbterd.core.base import Executor
+from dbterd.plugins.dbt_core.dbt_invocation import DbtInvocation
 
 
 class TestBase:
-    @mock.patch("dbterd.adapters.base.Executor.evaluate_kwargs")
-    @mock.patch("dbterd.adapters.base.Executor._Executor__run_metadata_by_strategy")
+    @mock.patch("dbterd.core.base.Executor.evaluate_kwargs")
+    @mock.patch("dbterd.core.base.Executor._Executor__run_metadata_by_strategy")
     def test_run_metadata(self, mock_run_metadata_by_strategy, mock_evaluate_kwargs):
         Executor(ctx=click.Context(command=click.Command("dummy"))).run_metadata()
         mock_evaluate_kwargs.assert_called_once()
         mock_run_metadata_by_strategy.assert_called_once()
 
-    @mock.patch("dbterd.adapters.base.DbtCloudMetadata.query_erd_data")
-    @mock.patch("dbterd.adapters.base.Executor._Executor__save_result")
+    @mock.patch("dbterd.core.base.DbtCloudMetadata.query_erd_data")
+    @mock.patch("dbterd.core.base.Executor._Executor__save_result")
     def test___run_metadata_by_strategy(self, mock_query_erd_data, mock_save_result):
         Executor(ctx=click.Context(command=click.Command("dummy")))._Executor__run_metadata_by_strategy(
             target="dbml", algo="test_relationship"
@@ -28,14 +27,14 @@ class TestBase:
         mock_query_erd_data.assert_called_once()
         mock_save_result.assert_called_once()
 
-    @mock.patch("dbterd.adapters.base.DbtCloudMetadata.query_erd_data")
-    @mock.patch("dbterd.adapters.base.Executor._Executor__save_result")
+    @mock.patch("dbterd.core.base.DbtCloudMetadata.query_erd_data")
+    @mock.patch("dbterd.core.base.Executor._Executor__save_result")
     def test___run_metadata_by_strategy_with_not_implemented_algo(self, mock_save_result, mock_query_erd_data):
         with pytest.raises(Exception) as excinfo:
             Executor(ctx=click.Context(command=click.Command("dummy")))._Executor__run_metadata_by_strategy(
                 target="dbml", algo="notfound"
             )
-        assert "Could not find adapter algo" in str(excinfo.value)
+        assert "Parser 'notfound' not found in registry" in str(excinfo.value)
         mock_query_erd_data.assert_called_once()
         assert mock_save_result.call_count == 0
 
@@ -46,10 +45,10 @@ class TestBase:
         )
         mock_open.assert_called_once_with("irrelevant/file_name", "w")
 
-    @mock.patch("dbterd.adapters.base.DbtCloudArtifact.get")
-    @mock.patch("dbterd.adapters.base.Executor._Executor__read_manifest")
-    @mock.patch("dbterd.adapters.base.Executor._Executor__read_catalog")
-    @mock.patch("dbterd.adapters.base.Executor._Executor__save_result")
+    @mock.patch("dbterd.core.base.DbtCloudArtifact.get")
+    @mock.patch("dbterd.core.base.Executor._Executor__read_manifest")
+    @mock.patch("dbterd.core.base.Executor._Executor__read_catalog")
+    @mock.patch("dbterd.core.base.Executor._Executor__save_result")
     def test___run_by_strategy_w_dbt_cloud(
         self,
         mock_cloud_artifact_get,
@@ -118,14 +117,14 @@ class TestBase:
             assert mock_default_catalog_version.call_count == 0
         mock_read_catalog.assert_called_once_with(path=Path.cwd(), version=expected_version, enable_compat_patch=False)
 
-    @mock.patch("dbterd.adapters.base.DbtInvocation.get_selection", return_value="dummy")
+    @mock.patch("dbterd.core.base.DbtInvocation.get_selection", return_value="dummy")
     def test__get_selection(self, mock_dbt_invocation):
         worker = Executor(ctx=click.Context(command=click.Command("dummy")))
         worker.dbt = DbtInvocation()
         assert worker._Executor__get_selection(select_rules=[], exclude_rules=[]) == "dummy"
         mock_dbt_invocation.assert_called_once()
 
-    @mock.patch("dbterd.adapters.base.DbtInvocation.get_selection", return_value="dummy")
+    @mock.patch("dbterd.core.base.DbtInvocation.get_selection", return_value="dummy")
     def test__get_selection__error(self, mock_dbt_invocation):
         worker = Executor(ctx=click.Context(command=click.Command("dummy")))
         with pytest.raises(click.UsageError):
@@ -199,10 +198,10 @@ class TestBase:
             ),
         ],
     )
-    @mock.patch("dbterd.adapters.base.Executor._Executor__check_if_any_unsupported_selection")
-    @mock.patch("dbterd.adapters.base.Executor._Executor__get_dir")
-    @mock.patch("dbterd.adapters.base.Executor._Executor__get_selection")
-    @mock.patch("dbterd.adapters.base.DbtInvocation.get_artifacts_for_erd")
+    @mock.patch("dbterd.core.base.Executor._Executor__check_if_any_unsupported_selection")
+    @mock.patch("dbterd.core.base.Executor._Executor__get_dir")
+    @mock.patch("dbterd.core.base.Executor._Executor__get_selection")
+    @mock.patch("dbterd.core.base.DbtInvocation.get_artifacts_for_erd")
     def test_evaluate_kwargs(
         self,
         mock_get_artifacts_for_erd,
@@ -272,34 +271,35 @@ class TestBase:
             manifest="irrelevant", node_unique_id=None, **{"i": "irr"}
         ) == {"i": "irr"}
 
-    @mock.patch("dbterd.adapters.algos.test_relationship.find_related_nodes_by_id")
-    def test__set_single_node_selection(self, mock_find_related_nodes_by_id):
+    @mock.patch("dbterd.core.registry.registry.get_parser")
+    def test__set_single_node_selection(self, mock_get_parser):
         worker = Executor(ctx=click.Context(command=click.Command("dummy")))
-        mock_find_related_nodes_by_id.return_value = ["irr"]
+        mock_algorithm = mock.Mock()
+        mock_algorithm.find_related_nodes_by_id.return_value = ["irr"]
+        mock_get_parser.return_value = mock_algorithm
         assert worker._Executor__set_single_node_selection(
             manifest="irrelevant",
             node_unique_id="irrelevant",
             **{"algo": "test_relationship"},
         ) == {"algo": "test_relationship", "select": ["irr"], "exclude": []}
-        assert mock_find_related_nodes_by_id.call_count == 1
+        assert mock_algorithm.find_related_nodes_by_id.call_count == 1
 
-    @mock.patch("dbterd.adapters.targets.dbml.run")
-    @mock.patch("dbterd.adapters.base.Executor._Executor__get_operation")
-    @mock.patch("dbterd.adapters.base.Executor._Executor__read_manifest")
-    @mock.patch("dbterd.adapters.base.Executor._Executor__read_catalog")
-    @mock.patch("dbterd.adapters.base.Executor._Executor__set_single_node_selection")
+    @mock.patch("dbterd.core.base.Executor._Executor__get_operation")
+    @mock.patch("dbterd.core.base.Executor._Executor__read_manifest")
+    @mock.patch("dbterd.core.base.Executor._Executor__read_catalog")
+    @mock.patch("dbterd.core.base.Executor._Executor__set_single_node_selection")
     def test__run_by_strategy__for_api_simple(
         self,
         mock_set_single_node_selection,
         mock_read_catalog,
         mock_read_manifest,
         mock_get_operation,
-        mock_dbml_run,
     ):
         worker = Executor(ctx=click.Context(command=click.Command("dummy")))
 
         mock_parent = mock.Mock()
-        mock_get_operation.return_value = dbml.run
+        mock_run_func = mock.Mock(return_value=("irr", {"i": "irr"}))
+        mock_get_operation.return_value = mock_run_func
         mock_parent.attach_mock(mock_get_operation, "mock_get_operation")
         mock_read_catalog.return_value = {}
         mock_parent.attach_mock(mock_read_catalog, "mock_read_catalog")
@@ -307,8 +307,7 @@ class TestBase:
         mock_parent.attach_mock(mock_read_manifest, "mock_read_manifest")
         mock_set_single_node_selection.return_value = {"api": True}
         mock_parent.attach_mock(mock_set_single_node_selection, "mock_set_single_node_selection")
-        mock_dbml_run.return_value = ("irr", {"i": "irr"})
-        mock_parent.attach_mock(mock_dbml_run, "mock_dbml_run")
+        mock_parent.attach_mock(mock_run_func, "mock_run_func")
 
         assert worker._Executor__run_by_strategy(node_unique_id="irr") == {"i": "irr"}
         assert mock_parent.mock_calls == [
@@ -316,5 +315,5 @@ class TestBase:
             mock.call.mock_read_catalog(cp=None, cv=None, bypass_validation=None),
             mock.call.mock_set_single_node_selection(manifest={}, node_unique_id="irr"),
             mock.call.mock_get_operation({"api": True}),
-            mock.call.mock_dbml_run(manifest={}, catalog={}, **{"api": True}),
+            mock.call.mock_run_func(manifest={}, catalog={}, **{"api": True}),
         ]

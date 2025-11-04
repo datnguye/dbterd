@@ -1,65 +1,65 @@
-from dbterd.adapters import adapter
+from dbterd.adapters.targets._protocol import TargetProtocol
+from dbterd.core.registry import register_target
 from dbterd.types import Catalog, Manifest
 
 
-def run(manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[str, str]:
+@register_target("d2")
+class D2Target(TargetProtocol):
+    """D2 diagram target.
+
+    This target generates D2 diagram output for visualizing dbt models.
     """
-    Parse dbt artifacts and export D2 file.
 
-    Args:
-        manifest (dict): Manifest json
-        catalog (dict): Catalog json
+    @property
+    def name(self) -> str:
+        """Return the target format name."""
+        return "d2"
 
-    Returns:
-        Tuple(str, str): File name and the D2 content
+    @property
+    def file_extension(self) -> str:
+        """Return the default file extension."""
+        return ".d2"
 
-    """
-    output_file_name = kwargs.get("output_file_name") or "output.d2"
-    return (output_file_name, parse(manifest, catalog, **kwargs))
+    def get_erd_text(self, manifest: Manifest, catalog: Catalog, **kwargs) -> str:
+        """
+        Get the D2 content from dbt artifacts.
 
+        Args:
+            manifest (dict): Manifest json
+            catalog (dict): Catalog json
 
-def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
-    """
-    Get the D2 content from dbt artifacts.
+        Returns:
+            str: D2 content
 
-    Args:
-        manifest (dict): Manifest json
-        catalog (dict): Catalog json
+        """
+        tables, relationships = self.get_erd_data(manifest=manifest, catalog=catalog, **kwargs)
 
-    Returns:
-        str: D2 content
+        # Build D2 content
+        # https://play.d2lang.com/?script=qlDQtVOo5AIEAAD__w%3D%3D&, https://github.com/terrastruct/d2
+        d2 = ""
+        for table in tables:
+            d2 += '"{table}": {{\n  shape: sql_table\n{columns}\n}}\n'.format(
+                table=table.name,
+                columns="\n".join([f"  {x.name}: {x.data_type}" for x in table.columns]),
+            )
 
-    """
-    algo_module = adapter.load_algo(name=kwargs["algo"])
-    tables, relationships = algo_module.parse(manifest=manifest, catalog=catalog, **kwargs)
+        for rel in relationships:
+            key_from = f'"{rel.table_map[1]}"'
+            key_to = f'"{rel.table_map[0]}"'
+            connector = f"{rel.column_map[1]} = {rel.column_map[0]}"
+            d2 += f'{key_from} {self.get_rel_symbol(rel.type)} {key_to}: "{connector}"\n'
 
-    # Build D2 content
-    # https://play.d2lang.com/?script=qlDQtVOo5AIEAAD__w%3D%3D&, https://github.com/terrastruct/d2
-    d2 = ""
-    for table in tables:
-        d2 += '"{table}": {{\n  shape: sql_table\n{columns}\n}}\n'.format(
-            table=table.name,
-            columns="\n".join([f"  {x.name}: {x.data_type}" for x in table.columns]),
-        )
+        return d2
 
-    for rel in relationships:
-        key_from = f'"{rel.table_map[1]}"'
-        key_to = f'"{rel.table_map[0]}"'
-        connector = f"{rel.column_map[1]} = {rel.column_map[0]}"
-        d2 += f'{key_from} {get_rel_symbol(rel.type)} {key_to}: "{connector}"\n'
+    def get_rel_symbol(self, relationship_type: str) -> str:
+        """
+        Get D2 relationship symbol.
 
-    return d2
+        Args:
+            relationship_type (str): relationship type
 
+        Returns:
+            str: Relation symbol supported in D2
 
-def get_rel_symbol(relationship_type: str) -> str:
-    """
-    Get D2 relationship symbol.
-
-    Args:
-        relationship_type (str): relationship type
-
-    Returns:
-        str: Relation symbol supported in D2
-
-    """
-    return "->"  # no supports for rel type
+        """
+        return "->"  # no supports for rel type
