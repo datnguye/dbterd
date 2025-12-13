@@ -1,51 +1,58 @@
-from dbterd.adapters import adapter
-from dbterd.types import Catalog, Manifest
+"""GraphViz target adapter for dbterd.
+
+This module converts parsed dbt artifacts into GraphViz DOT format
+for visualization with GraphViz tools.
+"""
+
+from typing import ClassVar
+
+from dbterd.core.adapters.target import BaseTargetAdapter
+from dbterd.core.builder.text_builder import TextERDBuilder
+from dbterd.core.models import Ref, Table
+from dbterd.core.registry.decorators import register_target
 
 
-def run(manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[str, str]:
+@register_target("graphviz", description="GraphViz DOT format")
+class GraphvizAdapter(BaseTargetAdapter):
+    """GraphViz format target adapter.
+
+    Generates GraphViz DOT syntax for rendering with GraphViz tools.
+    https://dreampuf.github.io/GraphvizOnline/, https://graphviz.org/
     """
-    Parse dbt artifacts and export GraphViz file.
 
-    Args:
-        manifest (dict): Manifest json
-        catalog (dict): Catalog json
+    file_extension = ".graphviz"
+    default_filename = "output.graphviz"
 
-    Returns:
-        Tuple(str, str): File name and the GraphViz content
+    RELATIONSHIP_SYMBOLS: ClassVar[dict[str, str]] = {}
+    DEFAULT_SYMBOL = "->"  # GraphViz doesn't support relationship type symbols
 
-    """
-    output_file_name = kwargs.get("output_file_name") or "output.graphviz"
-    return (output_file_name, parse(manifest, catalog, **kwargs))
+    def build_erd(self, tables: list[Table], relationships: list[Ref], **kwargs) -> str:
+        """Build GraphViz DOT content."""
+        builder = TextERDBuilder()
 
+        header = (
+            "digraph g {\n"
+            '  fontname="Helvetica,Arial,sans-serif"\n'
+            '  node [fontname="Helvetica,Arial,sans-serif"]\n'
+            '  edge [fontname="Helvetica,Arial,sans-serif"]\n'
+            '  graph [fontsize=30 labelloc="t" label="" splines=true overlap=false rankdir="LR"];\n'
+            "  ratio=auto;"
+        )
+        builder.add_header(header)
+        builder.add_tables(tables, lambda t: self.format_table(t, **kwargs))
+        builder.add_relationships(relationships, lambda r: self.format_relationship(r, **kwargs))
+        builder.add_footer("}")
 
-def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
-    """
-    Get the GraphViz content from dbt artifacts.
+        return builder.build()
 
-    Args:
-        manifest (dict): Manifest json
-        catalog (dict): Catalog json
+    def format_table(self, table: Table, **kwargs) -> str:
+        """Format a single table in GraphViz syntax."""
+        columns = "\n".join(
+            f'         <tr><td align="left">({col.data_type}) {col.name}</td></tr>' for col in table.columns
+        )
 
-    Returns:
-        str: GraphViz content
-
-    """
-    algo_module = adapter.load_algo(name=kwargs["algo"])
-    tables, relationships = algo_module.parse(manifest=manifest, catalog=catalog, **kwargs)
-
-    # Build GraphViz content
-    # https://dreampuf.github.io/GraphvizOnline/, https://graphviz.org/
-    graphviz = (
-        "digraph g {\n"
-        '  fontname="Helvetica,Arial,sans-serif"\n'
-        '  node [fontname="Helvetica,Arial,sans-serif"]\n'
-        '  edge [fontname="Helvetica,Arial,sans-serif"]\n'
-        '  graph [fontsize=30 labelloc="t" label="" splines=true overlap=false rankdir="LR"];\n'
-        "  ratio=auto;\n"
-    )
-    for table in tables:
-        graphviz += (
-            '  "{table}" [\n'
+        return (
+            f'  "{table.name}" [\n'
             '    style = "filled, bold"\n'
             "    penwidth = 1\n"
             '    fillcolor = "white"\n'
@@ -53,43 +60,24 @@ def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
             '    shape = "Mrecord"\n'
             "    label =<\n"
             '      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">\n'
-            '         <tr><td bgcolor="black" align="center" colspan="2">'
-            '<font color="white">{table}</font></td></tr>\n{columns}\n'
-            "      </table>> ];\n"
-        ).format(
-            table=table.name,
-            columns="\n".join(
-                [f'         <tr><td align="left">({x.data_type}) {x.name}</td></tr>' for x in table.columns]
-            ),
+            f'         <tr><td bgcolor="black" align="center" colspan="2">'
+            f'<font color="white">{table.name}</font></td></tr>\n'
+            f"{columns}\n"
+            "      </table>> ];"
         )
 
-    for rel in relationships:
-        key_from = f'"{rel.table_map[1]}"'
-        key_to = f'"{rel.table_map[0]}"'
-        connector = f"{rel.column_map[1]} = {rel.column_map[0]}"
-        graphviz += (
-            f"  {key_from} {get_rel_symbol(rel.type)} {key_to} [ \n"
+    def format_relationship(self, relationship: Ref, **kwargs) -> str:
+        """Format a single relationship in GraphViz syntax."""
+        key_from = f'"{relationship.table_map[1]}"'
+        key_to = f'"{relationship.table_map[0]}"'
+        connector = f"{relationship.column_map[1]} = {relationship.column_map[0]}"
+        symbol = self.get_rel_symbol(relationship.type)
+
+        return (
+            f"  {key_from} {symbol} {key_to} [ \n"
             "    penwidth = 1\n"
             "    fontsize = 12\n"
             '    fontcolor = "black"\n'
             f'    label = "{connector}"\n'
-            "  ];\n"
+            "  ];"
         )
-
-    graphviz += "}"
-
-    return graphviz
-
-
-def get_rel_symbol(relationship_type: str) -> str:
-    """
-    Get GraphViz relationship symbol.
-
-    Args:
-        relationship_type (str): relationship type
-
-    Returns:
-        str: Relation symbol supported in GraphViz
-
-    """
-    return "->"  # no supports for rel type

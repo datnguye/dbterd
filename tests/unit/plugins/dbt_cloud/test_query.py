@@ -1,4 +1,4 @@
-from dbterd.adapters.dbt_cloud.query import Query
+from dbterd.plugins.dbt_cloud.query import Query
 
 
 class TestQuery:

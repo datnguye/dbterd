@@ -1,6 +1,6 @@
-from dbterd.adapters.dbt_cloud.graphql import GraphQLHelper
-from dbterd.adapters.dbt_cloud.query import Query
 from dbterd.helpers.log import logger
+from dbterd.plugins.dbt_cloud.graphql import GraphQLHelper
+from dbterd.plugins.dbt_cloud.query import Query
 
 
 class DbtCloudMetadata:

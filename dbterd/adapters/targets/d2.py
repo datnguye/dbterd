@@ -1,65 +1,48 @@
-from dbterd.adapters import adapter
-from dbterd.types import Catalog, Manifest
+"""D2 target adapter for dbterd.
+
+This module converts parsed dbt artifacts into D2 diagram format
+for visualization with D2 tools.
+"""
+
+from typing import ClassVar
+
+from dbterd.core.adapters.target import BaseTargetAdapter
+from dbterd.core.builder.text_builder import TextERDBuilder
+from dbterd.core.models import Ref, Table
+from dbterd.core.registry.decorators import register_target
 
 
-def run(manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[str, str]:
+@register_target("d2", description="D2 diagram format")
+class D2Adapter(BaseTargetAdapter):
+    """D2 format target adapter.
+
+    Generates D2 diagram syntax for rendering with D2 tools.
+    https://play.d2lang.com/, https://github.com/terrastruct/d2
     """
-    Parse dbt artifacts and export D2 file.
 
-    Args:
-        manifest (dict): Manifest json
-        catalog (dict): Catalog json
+    file_extension = ".d2"
+    default_filename = "output.d2"
 
-    Returns:
-        Tuple(str, str): File name and the D2 content
+    RELATIONSHIP_SYMBOLS: ClassVar[dict[str, str]] = {}
+    DEFAULT_SYMBOL = "->"  # D2 doesn't support relationship type symbols
 
-    """
-    output_file_name = kwargs.get("output_file_name") or "output.d2"
-    return (output_file_name, parse(manifest, catalog, **kwargs))
+    def build_erd(self, tables: list[Table], relationships: list[Ref], **kwargs) -> str:
+        """Build D2 diagram content."""
+        builder = TextERDBuilder()
+        builder.add_tables(tables, lambda t: self.format_table(t, **kwargs))
+        builder.add_relationships(relationships, lambda r: self.format_relationship(r, **kwargs))
 
+        return builder.build()
 
-def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
-    """
-    Get the D2 content from dbt artifacts.
+    def format_table(self, table: Table, **kwargs) -> str:
+        """Format a single table in D2 syntax."""
+        columns = "\n".join(f"  {col.name}: {col.data_type}" for col in table.columns)
+        return f'"{table.name}": {{\n  shape: sql_table\n{columns}\n}}'
 
-    Args:
-        manifest (dict): Manifest json
-        catalog (dict): Catalog json
-
-    Returns:
-        str: D2 content
-
-    """
-    algo_module = adapter.load_algo(name=kwargs["algo"])
-    tables, relationships = algo_module.parse(manifest=manifest, catalog=catalog, **kwargs)
-
-    # Build D2 content
-    # https://play.d2lang.com/?script=qlDQtVOo5AIEAAD__w%3D%3D&, https://github.com/terrastruct/d2
-    d2 = ""
-    for table in tables:
-        d2 += '"{table}": {{\n  shape: sql_table\n{columns}\n}}\n'.format(
-            table=table.name,
-            columns="\n".join([f"  {x.name}: {x.data_type}" for x in table.columns]),
-        )
-
-    for rel in relationships:
-        key_from = f'"{rel.table_map[1]}"'
-        key_to = f'"{rel.table_map[0]}"'
-        connector = f"{rel.column_map[1]} = {rel.column_map[0]}"
-        d2 += f'{key_from} {get_rel_symbol(rel.type)} {key_to}: "{connector}"\n'
-
-    return d2
-
-
-def get_rel_symbol(relationship_type: str) -> str:
-    """
-    Get D2 relationship symbol.
-
-    Args:
-        relationship_type (str): relationship type
-
-    Returns:
-        str: Relation symbol supported in D2
-
-    """
-    return "->"  # no supports for rel type
+    def format_relationship(self, relationship: Ref, **kwargs) -> str:
+        """Format a single relationship in D2 syntax."""
+        key_from = f'"{relationship.table_map[1]}"'
+        key_to = f'"{relationship.table_map[0]}"'
+        connector = f"{relationship.column_map[1]} = {relationship.column_map[0]}"
+        symbol = self.get_rel_symbol(relationship.type)
+        return f'{key_from} {symbol} {key_to}: "{connector}"'

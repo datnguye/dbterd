@@ -1,10 +1,7 @@
-import contextlib
-from unittest import mock
-
 import pytest
 
-from dbterd.adapters.meta import Column, Ref, Table
-from dbterd.adapters.targets import graphviz as engine
+from dbterd.adapters.targets.graphviz import GraphvizAdapter
+from dbterd.core.models import Column, Ref, Table
 
 
 class TestGraphVizTestRelationship:
@@ -47,6 +44,7 @@ class TestGraphVizTestRelationship:
                 }
                 """,
             ),
+            # Test with multiple tables and relationships (enriched columns from algo adapter)
             (
                 [
                     Table(
@@ -54,7 +52,10 @@ class TestGraphVizTestRelationship:
                         node_name="model.dbt_resto.table1",
                         database="--database--",
                         schema="--schema--",
-                        columns=[Column(name="name1", data_type="name1-type")],
+                        columns=[
+                            Column(name="name1", data_type="name1-type"),
+                            Column(name="name-notexist1", data_type="unknown"),
+                        ],
                         raw_sql="--irrelevant--",
                     ),
                     Table(
@@ -62,7 +63,10 @@ class TestGraphVizTestRelationship:
                         node_name="model.dbt_resto.table2",
                         database="--database2--",
                         schema="--schema2--",
-                        columns=[Column(name="name2", data_type="name2-type2")],
+                        columns=[
+                            Column(name="name2", data_type="name2-type2"),
+                            Column(name="name-notexist2", data_type="unknown"),
+                        ],
                         raw_sql="--irrelevant--",
                     ),
                     Table(
@@ -148,6 +152,7 @@ class TestGraphVizTestRelationship:
                 }
                 """,
             ),
+            # Test with single table (pre-filtered by schema)
             (
                 [
                     Table(
@@ -158,25 +163,11 @@ class TestGraphVizTestRelationship:
                         columns=[Column(name="name1", data_type="name1-type")],
                         raw_sql="--irrelevant--",
                     ),
-                    Table(
-                        name="model.dbt_resto.table2",
-                        node_name="model.dbt_resto.table2",
-                        database="--database2--",
-                        schema="--schema2--",
-                        columns=[Column(name="name2", data_type="name2-type2")],
-                        raw_sql="--irrelevant--",
-                    ),
                 ],
-                [
-                    Ref(
-                        name="test.dbt_resto.relationships_table1",
-                        table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
-                        column_map=["name2", "name1"],
-                    )
-                ],
-                ["schema:--schema--"],
                 [],
-                ["model", "source"],
+                [],
+                [],
+                ["model"],
                 """digraph g {
                     fontname="Helvetica,Arial,sans-serif"
                     node [fontname="Helvetica,Arial,sans-serif"]
@@ -198,20 +189,12 @@ class TestGraphVizTestRelationship:
                 }
                 """,
             ),
+            # Test with empty tables (all excluded)
             (
-                [
-                    Table(
-                        name="model.dbt_resto.table1",
-                        node_name="model.dbt_resto.table1",
-                        database="--database--",
-                        schema="--schema--",
-                        columns=[Column(name="name1", data_type="name1-type")],
-                        raw_sql="--irrelevant--",
-                    )
-                ],
                 [],
                 [],
-                ["model.dbt_resto.table1"],
+                [],
+                [],
                 ["model"],
                 """digraph g {
                     fontname="Helvetica,Arial,sans-serif"
@@ -222,6 +205,7 @@ class TestGraphVizTestRelationship:
                 }
                 """,
             ),
+            # Test with single table (table2 pre-excluded)
             (
                 [
                     Table(
@@ -232,18 +216,10 @@ class TestGraphVizTestRelationship:
                         columns=[Column(name="name1", data_type="name1-type")],
                         raw_sql="--irrelevant--",
                     ),
-                    Table(
-                        name="model.dbt_resto.table2",
-                        node_name="model.dbt_resto.table2",
-                        database="--database--",
-                        schema="--schema--",
-                        columns=[Column(name="name2", data_type="name2-type")],
-                        raw_sql="--irrelevant--",
-                    ),
                 ],
                 [],
-                ["model.dbt_resto"],
-                ["model.dbt_resto.table2"],
+                [],
+                [],
                 ["model"],
                 """digraph g {
                     fontname="Helvetica,Arial,sans-serif"
@@ -302,6 +278,7 @@ class TestGraphVizTestRelationship:
                 }
                 """,
             ),
+            # Test with single table (table2 pre-excluded by wildcard)
             (
                 [
                     Table(
@@ -312,18 +289,10 @@ class TestGraphVizTestRelationship:
                         columns=[Column(name="name1", data_type="name1-type")],
                         raw_sql="--irrelevant--",
                     ),
-                    Table(
-                        name="model.dbt_resto.table2",
-                        node_name="model.dbt_resto.table2",
-                        database="--database--",
-                        schema="--schema--",
-                        columns=[Column(name="name2", data_type="name2-type")],
-                        raw_sql="--irrelevant--",
-                    ),
                 ],
                 [],
-                ["schema:--schema--,wildcard:*dbt_resto.table*"],
-                ["wildcard:*table2"],
+                [],
+                [],
                 ["model"],
                 """digraph g {
                     fontname="Helvetica,Arial,sans-serif"
@@ -348,33 +317,12 @@ class TestGraphVizTestRelationship:
             ),
         ],
     )
-    def test_parse(self, tables, relationships, select, exclude, resource_type, expected):
-        with contextlib.ExitStack() as stack:
-            mock_get_tables = stack.enter_context(
-                mock.patch(
-                    "dbterd.adapters.algos.base.get_tables",
-                    return_value=tables,
-                )
-            )
-            mock_get_relationships = stack.enter_context(
-                mock.patch(
-                    "dbterd.adapters.algos.base.get_relationships",
-                    return_value=relationships,
-                )
-            )
-            graphviz = engine.parse(
-                manifest="--manifest--",
-                catalog="--catalog--",
-                select=select,
-                exclude=exclude,
-                resource_type=resource_type,
-                algo="test_relationship",
-            )
-            print("graphviz ", graphviz.replace(" ", "").replace("\n", ""))
-            print("expected", expected.replace(" ", "").replace("\n", ""))
-            assert graphviz.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
-            mock_get_tables.assert_called_once()
-            mock_get_relationships.assert_called_once()
+    def test_build_erd(self, tables, relationships, select, exclude, resource_type, expected):
+        adapter = GraphvizAdapter()
+        graphviz = adapter.build_erd(tables=tables, relationships=relationships)
+        print("graphviz ", graphviz.replace(" ", "").replace("\n", ""))
+        print("expected", expected.replace(" ", "").replace("\n", ""))
+        assert graphviz.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
 
     @pytest.mark.parametrize(
         "relationship_type, symbol",
@@ -389,4 +337,5 @@ class TestGraphVizTestRelationship:
         ],
     )
     def test_get_rel_symbol(self, relationship_type, symbol):
-        assert engine.get_rel_symbol(relationship_type=relationship_type) == symbol
+        adapter = GraphvizAdapter()
+        assert adapter.get_rel_symbol(relationship_type=relationship_type) == symbol

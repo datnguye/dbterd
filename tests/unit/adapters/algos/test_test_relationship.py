@@ -4,8 +4,8 @@ from unittest.mock import MagicMock
 import click
 import pytest
 
-from dbterd.adapters.algos import base as base_algo, test_relationship
-from dbterd.adapters.meta import Column, Ref, Table
+from dbterd.adapters.algos.test_relationship import TestRelationshipAlgo
+from dbterd.core.models import Column, Ref, Table
 from tests.unit.adapters.algos import (
     DummyCatalogTable,
     DummyManifestError,
@@ -74,12 +74,13 @@ class TestAlgoTestRelationship:
         ],
     )
     def test_get_tables(self, manifest, catalog, expected):
+        algo = TestRelationshipAlgo()
         with mock.patch(
-            "dbterd.adapters.algos.base.get_compiled_sql",
+            "dbterd.core.adapters.algo.BaseAlgoAdapter.get_compiled_sql",
             return_value="--irrelevant--",
         ) as mock_get_compiled_sql:
             assert (
-                base_algo.get_tables(
+                algo.get_tables(
                     manifest,
                     catalog,
                     **{"entity_name_format": "resource.package.model"},
@@ -105,7 +106,8 @@ class TestAlgoTestRelationship:
         ],
     )
     def test_get_compiled(self, manifest, expected):
-        assert base_algo.get_compiled_sql(manifest_node=manifest).replace(" ", "").replace("\n", "") == str(
+        algo = TestRelationshipAlgo()
+        assert algo.get_compiled_sql(manifest_node=manifest).replace(" ", "").replace("\n", "") == str(
             expected
         ).replace(" ", "").replace("\n", "")
 
@@ -165,7 +167,8 @@ class TestAlgoTestRelationship:
         ],
     )
     def test_get_relationships(self, manifest, algorithm, expected):
-        assert base_algo.get_relationships(manifest=manifest, algo=algorithm) == expected
+        algo = TestRelationshipAlgo()
+        assert algo.get_relationships(manifest=manifest, algo=algorithm) == expected
 
     @pytest.mark.parametrize(
         "meta, type",
@@ -180,7 +183,8 @@ class TestAlgoTestRelationship:
         ],
     )
     def test_get_relationship_type(self, meta, type):
-        assert base_algo.get_relationship_type(meta=meta) == type
+        algo = TestRelationshipAlgo()
+        assert algo.get_relationship_type(meta=meta) == type
 
     @pytest.mark.parametrize(
         "manifest, expected",
@@ -199,7 +203,8 @@ class TestAlgoTestRelationship:
         ],
     )
     def test_get_node_exposures(self, manifest, expected):
-        assert expected == base_algo.get_node_exposures(manifest=manifest)
+        algo = TestRelationshipAlgo()
+        assert expected == algo.get_node_exposures(manifest=manifest)
 
     @pytest.mark.parametrize(
         "data, expected",
@@ -210,8 +215,8 @@ class TestAlgoTestRelationship:
             ([{"models": {"edges": []}, "sources": {"edges": []}}], []),
         ],
     )
-    @mock.patch("dbterd.adapters.algos.base.get_table_from_metadata")
-    @mock.patch("dbterd.adapters.algos.base.get_node_exposures_from_metadata")
+    @mock.patch("dbterd.core.adapters.algo.BaseAlgoAdapter.get_table_from_metadata")
+    @mock.patch("dbterd.core.adapters.algo.BaseAlgoAdapter.get_node_exposures_from_metadata")
     def test_get_tables_from_metadata_w_empty_data(
         self,
         mock_get_node_exposures_from_metadata,
@@ -219,7 +224,8 @@ class TestAlgoTestRelationship:
         data,
         expected,
     ):
-        assert expected == base_algo.get_tables_from_metadata(data=data, resource_type=["model", "source"])
+        algo = TestRelationshipAlgo()
+        assert expected == algo.get_tables_from_metadata(data=data, resource_type=["model", "source"])
         mock_get_node_exposures_from_metadata.assert_called_once()
         assert mock_get_table_from_metadata.call_count == 0
 
@@ -263,8 +269,8 @@ class TestAlgoTestRelationship:
             ),
         ],
     )
-    @mock.patch("dbterd.adapters.algos.base.get_table_from_metadata")
-    @mock.patch("dbterd.adapters.algos.base.get_node_exposures_from_metadata")
+    @mock.patch("dbterd.core.adapters.algo.BaseAlgoAdapter.get_table_from_metadata")
+    @mock.patch("dbterd.core.adapters.algo.BaseAlgoAdapter.get_node_exposures_from_metadata")
     def test_get_tables_from_metadata_w_1_data(
         self,
         mock_get_node_exposures_from_metadata,
@@ -273,7 +279,8 @@ class TestAlgoTestRelationship:
         data,
         get_table_from_metadata_call_count,
     ):
-        base_algo.get_tables_from_metadata(data=data, resource_type=resource_type)
+        algo = TestRelationshipAlgo()
+        algo.get_tables_from_metadata(data=data, resource_type=resource_type)
         mock_get_node_exposures_from_metadata.assert_called_once()
         assert mock_get_table_from_metadata.call_count == get_table_from_metadata_call_count
 
@@ -367,7 +374,8 @@ class TestAlgoTestRelationship:
         ],
     )
     def test_get_tables_from_metadata(self, data, kwargs, expected):
-        assert expected == base_algo.get_tables_from_metadata(data=data, **kwargs)
+        algo = TestRelationshipAlgo()
+        assert expected == algo.get_tables_from_metadata(data=data, **kwargs)
 
     @pytest.mark.parametrize(
         "model_metadata, exposures, kwargs, expected",
@@ -473,9 +481,8 @@ class TestAlgoTestRelationship:
         ],
     )
     def test_get_table_from_metadata(self, model_metadata, exposures, kwargs, expected):
-        assert expected == base_algo.get_table_from_metadata(
-            model_metadata=model_metadata, exposures=exposures, **kwargs
-        )
+        algo = TestRelationshipAlgo()
+        assert expected == algo.get_table_from_metadata(model_metadata=model_metadata, exposures=exposures, **kwargs)
 
     @pytest.mark.parametrize(
         "data, kwargs, expected",
@@ -532,7 +539,8 @@ class TestAlgoTestRelationship:
         ],
     )
     def test_get_node_exposures_from_metadata(self, data, kwargs, expected):
-        assert expected == base_algo.get_node_exposures_from_metadata(data=data, **kwargs)
+        algo = TestRelationshipAlgo()
+        assert expected == algo.get_node_exposures_from_metadata(data=data, **kwargs)
 
     @pytest.mark.parametrize(
         "data, kwargs, expected",
@@ -685,7 +693,8 @@ class TestAlgoTestRelationship:
         ],
     )
     def test_get_relationships_from_metadata(self, data, kwargs, expected):
-        assert expected == base_algo.get_relationships_from_metadata(data=data, **kwargs)
+        algo = TestRelationshipAlgo()
+        assert expected == algo.get_relationships_from_metadata(data=data, **kwargs)
 
     @pytest.mark.parametrize(
         "data, kwargs",
@@ -722,20 +731,21 @@ class TestAlgoTestRelationship:
         ],
     )
     def test_get_relationships_from_metadata_error(self, data, kwargs):
+        algo = TestRelationshipAlgo()
         with pytest.raises(click.BadParameter):
-            base_algo.get_relationships_from_metadata(data=data, **kwargs)
+            algo.get_relationships_from_metadata(data=data, **kwargs)
 
     def test_find_related_nodes_by_id_not_supported_type(self):
-        assert test_relationship.find_related_nodes_by_id(
-            manifest="irrelevant", type="metadata", node_unique_id="model.p.abc"
-        ) == ["model.p.abc"]
+        algo = TestRelationshipAlgo()
+        assert algo.find_related_nodes_by_id(manifest="irrelevant", type="metadata", node_unique_id="model.p.abc") == [
+            "model.p.abc"
+        ]
 
     def test_find_related_nodes_by_id(self):
+        algo = TestRelationshipAlgo()
         assert sorted(["model.dbt_resto.table1", "model.dbt_resto.table2"]) == sorted(
-            test_relationship.find_related_nodes_by_id(
-                manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.table2"
-            )
+            algo.find_related_nodes_by_id(manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.table2")
         )
-        assert test_relationship.find_related_nodes_by_id(
+        assert algo.find_related_nodes_by_id(
             manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.not-exists"
         ) == ["model.dbt_resto.not-exists"]

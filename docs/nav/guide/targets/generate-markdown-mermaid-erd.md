@@ -5,7 +5,7 @@
 <div class="termynal" data-ty-startDelay="600">
     <span data-ty="input" data-ty-prompt="$ ~/repo>">dbterd run -t mermaid -ad "samples/dbtresto" -s schema:dbt.mart</span>
     <span data-ty>2023-05-06 08:17:54,413 - dbterd - INFO - Run with dbterd==?.?.? (main.py:54)</span>
-    <span data-ty>2023-05-06 08:17:54,715 - dbterd - INFO - target/output.md (base.py:75)</span>
+    <span data-ty>2023-05-06 08:17:54,715 - dbterd - INFO - target/output.md (executor.py:75)</span>
 </div>
 
 ## 2. Copy mermaid to ERD.md

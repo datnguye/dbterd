@@ -1,10 +1,7 @@
-import contextlib
-from unittest import mock
-
 import pytest
 
-from dbterd.adapters.meta import Column, Ref, Table
-from dbterd.adapters.targets import mermaid as engine
+from dbterd.adapters.targets.mermaid import MermaidAdapter
+from dbterd.core.models import Column, Ref, Table
 
 
 class TestMermaidTestRelationship:
@@ -33,6 +30,7 @@ class TestMermaidTestRelationship:
                   }
                 """,
             ),
+            # Test with multiple tables and relationships (enriched columns from algo adapter)
             (
                 [
                     Table(
@@ -40,7 +38,10 @@ class TestMermaidTestRelationship:
                         node_name="model.dbt_resto.table1",
                         database="--database--",
                         schema="--schema--",
-                        columns=[Column(name="name1", data_type="name1-type")],
+                        columns=[
+                            Column(name="name1", data_type="name1-type"),
+                            Column(name="name-notexist1", data_type="unknown"),
+                        ],
                         raw_sql="--irrelevant--",
                     ),
                     Table(
@@ -48,7 +49,10 @@ class TestMermaidTestRelationship:
                         node_name="model.dbt_resto.table2",
                         database="--database2--",
                         schema="--schema2--",
-                        columns=[Column(name="name2", data_type="name2-type2")],
+                        columns=[
+                            Column(name="name2", data_type="name2-type2"),
+                            Column(name="name-notexist2", data_type="unknown"),
+                        ],
                         raw_sql="--irrelevant--",
                     ),
                     Table(
@@ -92,6 +96,7 @@ class TestMermaidTestRelationship:
                   "MODEL.DBT_RESTO.TABLE1" }|--|| "MODEL.DBT_RESTO.TABLE2": name-notexist2--name-notexist1
                 """,
             ),
+            # Test with single table (simulates filtering to only table1)
             (
                 [
                     Table(
@@ -102,25 +107,11 @@ class TestMermaidTestRelationship:
                         columns=[Column(name="name1", data_type="name1-type")],
                         raw_sql="--irrelevant--",
                     ),
-                    Table(
-                        name="model.dbt_resto.table2",
-                        node_name="model.dbt_resto.table2",
-                        database="--database2--",
-                        schema="--schema2--",
-                        columns=[Column(name="name2", data_type="name2-type2")],
-                        raw_sql="--irrelevant--",
-                    ),
                 ],
-                [
-                    Ref(
-                        name="test.dbt_resto.relationships_table1",
-                        table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
-                        column_map=["name2", "name1"],
-                    )
-                ],
-                ["schema:--schema--"],
                 [],
-                ["model", "source"],
+                [],
+                [],
+                ["model"],
                 False,
                 """erDiagram
                     "MODEL.DBT_RESTO.TABLE1" {
@@ -128,25 +119,18 @@ class TestMermaidTestRelationship:
                     }
                 """,
             ),
+            # Test with empty tables (simulates all tables excluded)
             (
-                [
-                    Table(
-                        name="model.dbt_resto.table1",
-                        node_name="model.dbt_resto.table1",
-                        database="--database--",
-                        schema="--schema--",
-                        columns=[Column(name="name1", data_type="name1-type")],
-                        raw_sql="--irrelevant--",
-                    )
-                ],
                 [],
                 [],
-                ["model.dbt_resto.table1"],
+                [],
+                [],
                 ["model"],
                 False,
                 """erDiagram
                 """,
             ),
+            # Test with single table (simulates select/exclude filtering)
             (
                 [
                     Table(
@@ -157,18 +141,10 @@ class TestMermaidTestRelationship:
                         columns=[Column(name="name1", data_type="name1-type")],
                         raw_sql="--irrelevant--",
                     ),
-                    Table(
-                        name="model.dbt_resto.table2",
-                        node_name="model.dbt_resto.table2",
-                        database="--database--",
-                        schema="--schema--",
-                        columns=[Column(name="name2", data_type="name2-type")],
-                        raw_sql="--irrelevant--",
-                    ),
                 ],
                 [],
-                ["model.dbt_resto"],
-                ["model.dbt_resto.table2"],
+                [],
+                [],
                 ["model"],
                 False,
                 """erDiagram
@@ -199,6 +175,7 @@ class TestMermaidTestRelationship:
                     }
                 """,
             ),
+            # Test with single table (simulates wildcard filtering)
             (
                 [
                     Table(
@@ -209,18 +186,10 @@ class TestMermaidTestRelationship:
                         columns=[Column(name="name1", data_type="name1-type")],
                         raw_sql="--irrelevant--",
                     ),
-                    Table(
-                        name="model.dbt_resto.table2",
-                        node_name="model.dbt_resto.table2",
-                        database="--database--",
-                        schema="--schema--",
-                        columns=[Column(name="name2", data_type="name2-type")],
-                        raw_sql="--irrelevant--",
-                    ),
                 ],
                 [],
-                ["schema:--schema--,wildcard:*dbt_resto.table*"],
-                ["wildcard:*table2"],
+                [],
+                [],
                 ["model"],
                 False,
                 """erDiagram
@@ -370,7 +339,7 @@ class TestMermaidTestRelationship:
             ),
         ],
     )
-    def test_parse(
+    def test_build_erd(
         self,
         tables,
         relationships,
@@ -380,33 +349,15 @@ class TestMermaidTestRelationship:
         omit_columns,
         expected,
     ):
-        with contextlib.ExitStack() as stack:
-            mock_get_tables = stack.enter_context(
-                mock.patch(
-                    "dbterd.adapters.algos.base.get_tables",
-                    return_value=tables,
-                )
-            )
-            mock_get_relationships = stack.enter_context(
-                mock.patch(
-                    "dbterd.adapters.algos.base.get_relationships",
-                    return_value=relationships,
-                )
-            )
-            mermaid = engine.parse(
-                manifest="--manifest--",
-                catalog="--catalog--",
-                select=select,
-                exclude=exclude,
-                omit_columns=omit_columns,
-                resource_type=resource_type,
-                algo="test_relationship",
-            )
-            print("mermaid ", mermaid.replace(" ", "").replace("\n", ""))
-            print("expected", expected.replace(" ", "").replace("\n", ""))
-            assert mermaid.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
-            mock_get_tables.assert_called_once()
-            mock_get_relationships.assert_called_once()
+        adapter = MermaidAdapter()
+        mermaid = adapter.build_erd(
+            tables=tables,
+            relationships=relationships,
+            omit_columns=omit_columns,
+        )
+        print("mermaid ", mermaid.replace(" ", "").replace("\n", ""))
+        print("expected", expected.replace(" ", "").replace("\n", ""))
+        assert mermaid.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
 
     @pytest.mark.parametrize(
         "relationship_type, symbol",
@@ -421,4 +372,5 @@ class TestMermaidTestRelationship:
         ],
     )
     def test_get_rel_symbol(self, relationship_type, symbol):
-        assert engine.get_rel_symbol(relationship_type=relationship_type) == symbol
+        adapter = MermaidAdapter()
+        assert adapter.get_rel_symbol(relationship_type=relationship_type) == symbol

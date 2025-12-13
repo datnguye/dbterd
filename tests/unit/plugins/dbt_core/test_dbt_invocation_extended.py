@@ -2,7 +2,7 @@ from unittest import mock
 
 from dbt.cli.main import dbtRunnerResult
 
-from dbterd.adapters.dbt_core.dbt_invocation import DbtInvocation
+from dbterd.plugins.dbt_core.dbt_invocation import DbtInvocation
 
 
 class TestDbtInvocationExtended:

@@ -6,12 +6,12 @@ from dbterd.api import DbtErd
 
 
 class TestDbtErd:
-    @mock.patch("dbterd.adapters.base.Executor.run")
+    @mock.patch("dbterd.core.executor.Executor.run")
     def test_get_erd(self, mock_executor_run):
         mock_executor_run.return_value = "expected-result"
         assert DbtErd().get_erd() == "expected-result"
 
-    @mock.patch("dbterd.adapters.base.Executor.run")
+    @mock.patch("dbterd.core.executor.Executor.run")
     def test_get_model_erd(self, mock_executor_run):
         mock_executor_run.return_value = "expected-result"
         assert DbtErd().get_model_erd(node_unique_id="any") == "expected-result"

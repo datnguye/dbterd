@@ -194,10 +194,10 @@ exclude_lines = [
     "pragma: no cover",
     # Don't complain about abstract methods
     "@abstractmethod",
-    # Don't complain about TYPE_CHECKING imports
-    "if TYPE_CHECKING:",
     # Don't complain if tests don't hit defensive assertion code
     "raise NotImplementedError",
+    # Don't complain about protocol method body ellipsis
+    "^\\s*\\.\\.\\.$",
 ]
 
 [tool.ruff]
@@ -286,4 +286,7 @@ addopts = "--strict-markers -v"  # Additional options (verbose output)
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks integration tests (deselect with '-m \"not integration\"')"
+]
+filterwarnings = [
+    "ignore::DeprecationWarning:dbt.*:",  # Ignore dbt library deprecation warnings
 ]

@@ -1,79 +1,63 @@
-from dbterd.adapters import adapter
-from dbterd.types import Catalog, Manifest
+"""PlantUML target adapter for dbterd.
+
+This module converts parsed dbt artifacts into PlantUML IE diagram format
+for visualization with PlantUML tools.
+"""
+
+from typing import ClassVar
+
+from dbterd.core.adapters.target import BaseTargetAdapter
+from dbterd.core.builder.text_builder import TextERDBuilder
+from dbterd.core.models import Ref, Table
+from dbterd.core.registry.decorators import register_target
 
 
-def run(manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[str, str]:
+@register_target("plantuml", description="PlantUML IE diagram format")
+class PlantumlAdapter(BaseTargetAdapter):
+    """PlantUML format target adapter.
+
+    Generates PlantUML IE diagram syntax for rendering with PlantUML tools.
+    https://plantuml.com/ie-diagram, https://www.plantuml.com/plantuml/uml
     """
-    Parse dbt artifacts and export PlantUML file.
 
-    Args:
-        manifest (dict): Manifest json
-        catalog (dict): Catalog json
+    file_extension = ".plantuml"
+    default_filename = "output.plantuml"
 
-    Returns:
-        Tuple(str, str): File name and the PlantUML content
+    RELATIONSHIP_SYMBOLS: ClassVar[dict[str, str]] = {
+        "01": "}o--||",
+        "11": "||--||",
+        "0n": "}o--|{",
+        "1n": "||--|{",
+        "nn": "}|--|{",
+    }
+    DEFAULT_SYMBOL = "}|--||"  # n1
 
-    """
-    output_file_name = kwargs.get("output_file_name") or "output.plantuml"
-    return (output_file_name, parse(manifest, catalog, **kwargs))
+    def build_erd(self, tables: list[Table], relationships: list[Ref], **kwargs) -> str:
+        """Build PlantUML IE diagram content."""
+        builder = TextERDBuilder()
+        builder.add_header("@startuml")
+        builder.add_tables(tables, lambda t: self.format_table(t, **kwargs))
 
+        # Track added relationships to avoid duplicates
+        added_relationships: set[str] = set()
+        for rel in relationships:
+            rel_str = self.format_relationship(rel, **kwargs)
+            if rel_str not in added_relationships:
+                builder.add_section(rel_str)
+                added_relationships.add(rel_str)
 
-def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
-    """
-    Get the PlantUML content from dbt artifacts.
+        builder.add_footer("@enduml")
+        return builder.build()
 
-    Args:
-        manifest (dict): Manifest json
-        catalog (dict): Catalog json
+    def format_table(self, table: Table, **kwargs) -> str:
+        """Format a single table in PlantUML syntax."""
+        columns = "\n".join(f"    {col.name} : {col.data_type}" for col in table.columns)
+        return f'entity "{table.name}" {{\n{columns}\n  }}'
 
-    Returns:
-        str: PlantUML content
-
-    """
-    algo_module = adapter.load_algo(name=kwargs["algo"])
-    tables, relationships = algo_module.parse(manifest=manifest, catalog=catalog, **kwargs)
-
-    # Build PlantUML content
-    # https://plantuml.com/ie-diagram, https://www.plantuml.com/plantuml/uml
-    plantuml = "@startuml\n"
-    for table in tables:
-        plantuml += 'entity "{table}" {{\n{columns}\n  }}\n'.format(
-            table=table.name,
-            columns="\n".join([f"    {x.name} : {x.data_type}" for x in table.columns]),
-        )
-
-    for rel in relationships:
-        key_from = f'"{rel.table_map[1]}"'
-        key_to = f'"{rel.table_map[0]}"'
-        # NOTE: plant uml doesn't have columns defined in the connector
-        new_rel = f"  {key_from} {get_rel_symbol(rel.type)} {key_to}\n"
-        if new_rel not in plantuml:
-            plantuml += new_rel
-
-    plantuml += "@enduml"
-
-    return plantuml
-
-
-def get_rel_symbol(relationship_type: str) -> str:
-    """
-    Get PlantUML relationship symbol.
-
-    Args:
-        relationship_type (str): relationship type
-
-    Returns:
-        str: Relation symbol supported in PlantUML
-
-    """
-    if relationship_type in ["01"]:
-        return "}o--||"
-    if relationship_type in ["11"]:
-        return "||--||"
-    if relationship_type in ["0n"]:
-        return "}o--|{"
-    if relationship_type in ["1n"]:
-        return "||--|{"
-    if relationship_type in ["nn"]:
-        return "}|--|{"
-    return "}|--||"  # n1
+    def format_relationship(self, relationship: Ref, **kwargs) -> str:
+        """Format a single relationship in PlantUML syntax."""
+        key_from = f'"{relationship.table_map[1]}"'
+        key_to = f'"{relationship.table_map[0]}"'
+        symbol = self.get_rel_symbol(relationship.type)
+        # NOTE: PlantUML doesn't have columns defined in the connector
+        return f"  {key_from} {symbol} {key_to}"

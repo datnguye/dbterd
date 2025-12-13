@@ -1,10 +1,8 @@
-import contextlib
-from unittest import mock
-
 import pytest
 
-from dbterd.adapters.meta import Column, Ref, Table
-from dbterd.adapters.targets import plantuml as engine
+from dbterd.adapters.algos.test_relationship import TestRelationshipAlgo
+from dbterd.adapters.targets.plantuml import PlantumlAdapter
+from dbterd.core.models import Column, Ref, Table
 
 
 class TestPlantUMLTestRelationship:
@@ -231,32 +229,32 @@ class TestPlantUMLTestRelationship:
         ],
     )
     def test_parse(self, tables, relationships, select, exclude, resource_type, expected):
-        with contextlib.ExitStack() as stack:
-            mock_get_tables = stack.enter_context(
-                mock.patch(
-                    "dbterd.adapters.algos.base.get_tables",
-                    return_value=tables,
-                )
-            )
-            mock_get_relationships = stack.enter_context(
-                mock.patch(
-                    "dbterd.adapters.algos.base.get_relationships",
-                    return_value=relationships,
-                )
-            )
-            plantuml = engine.parse(
-                manifest="--manifest--",
-                catalog="--catalog--",
-                select=select,
-                exclude=exclude,
-                resource_type=resource_type,
-                algo="test_relationship",
-            )
-            print("plantuml ", plantuml.replace(" ", "").replace("\n", ""))
-            print("expected", expected.replace(" ", "").replace("\n", ""))
-            assert plantuml.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
-            mock_get_tables.assert_called_once()
-            mock_get_relationships.assert_called_once()
+        algo = TestRelationshipAlgo()
+        # Apply filtering and enrichment as done in the algorithm
+        filtered_tables = algo.filter_tables_based_on_selection(
+            tables=tables,
+            select=select,
+            exclude=exclude,
+            resource_type=resource_type,
+        )
+        enriched_relationships = algo.make_up_relationships(
+            relationships=relationships,
+            tables=filtered_tables,
+        )
+        enriched_tables = algo.enrich_tables_from_relationships(
+            tables=filtered_tables,
+            relationships=enriched_relationships,
+        )
+
+        # Build ERD using the adapter
+        adapter = PlantumlAdapter()
+        plantuml = adapter.build_erd(
+            tables=enriched_tables,
+            relationships=enriched_relationships,
+        )
+        print("plantuml ", plantuml.replace(" ", "").replace("\n", ""))
+        print("expected", expected.replace(" ", "").replace("\n", ""))
+        assert plantuml.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
 
     @pytest.mark.parametrize(
         "relationship_type, symbol",
@@ -271,4 +269,5 @@ class TestPlantUMLTestRelationship:
         ],
     )
     def test_get_rel_symbol(self, relationship_type, symbol):
-        assert engine.get_rel_symbol(relationship_type=relationship_type) == symbol
+        adapter = PlantumlAdapter()
+        assert adapter.get_rel_symbol(relationship_type=relationship_type) == symbol

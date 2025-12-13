@@ -1,147 +1,125 @@
+"""Mermaid target adapter for dbterd.
+
+This module converts parsed dbt artifacts into Mermaid ER diagram format
+for visualization in Markdown files and documentation tools.
+"""
+
 import re
-from typing import Optional
+from typing import ClassVar, Optional
 
-from dbterd.adapters import adapter
-from dbterd.types import Catalog, Manifest
+from dbterd.core.adapters.target import BaseTargetAdapter
+from dbterd.core.builder.text_builder import TextERDBuilder
+from dbterd.core.models import Ref, Table
+from dbterd.core.registry.decorators import register_target
 
 
-def run(manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[str, str]:
+@register_target("mermaid", description="Mermaid ER diagram format")
+class MermaidAdapter(BaseTargetAdapter):
+    """Mermaid format target adapter.
+
+    Generates Mermaid ER diagram syntax for rendering in Markdown
+    and documentation tools.
+    https://mermaid.js.org/syntax/entityRelationshipDiagram.html
     """
-    Parse dbt artifacts and export Mermaid file.
 
-    Args:
-        manifest (dict): Manifest json
-        catalog (dict): Catalog json
+    file_extension = ".md"
+    default_filename = "output.md"
 
-    Returns:
-        Tuple(str, str): File name and the Mermaid content
+    RELATIONSHIP_SYMBOLS: ClassVar[dict[str, str]] = {
+        "01": "}o--||",
+        "11": "||--||",
+        "0n": "}o--|{",
+        "1n": "||--|{",
+        "nn": "}|--|{",
+    }
+    DEFAULT_SYMBOL = "}|--||"  # n1
 
-    """
-    output_file_name = kwargs.get("output_file_name") or "output.md"
-    return (output_file_name, parse(manifest, catalog, **kwargs))
+    def build_erd(self, tables: list[Table], relationships: list[Ref], **kwargs) -> str:
+        """Build Mermaid ER diagram content."""
+        builder = TextERDBuilder()
+        builder.add_header("erDiagram")
+        builder.add_tables(tables, lambda t: self.format_table(t, **kwargs))
+        builder.add_relationships(relationships, lambda r: self.format_relationship(r, **kwargs))
 
+        return builder.build()
 
-def replace_column_name(column_name: str) -> str:
-    """
-    Replace column names containing special characters.
-    To prevent mermaid from not being able to render column names that may contain special characters.
-
-    Args:
-        column_name (str): column name
-
-    Returns:
-        str: Column name with special characters substituted
-
-    """
-    return column_name.replace(" ", "-").replace(".", "__")
-
-
-def match_complex_column_type(column_type: str) -> Optional[str]:
-    """
-    Returns the root type from nested complex types.
-    As an example, if the input is `Struct<field1 string, field2 string>`, return `Struct`.
-
-    Args:
-        column_type (str): column type
-
-    Returns:
-        Optional[str]: Returns root type if input type is nested complex type,
-        otherwise returns `None` for primitive types
-
-    """
-    pattern = r"(\w+)<.*>"
-    match = re.match(pattern, column_type)
-    if match:
-        return match.group(1)
-    else:
-        return None
-
-
-def replace_column_type(column_type: str) -> str:
-    """
-    If type of column contains special characters that cannot be drawn by mermaid,
-    replace them with strings that can be drawn.
-    If the type string contains a nested complex type, omit it to make it easier to read.
-
-    Args:
-        column_type (str): column type
-
-    Returns:
-        str: Type of column with special characters are substituted or omitted
-
-    """
-    # Some specific DWHs may have types that cannot be drawn in mermaid,
-    # such as `Struct<first_name string, last_name string>`.
-    # These types may be nested and can be very long, so omit them
-    complex_column_type = match_complex_column_type(column_type)
-    if complex_column_type:
-        return f"{complex_column_type}[OMITTED]"
-    else:
-        return column_type.replace(" ", "-")
-
-
-def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
-    """
-    Get the Mermaid content from dbt artifacts.
-
-    Args:
-        manifest (dict): Manifest json
-        catalog (dict): Catalog json
-
-    Returns:
-        str: Mermaid content
-
-    """
-    algo_module = adapter.load_algo(name=kwargs["algo"])
-    tables, relationships = algo_module.parse(manifest=manifest, catalog=catalog, **kwargs)
-
-    # Build Mermaid content
-    # https://mermaid.js.org/syntax/entityRelationshipDiagram.html
-    mermaid = "erDiagram\n"
-    for table in tables:
+    def format_table(self, table: Table, **kwargs) -> str:
+        """Format a single table in Mermaid syntax."""
         table_name = table.name.upper()
         table_label = f'["{table.label.upper()}"]' if hasattr(table, "label") and table.label else ""
 
-        columns = "\n".join(
-            [f"    {replace_column_type(x.data_type)} {replace_column_name(x.name)}" for x in table.columns]
-        )
         if kwargs.get("omit_columns", False):
-            mermaid += f'  "{table_name}"{table_label} {{\n  }}\n'
-        else:
-            mermaid += f'  "{table_name}"{table_label} {{\n{columns}\n  }}\n'
+            return f'  "{table_name}"{table_label} {{\n  }}'
 
-    for rel in relationships:
-        key_from = f'"{rel.table_map[1]}"'
-        key_to = f'"{rel.table_map[0]}"'
-        reference_text = replace_column_name(rel.column_map[0])
-        if rel.column_map[0] != rel.column_map[1]:
-            reference_text += f"--{replace_column_name(rel.column_map[1])}"
-        if hasattr(rel, "relationship_label") and rel.relationship_label:
-            reference_text = replace_column_name(rel.relationship_label)
-        mermaid += f"  {key_from.upper()} {get_rel_symbol(rel.type)} {key_to.upper()}: {reference_text}\n"
+        columns = "\n".join(
+            f"    {self.replace_column_type(col.data_type)} {self.replace_column_name(col.name)}"
+            for col in table.columns
+        )
+        return f'  "{table_name}"{table_label} {{\n{columns}\n  }}'
 
-    return mermaid
+    def format_relationship(self, relationship: Ref, **kwargs) -> str:
+        """Format a single relationship in Mermaid syntax."""
+        key_from = f'"{relationship.table_map[1]}"'
+        key_to = f'"{relationship.table_map[0]}"'
 
+        reference_text = self.replace_column_name(relationship.column_map[0])
+        if relationship.column_map[0] != relationship.column_map[1]:
+            reference_text += f"--{self.replace_column_name(relationship.column_map[1])}"
 
-def get_rel_symbol(relationship_type: str) -> str:
-    """
-    Get Mermaid relationship symbol.
+        if hasattr(relationship, "relationship_label") and relationship.relationship_label:
+            reference_text = self.replace_column_name(relationship.relationship_label)
 
-    Args:
-        relationship_type (str): relationship type
+        symbol = self.get_rel_symbol(relationship.type)
+        return f"  {key_from.upper()} {symbol} {key_to.upper()}: {reference_text}"
 
-    Returns:
-        str: Relation symbol supported in Mermaid
+    def replace_column_name(self, column_name: str) -> str:
+        """Replace column names containing special characters.
 
-    """
-    if relationship_type in ["01"]:
-        return "}o--||"
-    if relationship_type in ["11"]:
-        return "||--||"
-    if relationship_type in ["0n"]:
-        return "}o--|{"
-    if relationship_type in ["1n"]:
-        return "||--|{"
-    if relationship_type in ["nn"]:
-        return "}|--|{"
-    return "}|--||"  # n1
+        Prevents Mermaid from failing to render column names with special characters.
+
+        Args:
+            column_name: Column name to sanitize
+
+        Returns:
+            Column name with special characters substituted
+
+        """
+        return column_name.replace(" ", "-").replace(".", "__")
+
+    def match_complex_column_type(self, column_type: str) -> Optional[str]:
+        """Return the root type from nested complex types.
+
+        For example, if the input is `Struct<field1 string, field2 string>`,
+        returns `Struct`.
+
+        Args:
+            column_type: Column type to check
+
+        Returns:
+            Root type if input is nested complex type, None for primitive types
+
+        """
+        pattern = r"(\w+)<.*>"
+        match = re.match(pattern, column_type)
+        if match:
+            return match.group(1)
+        return None
+
+    def replace_column_type(self, column_type: str) -> str:
+        """Replace column types containing special characters.
+
+        If type contains a nested complex type, omit it for readability.
+        Some DWHs may have types like `Struct<first_name string, last_name string>`
+        that cannot be drawn in Mermaid.
+
+        Args:
+            column_type: Column type to sanitize
+
+        Returns:
+            Type with special characters substituted or omitted
+
+        """
+        complex_column_type = self.match_complex_column_type(column_type)
+        if complex_column_type:
+            return f"{complex_column_type}[OMITTED]"
+        return column_type.replace(" ", "-")

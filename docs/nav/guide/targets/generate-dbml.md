@@ -40,7 +40,7 @@ Copy `manifest.json` and `catalog.json` into a specific folder OR do nothing and
 <div class="termynal" data-ty-startDelay="1200">
     <span data-ty="input" data-ty-prompt="$ ~/repo>">dbterd run -ad "samples/dbtresto" -s model.dbt_resto</span>
     <span data-ty>2023-05-06 08:17:54,413 - dbterd - INFO - Run with dbterd==?.?.? (main.py:54)</span>
-    <span data-ty>2023-05-06 08:17:54,715 - dbterd - INFO - target/output.dbml (base.py:75)</span>
+    <span data-ty>2023-05-06 08:17:54,715 - dbterd - INFO - target/output.dbml (executor.py:75)</span>
 </div>
 
 File `./target/output.dbml` will be generated as the result

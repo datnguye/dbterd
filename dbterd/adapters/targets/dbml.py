@@ -1,85 +1,79 @@
+"""DBML target adapter for dbterd.
+
+This module converts parsed dbt artifacts into DBML (Database Markup Language)
+format for ERD visualization.
+"""
+
 import json
+from typing import ClassVar
 
-from dbterd.adapters import adapter
-from dbterd.types import Catalog, Manifest
+from dbterd.core.adapters.target import BaseTargetAdapter
+from dbterd.core.builder.text_builder import TextERDBuilder
+from dbterd.core.models import Column, Ref, Table
+from dbterd.core.registry.decorators import register_target
 
 
-def run(manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[str, str]:
+@register_target("dbml", description="Database Markup Language format")
+class DbmlAdapter(BaseTargetAdapter):
+    """DBML format target adapter.
+
+    Generates DBML output compatible with dbdiagram.io and other
+    DBML-supporting tools.
     """
-    Parse dbt artifacts and export DBML file.
 
-    Args:
-        manifest (dict): Manifest json
-        catalog (dict): Catalog json
+    file_extension = ".dbml"
+    default_filename = "output.dbml"
 
-    Returns:
-        Tuple(str, str): File name and the DBML content
+    RELATIONSHIP_SYMBOLS: ClassVar[dict[str, str]] = {
+        "11": "-",
+        "01": "-",
+        "1n": "<",
+        "0n": "<",
+        "nn": "<>",
+    }
+    DEFAULT_SYMBOL = ">"  # n1
 
-    """
-    output_file_name = kwargs.get("output_file_name") or "output.dbml"
-    return (output_file_name, parse(manifest, catalog, **kwargs))
+    def build_erd(self, tables: list[Table], relationships: list[Ref], **kwargs) -> str:
+        """Build DBML content from tables and relationships."""
+        quote = "" if kwargs.get("omit_entity_name_quotes") else '"'
+        builder = TextERDBuilder()
 
+        builder.add_section("//Tables (based on the selection criteria)")
+        builder.add_tables(tables, lambda t: self.format_table(t, quote=quote))
+        builder.add_section("//Refs (based on the DBT Relationship Tests)")
+        builder.add_relationships(relationships, lambda r: self.format_relationship(r, quote=quote))
 
-def parse(manifest: Manifest, catalog: Catalog, **kwargs) -> str:
-    """
-    Get the DBML content from dbt artifacts.
+        return builder.build()
 
-    Args:
-        manifest (dict): Manifest json
-        catalog (dict): Catalog json
+    def format_table(self, table: Table, **kwargs) -> str:
+        """Format a single table in DBML syntax."""
+        quote = kwargs.get("quote", '"')
+        columns = self._format_columns(table.columns)
 
-    Returns:
-        str: DBML content
-
-    """
-    algo_module = adapter.load_algo(name=kwargs["algo"])
-    tables, relationships = algo_module.parse(manifest=manifest, catalog=catalog, **kwargs)
-
-    # Build DBML content
-    dbml = "//Tables (based on the selection criteria)\n"
-    quote = "" if kwargs.get("omit_entity_name_quotes") else '"'
-    for table in tables:
-        dbml += f"//--configured at schema: {table.database}.{table.schema}\n"
-        dbml += "Table {quote}{table}{quote} {{\n{columns}\n\n  Note: {table_note}\n}}\n".format(
-            quote=quote,
-            table=table.name,
-            columns="\n".join(
-                [
-                    str.format(
-                        '  "{0}" "{1}"{2}',
-                        x.name,
-                        x.data_type,
-                        (str.format(" [note: {0}]", json.dumps(x.description)) if x.description else ""),
-                    )
-                    for x in table.columns
-                ]
-            ),
-            table_note=json.dumps(table.description),
+        return (
+            f"//--configured at schema: {table.database}.{table.schema}\n"
+            f"Table {quote}{table.name}{quote} {{\n"
+            f"{columns}\n\n"
+            f"  Note: {json.dumps(table.description)}\n"
+            f"}}"
         )
 
-    dbml += "//Refs (based on the DBT Relationship Tests)\n"
-    for rel in relationships:
-        key_from = f'{quote}{rel.table_map[1]}{quote}."{rel.column_map[1]}"'
-        key_to = f'{quote}{rel.table_map[0]}{quote}."{rel.column_map[0]}"'
-        dbml += f"Ref: {key_from} {get_rel_symbol(rel.type)} {key_to}\n"
-    return dbml
+    def format_relationship(self, relationship: Ref, **kwargs) -> str:
+        """Format a single relationship in DBML syntax."""
+        quote = kwargs.get("quote", '"')
+        key_from = f'{quote}{relationship.table_map[1]}{quote}."{relationship.column_map[1]}"'
+        key_to = f'{quote}{relationship.table_map[0]}{quote}."{relationship.column_map[0]}"'
+        symbol = self.get_rel_symbol(relationship.type)
+        return f"Ref: {key_from} {symbol} {key_to}"
 
-
-def get_rel_symbol(relationship_type: str) -> str:
-    """
-    Get DBML relationship symbol.
-
-    Args:
-        relationship_type (str): relationship type
-
-    Returns:
-        str: Relation symbol supported in DBML
-
-    """
-    if relationship_type in ["01", "11"]:
-        return "-"
-    if relationship_type in ["0n", "1n"]:
-        return "<"
-    if relationship_type in ["nn"]:
-        return "<>"
-    return ">"  # n1
+    def _format_columns(self, columns: list[Column]) -> str:
+        """Format columns for a table."""
+        return "\n".join(
+            str.format(
+                '  "{0}" "{1}"{2}',
+                col.name,
+                col.data_type,
+                (str.format(" [note: {0}]", json.dumps(col.description)) if col.description else ""),
+            )
+            for col in columns
+        )

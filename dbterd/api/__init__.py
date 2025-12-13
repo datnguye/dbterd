@@ -4,7 +4,7 @@ from pathlib import Path
 from click import Command, Context
 
 from dbterd import default
-from dbterd.adapters.base import Executor
+from dbterd.core.executor import Executor
 from dbterd.helpers.log import logger
 
 

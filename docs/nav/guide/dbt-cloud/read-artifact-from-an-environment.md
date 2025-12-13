@@ -74,18 +74,18 @@ The command will look like:
 dbterd run-metadata [-s <dbterd selection>]
 ```
 
-> Behind the scenes, it will try to use the ERD GraphQL query built-in at [include/erd_query.gql](https://github.com/datnguye/dbterd/tree/main/dbterd/adapters/dbt_cloud/include/erd_query.gql)
+> Behind the scenes, it will try to use the ERD GraphQL query built-in at [include/graphql_queries](https://github.com/datnguye/dbterd/tree/main/dbterd/include/graphql_queries)
 
 and then, here is the sample console log:
 
 ```log
 2024-02-03 19:57:57,514 - dbterd - INFO - Run with dbterd==1.0.0 (main.py:54)
-2024-02-03 19:57:57,515 - dbterd - INFO - Looking for the query in: (hidden)/dbterd/adapters/dbt_cloud/include/erd_query.gql (query.py:25)
+2024-02-03 19:57:57,515 - dbterd - INFO - Looking for the query in: (hidden)/dbterd/include/graphql_queries/erd_query__test_relationship.gql (query.py:31)
 2024-02-03 19:57:57,516 - dbterd - DEBUG - Getting erd data...[URL: https://metadata.cloud.getdbt.com/graphql/, VARS: {'environment_id': '(hidden)', 'model_first': 500, 'source_first': 500, 'exposure_first': 500, 'test_first': 500}] (graphql.py:40)
 2024-02-03 19:57:58,865 - dbterd - DEBUG - Completed [status: 200] (graphql.py:48)
 2024-02-03 19:57:58,868 - dbterd - INFO - Metadata result: 5 model(s), 2 source(s), 1 exposure(s), 21 test(s) (discovery.py:169)
 2024-02-03 19:57:58,880 - dbterd - INFO - Collected 5 table(s) and 1 relationship(s) (test_relationship.py:44)
-2024-02-03 19:57:58,881 - dbterd - INFO - (hidden)\target (base.py:179)
+2024-02-03 19:57:58,881 - dbterd - INFO - (hidden)\target (executor.py:179)
 ```
 
 

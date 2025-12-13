@@ -1,6 +1,6 @@
 import pytest
 
-from dbterd.adapters.targets import mermaid
+from dbterd.adapters.targets.mermaid import MermaidAdapter
 
 
 complex_column_types = [
@@ -19,9 +19,11 @@ column_types = [
 
 @pytest.mark.parametrize("input,expected", complex_column_types)
 def test_match_complex_column_type(input, expected):
-    assert mermaid.match_complex_column_type(input) == expected
+    adapter = MermaidAdapter()
+    assert adapter.match_complex_column_type(input) == expected
 
 
 @pytest.mark.parametrize("input,expected", column_types)
 def test_replace_column_type(input, expected):
-    assert mermaid.replace_column_type(input) == expected
+    adapter = MermaidAdapter()
+    assert adapter.replace_column_type(input) == expected

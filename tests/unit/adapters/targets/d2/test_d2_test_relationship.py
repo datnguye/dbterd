@@ -1,10 +1,8 @@
-import contextlib
-from unittest import mock
-
 import pytest
 
-from dbterd.adapters.meta import Column, Ref, Table
-from dbterd.adapters.targets import d2 as engine
+from dbterd.adapters.algos.test_relationship import TestRelationshipAlgo
+from dbterd.adapters.targets.d2 import D2Adapter
+from dbterd.core.models import Column, Ref, Table
 
 
 class TestD2TestRelationship:
@@ -233,32 +231,30 @@ class TestD2TestRelationship:
         ],
     )
     def test_parse(self, tables, relationships, select, exclude, resource_type, expected):
-        with contextlib.ExitStack() as stack:
-            mock_get_tables = stack.enter_context(
-                mock.patch(
-                    "dbterd.adapters.algos.base.get_tables",
-                    return_value=tables,
-                )
-            )
-            mock_get_relationships = stack.enter_context(
-                mock.patch(
-                    "dbterd.adapters.algos.base.get_relationships",
-                    return_value=relationships,
-                )
-            )
-            mermaid = engine.parse(
-                manifest="--manifest--",
-                catalog="--catalog--",
-                select=select,
-                exclude=exclude,
-                resource_type=resource_type,
-                algo="test_relationship",
-            )
-            print("mermaid ", mermaid.replace(" ", "").replace("\n", ""))
-            print("expected", expected.replace(" ", "").replace("\n", ""))
-            assert mermaid.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
-            mock_get_tables.assert_called_once()
-            mock_get_relationships.assert_called_once()
+        algo = TestRelationshipAlgo()
+        # Apply filtering and enrichment as the algorithm does
+        filtered_tables = algo.filter_tables_based_on_selection(
+            tables=tables,
+            select=select,
+            exclude=exclude,
+            resource_type=resource_type,
+        )
+        enriched_tables = algo.enrich_tables_from_relationships(
+            tables=filtered_tables,
+            relationships=relationships,
+        )
+
+        # Filter relationships to only include those between filtered tables
+        filtered_table_names = {table.name for table in enriched_tables}
+        filtered_relationships = [
+            rel for rel in relationships if all(table_name in filtered_table_names for table_name in rel.table_map)
+        ]
+
+        adapter = D2Adapter()
+        d2_output = adapter.build_erd(tables=enriched_tables, relationships=filtered_relationships)
+        print("d2_output ", d2_output.replace(" ", "").replace("\n", ""))
+        print("expected", expected.replace(" ", "").replace("\n", ""))
+        assert d2_output.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
 
     @pytest.mark.parametrize(
         "relationship_type, symbol",
@@ -273,4 +269,5 @@ class TestD2TestRelationship:
         ],
     )
     def test_get_rel_symbol(self, relationship_type, symbol):
-        assert engine.get_rel_symbol(relationship_type=relationship_type) == symbol
+        adapter = D2Adapter()
+        assert adapter.get_rel_symbol(relationship_type=relationship_type) == symbol

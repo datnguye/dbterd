@@ -2,7 +2,7 @@ from fnmatch import fnmatch
 import sys
 from typing import Optional
 
-from dbterd.adapters.meta import Table
+from dbterd.core.models import Table
 
 
 RULE_FUNC_PREFIX = "is_satisfied_by_"

@@ -1,12 +1,11 @@
-import contextlib
 from dataclasses import dataclass
 import json
 from unittest import mock
 
 import pytest
 
-from dbterd.adapters.meta import Column, Ref, Table
-from dbterd.adapters.targets import drawdb as engine
+from dbterd.adapters.targets.drawdb import DrawdbAdapter
+from dbterd.core.models import Column, Ref, Table
 
 
 @dataclass
@@ -19,7 +18,7 @@ class DummyManifest:
     metadata: DummyManifestMetadata
 
 
-class TestDbmlTestRelationship:
+class TestDrawdbTestRelationship:
     @pytest.mark.parametrize(
         "tables, relationships, select, exclude, resource_type, omit_entity_name_quotes, expected",
         [
@@ -188,7 +187,7 @@ class TestDbmlTestRelationship:
             ),
         ],
     )
-    def test_parse(
+    def test_build_erd(
         self,
         tables,
         relationships,
@@ -198,31 +197,14 @@ class TestDbmlTestRelationship:
         omit_entity_name_quotes,
         expected,
     ):
-        with contextlib.ExitStack() as stack:
-            mock_get_tables = stack.enter_context(
-                mock.patch(
-                    "dbterd.adapters.algos.base.get_tables",
-                    return_value=tables,
-                )
-            )
-            mock_get_relationships = stack.enter_context(
-                mock.patch(
-                    "dbterd.adapters.algos.base.get_relationships",
-                    return_value=relationships,
-                )
-            )
-            drawdb = engine.parse(
-                manifest=DummyManifest(metadata=DummyManifestMetadata(generated_at="dummy")),
-                catalog="--catalog--",
-                select=select,
-                exclude=exclude,
-                resource_type=resource_type,
-                algo="test_relationship",
-                omit_entity_name_quotes=omit_entity_name_quotes,
-            )
-            assert drawdb.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
-            mock_get_tables.assert_called_once()
-            mock_get_relationships.assert_called_once()
+        adapter = DrawdbAdapter()
+        drawdb = adapter.build_erd(
+            tables=tables,
+            relationships=relationships,
+            manifest=DummyManifest(metadata=DummyManifestMetadata(generated_at="dummy")),
+            omit_entity_name_quotes=omit_entity_name_quotes,
+        )
+        assert json.loads(drawdb) == json.loads(expected)
 
     @pytest.mark.parametrize(
         "relationship_type, symbol",
@@ -237,9 +219,11 @@ class TestDbmlTestRelationship:
         ],
     )
     def test_get_rel_symbol(self, relationship_type, symbol):
-        assert engine.get_rel_symbol(relationship_type=relationship_type) == symbol
+        adapter = DrawdbAdapter()
+        assert adapter.get_rel_symbol(relationship_type=relationship_type) == symbol
 
     def test_get_y(self):
+        adapter = DrawdbAdapter()
         tables = [
             Table(
                 name="model.dbt_resto.table1",
@@ -282,18 +266,50 @@ class TestDbmlTestRelationship:
                 raw_sql="--irrelevant--",
             ),
         ]
-        assert engine.get_y(tables, 0, {}) == 0
-        assert engine.get_y(tables, 1, {}) == 0
-        assert engine.get_y(tables, 2, {}) == 0
-        assert engine.get_y(tables, 3, {}) == 0
-        assert engine.get_y(tables, 4, {"model.dbt_resto.table1": {"y": 0}}) == 100
-        assert engine.get_y(tables, 4, {"model.dbt_resto.table1": {"y": 5}}) == 100 + 5
+        assert adapter.get_y(tables, 0, {}) == 0
+        assert adapter.get_y(tables, 1, {}) == 0
+        assert adapter.get_y(tables, 2, {}) == 0
+        assert adapter.get_y(tables, 3, {}) == 0
+        assert adapter.get_y(tables, 4, {"model.dbt_resto.table1": {"y": 0}}) == 100
+        assert adapter.get_y(tables, 4, {"model.dbt_resto.table1": {"y": 5}}) == 100 + 5
 
     def test_run(self):
-        with mock.patch(
-            "dbterd.adapters.targets.drawdb.parse",
-            return_value="dummy",
-        ) as mock_parse:
-            assert engine.run(manifest="irr", catalog="irr", output_file_name="xyz") == ("xyz", "dummy")
-            assert engine.run(manifest="irr", catalog="irr") == ("output.ddb", "dummy")
-            assert mock_parse.call_count == 2
+        adapter = DrawdbAdapter()
+        with mock.patch.object(DrawdbAdapter, "build_erd", return_value="dummy") as mock_build_erd:
+            assert adapter.run(tables=[], relationships=[], output_file_name="xyz") == ("xyz", "dummy")
+            assert adapter.run(tables=[], relationships=[]) == ("output.ddb", "dummy")
+            assert mock_build_erd.call_count == 2
+
+    def test_format_table(self):
+        """Test format_table method returns JSON string."""
+        adapter = DrawdbAdapter()
+        table = Table(
+            name="model.dbt_resto.table1",
+            node_name="model.dbt_resto.table1",
+            database="--database--",
+            schema="--schema--",
+            columns=[Column(name="name1", data_type="--name1-type--")],
+            raw_sql="--irrelevant--",
+        )
+        graphic_tables = {"model.dbt_resto.table1": {"id": 0, "x": 0, "y": 0, "fields": {"name1": {"id": 0}}}}
+        result = adapter.format_table(table, graphic_tables=graphic_tables, idx=0)
+        parsed = json.loads(result)
+        assert parsed["id"] == 0
+        assert parsed["name"] == "model.dbt_resto.table1"
+
+    def test_format_relationship(self):
+        """Test format_relationship method returns JSON string."""
+        adapter = DrawdbAdapter()
+        relationship = Ref(
+            name="test.dbt_resto.relationships_table1",
+            table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
+            column_map=["name2", "name1"],
+        )
+        graphic_tables = {
+            "model.dbt_resto.table1": {"id": 0, "x": 0, "y": 0, "fields": {"name1": {"id": 0}}},
+            "model.dbt_resto.table2": {"id": 1, "x": 500, "y": 0, "fields": {"name2": {"id": 0}}},
+        }
+        result = adapter.format_relationship(relationship, graphic_tables=graphic_tables, idx=0)
+        parsed = json.loads(result)
+        assert parsed["id"] == 0
+        assert parsed["cardinality"] == "Many to one"
