@@ -255,6 +255,7 @@ select = [
   "PL",   # pylint
   "SIM",  # flake8-simplify
   "ERA",  # eradicate commented-out code detection
+  "PLC0415",# ban import in functions
 ]
 # Rules to ignore
 ignore = [
