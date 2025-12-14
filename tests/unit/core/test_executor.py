@@ -13,36 +13,32 @@ from dbterd.plugins.dbt_core.dbt_invocation import DbtInvocation
 class TestBase:
     @mock.patch("dbterd.core.executor.Executor.evaluate_kwargs")
     @mock.patch("dbterd.core.executor.Executor._run_metadata_by_strategy")
-    def test_run_metadata(self, mock_run_metadata_by_strategy, mock_evaluate_kwargs):
-        Executor(ctx=click.Context(command=click.Command("dummy"))).run_metadata()
+    def test_run_metadata(self, mock_run_metadata_by_strategy, mock_evaluate_kwargs, dummy_executor):
+        dummy_executor.run_metadata()
         mock_evaluate_kwargs.assert_called_once()
         mock_run_metadata_by_strategy.assert_called_once()
 
     @mock.patch("dbterd.core.executor.DbtCloudMetadata.query_erd_data")
     @mock.patch("dbterd.core.executor.Executor._save_result")
-    def test___run_metadata_by_strategy(self, mock_query_erd_data, mock_save_result):
-        Executor(ctx=click.Context(command=click.Command("dummy")))._run_metadata_by_strategy(
-            target="dbml", algo="test_relationship"
-        )
+    def test___run_metadata_by_strategy(self, mock_query_erd_data, mock_save_result, dummy_executor):
+        dummy_executor._run_metadata_by_strategy(target="dbml", algo="test_relationship")
         mock_query_erd_data.assert_called_once()
         mock_save_result.assert_called_once()
 
     @mock.patch("dbterd.core.executor.DbtCloudMetadata.query_erd_data")
     @mock.patch("dbterd.core.executor.Executor._save_result")
-    def test___run_metadata_by_strategy_with_not_implemented_algo(self, mock_save_result, mock_query_erd_data):
+    def test___run_metadata_by_strategy_with_not_implemented_algo(
+        self, mock_save_result, mock_query_erd_data, dummy_executor
+    ):
         with pytest.raises(KeyError) as excinfo:
-            Executor(ctx=click.Context(command=click.Command("dummy")))._run_metadata_by_strategy(
-                target="dbml", algo="notfound"
-            )
+            dummy_executor._run_metadata_by_strategy(target="dbml", algo="notfound")
         assert "Algo 'notfound' not registered" in str(excinfo.value)
         mock_query_erd_data.assert_called_once()
         assert mock_save_result.call_count == 0
 
     @mock.patch("builtins.open")
-    def test___save_result(self, mock_open):
-        Executor(ctx=click.Context(command=click.Command("dummy")))._save_result(
-            path="irrelevant", data=("file_name", {})
-        )
+    def test___save_result(self, mock_open, dummy_executor):
+        dummy_executor._save_result(path="irrelevant", data=("file_name", {}))
         mock_open.assert_called_once_with("irrelevant/file_name", "w", encoding="utf-8")
 
     @mock.patch("dbterd.core.executor.DbtCloudArtifact.get")
@@ -55,19 +51,17 @@ class TestBase:
         mock_read_manifest,
         mock_read_catalog,
         mock_save_result,
+        dummy_executor,
     ):
-        Executor(ctx=click.Context(command=click.Command("dummy")))._run_by_strategy(
-            target="dbml", algo="test_relationship", dbt_cloud=True
-        )
+        dummy_executor._run_by_strategy(target="dbml", algo="test_relationship", dbt_cloud=True)
         mock_cloud_artifact_get.assert_called_once()
         mock_read_manifest.assert_called_once()
         mock_read_catalog.assert_called_once()
         mock_save_result.assert_called_once()
 
-    def test_worker(self):
-        worker = Executor(ctx=click.Context(command=click.Command("dummy")))
-        assert worker.filename_manifest == "manifest.json"
-        assert worker.filename_catalog == "catalog.json"
+    def test_worker(self, dummy_executor):
+        assert dummy_executor.filename_manifest == "manifest.json"
+        assert dummy_executor.filename_catalog == "catalog.json"
 
     @pytest.mark.parametrize(
         "mv, default_version_return, expected_version, should_call_default",
@@ -77,15 +71,14 @@ class TestBase:
             (10, "12", 10, False),
         ],
     )
-    def test___read_manifest(self, mv, default_version_return, expected_version, should_call_default):
-        worker = Executor(ctx=click.Context(command=click.Command("dummy")))
+    def test___read_manifest(self, mv, default_version_return, expected_version, should_call_default, dummy_executor):
         with contextlib.ExitStack() as stack:
             mock_read_manifest = stack.enter_context(mock.patch("dbterd.helpers.file.read_manifest", return_value={}))
             mock_check_existence = stack.enter_context(mock.patch("dbterd.helpers.cli_messaging.check_existence"))
             mock_default_manifest_version = stack.enter_context(
                 mock.patch("dbterd.default.default_manifest_version", return_value=default_version_return)
             )
-            assert worker._read_manifest(mp=Path.cwd(), mv=mv) == {}
+            assert dummy_executor._read_manifest(mp=Path.cwd(), mv=mv) == {}
         mock_check_existence.assert_called_once_with(Path.cwd(), "manifest.json")
         if should_call_default:
             mock_default_manifest_version.assert_called_once_with(artifacts_dir=Path.cwd())
@@ -101,15 +94,14 @@ class TestBase:
             (10, "12", 10, False),
         ],
     )
-    def test___read_catalog(self, cv, default_version_return, expected_version, should_call_default):
-        worker = Executor(ctx=click.Context(command=click.Command("dummy")))
+    def test___read_catalog(self, cv, default_version_return, expected_version, should_call_default, dummy_executor):
         with contextlib.ExitStack() as stack:
             mock_read_catalog = stack.enter_context(mock.patch("dbterd.helpers.file.read_catalog", return_value={}))
             mock_check_existence = stack.enter_context(mock.patch("dbterd.helpers.cli_messaging.check_existence"))
             mock_default_catalog_version = stack.enter_context(
                 mock.patch("dbterd.default.default_catalog_version", return_value=default_version_return)
             )
-            assert worker._read_catalog(cp=Path.cwd(), cv=cv) == {}
+            assert dummy_executor._read_catalog(cp=Path.cwd(), cv=cv) == {}
         mock_check_existence.assert_called_once_with(Path.cwd(), "catalog.json")
         if should_call_default:
             mock_default_catalog_version.assert_called_once_with(artifacts_dir=Path.cwd())
@@ -118,17 +110,15 @@ class TestBase:
         mock_read_catalog.assert_called_once_with(path=Path.cwd(), version=expected_version, enable_compat_patch=False)
 
     @mock.patch("dbterd.core.executor.DbtInvocation.get_selection", return_value="dummy")
-    def test__get_selection(self, mock_dbt_invocation):
-        worker = Executor(ctx=click.Context(command=click.Command("dummy")))
-        worker.dbt = DbtInvocation()
-        assert worker._get_selection(select_rules=[], exclude_rules=[]) == "dummy"
+    def test__get_selection(self, mock_dbt_invocation, dummy_executor):
+        dummy_executor.dbt = DbtInvocation()
+        assert dummy_executor._get_selection(select_rules=[], exclude_rules=[]) == "dummy"
         mock_dbt_invocation.assert_called_once()
 
     @mock.patch("dbterd.core.executor.DbtInvocation.get_selection", return_value="dummy")
-    def test__get_selection__error(self, mock_dbt_invocation):
-        worker = Executor(ctx=click.Context(command=click.Command("dummy")))
+    def test__get_selection__error(self, mock_dbt_invocation, dummy_executor):
         with pytest.raises(click.UsageError):
-            worker._get_selection()
+            dummy_executor._get_selection()
 
     @pytest.mark.parametrize(
         "command, kwargs, select_result, expected",
@@ -213,6 +203,7 @@ class TestBase:
         select_result,
         expected,
     ):
+        # This test needs a specific command, so we create executor directly
         worker = Executor(ctx=click.Context(command=click.Command(command)))
         mock_get_dir.return_value = ("/path/ad", "/path/dpd")
         mock_get_selection.return_value = select_result
@@ -260,22 +251,18 @@ class TestBase:
         ],
     )
     @mock.patch("os.path.isfile")
-    def test__get_dir(self, mock_isfile, kwargs, mock_isfile_se, expected):
-        worker = Executor(ctx=click.Context(command=click.Command("dummy")))
+    def test__get_dir(self, mock_isfile, kwargs, mock_isfile_se, expected, dummy_executor):
         mock_isfile.side_effect = mock_isfile_se
-        assert worker._get_dir(**kwargs) == expected
+        assert dummy_executor._get_dir(**kwargs) == expected
 
-    def test__set_single_node_selection__none_id(self):
-        worker = Executor(ctx=click.Context(command=click.Command("dummy")))
-        assert worker._set_single_node_selection(manifest="irrelevant", node_unique_id=None, **{"i": "irr"}) == {
-            "i": "irr"
-        }
+    def test__set_single_node_selection__none_id(self, dummy_executor):
+        result = dummy_executor._set_single_node_selection(manifest="irrelevant", node_unique_id=None, **{"i": "irr"})
+        assert result == {"i": "irr"}
 
     @mock.patch("dbterd.adapters.algos.test_relationship.TestRelationshipAlgo.find_related_nodes_by_id")
-    def test__set_single_node_selection(self, mock_find_related_nodes_by_id):
-        worker = Executor(ctx=click.Context(command=click.Command("dummy")))
+    def test__set_single_node_selection(self, mock_find_related_nodes_by_id, dummy_executor):
         mock_find_related_nodes_by_id.return_value = ["irr"]
-        assert worker._set_single_node_selection(
+        assert dummy_executor._set_single_node_selection(
             manifest="irrelevant",
             node_unique_id="irrelevant",
             **{"algo": "test_relationship"},
@@ -294,9 +281,8 @@ class TestBase:
         mock_read_manifest,
         mock_load_target,
         mock_load_algo,
+        dummy_executor,
     ):
-        worker = Executor(ctx=click.Context(command=click.Command("dummy")))
-
         mock_parent = mock.Mock()
 
         # Mock the algo adapter
@@ -318,7 +304,9 @@ class TestBase:
         mock_set_single_node_selection.return_value = {"api": True, "algo": "test_relationship", "target": "dbml"}
         mock_parent.attach_mock(mock_set_single_node_selection, "mock_set_single_node_selection")
 
-        assert worker._run_by_strategy(node_unique_id="irr", algo="test_relationship", target="dbml") == {"i": "irr"}
+        assert dummy_executor._run_by_strategy(node_unique_id="irr", algo="test_relationship", target="dbml") == {
+            "i": "irr"
+        }
         assert mock_parent.mock_calls == [
             mock.call.mock_read_manifest(mp=None, mv=None, bypass_validation=None),
             mock.call.mock_read_catalog(cp=None, cv=None, bypass_validation=None),
