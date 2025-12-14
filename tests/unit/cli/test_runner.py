@@ -67,14 +67,12 @@ class TestRunner:
         invalid_strategy = "invalid-strategy"
         with contextlib.ExitStack() as stack:
             mock_read_m = stack.enter_context(
-                mock.patch("dbterd.core.executor.Executor._Executor__read_manifest", return_value=None)
+                mock.patch("dbterd.core.executor.Executor._read_manifest", return_value=None)
             )
             mock_read_c = stack.enter_context(
-                mock.patch("dbterd.core.executor.Executor._Executor__read_catalog", return_value=None)
+                mock.patch("dbterd.core.executor.Executor._read_catalog", return_value=None)
             )
-            mock_save = stack.enter_context(
-                mock.patch("dbterd.core.executor.Executor._Executor__save_result", return_value=None)
-            )
+            mock_save = stack.enter_context(mock.patch("dbterd.core.executor.Executor._save_result", return_value=None))
             with pytest.raises(Exception) as excinfo:
                 dbterd.invoke(["run", "--algo", invalid_strategy])
             assert "not registered" in str(excinfo.value)
@@ -96,15 +94,15 @@ class TestRunner:
         with contextlib.ExitStack() as stack:
             stack.enter_context(mock.patch("dbterd.cli.main.load_config", return_value={}))
             mock_read_m = stack.enter_context(
-                mock.patch("dbterd.core.executor.Executor._Executor__read_manifest", return_value=None)
+                mock.patch("dbterd.core.executor.Executor._read_manifest", return_value=None)
             )
             mock_read_c = stack.enter_context(
-                mock.patch("dbterd.core.executor.Executor._Executor__read_catalog", return_value=None)
+                mock.patch("dbterd.core.executor.Executor._read_catalog", return_value=None)
             )
             # Mock the algo adapter to return empty tables/relationships
             mock_algo = mock.MagicMock()
             mock_algo.parse.return_value = ([], [])
-            stack.enter_context(mock.patch("dbterd.core.executor.load_algo", return_value=mock_algo))
+            stack.enter_context(mock.patch("dbterd.core.executor.Executor.load_algo", return_value=mock_algo))
             # Mock the target adapter's run method
             mock_target_run = stack.enter_context(
                 mock.patch.object(adapter_class, "run", return_value=(output, "--irrelevant--"))
@@ -135,15 +133,15 @@ class TestRunner:
         with contextlib.ExitStack() as stack:
             stack.enter_context(mock.patch("dbterd.cli.main.load_config", return_value={}))
             mock_read_m = stack.enter_context(
-                mock.patch("dbterd.core.executor.Executor._Executor__read_manifest", return_value=None)
+                mock.patch("dbterd.core.executor.Executor._read_manifest", return_value=None)
             )
             mock_read_c = stack.enter_context(
-                mock.patch("dbterd.core.executor.Executor._Executor__read_catalog", return_value=None)
+                mock.patch("dbterd.core.executor.Executor._read_catalog", return_value=None)
             )
             # Mock the algo adapter to return empty tables/relationships
             mock_algo = mock.MagicMock()
             mock_algo.parse.return_value = ([], [])
-            stack.enter_context(mock.patch("dbterd.core.executor.load_algo", return_value=mock_algo))
+            stack.enter_context(mock.patch("dbterd.core.executor.Executor.load_algo", return_value=mock_algo))
             # Mock the target adapter's run method
             mock_target_run = stack.enter_context(
                 mock.patch.object(adapter_class, "run", return_value=(output, "--irrelevant--"))

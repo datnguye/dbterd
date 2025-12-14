@@ -282,8 +282,8 @@ class TestBase:
         ) == {"algo": "test_relationship", "select": ["irr"], "exclude": []}
         assert mock_find_related_nodes_by_id.call_count == 1
 
-    @mock.patch("dbterd.core.executor.load_algo")
-    @mock.patch("dbterd.core.executor.load_target")
+    @mock.patch("dbterd.core.executor.Executor.load_algo")
+    @mock.patch("dbterd.core.executor.Executor.load_target")
     @mock.patch("dbterd.core.executor.Executor._read_manifest")
     @mock.patch("dbterd.core.executor.Executor._read_catalog")
     @mock.patch("dbterd.core.executor.Executor._set_single_node_selection")
