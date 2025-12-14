@@ -43,7 +43,7 @@ class TestBase:
         Executor(ctx=click.Context(command=click.Command("dummy")))._save_result(
             path="irrelevant", data=("file_name", {})
         )
-        mock_open.assert_called_once_with("irrelevant/file_name", "w")
+        mock_open.assert_called_once_with("irrelevant/file_name", "w", encoding="utf-8")
 
     @mock.patch("dbterd.core.executor.DbtCloudArtifact.get")
     @mock.patch("dbterd.core.executor.Executor._read_manifest")

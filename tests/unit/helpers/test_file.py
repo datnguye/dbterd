@@ -108,7 +108,7 @@ class TestFile:
     @mock.patch("builtins.open")
     def test_write_json(self, mock_open):
         file.write_json(data={}, path="path/to/catalog/catalog.json")
-        mock_open.assert_called_with("path/to/catalog/catalog.json", "w")
+        mock_open.assert_called_with("path/to/catalog/catalog.json", "w", encoding="utf-8")
 
     def test_patch_parser_compatibility_catalog(self):
         with contextlib.ExitStack() as stack:

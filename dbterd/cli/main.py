@@ -128,7 +128,7 @@ def init(template: str, force: bool):
 
     # Write configuration file
     try:
-        with open(config_path, "w") as f:
+        with open(config_path, "w", encoding="utf-8") as f:
             f.write(config_content)
         logger.info(f"Created configuration file: {config_path} | Template type: {template}")
     except Exception as e:

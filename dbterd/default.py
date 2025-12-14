@@ -125,7 +125,7 @@ def default_manifest_version(artifacts_dir: Optional[str] = None) -> Optional[st
 
     if manifest_path.exists():
         try:
-            with open(manifest_path) as f:
+            with open(manifest_path, encoding="utf-8") as f:
                 manifest_data = json.load(f)
                 if "metadata" in manifest_data and "dbt_schema_version" in manifest_data["metadata"]:
                     schema_version = manifest_data["metadata"]["dbt_schema_version"]
@@ -156,7 +156,7 @@ def default_catalog_version(artifacts_dir: Optional[str] = None) -> Optional[str
 
     if catalog_path.exists():
         try:
-            with open(catalog_path) as f:
+            with open(catalog_path, encoding="utf-8") as f:
                 catalog_data = json.load(f)
                 if "metadata" in catalog_data and "dbt_schema_version" in catalog_data["metadata"]:
                     schema_version = catalog_data["metadata"]["dbt_schema_version"]

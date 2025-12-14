@@ -79,7 +79,7 @@ def load_yaml_config(config_path: Path) -> dict[str, Any]:
         ConfigError: If YAML file is invalid
     """
     try:
-        with open(config_path) as f:
+        with open(config_path, encoding="utf-8") as f:
             content = f.read()
             config = load_yaml_text(content, path=str(config_path))
             return config if config else {}
@@ -201,7 +201,7 @@ def get_yaml_template(template_type: str = "dbt-core") -> str:
     template_file = CONFIG_TEMPLATE_DBT_CLOUD if template_type == "dbt-cloud" else CONFIG_TEMPLATE_DBT_CORE
     template_path = Path(__file__).parent.parent / "include" / "config_templates" / template_file
 
-    with open(template_path) as f:
+    with open(template_path, encoding="utf-8") as f:
         template_content = f.read()
 
     # Get default values

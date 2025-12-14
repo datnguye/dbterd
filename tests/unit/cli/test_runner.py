@@ -113,10 +113,10 @@ class TestRunner:
             mock_read_c.assert_called_once()
             mock_target_run.assert_called_once()
             # Check that open was called with the output file (version detection also calls open for manifest/catalog)
-            mock_open_w.assert_any_call(f"{default_output_path()}/{output}", "w")
+            mock_open_w.assert_any_call(f"{default_output_path()}/{output}", "w", encoding="utf-8")
 
             dbterd.invoke(["run", "--target", target, "--output", "/custom/path"])
-            mock_open_w.assert_any_call(f"/custom/path/{output}", "w")
+            mock_open_w.assert_any_call(f"/custom/path/{output}", "w", encoding="utf-8")
 
     def test_command_invalid_selection_rule(self, dbterd: DbterdRunner) -> None:
         with pytest.raises(Exception) as excinfo:
@@ -160,7 +160,7 @@ class TestRunner:
             mock_read_c.assert_called_once()
             mock_target_run.assert_called_once()
             # Check that open was called with write mode for the output file
-            mock_open_w.assert_any_call(f"{default_output_path()}/{output}", "w")
+            mock_open_w.assert_any_call(f"{default_output_path()}/{output}", "w", encoding="utf-8")
 
     def test_invoke_run_metadata_ok(self, dbterd: DbterdRunner) -> None:
         with mock.patch("dbterd.cli.main.Executor.run_metadata", return_value=None) as mock_run_metadata:
