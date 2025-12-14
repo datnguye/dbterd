@@ -1,3 +1,5 @@
+from typing import Optional
+
 import yaml
 
 
@@ -90,7 +92,7 @@ class YamlParseError(Exception):
     pass
 
 
-def load_yaml_text(contents: str, path: str | None = None) -> dict:
+def load_yaml_text(contents: str, path: Optional[str] = None) -> dict:
     """Load and parse YAML text content.
 
     Args:

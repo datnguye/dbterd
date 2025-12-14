@@ -1,6 +1,6 @@
 import dataclasses
 import json
-from typing import Optional
+from typing import Optional, Union
 
 
 class EnhancedJSONEncoder(json.JSONEncoder):  # pragma: no cover
@@ -33,7 +33,7 @@ def mask(obj: str, mask_keys: Optional[list[str]] = None) -> dict:
     return obj_dict
 
 
-def to_json(obj: object, mask_keys: Optional[list[str]] = None) -> str | dict:
+def to_json(obj: object, mask_keys: Optional[list[str]] = None) -> Union[str, dict]:
     """Convert object to JSON string.
 
     Args:
