@@ -413,12 +413,11 @@ class BaseAlgoAdapter(ABC):
             return manifest_node.compiled_code
 
         if hasattr(manifest_node, "columns"):  # nodes having no compiled but just list of columns
-            return """select
+            columns = ",\n            ".join([str(x) for x in manifest_node.columns])
+            table = f"{manifest_node.database}.{manifest_node.schema}.undefined"
+            return f"""select
             {columns}
-        from {table}""".format(
-                columns=",\n".join([f"{x}" for x in manifest_node.columns]),
-                table=f"{manifest_node.database}.{manifest_node.schema}.undefined",
-            )
+        from {table}"""
 
         return manifest_node.raw_sql  # fallback to raw dbt code
 

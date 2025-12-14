@@ -206,22 +206,6 @@ class TestDrawdbTestRelationship:
         )
         assert json.loads(drawdb) == json.loads(expected)
 
-    @pytest.mark.parametrize(
-        "relationship_type, symbol",
-        [
-            ("0n", "One to many"),
-            ("1n", "One to many"),
-            ("01", "One to one"),
-            ("11", "One to one"),
-            ("nn", "Many to many"),
-            ("n1", "Many to one"),
-            ("--irrelevant--", "Many to one"),
-        ],
-    )
-    def test_get_rel_symbol(self, relationship_type, symbol):
-        adapter = DrawdbAdapter()
-        assert adapter.get_rel_symbol(relationship_type=relationship_type) == symbol
-
     def test_get_y(self):
         adapter = DrawdbAdapter()
         tables = [

@@ -12,7 +12,16 @@ class EnhancedJSONEncoder(json.JSONEncoder):  # pragma: no cover
         return super().default(o)
 
 
-def mask(obj: str, mask_keys: Optional[list] = None):
+def mask(obj: str, mask_keys: Optional[list[str]] = None) -> dict:
+    """Mask sensitive values in a JSON string.
+
+    Args:
+        obj: JSON string to mask
+        mask_keys: List of keys to mask (defaults to password, secret)
+
+    Returns:
+        Dictionary with masked values
+    """
     if mask_keys is None:
         mask_keys = ["password", "secret"]
     obj_dict = json.loads(obj)
@@ -24,7 +33,16 @@ def mask(obj: str, mask_keys: Optional[list] = None):
     return obj_dict
 
 
-def to_json(obj, mask_keys=None):
+def to_json(obj: object, mask_keys: Optional[list[str]] = None) -> str | dict:
+    """Convert object to JSON string.
+
+    Args:
+        obj: Object to serialize (supports dataclasses)
+        mask_keys: Optional list of keys to mask
+
+    Returns:
+        JSON string representation, or empty dict if obj is falsy
+    """
     if mask_keys is None:
         mask_keys = []
     if not obj:

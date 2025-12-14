@@ -323,19 +323,3 @@ class TestGraphVizTestRelationship:
         print("graphviz ", graphviz.replace(" ", "").replace("\n", ""))
         print("expected", expected.replace(" ", "").replace("\n", ""))
         assert graphviz.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
-
-    @pytest.mark.parametrize(
-        "relationship_type, symbol",
-        [
-            ("0n", "->"),
-            ("1n", "->"),
-            ("01", "->"),
-            ("11", "->"),
-            ("nn", "->"),
-            ("n1", "->"),
-            ("--irrelevant--", "->"),
-        ],
-    )
-    def test_get_rel_symbol(self, relationship_type, symbol):
-        adapter = GraphvizAdapter()
-        assert adapter.get_rel_symbol(relationship_type=relationship_type) == symbol

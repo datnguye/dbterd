@@ -48,8 +48,15 @@ def load_file_contents(path: str, strip: bool = True) -> str:
     return to_return
 
 
-def open_json(fp):
-    """Json loading utility, leveraging long path fixes."""
+def open_json(fp: str) -> dict:
+    """Json loading utility, leveraging long path fixes.
+
+    Args:
+        fp: File path to JSON file
+
+    Returns:
+        Parsed JSON as dictionary
+    """
     return json.loads(load_file_contents(fp))
 
 
@@ -87,6 +94,9 @@ def patch_parser_compatibility(artifact: str = "catalog", artifact_version: Opti
         logger.debug(f"Could not patch {artifact} v{artifact_version} metadata: {e}")
 
 
+MAX_PATH_LENGTH_WITHOUT_PREFIX = 250
+
+
 def convert_path(path: str) -> str:
     """
     Convert a path which might be >260 characters long, to one that will be writable/readable on Windows.
@@ -101,7 +111,7 @@ def convert_path(path: str) -> str:
     """
     # some parts of python seem to append '\*.*' to strings, better safe than
     # sorry.
-    if len(path) < 250:
+    if len(path) < MAX_PATH_LENGTH_WITHOUT_PREFIX:
         return path
     if supports_long_paths():
         return path
@@ -228,14 +238,12 @@ def read_catalog(path: str, version: Optional[int] = None, enable_compat_patch: 
     return parse_func(catalog=_dict)
 
 
-def write_json(data, path: str):
-    """
-    Persist json data to file.
+def write_json(data: str, path: str) -> None:
+    """Persist json data to file.
 
     Args:
-        data (json): Json data
-        path (str): File path
-
+        data: Json string data
+        path: File path
     """
     with open(path, "w", encoding="utf-8") as file:
         file.write(data)

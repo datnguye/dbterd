@@ -235,7 +235,7 @@ class Executor:
             with open(file_path, "w", encoding="utf-8") as f:
                 logger.info(f"Output saved to {file_path}")
                 f.write(data[1])
-        except Exception as e:
+        except OSError as e:
             logger.error(str(e))
             raise click.FileError(f"Could not save the output: {e!s}") from e
 

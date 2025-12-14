@@ -154,6 +154,15 @@ class TestLoadTomlConfig:
         config = load_toml_config(config_path)
         assert config == {}
 
+    def test_raises_error_on_file_read_failure(self, tmp_path):
+        config_path = tmp_path / "pyproject.toml"
+        config_path.write_text("[tool.dbterd]\ntarget = 'dbml'\n")
+
+        with patch("builtins.open", side_effect=OSError("Permission denied")):
+            with pytest.raises(ConfigError) as exc_info:
+                load_toml_config(config_path)
+            assert "Failed to read TOML file" in str(exc_info.value)
+
 
 class TestFindConfigFile:
     def test_finds_yaml_in_current_directory(self, tmp_path, monkeypatch):

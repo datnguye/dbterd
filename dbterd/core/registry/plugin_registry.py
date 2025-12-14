@@ -30,6 +30,19 @@ class PluginRegistry:
     _algos: ClassVar[dict[str, PluginInfo]] = {}
 
     @classmethod
+    def _check_registered(cls, name: str, registry: dict[str, PluginInfo], registry_name: str) -> None:
+        """Verify item is registered, raise KeyError if not.
+
+        Args:
+            name: Name of the item to check
+            registry: Registry dictionary to check in
+            registry_name: Human-readable name for error message
+        """
+        if name not in registry:
+            available = list(registry.keys())
+            raise KeyError(f"{registry_name} '{name}' not registered. Available: {available}")
+
+    @classmethod
     def register_target(cls, name: str, adapter_class: type, description: str = "") -> None:
         """
         Register a target adapter.
@@ -70,9 +83,7 @@ class PluginRegistry:
             KeyError: If target is not registered
 
         """
-        if name not in cls._targets:
-            available = list(cls._targets.keys())
-            raise KeyError(f"Target '{name}' not registered. Available: {available}")
+        cls._check_registered(name, cls._targets, "Target")
         return cls._targets[name].adapter_class
 
     @classmethod
@@ -90,9 +101,7 @@ class PluginRegistry:
             KeyError: If algorithm is not registered
 
         """
-        if name not in cls._algos:
-            available = list(cls._algos.keys())
-            raise KeyError(f"Algo '{name}' not registered. Available: {available}")
+        cls._check_registered(name, cls._algos, "Algo")
         return cls._algos[name].adapter_class
 
     @classmethod
@@ -160,9 +169,7 @@ class PluginRegistry:
             KeyError: If target is not registered
 
         """
-        if name not in cls._targets:
-            available = list(cls._targets.keys())
-            raise KeyError(f"Target '{name}' not registered. Available: {available}")
+        cls._check_registered(name, cls._targets, "Target")
         return cls._targets[name]
 
     @classmethod
@@ -180,9 +187,7 @@ class PluginRegistry:
             KeyError: If algorithm is not registered
 
         """
-        if name not in cls._algos:
-            available = list(cls._algos.keys())
-            raise KeyError(f"Algo '{name}' not registered. Available: {available}")
+        cls._check_registered(name, cls._algos, "Algo")
         return cls._algos[name]
 
     @classmethod

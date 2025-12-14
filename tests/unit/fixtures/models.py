@@ -1,8 +1,115 @@
 """Model fixtures for Table, Column, and Ref objects."""
 
+from __future__ import annotations
+
 import pytest
 
 from dbterd.core.models import Column, Ref, Table
+
+
+# Common test data constants to reduce magic strings
+class TestDefaults:
+    """Default values used across tests for consistency."""
+
+    DATABASE = "--database--"
+    DATABASE2 = "--database2--"
+    DATABASE3 = "--database3--"
+    SCHEMA = "--schema--"
+    SCHEMA2 = "--schema2--"
+    SCHEMA3 = "--schema3--"
+    RAW_SQL = "--irrelevant--"
+    UNKNOWN_TYPE = "unknown"
+
+
+# Helper functions for creating test objects (can be used in parametrized tests)
+def make_column(
+    name: str = "column1",
+    data_type: str = "varchar",
+    description: str = "",
+) -> Column:
+    """Create a Column object with sensible defaults."""
+    return Column(name=name, data_type=data_type, description=description)
+
+
+def make_table(
+    name: str = "model.dbt_resto.table1",
+    node_name: str | None = None,
+    database: str = TestDefaults.DATABASE,
+    schema: str = TestDefaults.SCHEMA,
+    columns: list[Column] | None = None,
+    raw_sql: str = TestDefaults.RAW_SQL,
+    description: str = "",
+    exposures: list[str] | None = None,
+    label: str | None = None,
+) -> Table:
+    """Create a Table object with sensible defaults."""
+    return Table(
+        name=name,
+        node_name=node_name or name,
+        database=database,
+        schema=schema,
+        columns=columns or [make_column(name="name1", data_type="name1-type")],
+        raw_sql=raw_sql,
+        description=description,
+        exposures=exposures or [],
+        label=label,
+    )
+
+
+def make_ref(
+    name: str = "test.dbt_resto.relationships_table1",
+    table_map: list[str] | None = None,
+    column_map: list[str] | None = None,
+    ref_type: str = "n1",
+    relationship_label: str | None = None,
+) -> Ref:
+    """Create a Ref object with sensible defaults."""
+    return Ref(
+        name=name,
+        table_map=table_map or ["model.dbt_resto.table2", "model.dbt_resto.table1"],
+        column_map=column_map or ["name2", "name1"],
+        type=ref_type,
+        relationship_label=relationship_label,
+    )
+
+
+# Pre-built common test objects for parametrized tests
+def get_table1(columns: list[Column] | None = None) -> Table:
+    """Get standard table1 for tests."""
+    return make_table(
+        name="model.dbt_resto.table1",
+        columns=columns or [make_column(name="name1", data_type="name1-type")],
+    )
+
+
+def get_table2(columns: list[Column] | None = None) -> Table:
+    """Get standard table2 for tests."""
+    return make_table(
+        name="model.dbt_resto.table2",
+        database=TestDefaults.DATABASE2,
+        schema=TestDefaults.SCHEMA2,
+        columns=columns or [make_column(name="name2", data_type="name2-type2")],
+    )
+
+
+def get_table3_source(columns: list[Column] | None = None) -> Table:
+    """Get standard source table3 for tests."""
+    return make_table(
+        name="source.dbt_resto.table3",
+        database=TestDefaults.DATABASE3,
+        schema=TestDefaults.SCHEMA3,
+        columns=columns or [make_column(name="name3", data_type="name3-type3")],
+    )
+
+
+def get_basic_ref() -> Ref:
+    """Get basic relationship between table1 and table2."""
+    return make_ref()
+
+
+def get_ref_with_missing_columns() -> Ref:
+    """Get relationship referencing columns that don't exist initially."""
+    return make_ref(column_map=["name-notexist2", "name-notexist1"])
 
 
 @pytest.fixture
@@ -75,14 +182,14 @@ def ref_factory():
         name: str = "test.dbt_resto.relationships_table1",
         table_map: list[str] | None = None,
         column_map: list[str] | None = None,
-        relationship_type: str = "n1",
+        ref_type: str = "n1",
         relationship_label: str | None = None,
     ) -> Ref:
         return Ref(
             name=name,
             table_map=table_map or ["model.dbt_resto.table2", "model.dbt_resto.table1"],
             column_map=column_map or ["name2", "name1"],
-            relationship_type=relationship_type,
+            type=ref_type,
             relationship_label=relationship_label,
         )
 

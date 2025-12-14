@@ -82,7 +82,7 @@ class DbtCloudArtifact:
                 data=json.dumps(r.json(), indent=2),
                 path=f"{artifacts_dir}/{artifact}.json",
             )
-        except Exception as e:
+        except (requests.RequestException, OSError) as e:
             logger.error(f"Error occurred while downloading [error: {e!s}]")
             return False
 

@@ -1,6 +1,7 @@
 from unittest import mock
 
 import pytest
+import requests
 
 from dbterd.plugins.dbt_cloud.graphql import GraphQLHelper
 
@@ -51,6 +52,6 @@ class TestGraphQL:
 
     @mock.patch("dbterd.plugins.dbt_cloud.administrative.requests.post")
     def test_query_with_exception(self, mock_requests_post):
-        mock_requests_post.side_effect = Exception("any error")
+        mock_requests_post.side_effect = requests.RequestException("any error")
         assert GraphQLHelper().query(query="irrelevant", **{}) is None
         assert mock_requests_post.call_count == 1

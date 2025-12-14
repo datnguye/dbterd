@@ -122,7 +122,7 @@ class TestDbtCloudArtifact:
     @mock.patch("dbterd.plugins.dbt_cloud.administrative.requests.get")
     def test_download_artifact_failed_to_save_file(self, mock_requests_get, mock_write_json, dbt_cloud_artifact):
         mock_requests_get.return_value = MockResponse(status_code=200, data={})
-        mock_write_json.side_effect = Exception("any error")
+        mock_write_json.side_effect = OSError("any error")
         assert not dbt_cloud_artifact.download_artifact(artifact="manifest", artifacts_dir="/irrelevant/path")
         assert mock_write_json.call_count == 1
 

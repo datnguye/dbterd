@@ -45,6 +45,6 @@ class Query:
         try:
             with open(file_path, encoding="utf-8") as content:
                 return content.read()
-        except Exception as e:
+        except OSError as e:
             logger.error(f"Cannot read file: [{file_path}] with error: {e!s}")
             return None

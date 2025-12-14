@@ -18,12 +18,32 @@ Raw Error:
 """.strip()
 
 
-def line_no(i, line, width=3):
+def line_no(i: int, line: str, width: int = 3) -> str:
+    """Format a line with its line number.
+
+    Args:
+        i: Line number
+        line: Line content
+        width: Width for line number padding
+
+    Returns:
+        Formatted line with number prefix
+    """
     line_number = str(i).ljust(width)
     return f"{line_number}| {line}"
 
 
-def prefix_with_line_numbers(string, no_start, no_end):
+def prefix_with_line_numbers(string: str, no_start: int, no_end: int) -> str:
+    """Add line numbers as prefix to a range of lines.
+
+    Args:
+        string: Full text content
+        no_start: Starting line index
+        no_end: Ending line index
+
+    Returns:
+        Lines with number prefixes
+    """
     line_list = string.split("\n")
 
     numbers = range(no_start, no_end)
@@ -32,7 +52,16 @@ def prefix_with_line_numbers(string, no_start, no_end):
     return "\n".join([line_no(i + 1, line) for (i, line) in zip(numbers, relevant_lines)])
 
 
-def contextualized_yaml_error(raw_contents, error):
+def contextualized_yaml_error(raw_contents: str, error: yaml.YAMLError) -> str:
+    """Create a contextualized error message for YAML parsing errors.
+
+    Args:
+        raw_contents: Original YAML content
+        error: YAML error with problem_mark attribute
+
+    Returns:
+        Formatted error message with context
+    """
     mark = error.problem_mark
 
     min_line = max(mark.line - 3, 0)
@@ -43,7 +72,15 @@ def contextualized_yaml_error(raw_contents, error):
     return YAML_ERROR_MESSAGE.format(line_number=mark.line + 1, nice_error=nice_error, raw_error=error)
 
 
-def safe_load(contents):
+def safe_load(contents: str) -> dict:
+    """Safely load YAML content.
+
+    Args:
+        contents: YAML string content
+
+    Returns:
+        Parsed YAML as dictionary
+    """
     return yaml.load(contents, Loader=SafeLoader)
 
 
@@ -53,7 +90,19 @@ class YamlParseError(Exception):
     pass
 
 
-def load_yaml_text(contents, path=None):
+def load_yaml_text(contents: str, path: str | None = None) -> dict:
+    """Load and parse YAML text content.
+
+    Args:
+        contents: YAML string content
+        path: Optional path for error context
+
+    Returns:
+        Parsed YAML as dictionary
+
+    Raises:
+        YamlParseError: If YAML parsing fails
+    """
     try:
         return safe_load(contents)
     except (yaml.scanner.ScannerError, yaml.YAMLError) as e:

@@ -24,6 +24,20 @@ from dbterd.types import Catalog, Manifest
 MAX_TEST_PARENTS = 2
 
 
+def _extract_column_name(kwargs: dict, rule_key: str) -> str:
+    """Extract and normalize column name from test metadata kwargs.
+
+    Args:
+        kwargs: Test metadata kwargs dictionary
+        rule_key: Rule key to look up (e.g., 'c_to', 'c_from')
+
+    Returns:
+        Normalized lowercase column name
+    """
+    column = kwargs.get(rule_key) or "_and_".join(kwargs.get(f"{rule_key}s", ["unknown"]))
+    return str(column).replace('"', "").lower()
+
+
 @register_algo("test_relationship", description="Detect relationships via dbt tests")
 class TestRelationshipAlgo(BaseAlgoAdapter):
     """Algorithm adapter using dbt relationship tests.
@@ -120,19 +134,11 @@ class TestRelationshipAlgo(BaseAlgoAdapter):
                 name=x,
                 table_map=self.get_table_map(test_node=manifest.nodes[x], **kwargs),
                 column_map=[
-                    str(
-                        manifest.nodes[x].test_metadata.kwargs.get(rule.get("c_to"))
-                        or "_and_".join(manifest.nodes[x].test_metadata.kwargs.get(f"{rule.get('c_to')}s", "unknown"))
-                    )
-                    .replace('"', "")
-                    .lower(),
-                    str(
-                        manifest.nodes[x].test_metadata.kwargs.get("column_name")
-                        or manifest.nodes[x].test_metadata.kwargs.get(rule.get("c_from"))
-                        or "_and_".join(manifest.nodes[x].test_metadata.kwargs.get(f"{rule.get('c_from')}s", "unknown"))
-                    )
-                    .replace('"', "")
-                    .lower(),
+                    _extract_column_name(manifest.nodes[x].test_metadata.kwargs, rule.get("c_to")),
+                    (
+                        str(manifest.nodes[x].test_metadata.kwargs.get("column_name") or "").replace('"', "").lower()
+                        or _extract_column_name(manifest.nodes[x].test_metadata.kwargs, rule.get("c_from"))
+                    ),
                 ],
                 type=self.get_relationship_type(manifest.nodes[x].meta.get(TEST_META_RELATIONSHIP_TYPE, "")),
                 relationship_label=manifest.nodes[x].meta.get("relationship_label"),
@@ -176,19 +182,11 @@ class TestRelationshipAlgo(BaseAlgoAdapter):
                             name=test_id,
                             table_map=self.get_table_map_from_metadata(test_node=test, **kwargs),
                             column_map=[
+                                _extract_column_name(test_metadata_kwargs, rule.get("c_to")),
                                 (
-                                    test_metadata_kwargs.get(rule.get("c_to"))
-                                    or "_and_".join(test_metadata_kwargs.get(f"{rule.get('c_to')}s", "unknown"))
-                                )
-                                .replace('"', "")
-                                .lower(),
-                                (
-                                    test_metadata_kwargs.get("columnName")
-                                    or test_metadata_kwargs.get(rule.get("c_from"))
-                                    or "_and_".join(test_metadata_kwargs.get(f"{rule.get('c_from')}s", "unknown"))
-                                )
-                                .replace('"', "")
-                                .lower(),
+                                    str(test_metadata_kwargs.get("columnName") or "").replace('"', "").lower()
+                                    or _extract_column_name(test_metadata_kwargs, rule.get("c_from"))
+                                ),
                             ],
                             type=self.get_relationship_type(test_meta.get(TEST_META_RELATIONSHIP_TYPE, "")),
                             relationship_label=test_meta.get("relationship_label"),

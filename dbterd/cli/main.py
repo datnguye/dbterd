@@ -131,6 +131,6 @@ def init(template: str, force: bool):
         with open(config_path, "w", encoding="utf-8") as f:
             f.write(config_content)
         logger.info(f"Created configuration file: {config_path} | Template type: {template}")
-    except Exception as e:
+    except OSError as e:
         logger.error(f"Failed to create configuration file: {e}")
         raise click.ClickException(f"Failed to create configuration file: {e}") from e

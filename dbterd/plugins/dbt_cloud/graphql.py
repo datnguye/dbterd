@@ -51,7 +51,7 @@ class GraphQLHelper:
             if r.status_code != 200:
                 logger.error(f"Failed to query [error: {vars(r)}]")
                 return None
-        except Exception as e:
+        except requests.RequestException as e:
             logger.error(f"Error occurred while querying [error: {e!s}]")
             return None
 

@@ -22,8 +22,8 @@ class Table:
     columns: Optional[list[Column]] = None
     raw_sql: Optional[str] = None
     resource_type: str = "model"
-    exposures: Optional[list[str]] = field(default_factory=lambda: [])
-    node_name: str = None
+    exposures: list[str] = field(default_factory=list)
+    node_name: Optional[str] = None
     description: str = ""
     label: Optional[str] = None
 
