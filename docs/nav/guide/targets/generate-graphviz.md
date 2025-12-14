@@ -16,14 +16,14 @@ sudo apt install graphviz
     <span data-ty>2023-05-06 08:17:54,715 - dbterd - INFO - target/output.graphviz (executor.py:75)</span>
 </div>
 
-## 2. Export to PNG
+## 3. Export to PNG
 
 <div class="termynal" data-ty-startDelay="600">
-    <span data-ty="input" data-ty-prompt="$ ~/repo>">dot -Tpng ./target/output.d2 > ./target/output.png</span>
+    <span data-ty="input" data-ty-prompt="$ ~/repo>">dot -Tpng ./target/output.graphviz > ./target/output.png</span>
     <span data-ty data-ty-prompt="$ ~/repo>"></span>
 </div>
 
-### 3. Embedded into Markdown
+### 4. Embedded into Markdown
 
 ```markdown
 # Sample GraphViz ERD

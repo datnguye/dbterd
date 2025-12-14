@@ -7,7 +7,7 @@ repo_name: datnguye/dbterd
 repo_url: https://github.com/datnguye/dbterd
 edit_uri: edit/main/docs/
 
-copyright: Copyright &copy; 2023 Dat Nguyen
+copyright: Copyright &copy; 2023-2024 Dat Nguyen
 
 nav:
   - dbterd:
@@ -31,10 +31,13 @@ nav:
         - Download artifacts from a Job Run: nav/guide/dbt-cloud/download-artifact-from-a-job-run.md
         - Download the latest artifacts from a Job: nav/guide/dbt-cloud/download-artifact-from-a-job.md
         - Read the latest artifacts from an environment: nav/guide/dbt-cloud/read-artifact-from-an-environment.md
-      - Python API Reference ↗️: api-docs/index.html" target="_blank # managed by hook
-    - Contribution Guideline ❤️: nav/development/contributing-guide.md
+      - Python API Reference ↗️: 'api-docs/index.html" target="_blank'  # managed by hook
+    - Development 🛠️:
+      - Contributing Guide ❤️: nav/development/contributing-guide.md
+      - Developing a Target Adapter: nav/development/developing-target-adapter.md
+      - Developing an Algorithm Adapter: nav/development/developing-algo-adapter.md
     - License 🔑: license.md
-    - Change Log ↗️: https://github.com/datnguye/dbterd/releases" target="_blank
+    - Change Log ↗️: 'https://github.com/datnguye/dbterd/releases" target="_blank'
 
 hooks:
   - docs/hooks.py

@@ -3,6 +3,12 @@ name: CI PR
 on:
   pull_request:
     branches: [ main ]
+    paths:
+      - "dbterd/**"
+      - "tests/**"
+      - "pyproject.toml"
+      - "uv.lock"
+      - ".github/workflows/ci_pr.yml"
 
 permissions: read-all
 

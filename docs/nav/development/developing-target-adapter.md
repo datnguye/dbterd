@@ -1,23 +1,6 @@
 # Developing a Target Adapter
 
-So you want to add a shiny new output format to dbterd? Maybe you've discovered some fancy diagram tool that speaks its own language, or perhaps your team has a secret internal format that makes everyone's eyes sparkle. Either way, you're in the right place!
-
-- [Developing a Target Adapter](#developing-a-target-adapter)
-  - [What is a Target Adapter?](#what-is-a-target-adapter)
-  - [Quick Start](#quick-start)
-  - [The Base Class](#the-base-class)
-  - [Step-by-Step Guide](#step-by-step-guide)
-    - [1. Create Your Adapter File](#1-create-your-adapter-file)
-    - [2. Implement the Required Methods](#2-implement-the-required-methods)
-    - [3. Define Relationship Symbols](#3-define-relationship-symbols)
-  - [Understanding the Data Models](#understanding-the-data-models)
-    - [Table Model](#table-model)
-    - [Column Model](#column-model)
-    - [Ref (Relationship) Model](#ref-relationship-model)
-  - [Helper: TextERDBuilder](#helper-texterdbuilder)
-  - [Complete Example](#complete-example)
-  - [Testing Your Adapter](#testing-your-adapter)
-  - [Tips and Best Practices](#tips-and-best-practices)
+So you want to add a shiny new output format to `dbterd`? Maybe you've discovered some fancy diagram tool that speaks its own language, or perhaps your team has a secret internal format that makes everyone's eyes sparkle. Either way, you're in the right place!
 
 ## What is a Target Adapter?
 
