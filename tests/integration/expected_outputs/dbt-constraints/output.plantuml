@@ -1,0 +1,147 @@
+@startuml
+entity "model.dbt_constraints_integration_tests.dim_customers" {
+    c_custkey : integer
+    c_name : text
+    c_address : text
+    c_nationkey : integer
+    c_phone : text
+    c_acctbal : double precision
+    c_mktsegment : text
+    c_comment : text
+    c_custkey_seq : bigint
+  }
+entity "model.dbt_constraints_integration_tests.dim_customers_view" {
+    c_custkey : integer
+    c_name : text
+    c_address : text
+    c_nationkey : integer
+    c_phone : text
+    c_acctbal : double precision
+    c_mktsegment : text
+    c_comment : text
+    c_custkey_seq : bigint
+  }
+entity "model.dbt_constraints_integration_tests.dim_duplicate_orders" {
+    o_orderkey : integer
+    o_custkey : integer
+    o_orderstatus : text
+    o_totalprice : double precision
+    o_orderdate : date
+    o_order_priority : text
+    o_clerk : text
+    o_shippriority : integer
+    o_comment : text
+    o_orderkey_seq : bigint
+  }
+entity "model.dbt_constraints_integration_tests.dim_missing_orders" {
+    o_orderkey : integer
+    o_custkey : integer
+    o_orderstatus : text
+    o_totalprice : double precision
+    o_orderdate : date
+    o_order_priority : text
+    o_clerk : text
+    o_shippriority : integer
+    o_comment : text
+    o_orderkey_seq : bigint
+  }
+entity "model.dbt_constraints_integration_tests.dim_orders" {
+    o_orderkey : integer
+    o_custkey : integer
+    o_orderstatus : text
+    o_totalprice : double precision
+    o_orderdate : date
+    o_order_priority : text
+    o_clerk : text
+    o_shippriority : integer
+    o_comment : text
+    o_orderkey_seq : bigint
+  }
+entity "model.dbt_constraints_integration_tests.dim_orders_null_keys" {
+    o_orderkey : integer
+    o_orderkey_seq : bigint
+    o_custkey : integer
+    o_orderstatus : text
+    o_totalprice : double precision
+    o_orderdate : date
+    o_order_priority : text
+    o_clerk : text
+    o_shippriority : integer
+    o_comment : text
+  }
+entity "model.dbt_constraints_integration_tests.dim_part" {
+    p_partkey : integer
+    p_name : text
+    p_mfgr : text
+    p_brand : text
+    p_type : text
+    p_size : integer
+    p_container : text
+    p_retailprice : double precision
+    p_comment : text
+    p_partkey_seq : bigint
+  }
+entity "model.dbt_constraints_integration_tests.dim_part_supplier" {
+    ps_partkey : integer
+    ps_suppkey : integer
+    ps_availqty : integer
+    ps_supplycost : double precision
+    ps_comment : text
+  }
+entity "model.dbt_constraints_integration_tests.dim_part_supplier_missing_con" {
+    ps_partkey : integer
+    ps_suppkey : integer
+    ps_availqty : integer
+    ps_supplycost : double precision
+    ps_comment : text
+  }
+entity "model.dbt_constraints_integration_tests.fact_order_line" {
+    l_orderkey : integer
+    l_partkey : integer
+    l_suppkey : integer
+    l_linenumber : integer
+    l_quantity : integer
+    l_extendedprice : double precision
+    l_discount : double precision
+    l_tax : double precision
+    l_returnflag : text
+    l_linestatus : text
+    l_shipdate : date
+    l_commitdate : date
+    l_receiptdate : date
+    l_shipinstruct : text
+    l_shipmode : text
+    l_comment : text
+    o_orderdate_key : integer
+    integration_id : text
+  }
+entity "model.dbt_constraints_integration_tests.fact_order_line_longcol" {
+    l_____________________orderkey : integer
+    l___________________linenumber : integer
+    l______________________partkey : integer
+    l______________________suppkey : integer
+    l_______________integration_id : text
+  }
+entity "model.dbt_constraints_integration_tests.fact_order_line_missing_orders" {
+    l_orderkey : integer
+    l_partkey : integer
+    l_suppkey : integer
+    l_linenumber : integer
+    l_quantity : integer
+    l_extendedprice : double precision
+    l_discount : double precision
+    l_tax : double precision
+    l_returnflag : text
+    l_linestatus : text
+    l_shipdate : date
+    l_commitdate : date
+    l_receiptdate : date
+    l_shipinstruct : text
+    l_shipmode : text
+    l_comment : text
+    integration_id : text
+  }
+  "model.dbt_constraints_integration_tests.dim_orders" }|--|| "model.dbt_constraints_integration_tests.dim_customers"
+  "model.dbt_constraints_integration_tests.fact_order_line" }|--|| "model.dbt_constraints_integration_tests.dim_orders"
+  "model.dbt_constraints_integration_tests.fact_order_line_longcol" }|--|| "model.dbt_constraints_integration_tests.dim_orders"
+@enduml

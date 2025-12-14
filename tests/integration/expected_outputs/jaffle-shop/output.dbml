@@ -1,0 +1,156 @@
+//Tables (based on the selection criteria)
+//--configured at schema: demo.public
+Table "model.jaffle_shop.customers" {
+  "customer_id" "text" [note: "The unique key of the orders mart."]
+  "customer_name" "text" [note: "Customers' full name."]
+  "count_lifetime_orders" "bigint" [note: "Total number of orders a customer has ever placed."]
+  "first_ordered_at" "timestamp without time zone" [note: "The timestamp when a customer placed their first order."]
+  "last_ordered_at" "timestamp without time zone" [note: "The timestamp of a customer's most recent order."]
+  "lifetime_spend_pretax" "numeric" [note: "The sum of all the pre-tax subtotals of every order a customer has placed."]
+  "lifetime_tax_paid" "numeric" [note: "The sum of all the tax portion of every order a customer has placed."]
+  "lifetime_spend" "numeric" [note: "The sum of all the order totals (including tax) that a customer has ever placed."]
+  "customer_type" "text" [note: "Options are 'new' or 'returning', indicating if a customer has ordered more than once or has only placed their first order to date."]
+
+  Note: "Customer overview data mart, offering key details for each unique customer. One row per customer."
+}
+//--configured at schema: demo.public
+Table "model.jaffle_shop.locations" {
+  "location_id" "text"
+  "location_name" "text"
+  "tax_rate" "double precision"
+  "opened_date" "timestamp without time zone"
+
+  Note: ""
+}
+//--configured at schema: demo.public
+Table "model.jaffle_shop.metricflow_time_spine" {
+  "date_day" "date"
+
+  Note: ""
+}
+//--configured at schema: demo.public
+Table "model.jaffle_shop.order_items" {
+  "order_item_id" "text"
+  "order_id" "text"
+  "product_id" "text"
+  "ordered_at" "timestamp without time zone"
+  "product_name" "text"
+  "product_price" "numeric"
+  "is_food_item" "boolean"
+  "is_drink_item" "boolean"
+  "supply_cost" "numeric"
+
+  Note: ""
+}
+//--configured at schema: demo.public
+Table "model.jaffle_shop.orders" {
+  "order_id" "text" [note: "The unique key of the orders mart."]
+  "location_id" "text"
+  "customer_id" "text" [note: "The foreign key relating to the customer who placed the order."]
+  "subtotal_cents" "integer"
+  "tax_paid_cents" "integer"
+  "order_total_cents" "integer"
+  "subtotal" "numeric"
+  "tax_paid" "numeric"
+  "order_total" "numeric" [note: "The total amount of the order in USD including tax."]
+  "ordered_at" "timestamp without time zone" [note: "The timestamp the order was placed at."]
+  "order_cost" "numeric" [note: "The sum of supply expenses to fulfill the order."]
+  "order_items_subtotal" "numeric"
+  "count_food_items" "bigint"
+  "count_drink_items" "bigint"
+  "count_order_items" "bigint"
+  "is_food_order" "boolean" [note: "A boolean indicating if this order included any food items."]
+  "is_drink_order" "boolean" [note: "A boolean indicating if this order included any drink items."]
+  "customer_order_number" "bigint"
+
+  Note: "Order overview data mart, offering key details for each order inlcluding if it's a customer's first order and a food vs. drink item breakdown. One row per order."
+}
+//--configured at schema: demo.public
+Table "model.jaffle_shop.products" {
+  "product_id" "text"
+  "product_name" "text"
+  "product_type" "text"
+  "product_description" "text"
+  "product_price" "numeric"
+  "is_food_item" "boolean"
+  "is_drink_item" "boolean"
+
+  Note: ""
+}
+//--configured at schema: demo.public
+Table "model.jaffle_shop.stg_customers" {
+  "customer_id" "text" [note: "The unique key for each customer."]
+  "customer_name" "text"
+
+  Note: "Customer data with basic cleaning and transformation applied, one row per customer."
+}
+//--configured at schema: demo.public
+Table "model.jaffle_shop.stg_locations" {
+  "location_id" "text" [note: "The unique key for each location."]
+  "location_name" "text"
+  "tax_rate" "double precision"
+  "opened_date" "timestamp without time zone"
+
+  Note: "List of open locations with basic cleaning and transformation applied, one row per location."
+}
+//--configured at schema: demo.public
+Table "model.jaffle_shop.stg_order_items" {
+  "order_item_id" "text" [note: "The unique key for each order item."]
+  "order_id" "text" [note: "The corresponding order each order item belongs to"]
+  "product_id" "text"
+
+  Note: "Individual food and drink items that make up our orders, one row per item."
+}
+//--configured at schema: demo.public
+Table "model.jaffle_shop.stg_orders" {
+  "order_id" "text" [note: "The unique key for each order."]
+  "location_id" "text"
+  "customer_id" "text"
+  "subtotal_cents" "integer"
+  "tax_paid_cents" "integer"
+  "order_total_cents" "integer"
+  "subtotal" "numeric"
+  "tax_paid" "numeric"
+  "order_total" "numeric"
+  "ordered_at" "timestamp without time zone"
+
+  Note: "Order data with basic cleaning and transformation applied, one row per order."
+}
+//--configured at schema: demo.public
+Table "model.jaffle_shop.stg_products" {
+  "product_id" "text" [note: "The unique key for each product."]
+  "product_name" "text"
+  "product_type" "text"
+  "product_description" "text"
+  "product_price" "numeric"
+  "is_food_item" "boolean"
+  "is_drink_item" "boolean"
+
+  Note: "Product (food and drink items that can be ordered) data with basic cleaning and transformation applied, one row per product."
+}
+//--configured at schema: demo.public
+Table "model.jaffle_shop.stg_supplies" {
+  "supply_uuid" "text" [note: "The unique key of our supplies per cost."]
+  "supply_id" "text"
+  "product_id" "text"
+  "supply_name" "text"
+  "supply_cost" "numeric"
+  "is_perishable_supply" "boolean"
+
+  Note: "List of our supply expenses data with basic cleaning and transformation applied.\nOne row per supply cost, not per supply. As supply costs fluctuate they receive a new row with a new UUID. Thus there can be multiple rows per supply_id.\n"
+}
+//--configured at schema: demo.public
+Table "model.jaffle_shop.supplies" {
+  "supply_uuid" "text"
+  "supply_id" "text"
+  "product_id" "text"
+  "supply_name" "text"
+  "supply_cost" "numeric"
+  "is_perishable_supply" "boolean"
+
+  Note: ""
+}
+//Refs (based on the DBT Relationship Tests)
+Ref: "model.jaffle_shop.order_items"."order_id" > "model.jaffle_shop.orders"."order_id"
+Ref: "model.jaffle_shop.orders"."customer_id" > "model.jaffle_shop.stg_customers"."customer_id"
+Ref: "model.jaffle_shop.stg_order_items"."order_id" > "model.jaffle_shop.stg_orders"."order_id"

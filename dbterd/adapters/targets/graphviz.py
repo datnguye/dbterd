@@ -74,7 +74,7 @@ class GraphvizAdapter(BaseTargetAdapter):
         symbol = self.get_rel_symbol(relationship.type)
 
         return (
-            f"  {key_from} {symbol} {key_to} [ \n"
+            f"  {key_from} {symbol} {key_to} [\n"
             "    penwidth = 1\n"
             "    fontsize = 12\n"
             '    fontcolor = "black"\n'

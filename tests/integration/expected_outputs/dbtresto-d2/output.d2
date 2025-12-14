@@ -1,0 +1,228 @@
+"model.dbt_resto.dim_box": {
+  shape: sql_table
+  box_key: varchar
+  box_id: varchar
+  box_date: date
+  box_result_numbers: nvarchar
+  box_result_number_1: int
+  box_result_number_2: int
+  box_result_number_3: int
+  box_result_number_4: int
+  box_result_number_5: int
+  box_result_number_6: int
+  box_result_number_7: int
+}
+"model.dbt_resto.dim_date": {
+  shape: sql_table
+  date_key: date
+  box_date: date
+  box_day: int
+  box_week: int
+  box_month: int
+  box_month_name: varchar
+  box_year: int
+}
+"model.dbt_resto.dim_prize": {
+  shape: sql_table
+  prize_key: varchar
+  prize_name: nvarchar
+  prize_order: int
+}
+"model.dbt_resto.fact_number": {
+  shape: sql_table
+  number_value: int
+  occurrence: int
+  occurrence_pos_1: int
+  occurrence_pos_2: int
+  occurrence_pos_3: int
+  occurrence_pos_4: int
+  occurrence_pos_5: int
+  occurrence_pos_6: int
+  occurrence_pos_7: int
+  last_appearance: date
+  last_appearance_pos_1: date
+  last_appearance_pos_2: date
+  last_appearance_pos_3: date
+  last_appearance_pos_4: date
+  last_appearance_pos_5: date
+  last_appearance_pos_6: date
+  last_appearance_pos_7: date
+}
+"model.dbt_resto.fact_number_forecast": {
+  shape: sql_table
+  forecast_date: date
+  last_box_date: date
+  forecast_numbers: varchar
+  last_box_result_numbers: nvarchar
+  forecast_1: int
+  last_box_result_number_1: int
+  forecast_2: int
+  last_box_result_number_2: int
+  forecast_3: int
+  last_box_result_number_3: int
+  forecast_4: int
+  last_box_result_number_4: int
+  forecast_5: int
+  last_box_result_number_5: int
+  forecast_6: int
+  last_box_result_number_6: int
+}
+"model.dbt_resto.fact_number_scoring": {
+  shape: sql_table
+  fact_key: varchar
+  forecast_date: date
+  number_value: int
+  score_1: int
+  score_2: int
+  score_3: int
+  score_4: int
+  score_5: int
+  score_6: int
+  rank_pos_1: float
+  rank_pos_2: float
+  rank_pos_3: float
+  rank_pos_4: float
+  rank_pos_5: float
+  rank_pos_6: float
+}
+"model.dbt_resto.fact_result": {
+  shape: sql_table
+  fact_result_key: varchar
+  box_key: varchar
+  prize_key: varchar
+  date_key: date
+  no_of_won: int
+  prize_value: float
+  prize_paid: float
+  is_prize_taken: int
+}
+"model.dbt_resto.fact_set_number": {
+  shape: sql_table
+  box_result_numbers: nvarchar
+  occurrence: int
+  last_appearance: date
+}
+"model.dbt_resto.staging_power655_box": {
+  shape: sql_table
+  sk_box: varchar
+  box_date: date
+  box_id: varchar
+  box_name: nvarchar
+  box_result_numbers: nvarchar
+  box_result_number_1: int
+  box_result_number_2: int
+  box_result_number_3: int
+  box_result_number_4: int
+  box_result_number_5: int
+  box_result_number_6: int
+  box_result_number_7: int
+}
+"model.dbt_resto.staging_power655_box_detail": {
+  shape: sql_table
+  sk_box_detail: varchar
+  box_id: varchar
+  prize_name_raw: nvarchar
+  prize_name: nvarchar
+  prize_won: int
+  prize_value_raw: nvarchar
+  prize_value: float
+}
+"model.integration_tests.verify_datepart": {
+  shape: sql_table
+  input: datetime
+  date_part: varchar
+  actual: int
+  expected: int
+}
+"model.integration_tests.verify_generate_schema_name": {
+  shape: sql_table
+  actual: varchar
+  expected: varchar
+}
+"model.integration_tests.verify_get_base_times_hour": {
+  shape: sql_table
+  time_value: datetime
+}
+"model.integration_tests.verify_get_base_times_minute": {
+  shape: sql_table
+  time_value: datetime
+}
+"model.integration_tests.verify_get_base_times_second": {
+  shape: sql_table
+  time_value: datetime
+}
+"model.integration_tests.verify_get_table_alias": {
+  shape: sql_table
+  actual: varchar
+  expected: varchar
+}
+"model.integration_tests.verify_get_time_dimension_hour": {
+  shape: sql_table
+  time_value: datetime
+  time_string: nvarchar
+  time24_string: nvarchar
+  hour_number: int
+  hour_name: nvarchar
+  hour24_number: int
+  hour24_name: nvarchar
+  time_key: bigint
+}
+"model.integration_tests.verify_get_time_dimension_minute": {
+  shape: sql_table
+  time_value: datetime
+  time_string: nvarchar
+  time24_string: nvarchar
+  hour_number: int
+  hour_name: nvarchar
+  hour24_number: int
+  hour24_name: nvarchar
+  minute_number: int
+  hour_minute_name: nvarchar
+  hour24_minute_name: nvarchar
+  time_key: bigint
+}
+"model.integration_tests.verify_get_time_dimension_second": {
+  shape: sql_table
+  time_value: datetime
+  time_string: nvarchar
+  time24_string: nvarchar
+  hour_number: int
+  hour_name: nvarchar
+  hour24_number: int
+  hour24_name: nvarchar
+  minute_number: int
+  hour_minute_name: nvarchar
+  hour24_minute_name: nvarchar
+  second_number: int
+  time_key: bigint
+}
+"model.integration_tests.verify_get_time_key": {
+  shape: sql_table
+  actual: nvarchar
+  expected: varchar
+}
+"model.integration_tests.verify_if_column_value_to_match_regex": {
+  shape: sql_table
+  text_only: varchar
+  number_only: varchar
+}
+"model.integration_tests.verify_materialized_view": {
+  shape: sql_table
+  time_key: int
+  time_value: int
+}
+"model.integration_tests.verify_str_to_date": {
+  shape: sql_table
+  actual: date
+  expected: date
+}
+"model.dbt_resto.fact_number" -> "model.dbt_resto.dim_date": "last_appearance = date_key"
+"model.dbt_resto.fact_number" -> "model.dbt_resto.dim_date": "last_appearance_pos_1 = date_key"
+"model.dbt_resto.fact_number" -> "model.dbt_resto.dim_date": "last_appearance_pos_2 = date_key"
+"model.dbt_resto.fact_number" -> "model.dbt_resto.dim_date": "last_appearance_pos_3 = date_key"
+"model.dbt_resto.fact_number" -> "model.dbt_resto.dim_date": "last_appearance_pos_4 = date_key"
+"model.dbt_resto.fact_number" -> "model.dbt_resto.dim_date": "last_appearance_pos_5 = date_key"
+"model.dbt_resto.fact_number" -> "model.dbt_resto.dim_date": "last_appearance_pos_6 = date_key"
+"model.dbt_resto.fact_result" -> "model.dbt_resto.dim_box": "box_key = box_key"
+"model.dbt_resto.fact_result" -> "model.dbt_resto.dim_date": "date_key = date_key"
+"model.dbt_resto.fact_result" -> "model.dbt_resto.dim_prize": "prize_key = prize_key"

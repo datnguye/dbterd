@@ -31,7 +31,7 @@ class TextERDBuilder(BaseERDBuilder):
             separator: String to join sections with (default: newline)
 
         Returns:
-            Complete ERD content string
+            Complete ERD content string with trailing newline
 
         """
-        return separator.join(str(item) for item in self._content)
+        return separator.join(str(item) for item in self._content) + "\n"

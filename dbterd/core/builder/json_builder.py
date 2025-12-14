@@ -152,7 +152,7 @@ class JsonERDBuilder(BaseERDBuilder):
             else:
                 result[key] = value
 
-        return json.dumps(result)
+        return json.dumps(result) + "\n"
 
     def clear(self) -> "JsonERDBuilder":
         """Clear all content and reset the builder.

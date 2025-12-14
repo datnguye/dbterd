@@ -1,0 +1,2176 @@
+//Tables (based on the selection criteria)
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.int_shopify__customer_email_rollup" {
+  "email" "string"
+  "source_relation" "string"
+  "customer_ids" "string"
+  "phone_numbers" "string"
+  "customer_tags" "string"
+  "first_account_created_at" "timestamp"
+  "last_account_created_at" "timestamp"
+  "last_updated_at" "timestamp"
+  "marketing_consent_updated_at" "timestamp"
+  "last_fivetran_synced" "timestamp"
+  "orders_count" "int64"
+  "total_spent" "float64"
+  "is_tax_exempt" "bool"
+  "is_verified_email" "bool"
+  "first_name" "string"
+  "last_name" "string"
+  "default_address_id" "int64"
+  "account_state" "string"
+  "note" "string"
+  "lifetime_duration" "string"
+  "currency" "string"
+  "marketing_consent_state" "string"
+  "marketing_opt_in_level" "string"
+  "created_timestamp" "timestamp"
+  "updated_timestamp" "timestamp"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.int_shopify__daily_abandoned_checkouts" {
+  "unknown" "unknown"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.int_shopify__daily_orders" {
+  "unknown" "unknown"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.int_shopify__discounts__abandoned_checkouts" {
+  "unknown" "unknown"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.int_shopify__discounts__order_aggregates" {
+  "unknown" "unknown"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.int_shopify__emails__order_aggregates" {
+  "unknown" "unknown"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.int_shopify__inventory_level__aggregates" {
+  "unknown" "unknown"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.int_shopify__order__shipping_aggregates" {
+  "unknown" "unknown"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.int_shopify__product__order_line_aggregates" {
+  "unknown" "unknown"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.int_shopify__products_with_aggregates" {
+  "unknown" "unknown"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.shopify__calendar" {
+  "date_day" "datetime"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.shopify__customer_cohorts" {
+  "date_month" "datetime" [note: "The calendar month the customer stats relate to."]
+  "customer_id" "int64" [note: "The ID of the related customer."]
+  "first_order_timestamp" "timestamp" [note: "The timestamp of the customer's first order."]
+  "cohort_month" "timestamp" [note: "The month the cohort belongs to, i.e the first month the customer had an order."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+  "order_count_in_month" "int64" [note: "Number of orders purchased in the `date_month`"]
+  "total_price_in_month" "float64" [note: "Total amount (in shop currency) purchased in the `date_month`"]
+  "line_item_count_in_month" "int64" [note: "Number of line items purchased in the `date_month`"]
+  "total_price_lifetime" "float64" [note: "Total amount (in shop currency) up until and including this `date_month`."]
+  "order_count_lifetime" "int64" [note: "Number of orders purchased up until and including this `date_month`."]
+  "line_item_count_lifetime" "int64" [note: "Number of line items purchased up until and including this `date_month`."]
+  "cohort_month_number" "int64" [note: "The 'number' of the `date_month` of the record, i.e. how many months from their start month this cohort occurred"]
+  "customer_cohort_id" "string" [note: "Unique key representing a customer in a given month. Hashed on 'date_month', 'customer_id', and 'source_relation'."]
+
+  Note: "Each record represents a customer's performance in a calendar month."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.shopify__customer_email_cohorts" {
+  "date_month" "datetime" [note: "The calendar month the customer stats relate to."]
+  "email" "string" [note: "The ID of the related customer."]
+  "first_order_timestamp" "timestamp" [note: "The timestamp of the customer's first order."]
+  "cohort_month" "timestamp" [note: "The month the cohort belongs to, i.e the first month the customer had an order."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+  "order_count_in_month" "int64" [note: "Number of orders purchased in the `date_month`"]
+  "total_price_in_month" "float64" [note: "Total amount (in shop currency) purchased in the `date_month`"]
+  "line_item_count_in_month" "int64" [note: "Number of line items purchased in the `date_month`"]
+  "total_price_lifetime" "float64" [note: "Total amount (in shop currency) up until and including this `date_month`."]
+  "order_count_lifetime" "int64" [note: "Number of orders purchased up until and including this `date_month`."]
+  "line_item_count_lifetime" "int64" [note: "Number of line items purchased up until and including this `date_month`."]
+  "cohort_month_number" "int64" [note: "The 'number' of the `date_month` of the record, i.e. how many months from their start month this cohort occurred"]
+  "customer_cohort_id" "string" [note: "Unique key representing a customer in a given month. Hashed on 'date_month','email', and 'source_relation'."]
+
+  Note: "Each record represents a customer's (on the EMAIL grain) performance in a calendar month."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.shopify__customer_emails" {
+  "email" "string" [note: "The unique email address of the customer."]
+  "source_relation" "string" [note: "The schema or database this record came from, if you are unioning multiple connectors. Null if not."]
+  "customer_ids" "string" [note: "Comma-separated list of customer IDs associated with the email."]
+  "phone_numbers" "string" [note: "Comma-separated list of phone numbers associated with this email."]
+  "customer_tags" "string" [note: "A string aggregated list of all tags associated with a customer."]
+  "first_account_created_at" "timestamp" [note: "Timestamp of when the first account associated with this email was created."]
+  "last_account_created_at" "timestamp" [note: "Timestamp of when the last account associated with this email was created."]
+  "last_updated_at" "timestamp" [note: "The date and time when the customer information was last updated."]
+  "marketing_consent_updated_at" "timestamp" [note: "The date and time when the customer consented to receive marketing material by email. If no date is provided, then the date and time when the consent information was sent is used."]
+  "last_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "is_tax_exempt" "bool" [note: "Whether the customer is exempt from paying taxes on their order. If true, then taxes won't be applied to an order at checkout. If false, then taxes will be applied at checkout."]
+  "is_verified_email" "bool" [note: "Whether the customer has verified their email address."]
+  "first_name" "string" [note: "The customer's first name."]
+  "last_name" "string" [note: "The customer's last name."]
+  "default_address_id" "int64" [note: "The default address for the customer."]
+  "account_state" "string" [note: "The state of the customer's account with a shop."]
+  "note" "string" [note: "A note about the customer."]
+  "lifetime_duration" "string" [note: "The amount of time since the customer was first added to the store."]
+  "currency" "string" [note: "The three-letter code (ISO 4217 format) for the currency that the customer used when they paid for their last order. Defaults to the shop currency. Returns the shop currency for test orders."]
+  "marketing_consent_state" "string" [note: "Field indicating if the customer has consented to receive marketing material via email. Coalescing of the new `email_marketing_consent_state` field and the deprecated `accepts_marketing` field. Records with the old field will be marked with '(legacy)'.\n"]
+  "marketing_opt_in_level" "string" [note: "The marketing subscription opt-in level, as described in the M3AAWG Sender Best Common Practices, that the customer gave when they consented to receive marketing material by email."]
+  "created_timestamp" "timestamp" [note: "The date and time when the customer was created."]
+  "updated_timestamp" "timestamp" [note: "The date and time when the customer information was last updated."]
+  "lifetime_abandoned_checkouts" "int64" [note: "Total number of abandoned checkouts abandoned by the customer."]
+  "first_order_timestamp" "timestamp" [note: "The timestamp the customer completed their first order."]
+  "most_recent_order_timestamp" "timestamp" [note: "The timestamp the customer completed their most recent order."]
+  "avg_order_value" "float64" [note: "The average order value for the customer."]
+  "lifetime_total_spent" "float64" [note: "The total amount of money that the customer has spent on orders across their order history (in shop currency)."]
+  "lifetime_total_refunded" "float64" [note: "The total amount of money that the customer has been refunded on orders across their order history."]
+  "lifetime_total_net" "float64" [note: "The total amount of money (minus refunds) that the customer has spent across their order history."]
+  "lifetime_count_orders" "int64" [note: "The number of orders associated with this customer."]
+  "avg_quantity_per_order" "float64" [note: "Average quantity of items per order customer orders."]
+  "lifetime_total_tax" "float64" [note: "Total amount of tax attributed to the customer."]
+  "avg_tax_per_order" "float64" [note: "Average tax per order attributed to the customer."]
+  "lifetime_total_discount" "int64" [note: "Total discounts attributed to the customer."]
+  "avg_discount_per_order" "float64" [note: "Average discount per order attributed to the customer."]
+  "lifetime_total_shipping" "float64" [note: "Total shipping costs attributed to the customer."]
+  "avg_shipping_per_order" "float64" [note: "Average shipping cost per order attributed to the customer."]
+  "lifetime_total_shipping_with_discounts" "float64" [note: "Total shipping costs after discounts attributed to the customer."]
+  "avg_shipping_with_discounts_per_order" "float64" [note: "Average shipping costs after discounts per order attributed to the customer."]
+  "lifetime_total_shipping_tax" "float64" [note: "Total shipping tax attributed to the customer."]
+  "avg_shipping_tax_per_order" "float64" [note: "Average shipping tax per order attributed to the customer."]
+
+  Note: "Each record represents a customer email in Shopify."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.shopify__customers" {
+  "customer_id" "int64" [note: "A unique identifier for the customer."]
+  "email" "string" [note: "The unique email address of the customer. Attempting to assign the same email address to multiple customers returns an error."]
+  "first_name" "string" [note: "The customer's first name."]
+  "last_name" "string" [note: "The customer's last name."]
+  "default_address_id" "int64" [note: "The default address for the customer."]
+  "phone" "int64" [note: "The unique phone number (E.164 format) for this customer. Attempting to assign the same phone number to multiple customers returns an error."]
+  "account_state" "string" [note: "The state of the customer's account with a shop."]
+  "is_tax_exempt" "bool" [note: "Whether the customer is exempt from paying taxes on their order. If true, then taxes won't be applied to an order at checkout. If false, then taxes will be applied at checkout."]
+  "is_verified_email" "bool" [note: "Whether the customer has verified their email address."]
+  "note" "string" [note: "A note about the customer."]
+  "lifetime_duration" "string" [note: "The amount of time since the customer was first added to the store."]
+  "currency" "string" [note: "The three-letter code (ISO 4217 format) for the currency that the customer used when they paid for their last order. Defaults to the shop currency. Returns the shop currency for test orders."]
+  "marketing_consent_state" "string" [note: "Field indicating if the customer has consented to receive marketing material via email. Coalescing of the new `email_marketing_consent_state` field and the deprecated `accepts_marketing` field. Records with the old field will be marked with '(legacy)'.\n"]
+  "marketing_opt_in_level" "string" [note: "The marketing subscription opt-in level, as described in the M3AAWG Sender Best Common Practices, that the customer gave when they consented to receive marketing material by email."]
+  "marketing_consent_updated_at" "timestamp" [note: "The date and time when the customer consented to receive marketing material by email. If no date is provided, then the date and time when the consent information was sent is used."]
+  "created_timestamp" "timestamp" [note: "The date and time when the customer was created."]
+  "updated_timestamp" "timestamp" [note: "The date and time when the customer information was last updated."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from, if you are unioning multiple connectors. Null if not."]
+  "lifetime_abandoned_checkouts" "int64" [note: "Total number of abandoned checkouts abandoned by the customer."]
+  "first_order_timestamp" "timestamp" [note: "The timestamp the customer completed their first order."]
+  "most_recent_order_timestamp" "timestamp" [note: "The timestamp the customer completed their most recent order."]
+  "customer_tags" "string" [note: "A string aggregated list of all tags associated with a customer."]
+  "avg_order_value" "float64" [note: "The average order value for the customer."]
+  "lifetime_total_spent" "float64" [note: "The total amount of money in shop currency that the customer has spent on orders across their order history."]
+  "lifetime_total_refunded" "float64" [note: "The total amount of money that the customer has been refunded on orders across their order history."]
+  "lifetime_total_net" "float64" [note: "The total amount of money (minus refunds) that the customer has spent across their order history."]
+  "lifetime_count_orders" "int64" [note: "The number of orders associated with this customer."]
+  "avg_quantity_per_order" "float64" [note: "Average quantity of items per order customer orders."]
+  "lifetime_total_tax" "float64" [note: "Total amount of tax attributed to the customer."]
+  "avg_tax_per_order" "float64" [note: "Average tax per order attributed to the customer."]
+  "lifetime_total_discount" "int64" [note: "Total discounts attributed to the customer."]
+  "avg_discount_per_order" "float64" [note: "Average discount per order attributed to the customer."]
+  "lifetime_total_shipping" "float64" [note: "Total shipping costs attributed to the customer."]
+  "avg_shipping_per_order" "float64" [note: "Average shipping cost per order attributed to the customer."]
+  "lifetime_total_shipping_with_discounts" "float64" [note: "Total shipping costs after discounts attributed to the customer."]
+  "avg_shipping_with_discounts_per_order" "float64" [note: "Average shipping costs after discounts per order attributed to the customer."]
+  "lifetime_total_shipping_tax" "float64" [note: "Total shipping tax attributed to the customer."]
+  "avg_shipping_tax_per_order" "float64" [note: "Average shipping tax per order attributed to the customer."]
+
+  Note: "Each record represents a customer in Shopify."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.shopify__customers__order_aggregates" {
+  "unknown" "unknown"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.shopify__daily_shop" {
+  "date_day" "date" [note: "Day for which the shop activity is being measured."]
+  "shop_id" "int64" [note: "The ID for the shop. A 64-bit unsigned integer."]
+  "name" "string" [note: "The name of the shop."]
+  "domain" "string" [note: "The shop's domain."]
+  "is_deleted" "bool" [note: "Boolean representing whether the record was soft-deleted in Shopify."]
+  "currency" "string" [note: "The three-letter code (ISO 4217 format) for the shop's default currency."]
+  "enabled_presentment_currencies" "string" [note: "An array of of enabled currencies (ISO 4217 format) that the shop accepts. Merchants can enable currencies from their Shopify Payments settings in the Shopify Admin."]
+  "iana_timezone" "string" [note: "The name of the timezone assigned by the [IANA](https://www.iana.org/time-zones)."]
+  "created_at" "timestamp" [note: "The date and time (ISO 8601) when the shop was created."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+  "count_orders" "int64" [note: "Count of the distinct orders placed on this day."]
+  "count_line_items" "int64" [note: "Count of the line items included in orders placed on this day."]
+  "avg_line_item_count" "float64" [note: "Average line item count for orders placed on this day."]
+  "count_customers" "int64" [note: "Count of distinct customers who placed an order on this day."]
+  "count_customer_emails" "int64" [note: "Count of distinct customer email addresses who placed an order on this day."]
+  "order_adjusted_total" "float64" [note: "Order total adjusted for refunds and other adjustments. The calculation used for this field is as follows: total price listed on the original order (including shipping costs and discounts) + adjustments + adjustments tax - total refunds - refunds tax The order_adjusted_total will equate to the total sales - refunds listed within the transactions table for the order (after currency exchange).\n"]
+  "avg_order_value" "float64" [note: "Average adjusted total per order placed on this day (in shop currency)."]
+  "shipping_cost" "float64" [note: "The shipping cost of the orders placed on this day (in shop currency)."]
+  "order_adjustment_amount" "int64" [note: "Total adjustment amount (in shop currency) applied to the orders placed on this day."]
+  "order_adjustment_tax_amount" "float64" [note: "Total tax applied to adjustments (in shop currency) on the orders placed on this day."]
+  "refund_subtotal" "numeric" [note: "Total refund amount applied to the orders placed on this day."]
+  "refund_total_tax" "numeric" [note: "Total tax applied to the refund on the orders placed on this day (in shop currency)."]
+  "total_discounts" "float64" [note: "The total amount of the discount allocated to this day's orders in the shop's currency."]
+  "avg_discount" "float64" [note: "Average total discount placed on orders on this day (in shop currency)."]
+  "shipping_discount_amount" "float64" [note: "The total amount of discount (in shop currency) allocated toward shipping for orders placed on this day."]
+  "avg_shipping_discount_amount" "float64" [note: "Average discount amount (in shop currency) allocated toward shipping on orders placed on this day."]
+  "percentage_calc_discount_amount" "float64" [note: "The total amount of discount (in shop currency) allocated via a percentage-based discount for orders placed on this day."]
+  "avg_percentage_calc_discount_amount" "float64" [note: "Average discount amount (in shop currency) allocated via a percentage-based-discount on orders placed on this day."]
+  "fixed_amount_discount_amount" "float64" [note: "The total amount of discount (in shop currency) allocated via a fixed-amount discount for orders placed on this day."]
+  "avg_fixed_amount_discount_amount" "float64" [note: "Average discount amount (in shop currency) allocated via a fixed-amount-discount on orders placed on this day."]
+  "count_discount_codes_applied" "int64" [note: "Distinct discount codes applied by customers on orders for this day."]
+  "count_locations_ordered_from" "int64" [note: "Distinct locations with orders placed against them on this day."]
+  "count_orders_with_discounts" "int64" [note: "Count of orders in which a discount was applied."]
+  "count_orders_with_refunds" "int64" [note: "Count of orders in which there was a refund."]
+  "first_order_timestamp" "timestamp" [note: "Timestamp of the first order of the day for the shop."]
+  "last_order_timestamp" "timestamp" [note: "Timestamp of the last order of the day for the shop."]
+  "quantity_sold" "int64" [note: "Total quantity sold from the inventory level. Includes refunds."]
+  "quantity_refunded" "int64" [note: "The quantity of goods ORDERED on this day that have been refunded."]
+  "quantity_net" "int64" [note: "Net quantity sold from this shop on this day. Excludes refunds."]
+  "avg_quantity_sold" "float64" [note: "Average quantity sold per order on this day. Includes refunds. (in shop currency)"]
+  "avg_quantity_net" "float64" [note: "Average net quantity sold per order on this day. Excludes refunds. (in shop currency)"]
+  "count_variants_sold" "int64" [note: "Distinct product variants sold on this day (includes refunds)."]
+  "count_products_sold" "int64" [note: "Distinct products sold on this day (includes refunds)."]
+  "quantity_gift_cards_sold" "int64" [note: "Quantity of gift cards sold on this day."]
+  "quantity_requiring_shipping" "int64" [note: "Quantity of goods sold on this day that require shipping."]
+  "count_abandoned_checkouts" "int64" [note: "Count of abandoned checkouts on this day."]
+  "count_customers_abandoned_checkout" "int64" [note: "Count of distinct customers who abandoned checkouts on this day."]
+  "count_customer_emails_abandoned_checkout" "int64" [note: "Count of distinct customer emails who abandoned checkouts on this day."]
+  "count_fulfillment_attempted_delivery" "unknown" [note: "Count of distinct fulfillments on this day where the delivery of the shipment was attempted, but unable to be completed."]
+  "count_fulfillment_delivered" "unknown" [note: "Count of successful distinct fulfillments successfully delivered on this day."]
+  "count_fulfillment_failure" "unknown" [note: "Count of failed distinct fulfillments on this day. Something went wrong when pulling tracking information for the shipment, such as the tracking number was invalid or the shipment was canceled."]
+  "count_fulfillment_in_transit" "unknown" [note: "Count of distinct fulfillments in transit on this day. Each shipment is being transported between shipping facilities on the way to its destination."]
+  "count_fulfillment_out_for_delivery" "unknown" [note: "Count of distinct fulfillments being delivered to their final destination."]
+  "count_fulfillment_ready_for_pickup" "unknown" [note: "Count of distinct fulfillments ready for pickup at a shipping depot."]
+  "count_fulfillment_picked_up" "unknown" [note: "Count of distinct fulfillments successfully picked up on this day."]
+  "count_fulfillment_label_printed" "unknown" [note: "Count of distinct fulfillments for which a purchased shipping label has been printed on this day."]
+  "count_fulfillment_label_purchased" "unknown" [note: "Count of distinct fulfillments for which a shipping label has been purchased (but not printed yet) on this day."]
+  "count_fulfillment_confirmed" "unknown" [note: "Count of confirmed distinct fulfillments. This is the default status when no other information is available about a fulfillment."]
+
+  Note: "Each record represents a day in your Shop, enriched with a suite of metrics.\n"
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.shopify__discounts" {
+  "discount_code_id" "int64" [note: "The ID for the discount code."]
+  "code" "string" [note: "The case-insensitive discount code that customers use at checkout. Shopify recommends this map onto the associated `price_rule.title`."]
+  "price_rule_id" "int64" [note: "The ID for the price rule."]
+  "usage_count" "float64" [note: "The number of times that the discount code has been redeemed."]
+  "created_at" "timestamp" [note: "The date and time (ISO 8601 format) when the discount code was created."]
+  "updated_at" "timestamp" [note: "The date and time (ISO 8601 format) when the discount code was updated."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+  "target_selection" "string" [note: "The target selection method of the price rule. Valid values include `all` (the price rule applies the discount to all line items in the checkout) and  `entitled` (the price rule applies the discount to selected entitlements only).\n"]
+  "target_type" "string" [note: "The target type that the price rule applies to. Valid values include `line_item` (the price rule applies to the cart's line items) and `shipping_line` (the price rule applies to the cart's shipping lines)."]
+  "title" "string" [note: "The title of the price rule. This is used by the Shopify admin search to retrieve discounts. It is also displayed on the Discounts page of the Shopify admin for bulk discounts.  Shopify recommends that this map onto the associated `discount_code.code`.\n"]
+  "usage_limit" "int64" [note: "The maximum number of times the price rule can be used, per discount code."]
+  "value" "float64" [note: "The value of the price rule. If if the value of `target_type` is `shipping_line`, then only -100 is accepted. The value must be negative."]
+  "value_type" "string" [note: "The value type of the price rule. Valid values include `fixed_amount` (applies a discount of value as a unit of the store's currency. For example, if value is -30 and the store's currency is USD, then $30 USD is deducted when the discount is applied) and `percentage` (applies a percentage discount of value. For example, if value is -30, then 30% will be deducted when the discount is applied).\nIf `target_type` is `shipping_line`, then only `percentage` is accepted.\n"]
+  "allocation_limit" "int64" [note: "The number of times the discount can be allocated on the cart - if eligible. For example a Buy 1 hat Get 1 hat for free discount can be applied 3 times on a cart having more than 6 hats,  where maximum of 3 hats get discounted - if the allocation_limit is 3. Empty (null) allocation_limit means unlimited number of allocations.\n"]
+  "allocation_method" "string" [note: "The allocation method of the price rule. Valid values include `each` (the discount is applied to each of the entitled items. For example, for a price rule that takes $15 off, each entitled line item in a checkout will be discounted by $15) and `across` (the calculated discount amount will be applied across the entitled items. For example, for a price rule that takes $15 off, the discount will be applied across all the entitled items).\n"]
+  "is_once_per_customer" "bool" [note: "Boolean representing whether the generated discount code will be valid only for a single use per customer. This is tracked using customer ID."]
+  "customer_selection" "string" [note: "The customer selection for the price rule. Valid values include `all` (the price rule is valid for all customers) and `prerequisite`  (the customer must either belong to one of the customer segments specified by customer_segment_prerequisite_ids, or be one of the customers specified by prerequisite_customer_ids).\n"]
+  "prereq_min_quantity" "int64" [note: "If `customer_selection` is `prerequisite`, the minimum number of items for the price rule to be applicable. The quantity of an entitled cart item must be greater than or equal to this value."]
+  "prereq_max_shipping_price" "int64" [note: "If `customer_selection` is `prerequisite`, the maximum shipping price for the price rule to be applicable. The shipping price must be less than or equal to this value"]
+  "prereq_min_subtotal" "float64" [note: "If `customer_selection` is `prerequisite`, the minimum subtotal for the price rule to be applicable. The subtotal of the entitled cart items must be greater than or equal to this value for the discount to apply."]
+  "prereq_min_purchase_quantity_for_entitlement" "int64" [note: "If `customer_selection` is `prerequisite`, the prerequisite purchase for a Buy X Get Y discount. The minimum purchase amount required to be entitled to the discount."]
+  "prereq_buy_x_get_this" "int64" [note: "If `customer_selection` is `prerequisite`, in a Buy/Get ratio for a Buy X Get Y discount, this is the offered 'get' quantity."]
+  "prereq_buy_this_get_y" "int64" [note: "If `customer_selection` is `prerequisite`, in a Buy/Get ratio for a Buy X Get Y discount, this defines the necessary 'buy' quantity."]
+  "starts_at" "timestamp" [note: "The date and time (ISO 8601 format) when the price rule starts."]
+  "ends_at" "timestamp" [note: "The date and time (ISO 8601 format) when the price rule ends. Must be after starts_at."]
+  "price_rule_created_at" "timestamp" [note: "The date and time (ISO 8601 format) when the price rule was created."]
+  "price_rule_updated_at" "timestamp" [note: "The date and time (ISO 8601 format) when the price rule was updated."]
+  "count_orders" "int64" [note: "Count of orders in which this discount code was applied."]
+  "count_abandoned_checkouts" "int64" [note: "Count of abandoned checkouts in which this discount code was applied."]
+  "avg_order_discount_amount" "float64" [note: "Average amount (in shop currency) of discount taken off orders."]
+  "total_order_discount_amount" "float64" [note: "Total monetary amount (in shop currency) of discounts taken off of orders."]
+  "total_abandoned_checkout_discount_amount" "float64" [note: "Total monetary amount (in shop currency) of discounts taken off abandoned checkout orders."]
+  "total_order_line_items_price" "float64" [note: "Total monetary amount (in shop currency) of line items for orders that have used this discount."]
+  "total_order_shipping_cost" "float64" [note: "Total shipping costs for orders that used this discount."]
+  "total_abandoned_checkout_shipping_price" "float64" [note: "Total projected shipping costs for abandoned checkouts that applied this discount first."]
+  "total_order_refund_amount" "numeric" [note: "Total refunded amount (in shop currency) for orders that used this discount code."]
+  "count_customers" "int64" [note: "Count of distinct customers who placed orders using this discount."]
+  "count_customer_emails" "int64" [note: "Count of distinct customer emails who placed orders using this discount."]
+  "count_abandoned_checkout_customers" "int64" [note: "Distinct count of customers who applied this discount in a checkout that they abandoned."]
+  "count_abandoned_checkout_customer_emails" "int64" [note: "Distinct count of customer emails who applied this discount in a checkout that they abandoned."]
+
+  Note: "Each record represents a unique discount, enriched with information about its associated `price_rule` and metrics regarding orders and abandoned checkouts.\n"
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.shopify__inventory_levels" {
+  "inventory_item_id" "int64" [note: "The ID of the inventory item associated with the inventory level."]
+  "location_id" "int64" [note: "The ID of the location that the inventory level belongs to."]
+  "available_quantity" "int64" [note: "The available quantity of an inventory item at the inventory level's associated location. Returns null if the inventory item is not tracked."]
+  "updated_at" "timestamp" [note: "The date and time (ISO 8601 format) when the inventory level was last modified."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+  "sku" "int64" [note: "The unique SKU (stock keeping unit) of the inventory item."]
+  "is_inventory_item_deleted" "bool" [note: "Boolean representing whether the record was soft-deleted in Shopify."]
+  "cost" "int64" [note: "The unit cost of the inventory item. The shop's default currency is used."]
+  "country_code_of_origin" "int64" [note: "The country code (ISO 3166-1 alpha-2) of where the item came from."]
+  "province_code_of_origin" "int64" [note: "The province code (ISO 3166-2 alpha-2) of where the item came from. The province code is only used if the shipping provider for the inventory item is Canada Post."]
+  "is_shipping_required" "int64" [note: "Boolean representing whether a customer needs to provide a shipping address when placing an order containing the inventory item."]
+  "is_inventory_quantity_tracked" "int64" [note: "Boolean representing whether inventory levels are tracked for the item. If true, then the inventory quantity changes are tracked by Shopify."]
+  "inventory_item_created_at" "timestamp" [note: "The date and time (ISO 8601 format) when the inventory item was created."]
+  "inventory_item_updated_at" "timestamp" [note: "The date and time (ISO 8601 format) when the inventory item was last modified."]
+  "location_name" "string" [note: "The name of the location."]
+  "is_location_deleted" "bool" [note: "Boolean representing whether the record was soft-deleted in Shopify."]
+  "is_location_active" "bool" [note: "Boolean representing whether the location is active. If true, then the location can be used to sell products, stock inventory, and fulfill orders.\n"]
+  "address_1" "string" [note: "The location's street address."]
+  "address_2" "int64" [note: "The optional second line of the location's street address."]
+  "city" "string" [note: "The city the location is in."]
+  "country" "string" [note: "The country the location is in (two-letter code)."]
+  "country_code" "string" [note: "The two-letter code (ISO 3166-1 alpha-2 format) corresponding to country the location is in."]
+  "is_legacy_location" "bool" [note: "Boolean representing whether this is a fulfillment service location. If true, then the location is a fulfillment service location.  If false, then the location was created by the merchant and isn't tied to a fulfillment service.\n"]
+  "province" "string" [note: "The province, state, or district of the location."]
+  "province_code" "string" [note: "The province, state, or district code (ISO 3166-2 alpha-2 format) of the location."]
+  "phone" "int64" [note: "The phone number of the location. This value can contain special characters, such as - or +."]
+  "zip" "int64" [note: "The zip or postal code."]
+  "location_created_at" "timestamp" [note: "The date and time (ISO 8601 format) when the location was created."]
+  "location_updated_at" "timestamp" [note: "The date and time (ISO 8601 format) when the location was last updated."]
+  "variant_id" "int64" [note: "The unique numeric identifier for the product variant."]
+  "product_id" "int64" [note: "The unique numeric identifier for the product."]
+  "variant_title" "string" [note: "The title of the product variant. The title field is a concatenation of the option1, option2, and option3 fields. You can only update title indirectly using the option fields."]
+  "variant_inventory_policy" "string" [note: "Whether customers are allowed to place an order for the product variant when it's out of stock."]
+  "variant_price" "int64" [note: "The price of the product variant in shop currency."]
+  "variant_image_id" "int64" [note: "The unique numeric identifier for a product's image. The image must be associated to the same product as the variant."]
+  "variant_fulfillment_service" "string" [note: "The fulfillment service associated with the product variant."]
+  "variant_inventory_management" "string" [note: "The fulfillment service that tracks the number of items in stock for the product variant."]
+  "is_variant_taxable" "bool" [note: "Whether a tax is charged when the product variant is sold."]
+  "variant_barcode" "int64" [note: "The barcode, UPC, or ISBN number for the product."]
+  "variant_grams" "int64" [note: "The weight of the product variant in grams."]
+  "variant_inventory_quantity" "int64" [note: "An aggregate of inventory across all locations. To adjust inventory at a specific location, use the InventoryLevel resource."]
+  "variant_weight" "int64" [note: "The weight of the product variant in the unit system specified with weight_unit."]
+  "variant_weight_unit" "string" [note: "The unit of measurement that applies to the product variant's weight. If you don't specify a value for weight_unit, then the shop's default unit of measurement is applied. Valid values: g, kg, oz, and lb."]
+  "variant_option_1" "string" [note: "The custom properties that a shop owner uses to define product variants. You can define three options for a product variant: option1, option2, option3."]
+  "variant_option_2" "int64" [note: "The custom properties that a shop owner uses to define product variants. You can define three options for a product variant: option1, option2, option3."]
+  "variant_option_3" "int64" [note: "The custom properties that a shop owner uses to define product variants. You can define three options for a product variant: option1, option2, option3."]
+  "variant_tax_code" "string" [note: "This parameter applies only to the stores that have the Avalara AvaTax app installed. Specifies the Avalara tax code for the product variant."]
+  "variant_created_at" "timestamp" [note: "The date and time (ISO 8601 format) when the product variant was created."]
+  "variant_updated_at" "timestamp" [note: "The date and time when the product variant was last modified. Gets returned in ISO 8601 format."]
+  "subtotal_sold" "int64" [note: "Total amount (monetary, in shop currency) sold from the inventory level. Includes refunds."]
+  "quantity_sold" "int64" [note: "Total quantity sold from the inventory level. Includes refunds."]
+  "count_distinct_orders" "int64" [note: "The number of distinct orders placed from this inventory level."]
+  "count_distinct_customers" "int64" [note: "The number of distinct customers (based on customer_id) that have placed orders against this inventory level."]
+  "count_distinct_customer_emails" "int64" [note: "The number of distinct customer emails that have placed orders against this inventory level."]
+  "first_order_timestamp" "timestamp" [note: "The timetamp of the first order against this inventory level."]
+  "last_order_timestamp" "timestamp" [note: "The timestamp of the first order against this inventory level."]
+  "subtotal_sold_refunds" "numeric" [note: "The monetary amount (in shop currency) of inventory level goods that have been refunded."]
+  "quantity_sold_refunds" "int64" [note: "The quantity of inventory level goods that have been refunded."]
+  "count_fulfillment_pending" "int64" [note: "Count of currently pending distinct fulfillments for this inventory level. \"Pending\" = Shopify has created the fulfillment and is waiting for the third-party fulfillment service to transition it to 'open' or 'success'.\n"]
+  "count_fulfillment_open" "int64" [note: "Count of currently open distinct fulfillments for this inventory level. \"Open\" = The fulfillment has been acknowledged by the service and is in processing.\n"]
+  "count_fulfillment_success" "int64" [note: "Count of successful distinct fulfillments for this inventory level. \"Success\" = The fulfillment was successful.\n"]
+  "count_fulfillment_cancelled" "int64" [note: "Count of cancelled distinct fulfillments for this inventory level. \"Cancelled\" = The fulfillment was cancelled.\n"]
+  "count_fulfillment_error" "int64" [note: "Count of distinct fulfillments for this inventory level that encountered an error. \"Error\" = There was an error with the fulfillment request.\n"]
+  "count_fulfillment_failure" "int64" [note: "Count of distinct fulfillments for this inventory level that failed. \"Failure\" = The fulfillment request failed.\n"]
+  "net_subtotal_sold" "numeric" [note: "Net monetary amount sold (in shop currency) from the inventory level. Excludes refunds."]
+  "net_quantity_sold" "int64" [note: "Net quantity sold from this inventory level. Excludes refunds."]
+
+  Note: "Model representing the current status of an inventory level in Shopify. Inventory Levels are unique pairings of  inventory items (which have a 1:1 relationship with product variants) and locations. \nInventory Level = Inventory item @ a Location.\n"
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.shopify__order_lines" {
+  "order_line_id" "int64" [note: "The ID of the line item."]
+  "index" "int64" [note: "The index associated with the order."]
+  "name" "string" [note: "The name of the product variant."]
+  "order_id" "int64" [note: "The ID of the related order."]
+  "fulfillable_quantity" "int64" [note: "The amount available to fulfill, calculated as follows: quantity - max(refunded_quantity, fulfilled_quantity) - pending_fulfilled_quantity - open_fulfilled_quantity\n"]
+  "fulfillment_service" "string" [note: "The service provider that's fulfilling the item."]
+  "fulfillment_status" "string" [note: "How far along an order is in terms line items fulfilled."]
+  "is_gift_card" "bool" [note: "Whether the item is a gift card. If true, then the item is not taxed or considered for shipping charges."]
+  "grams" "int64" [note: "The weight of the item in grams."]
+  "pre_tax_price" "int64" [note: "The total pre tax price of the order."]
+  "pre_tax_price_set" "string" [note: "The pre tax price of the line item in shop currency and presentment currency."]
+  "price" "float64" [note: "The price of the item before discounts have been applied in the shop currency."]
+  "price_set" "string" [note: "The price of the line item in shop and presentment currencies."]
+  "product_id" "int64" [note: "The ID of the product that the line item belongs to. Can be null if the original product associated with the order is deleted at a later date."]
+  "quantity" "int64" [note: "The number of items that were purchased."]
+  "is_shipping_required" "bool" [note: "Whether the item requires shipping."]
+  "sku" "string" [note: "The item's SKU (stock keeping unit)."]
+  "is_taxable" "bool" [note: "Whether the item was taxable."]
+  "tax_code" "string" [note: "This parameter applies only to the stores that have the Avalara AvaTax app installed. Specifies the Avalara tax code for the product variant."]
+  "title" "string" [note: "The title of the product."]
+  "total_discount" "int64" [note: "The total amount of the discount allocated to the line item in the shop currency."]
+  "total_discount_set" "string" [note: "The total amount allocated to the line item in the presentment currency."]
+  "variant_id" "int64" [note: "The ID of the product variant."]
+  "variant_title" "string" [note: "The title of the product variant. The title field is a concatenation of the option1, option2, and option3 fields. You can only update title indirectly using the option fields."]
+  "variant_inventory_management" "string" [note: "The fulfillment service that tracks the number of items in stock for the product variant."]
+  "vendor" "string" [note: "The name of the item's supplier."]
+  "properties" "string" [note: "Line item properties."]
+  "destination_location_address_1" "string" [note: "Destination location's street address."]
+  "destination_location_address_2" "string" [note: "The optional second line of the destination location's street address."]
+  "destination_location_city" "string" [note: "The city the destination location is in."]
+  "destination_location_country_code" "string" [note: "The country code of the destination location."]
+  "destination_location_id" "int64" [note: "The ID of the destination location."]
+  "destination_location_name" "string" [note: "The name of the destination location."]
+  "destination_location_province_code" "string" [note: "The province, state, or district code (ISO 3166-2 alpha-2 format) of the destination location."]
+  "destination_location_zip" "string" [note: "The zip or postal code."]
+  "origin_location_address_1" "string" [note: "Origin location's street address."]
+  "origin_location_address_2" "string" [note: "The optional second line of the origin location's street address."]
+  "origin_location_city" "string" [note: "The city the origin location is in."]
+  "origin_location_country_code" "string" [note: "The country code of the origin location."]
+  "origin_location_id" "int64" [note: "The ID of the origin location."]
+  "origin_location_name" "string" [note: "The name of the origin location."]
+  "origin_location_province_code" "string" [note: "The province, state, or district code (ISO 3166-2 alpha-2 format) of the origin location."]
+  "origin_location_zip" "string" [note: "The zip or postal code."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from, if you are unioning multiple connectors. Null if not."]
+  "restock_types" "string" [note: "List of how this refund line item affects inventory levels."]
+  "refunded_quantity" "int64" [note: "Quantity of the item that has been refunded."]
+  "refunded_subtotal" "numeric" [note: "Subtotal amount of the refund applied to the order line in shop currency."]
+  "quantity_net_refunds" "int64" [note: "Quantity ordered, excluding refunds."]
+  "subtotal_net_refunds" "numeric" [note: "Subtotal of the order line with refunds subtracted in shop currency."]
+  "variant_created_at" "timestamp" [note: "The date and time (ISO 8601 format) when the product variant was created."]
+  "variant_updated_at" "timestamp" [note: "The date and time when the product variant was last modified. Gets returned in ISO 8601 format."]
+  "inventory_item_id" "int64" [note: "The unique identifier for the inventory item, which is used in the Inventory API to query for inventory information."]
+  "image_id" "int64" [note: "Image id of the product variant associated with the order line."]
+  "variant_price" "int64" [note: "The price of the product variant."]
+  "variant_sku" "int64" [note: "A unique identifier for the product variant in the shop. Required in order to connect to a FulfillmentService."]
+  "variant_position" "int64" [note: "The order of the product variant in the list of product variants. The first position in the list is 1. The position of variants is indicated by the order in which they are listed."]
+  "variant_inventory_policy" "string" [note: "Whether customers are allowed to place an order for the product variant when it's out of stock."]
+  "variant_compare_at_price" "int64" [note: "The original price of the item before an adjustment or a sale in shop currency."]
+  "variant_fulfillment_service" "string" [note: "The fulfillment service associated with the product variant."]
+  "variant_is_taxable" "bool" [note: "Whether a tax is charged when the product variant is sold."]
+  "variant_barcode" "int64" [note: "The barcode, UPC, or ISBN number for the product."]
+  "variant_grams" "int64" [note: "The weight of the product variant in grams."]
+  "variant_inventory_quantity" "int64" [note: "An aggregate of inventory across all locations. To adjust inventory at a specific location, use the InventoryLevel resource."]
+  "variant_weight" "int64" [note: "The weight of the product variant in the unit system specified with weight_unit."]
+  "variant_weight_unit" "string" [note: "The unit of measurement that applies to the product variant's weight. If you don't specify a value for weight_unit, then the shop's default unit of measurement is applied. Valid values: g, kg, oz, and lb."]
+  "variant_option_1" "string" [note: "The custom properties that a shop owner uses to define product variants. You can define three options for a product variant: option1, option2, option3."]
+  "variant_option_2" "int64" [note: "The custom properties that a shop owner uses to define product variants. You can define three options for a product variant: option1, option2, option3."]
+  "variant_option_3" "int64" [note: "The custom properties that a shop owner uses to define product variants. You can define three options for a product variant: option1, option2, option3."]
+  "variant_tax_code" "string" [note: "This parameter applies only to the stores that have the Avalara AvaTax app installed. Specifies the Avalara tax code for the product variant."]
+  "order_line_tax" "float64" [note: "Total taxes for the line item."]
+
+  Note: "Each record represents a line item of an order in Shopify."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.shopify__orders" {
+  "order_id" "int64" [note: "The ID of the order, used for API purposes. This is different from the order_number property, which is the ID used by the shop owner and customer."]
+  "user_id" "int64" [note: "The ID of the user logged into Shopify POS who processed the order, if applicable."]
+  "total_discounts" "float64" [note: "The total discounts applied to the price of the order in the shop currency."]
+  "total_discounts_set" "string" [note: "The total discounts applied to the price of the order in shop and presentment currencies."]
+  "total_line_items_price" "float64" [note: "The sum of all line item prices in the shop currency."]
+  "total_line_items_price_set" "string" [note: "The total of all line item prices in shop and presentment currencies."]
+  "total_price" "float64" [note: "The sum of all line item prices, discounts, shipping, taxes, and tips in the shop currency. Must be positive."]
+  "total_price_set" "string" [note: "The total price of the order in shop and presentment currencies."]
+  "total_price_usd" "float64" [note: "The sum of all line item prices, discounts, shipping, taxes, and tips in USD. Must be positive."]
+  "total_tax_set" "string" [note: "The total tax applied to the order in shop and presentment currencies."]
+  "total_tax" "int64" [note: "The sum of all the taxes applied to the order in th shop currency. Must be positive."]
+  "source_name" "string" [note: "Where the order originated. Can be set only during order creation, and is not writeable afterwards."]
+  "subtotal_price" "float64" [note: "The price of the order in the shop currency after discounts but before shipping, taxes, and tips."]
+  "has_taxes_included" "bool" [note: "Whether taxes are included in the order subtotal."]
+  "total_weight" "int64" [note: "The sum of all line item weights in grams."]
+  "total_tip_received" "float64" [note: "The sum of all the tips in the order in the shop currency."]
+  "landing_site_base_url" "string" [note: "The URL for the page where the buyer landed when they entered the shop."]
+  "location_id" "int64" [note: "The ID of the physical location where the order was processed."]
+  "name" "string" [note: "The order name, generated by combining the order_number property with the order prefix and suffix that are set in the merchant's general settings."]
+  "note" "string" [note: "An optional note that a shop owner can attach to the order."]
+  "number" "int64" [note: "The order's position in the shop's count of orders. Numbers are sequential and start at 1."]
+  "order_number" "int64" [note: "The order 's position in the shop's count of orders starting at 1001. Order numbers are sequential and start at 1001."]
+  "cancel_reason" "int64" [note: "The reason why the order was canceled."]
+  "cart_token" "string" [note: "The ID of the cart that's associated with the order."]
+  "checkout_token" "string" [note: "The checkout token applied to the order."]
+  "created_timestamp" "timestamp" [note: "The autogenerated date and time when the order was created in Shopify."]
+  "cancelled_timestamp" "timestamp" [note: "The date and time when the order was canceled."]
+  "closed_timestamp" "timestamp" [note: "The date and time when the order was closed (archived)."]
+  "processed_timestamp" "timestamp" [note: "The date and time when an order was processed. This value is the date that appears on your orders and that's used in the analytic reports."]
+  "updated_timestamp" "timestamp" [note: "The date and time (ISO 8601 format) when the order was last modified."]
+  "currency" "string" [note: "The three-letter code for the shop currency."]
+  "customer_id" "int64" [note: "The ID of the order's customer."]
+  "email" "string" [note: "The customer's email address."]
+  "financial_status" "string" [note: "The status of payments associated with the order. Can only be set when the order is created"]
+  "fulfillment_status" "string" [note: "The order's status in terms of fulfilled line items."]
+  "processing_method" "string" [note: "How the payment was processed."]
+  "referring_site" "string" [note: "The website where the customer clicked a link to the shop."]
+  "billing_address_address_1" "string" [note: "The street address of the billing address."]
+  "billing_address_address_2" "string" [note: "An optional additional field for the street address of the billing address."]
+  "billing_address_city" "string" [note: "The city, town, or village of the billing address."]
+  "billing_address_company" "string" [note: "The company of the person associated with the billing address."]
+  "billing_address_country" "string" [note: "The name of the country of the billing address."]
+  "billing_address_country_code" "string" [note: "The two-letter code (ISO 3166-1 format) for the country of the billing address."]
+  "billing_address_first_name" "string" [note: "The first name of the person associated with the payment method."]
+  "billing_address_last_name" "string" [note: "The last name of the person associated with the payment method."]
+  "billing_address_latitude" "string" [note: "The latitude of the billing address."]
+  "billing_address_longitude" "string" [note: "The longitude of the billing address."]
+  "billing_address_name" "string" [note: "The full name of the person associated with the payment method."]
+  "billing_address_phone" "string" [note: "The phone number at the billing address."]
+  "billing_address_province" "string" [note: "The name of the region (province, state, prefecture, \u2026) of the billing address."]
+  "billing_address_province_code" "int64" [note: "The two-letter abbreviation of the region of the billing address."]
+  "billing_address_zip" "string" [note: "The postal code (zip, postcode, Eircode, \u2026) of the billing address."]
+  "browser_ip" "string" [note: "The IP address of the browser used by the customer when they placed the order."]
+  "total_shipping_price_set" "string" [note: "The total shipping price set to the order."]
+  "shipping_address_address_1" "string" [note: "The street address of the shipping address."]
+  "shipping_address_address_2" "string" [note: "An optional additional field for the street address of the shipping address."]
+  "shipping_address_city" "string" [note: "The city, town, or village of the shipping address."]
+  "shipping_address_company" "string" [note: "The company of the person associated with the shipping address."]
+  "shipping_address_country" "string" [note: "The name of the country of the shipping address."]
+  "shipping_address_country_code" "string" [note: "The two-letter code (ISO 3166-1 format) for the country of the shipping address."]
+  "shipping_address_first_name" "string" [note: "The first name of the person associated with the shipping address."]
+  "shipping_address_last_name" "string" [note: "The last name of the person associated with the shipping address."]
+  "shipping_address_latitude" "string" [note: "The latitude of the shipping address."]
+  "shipping_address_longitude" "string" [note: "The longitude of the shipping address."]
+  "shipping_address_name" "string" [note: "The full name of the person associated with the payment method."]
+  "shipping_address_phone" "string" [note: "The phone number at the shipping address."]
+  "shipping_address_province" "string" [note: "The name of the region (province, state, prefecture, \u2026) of the shipping address."]
+  "shipping_address_province_code" "int64" [note: "The two-letter abbreviation of the region of the shipping address."]
+  "shipping_address_zip" "string" [note: "The postal code (zip, postcode, Eircode, \u2026) of the shipping address."]
+  "token" "string" [note: "A unique token for the order."]
+  "app_id" "int64" [note: "The ID of the app that created the order."]
+  "checkout_id" "int64" [note: "The ID for the checkout."]
+  "client_details_user_agent" "string" [note: "Details of the browsing client, including software and operating versions."]
+  "customer_locale" "string" [note: "The two or three-letter language code, optionally followed by a region modifier. Example values - en, en-CA."]
+  "order_status_url" "string" [note: "The URL pointing to the order status web page, if applicable."]
+  "presentment_currency" "string" [note: "The three-letter code (ISO 4217 format) of the currency that the customer used at checkout. For the shop's default currency, see `currency`."]
+  "is_test_order" "bool" [note: "Whether this is a test order."]
+  "is_deleted" "bool" [note: "Boolean representing whether the record was soft-deleted in Shopify."]
+  "has_buyer_accepted_marketing" "bool" [note: "Whether the customer consented to receive email updates from the shop."]
+  "is_confirmed" "bool" [note: "Whether the order is confirmed."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from, if you are unioning multiple connectors. Null if not."]
+  "shipping_cost" "float64" [note: "The shipping cost of the order."]
+  "order_adjustment_amount" "int64" [note: "Total adjustment amount applied to the order in shop currency."]
+  "order_adjustment_tax_amount" "float64" [note: "Total tax applied to the adjustment on the order in shop currency."]
+  "refund_subtotal" "numeric" [note: "Total refund amount applied to the order in shop currency."]
+  "refund_total_tax" "numeric" [note: "Total tax applied to the refund on the order in shop currency."]
+  "order_adjusted_total" "float64" [note: "Order total adjusted for refunds and other adjustments. The calculation used for this field is as follows: total price listed on the original order (including shipping costs and discounts) + adjustments + adjustments tax - total refunds - refunds tax The order_adjusted_total will equate to the total sales - refunds listed within the transactions table for the order (after currency exchange).\n"]
+  "line_item_count" "int64" [note: "Number of line items included in the order."]
+  "shipping_discount_amount" "float64" [note: "The total amount of discount (in shop currency) allocated toward shipping."]
+  "percentage_calc_discount_amount" "float64" [note: "The total amount of discount (in shop currency) allocated via a percentage-based discount"]
+  "fixed_amount_discount_amount" "float64" [note: "The total amount of discount (in shop currency) allocated via a fixed-amount discount"]
+  "count_discount_codes_applied" "int64" [note: "Distinct discount codes applied on the order"]
+  "order_total_shipping_tax" "float64" [note: "Total shipping tax attributed to the order."]
+  "order_tags" "string" [note: "List of tags associated with the order."]
+  "order_url_tags" "string" [note: "List of url tags associated with the order."]
+  "number_of_fulfillments" "int64" [note: "Total fulfillments for the order."]
+  "fulfillment_services" "string" [note: "List of fulfillment services for the order."]
+  "tracking_companies" "string" [note: "List of tracking companies for the order."]
+  "tracking_numbers" "string" [note: "List of tracking numbers for the order."]
+  "customer_order_seq_number" "int64" [note: "The sequential number of the order as it relates to the customer"]
+  "new_vs_repeat" "string" [note: "Whether the order was a new or repeat order for the customer."]
+  "source_identifier" "unknown" [note: "The ID of the order placed on the originating platform. This value doesn't correspond to the Shopify ID that's generated from a completed draft."]
+  "current_total_price" "unknown" [note: "The current total price of the order in the shop currency. The value of this field reflects order edits, returns, and refunds."]
+
+  Note: "Each record represents an order in Shopify."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.shopify__orders__order_line_aggregates" {
+  "unknown" "unknown"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.shopify__orders__order_refunds" {
+  "unknown" "unknown"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.shopify__products" {
+  "product_id" "int64" [note: "An unsigned 64-bit integer that's used as a unique identifier for the product. Each id is unique across the Shopify system. No two products will have the same id, even if they're from different shops."]
+  "handle" "string" [note: "A unique human-friendly string for the product. Automatically generated from the product's title."]
+  "product_type" "string" [note: "A categorization for the product used for filtering and searching products."]
+  "published_scope" "string" [note: "Whether the product is published to the Point of Sale channel."]
+  "title" "string" [note: "The name of the product."]
+  "vendor" "string" [note: "The name of the product's vendor."]
+  "status" "string" [note: "The status of the product. Valid values: - active: The product is ready to sell and is available to customers on the online store, sales channels, and apps. By default, existing products are set to active. - archived: The product is no longer being sold and isn't available to customers on sales channels and apps. - draft: The product isn't ready to sell and is unavailable to customers on sales channels and apps. By default, duplicated and unarchived products are set to draft.\n"]
+  "is_deleted" "bool" [note: "Whether the record has been deleted in the source system."]
+  "created_timestamp" "timestamp" [note: "The date and time when the product was created."]
+  "updated_timestamp" "timestamp" [note: "The date and time when the product was last modified."]
+  "published_timestamp" "timestamp" [note: "The date and time (ISO 8601 format) when the product was published. Can be set to null to unpublish the product from the Online Store channel."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from, if you are unioning multiple connectors. Null if not."]
+  "collections" "string" [note: "Comma-separated list of collections associated with the product."]
+  "tags" "string" [note: "Comma-separated list of tags associated with the product."]
+  "count_variants" "int64" [note: "Count of product variants."]
+  "has_product_image" "bool" [note: "If the product has an image."]
+  "total_quantity_sold" "int64" [note: "Quantity of the product sold."]
+  "subtotal_sold" "int64" [note: "Total amount (in shop currency) of the product sold."]
+  "quantity_sold_net_refunds" "int64" [note: "Quantity of the product sold, excluding refunds."]
+  "subtotal_sold_net_refunds" "numeric" [note: "Total amount (in shop currency) of the product sold, excluding refunds."]
+  "first_order_timestamp" "timestamp" [note: "The timestamp the product was first ordered."]
+  "most_recent_order_timestamp" "timestamp" [note: "The timestamp the product was most recently ordered."]
+  "avg_quantity_per_order_line" "float64" [note: "Average quantity per order line with this product."]
+  "product_total_discount" "int64" [note: "Total discounts associated with the product."]
+  "product_avg_discount_per_order_line" "float64" [note: "Average discount per order line with this product."]
+  "product_total_tax" "float64" [note: "Total taxes associated with the product."]
+  "product_avg_tax_per_order_line" "float64" [note: "Average taxes per order line with this product."]
+
+  Note: "Each record represents a product in Shopify."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_shopify
+Table "model.shopify.shopify__transactions" {
+  "transaction_id" "int64" [note: "The ID for the transaction."]
+  "order_id" "int64" [note: "The ID for the order that the transaction is associated with."]
+  "refund_id" "int64" [note: "The ID associated with a refund in the refund table."]
+  "amount" "float64" [note: "The amount of money included in the transaction in shop currency."]
+  "device_id" "int64" [note: "The ID for the device."]
+  "gateway" "string" [note: "The name of the gateway the transaction was issued through."]
+  "source_name" "string" [note: "The origin of the transaction."]
+  "message" "string" [note: "A string generated by the payment provider with additional information about why the transaction succeeded or failed."]
+  "currency" "string" [note: "The three-letter code (ISO 4217 format) for the currency used for the payment."]
+  "location_id" "int64" [note: "The ID of the physical location where the transaction was processed."]
+  "parent_id" "int64" [note: "The ID of an associated transaction."]
+  "payment_avs_result_code" "string" [note: "The response code from the address verification system."]
+  "payment_credit_card_bin" "int64" [note: "The issuer identification number (IIN), formerly known as bank identification number (BIN) of the customer's credit card."]
+  "payment_cvv_result_code" "int64" [note: "The response code from the credit card company indicating whether the customer entered the card security code, or card verification value, correctly."]
+  "payment_credit_card_number" "int64" [note: "The customer's credit card number, with most of the leading digits redacted."]
+  "payment_credit_card_company" "int64" [note: "The name of the company that issued the customer's credit card."]
+  "kind" "string" [note: "The transaction's type."]
+  "receipt" "string" [note: "A transaction receipt attached to the transaction by the gateway."]
+  "currency_exchange_id" "int64" [note: "The ID of the adjustment."]
+  "currency_exchange_adjustment" "int64" [note: "The difference between the amounts on the associated transaction and the parent transaction."]
+  "currency_exchange_original_amount" "int64" [note: "The amount of the parent transaction in the shop currency."]
+  "currency_exchange_final_amount" "int64" [note: "The amount of the associated transaction in the shop currency."]
+  "currency_exchange_currency" "int64" [note: "The shop currency."]
+  "error_code" "int64" [note: "A standardized error code, independent of the payment provider."]
+  "status" "string" [note: "The status of the transaction."]
+  "user_id" "int64" [note: "The ID for the user who was logged into the Shopify POS device when the order was processed, if applicable."]
+  "authorization_code" "string" [note: "The authorization code associated with the transaction."]
+  "created_timestamp" "timestamp" [note: "The date and time when the transaction was created."]
+  "processed_timestamp" "timestamp" [note: "The date and time when a transaction was processed."]
+  "authorization_expires_at" "timestamp" [note: "Timestamp when the authorization expires."]
+  "_fivetran_synced" "timestamp" [note: "Timestamp of the date the record was synced by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from, if you are unioning multiple connectors. Null if not."]
+  "payment_method" "string" [note: "Method of payment."]
+  "parent_created_timestamp" "timestamp" [note: "Created on timestamp of the parent transaction."]
+  "parent_kind" "string" [note: "Kind of the parent transaction."]
+  "parent_amount" "float64" [note: "Amount of the parent transaction."]
+  "parent_status" "string" [note: "Status of the parent transaction."]
+  "exchange_rate" "numeric" [note: "The exchange rate between the home currency and the currency of sale at the time of the transaction."]
+  "currency_exchange_calculated_amount" "float64" [note: "The total amount of the transaction with the currency exchange rate applied."]
+  "authorization" "unknown" [note: "The authorization code associated with the transaction."]
+
+  Note: "Each record represents a transaction in Shopify."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__abandoned_checkout" {
+  "is_deleted" "bool" [note: "Boolean representing whether the record was soft-deleted in Shopify."]
+  "abandoned_checkout_url" "string" [note: "The recovery URL that's sent to a customer so they can recover their checkout."]
+  "billing_address_address_1" "string" [note: "The street address of the billing address."]
+  "billing_address_address_2" "string" [note: "An optional additional field for the street address of the billing address."]
+  "billing_address_city" "string" [note: "The city of the billing address."]
+  "billing_address_company" "int64" [note: "The company of the person associated with the billing address."]
+  "billing_address_country" "string" [note: "The name of the country of the billing address."]
+  "billing_address_country_code" "string" [note: "The two-letter code (ISO 3166-1 alpha-2 format) for the country of the billing address."]
+  "billing_address_first_name" "string" [note: "The first name of the person associated with the payment method."]
+  "billing_address_last_name" "string" [note: "The last name of the person associated with the payment method."]
+  "billing_address_latitude" "float64" [note: "The latitude of the billing address."]
+  "billing_address_longitude" "float64" [note: "The longitude of the billing address."]
+  "billing_address_name" "string" [note: "The full name of the person associated with the payment method."]
+  "billing_address_phone" "string" [note: "The phone number at the billing address."]
+  "billing_address_province" "string" [note: "The name of the state or province of the billing address."]
+  "billing_address_province_code" "string" [note: "The two-letter abbreviation of the state or province of the billing address."]
+  "billing_address_zip" "int64" [note: "The zip or postal code of the billing address."]
+  "has_buyer_accepted_marketing" "bool" [note: "Whether the customer would like to receive email updates from the shop. This is set by the 'I want to receive occasional emails about new products, promotions and other news' checkbox during checkout."]
+  "cart_token" "string" [note: "The ID for the cart that's attached to the checkout."]
+  "created_at" "timestamp" [note: "The date and time (ISO 8601 format) when the checkout was created."]
+  "closed_at" "timestamp" [note: "The date and time (ISO 8601 format) when the checkout was closed. If the checkout was not closed, then this value is null."]
+  "shop_currency" "string" [note: "The three-letter code (ISO 4217 format) of the shop's default currency at the time of checkout. For the currency that the customer used at checkout, see `presentment_currency`."]
+  "customer_id" "int64" [note: "ID of the customer with the abandoned checkout."]
+  "customer_locale" "string" [note: "The two or three-letter language code, optionally followed by a region modifier. Example values - en, en-CA."]
+  "device_id" "int64" [note: "The ID of the Shopify POS device that created the checkout."]
+  "email" "string" [note: "The customer's email address."]
+  "gateway" "string" [note: "The payment gateway used by the checkout."]
+  "checkout_id" "int64" [note: "The ID for the checkout. - not_null"]
+  "landing_site_base_url" "string" [note: "The URL for the page where the customer entered the shop."]
+  "location_id" "int64" [note: "The ID of the physical location where the checkout was processed."]
+  "name" "string" [note: "Checkout order number."]
+  "note" "int64" [note: "The text of an optional note that a shop owner can attach to the order."]
+  "phone" "int64" [note: "The customer's phone number for receiving SMS notifications."]
+  "presentment_currency" "string" [note: "The three-letter code (ISO 4217 format) of the currency that the customer used at checkout. For the shop's default currency, see `currency`."]
+  "referring_site" "string" [note: "The website that referred the customer to the shop."]
+  "shipping_address_address_1" "string" [note: "The street address of the shipping address."]
+  "shipping_address_address_2" "string" [note: "An optional additional field for the street address of the shipping address."]
+  "shipping_address_city" "string" [note: "The city of the shipping address."]
+  "shipping_address_company" "int64" [note: "The company of the person associated with the shipping address."]
+  "shipping_address_country" "string" [note: "The name of the country of the shipping address."]
+  "shipping_address_country_code" "string" [note: "The two-letter code (ISO 3166-1 alpha-2 format) for the country of the shipping address."]
+  "shipping_address_first_name" "string" [note: "The first name of the person associated with the shipping address."]
+  "shipping_address_last_name" "string" [note: "The last name of the person associated with the shipping address."]
+  "shipping_address_latitude" "float64" [note: "The latitude of the shipping address."]
+  "shipping_address_longitude" "float64" [note: "The longitude of the shipping address."]
+  "shipping_address_name" "string" [note: "The full name of the person associated with the shipping address."]
+  "shipping_address_phone" "string" [note: "The phone number at the shipping address."]
+  "shipping_address_province" "string" [note: "The name of the state or province of the shipping address."]
+  "shipping_address_province_code" "string" [note: "The two-letter abbreviation of the state or province of the shipping address."]
+  "shipping_address_zip" "string" [note: "The zip or postal code of the shipping address."]
+  "source_name" "string" [note: "Where the checkout originated. Valid values include `web`, `pos`, `iphone`, `android`."]
+  "subtotal_price" "float64" [note: "The price of the checkout in _presentment_ (customer) currency before shipping and taxes."]
+  "has_taxes_included" "bool" [note: "Boolean representing whether taxes are included in the price."]
+  "token" "string" [note: "A unique ID for a checkout."]
+  "total_discounts" "float64" [note: "The total amount of discounts to be applied in presentment currency."]
+  "total_duties" "int64" [note: "The total duties of the checkout in presentment currency."]
+  "total_line_items_price" "float64" [note: "The sum of the prices of all line items in the checkout in _presentment_ (customer) currency."]
+  "total_price" "float64" [note: "The sum of line item prices, all discounts, shipping costs, and taxes for the checkout in _presentment_ (customer) currency."]
+  "total_tax" "float64" [note: "The sum of all the taxes applied to the checkout in _presentment_ (customer) currency."]
+  "total_weight" "int64" [note: "The sum of all the weights in grams of the line items in the checkout."]
+  "updated_at" "timestamp" [note: "The date and time (ISO 8601 format) when the checkout was last modified."]
+  "user_id" "int64" [note: "The ID of the user who created the checkout."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "A checkout is considered abandoned after the customer has added contact information, but before the customer has completed their purchase."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__abandoned_checkout_discount_code" {
+  "checkout_id" "int64" [note: "ID of the checkout."]
+  "code" "string" [note: "The discount code."]
+  "discount_id" "int64" [note: "ID of the discount."]
+  "amount" "float64" [note: "The amount of the discount in presentment currency."]
+  "type" "string" [note: "The type of discount. Valid values - percentage, shipping, fixed_amount. (default - fixed_amount)"]
+  "created_at" "timestamp" [note: "When the checkout discount application was created."]
+  "updated_at" "timestamp" [note: "When the checkout's discount was last updated"]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Abandoned checkouts that applied a discount code."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__abandoned_checkout_discount_code_tmp" {
+  "checkout_id" "int64"
+  "index" "int64"
+  "_fivetran_synced" "string"
+  "amount" "float64"
+  "discount_id" "int64"
+  "code" "string"
+  "created_at" "timestamp"
+  "type" "string"
+  "updated_at" "timestamp"
+  "usage_count" "int64"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__abandoned_checkout_shipping_line" {
+  "abandoned_checkout_shipping_line_id" "string" [note: "Unique ID of the abandoned checkout shipping line."]
+  "checkout_id" "int64" [note: "ID of the checkout that was abandoned."]
+  "index" "int64" [note: "Index of the line amongst shipping lines for this checkout."]
+  "carrier_identifier" "int64" [note: "A reference to the carrier service that provided the rate. Present when the rate was computed by a third-party carrier service."]
+  "shipping_code" "string" [note: "A reference to the shipping method."]
+  "delivery_category" "int64" [note: "The general classification of the delivery method."]
+  "delivery_expectation_range" "int64" [note: "Expected delivery date range."]
+  "delivery_expectation_range_max" "int64" [note: "Latest expected delivery date."]
+  "delivery_expectation_range_min" "int64" [note: "Earliest possible expected delivery date."]
+  "delivery_expectation_type" "int64" [note: "Type of expected delivery."]
+  "discounted_price" "int64" [note: "The pre-tax shipping price with discounts applied in _presentment_ (customer) currency."]
+  "phone" "int64" [note: "The phone number at the shipping address."]
+  "price" "float64" [note: "The price of the shipping method in presentment currency."]
+  "requested_fulfillment_service_id" "int64" [note: "The fulfillment service requested for the shipping method. Present if the shipping method requires processing by a third party fulfillment service."]
+  "source" "string" [note: "The channel where the checkout originated. Example value - shopify."]
+  "title" "string" [note: "The title of the shipping method. Example value - International Shipping."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Shipping lines associated with abandoned checkouts."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__abandoned_checkout_shipping_line_tmp" {
+  "checkout_id" "int64"
+  "index" "int64"
+  "_fivetran_synced" "string"
+  "api_client_id" "int64"
+  "carrier_identifier" "int64"
+  "carrier_service_id" "int64"
+  "code" "string"
+  "delivery_category" "int64"
+  "discounted_price" "int64"
+  "id" "string"
+  "markup" "string"
+  "phone" "int64"
+  "price" "float64"
+  "requested_fulfillment_service_id" "int64"
+  "source" "string"
+  "title" "string"
+  "validation_context" "int64"
+  "delivery_expectation_range" "int64"
+  "delivery_expectation_type" "int64"
+  "original_shop_markup" "string"
+  "original_shop_price" "string"
+  "presentment_title" "string"
+  "delivery_expectation_range_min" "int64"
+  "delivery_expectation_range_max" "int64"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__abandoned_checkout_tmp" {
+  "id" "int64"
+  "_fivetran_synced" "string"
+  "abandoned_checkout_url" "string"
+  "applied_discount_amount" "int64"
+  "applied_discount_applicable" "int64"
+  "applied_discount_description" "int64"
+  "applied_discount_non_applicable_reason" "int64"
+  "applied_discount_title" "int64"
+  "applied_discount_value" "int64"
+  "applied_discount_value_type" "int64"
+  "billing_address_address_1" "string"
+  "billing_address_address_0" "string"
+  "billing_address_city" "string"
+  "billing_address_company" "int64"
+  "billing_address_country" "string"
+  "billing_address_country_code" "string"
+  "billing_address_first_name" "string"
+  "billing_address_last_name" "string"
+  "billing_address_latitude" "float64"
+  "billing_address_longitude" "float64"
+  "billing_address_name" "string"
+  "billing_address_phone" "string"
+  "billing_address_province" "string"
+  "billing_address_province_code" "string"
+  "billing_address_zip" "int64"
+  "buyer_accepts_marketing" "bool"
+  "cart_token" "string"
+  "closed_at" "timestamp"
+  "completed_at" "int64"
+  "created_at" "timestamp"
+  "credit_card_first_name" "int64"
+  "credit_card_last_name" "int64"
+  "credit_card_month" "int64"
+  "credit_card_number" "int64"
+  "credit_card_verification_value" "int64"
+  "credit_card_year" "int64"
+  "currency" "string"
+  "customer_id" "int64"
+  "customer_locale" "string"
+  "device_id" "int64"
+  "email" "string"
+  "gateway" "string"
+  "landing_site_base_url" "string"
+  "location_id" "int64"
+  "name" "string"
+  "note" "int64"
+  "phone" "int64"
+  "referring_site" "string"
+  "shipping_address_address_1" "string"
+  "shipping_address_address_0" "string"
+  "shipping_address_city" "string"
+  "shipping_address_company" "int64"
+  "shipping_address_country" "string"
+  "shipping_address_country_code" "string"
+  "shipping_address_first_name" "string"
+  "shipping_address_last_name" "string"
+  "shipping_address_latitude" "float64"
+  "shipping_address_longitude" "float64"
+  "shipping_address_name" "string"
+  "shipping_address_phone" "string"
+  "shipping_address_province" "string"
+  "shipping_address_province_code" "string"
+  "shipping_address_zip" "string"
+  "shipping_line" "int64"
+  "shipping_rate_id" "int64"
+  "shipping_rate_price" "int64"
+  "shipping_rate_title" "int64"
+  "source" "int64"
+  "source_identifier" "int64"
+  "source_name" "string"
+  "source_url" "int64"
+  "subtotal_price" "float64"
+  "taxes_included" "bool"
+  "token" "string"
+  "total_discounts" "float64"
+  "total_line_items_price" "float64"
+  "total_price" "float64"
+  "total_tax" "float64"
+  "total_weight" "int64"
+  "updated_at" "timestamp"
+  "user_id" "int64"
+  "note_attribute_littledata_updated_at" "int64"
+  "note_attribute_segment_client_id" "string"
+  "billing_address_id" "int64"
+  "billing_address_is_default" "int64"
+  "presentment_currency" "string"
+  "shipping_address_id" "int64"
+  "shipping_address_is_default" "int64"
+  "total_duties" "int64"
+  "note_attribute_email_client_id" "int64"
+  "note_attributes" "string"
+  "note_attribute_google_client_id" "int64"
+  "_fivetran_deleted" "bool"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__collection" {
+  "collection_id" "int64" [note: "The ID for the collection."]
+  "is_deleted" "bool" [note: "Boolean representing whether the record was soft-deleted in Shopify."]
+  "rule_logic" "string" [note: "Whether the `rules` are disjunctive (logical `OR`) or conjunctive (logical `AND`)"]
+  "handle" "int64" [note: "A unique, human-readable string for the collection automatically generated from its title. This is used in themes by the Liquid templating language to refer to the collection."]
+  "published_scope" "int64" [note: "Whether the collection is published to the Point of Sale channel. Valid values `web` (the collection is published to the Online Store channel but not published to the Point of Sale channel) and `global` (the collection is published to both the Online Store channel and the Point of Sale channel).\n"]
+  "rules" "int64" [note: "An array of rules that define what products go into the smart collection. Each rule (`column` -- `relation` --> `condition`) has these properties: - `column`: the property of a product being used to populate the smart collection. Ex: 'tag', 'type', 'vendor', 'variant_price', etc. - `relation`: The comparative relationship between the column choice, and the condition ('equals', 'contains', 'greater_than', etc.) - condition: Select products for a smart collection using a condition. Values are either strings or numbers, depending on the relation value. See the [Shopify docs](https://shopify.dev/api/admin-rest/2022-10/resources/smartcollection#resource-object) for more.\n"]
+  "sort_order" "int64" [note: "The order of the products in the collection. Valid values incline - `alpha-asc`: The products are sorted alphabetically from A to Z. - `alpha-des`: The products are sorted alphabetically from Z to A. - `best-selling`: The products are sorted by number of sales. - `created`: The products are sorted by the date they were created, from oldest to newest. - `created-desc`: The products are sorted by the date they were created, from newest to oldest. - `manual`: The products are manually sorted by the shop owner. - `price-asc`: The products are sorted by price from lowest to highest. - `price-desc`: The products are sorted by price from highest to lowest.\n"]
+  "title" "string" [note: "The name of the collection"]
+  "published_at" "timestamp" [note: "The time and date (ISO 8601 format) when the collection was made visible. Returns null for a hidden collection."]
+  "updated_at" "timestamp" [note: "The date and time (ISO 8601 format) when the collection was last modified."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "A collection is a grouping of products that merchants can create to make their stores easier to browse. Merchants can create collections by selecting products individually or by defining rules that automatically determine whether products are included (aka a \"smart collection\").\n"
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__collection_product" {
+  "collection_id" "int64" [note: "ID referencing the `collection` the product belongs to."]
+  "product_id" "int64" [note: "ID referencing the `product`."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Table relating products to the collections they belong to. Use this instead of the deprecated `COLLECT` table."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__collection_product_tmp" {
+  "collection_id" "int64"
+  "product_id" "int64"
+  "_fivetran_synced" "string"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__collection_tmp" {
+  "id" "int64"
+  "_fivetran_deleted" "bool"
+  "_fivetran_synced" "string"
+  "handle" "int64"
+  "published_at" "timestamp"
+  "published_scope" "int64"
+  "title" "string"
+  "updated_at" "timestamp"
+  "disjunctive" "bool"
+  "rules" "int64"
+  "sort_order" "int64"
+  "template_suffix" "int64"
+  "body_html" "int64"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__customer" {
+  "customer_id" "int64" [note: "A unique identifier for the customer."]
+  "email" "string" [note: "The unique email address of the customer. Attempting to assign the same email address to multiple customers returns an error."]
+  "first_name" "string" [note: "The customer's first name."]
+  "last_name" "string" [note: "The customer's last name."]
+  "orders_count" "int64" [note: "The number of orders associated with this customer."]
+  "default_address_id" "int64" [note: "The default address for the customer."]
+  "phone" "int64" [note: "The unique phone number (E.164 format) for this customer. Attempting to assign the same phone number to multiple customers returns an error."]
+  "account_state" "string" [note: "The state of the customer's account with a shop."]
+  "is_tax_exempt" "bool" [note: "Whether the customer is exempt from paying taxes on their order. If true, then taxes won't be applied to an order at checkout. If false, then taxes will be applied at checkout."]
+  "total_spent" "float64" [note: "The total amount of money that the customer has spent across their order history."]
+  "is_verified_email" "bool" [note: "Whether the customer has verified their email address."]
+  "note" "string" [note: "A note about the customer."]
+  "lifetime_duration" "string" [note: "The amount of time since the customer was first added to the store."]
+  "currency" "string" [note: "The three-letter code (ISO 4217 format) for the currency that the customer used when they paid for their last order. Defaults to the shop currency. Returns the shop currency for test orders."]
+  "marketing_consent_state" "string" [note: "Field indicating if the customer has consented to receive marketing material via email. Coalescing of the new `email_marketing_consent_state` field and the deprecated `accepts_marketing` field. Records with the old field will be marked with '(legacy)'.\n"]
+  "marketing_opt_in_level" "string" [note: "The marketing subscription opt-in level, as described in the M3AAWG Sender Best Common Practices, that the customer gave when they consented to receive marketing material by email."]
+  "marketing_consent_updated_at" "timestamp" [note: "The date and time when the customer consented to receive marketing material by email. If no date is provided, then the date and time when the consent information was sent is used."]
+  "created_timestamp" "timestamp" [note: "The date and time when the customer was created."]
+  "updated_timestamp" "timestamp" [note: "The date and time when the customer information was last updated."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Each record represents a customer in Shopify."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__customer_tag" {
+  "customer_id" "int64" [note: "ID of the customer being tagged."]
+  "index" "int64" [note: "Index (starting from 1) representing when the tag was placed on the customer."]
+  "value" "string" [note: "Value of the tag."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Tags that the shop owner has attached to the customer. A customer can have up to 250 tags."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__customer_tag_tmp" {
+  "customer_id" "int64"
+  "index" "int64"
+  "_fivetran_synced" "string"
+  "value" "string"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__customer_tmp" {
+  "id" "int64"
+  "first_name" "string"
+  "last_name" "string"
+  "email" "string"
+  "phone" "int64"
+  "state" "string"
+  "orders_count" "int64"
+  "total_spent" "float64"
+  "created_at" "timestamp"
+  "updated_at" "timestamp"
+  "accepts_marketing" "bool"
+  "tax_exempt" "bool"
+  "verified_email" "bool"
+  "default_address_id" "int64"
+  "_fivetran_synced" "timestamp"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__discount_code" {
+  "discount_code_id" "int64" [note: "The ID for the discount code."]
+  "code" "string" [note: "The case-insensitive discount code that customers use at checkout. Shopify recommends this map onto the associated `price_rule.title`."]
+  "price_rule_id" "int64" [note: "The ID for the price rule that this discount code belongs to."]
+  "usage_count" "float64" [note: "The number of times that the discount code has been redeemed."]
+  "created_at" "timestamp" [note: "The date and time (ISO 8601 format) when the discount code was created."]
+  "updated_at" "timestamp" [note: "The date and time (ISO 8601 format) when the discount code was updated."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Table storing discount codes that enable specific discounts to be redeemed. Merchants can distribute discount codes to their customers using a variety of means, such as an email or URL,  and customers can apply these codes at checkout. Each discount code belongs to a price rule, which holds the logic for the discount.\n"
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__discount_code_tmp" {
+  "id" "int64"
+  "_fivetran_synced" "string"
+  "code" "string"
+  "created_at" "string"
+  "price_rule_id" "int64"
+  "updated_at" "string"
+  "usage_count" "float64"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__fulfillment" {
+  "fulfillment_id" "int64" [note: "The ID for the fulfillment."]
+  "location_id" "int64" [note: "The unique identifier of the location that the fulfillment was processed at."]
+  "order_id" "int64" [note: "The unique numeric identifier for the order."]
+  "name" "string" [note: "The uniquely identifying fulfillment name, consisting of two parts separated by a .. The first part represents the order name and the second part represents the fulfillment number.  The fulfillment number automatically increments depending on how many fulfillments are in an order (e.g. #1001.1, #1001.2).\n"]
+  "service" "string" [note: "The fulfillment service associated with the fulfillment."]
+  "shipment_status" "int64" [note: "The current shipment status of the fulfillment. Valid values include: - label_printed: A label for the shipment was purchased and printed. - label_purchased: A label for the shipment was purchased, but not printed. - attempted_delivery: Delivery of the shipment was attempted, but unable to be completed. - ready_for_pickup: The shipment is ready for pickup at a shipping depot. - confirmed: The carrier is aware of the shipment, but hasn't received it yet. - in_transit: The shipment is being transported between shipping facilities on the way to its destination. - out_for_delivery: The shipment is being delivered to its final destination. - delivered: The shipment was successfully delivered. - failure: Something went wrong when pulling tracking information for the shipment, such as the tracking number was invalid or the shipment was canceled.\n"]
+  "status" "string" [note: "The status of the fulfillment. Valid values include: - pending: Shopify has created the fulfillment and is waiting for the third-party fulfillment service to transition it to 'open' or 'success'. - open: The fulfillment has been acknowledged by the service and is in processing. - success: The fulfillment was successful. - cancelled: The fulfillment was cancelled. - error: There was an error with the fulfillment request. - failure: The fulfillment request failed.\n"]
+  "tracking_company" "int64" [note: "The name of the tracking company."]
+  "tracking_number" "int64" [note: "Primary tracking number for the order."]
+  "tracking_numbers" "string" [note: "A list of tracking numbers, provided by the shipping company."]
+  "tracking_urls" "string" [note: "The URLs of tracking pages for the fulfillment."]
+  "created_at" "timestamp" [note: "The date and time when the fulfillment was created. The API returns this value in ISO 8601 format."]
+  "updated_at" "timestamp" [note: "The date and time (ISO 8601 format) when the fulfillment was last modified."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "A fulfillment order represents a group of one or more items in an order that will be fulfilled from the same location.  A fulfillment represents work that is completed as part of a fulfillment order and can include one or more items.\n"
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__fulfillment_tmp" {
+  "id" "int64"
+  "_fivetran_synced" "string"
+  "created_at" "string"
+  "location_id" "int64"
+  "order_id" "int64"
+  "status" "string"
+  "tracking_company" "int64"
+  "tracking_number" "int64"
+  "updated_at" "string"
+  "tracking_numbers" "string"
+  "tracking_urls" "string"
+  "shipment_status" "int64"
+  "service" "string"
+  "name" "string"
+  "receipt_authorization" "int64"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__inventory_item" {
+  "inventory_item_id" "int64" [note: "The ID of the inventory item."]
+  "sku" "int64" [note: "The unique SKU (stock keeping unit) of the inventory item."]
+  "is_deleted" "bool" [note: "Boolean representing whether the record was soft-deleted in Shopify."]
+  "cost" "int64" [note: "The unit cost of the inventory item. The shop's default currency is used."]
+  "country_code_of_origin" "int64" [note: "The country code (ISO 3166-1 alpha-2) of where the item came from."]
+  "province_code_of_origin" "int64" [note: "The province code (ISO 3166-2 alpha-2) of where the item came from. The province code is only used if the shipping provider for the inventory item is Canada Post."]
+  "is_shipping_required" "int64" [note: "Boolean representing whether a customer needs to provide a shipping address when placing an order containing the inventory item."]
+  "is_inventory_quantity_tracked" "int64" [note: "Boolean representing whether inventory levels are tracked for the item. If true, then the inventory quantity changes are tracked by Shopify."]
+  "created_at" "timestamp" [note: "The date and time (ISO 8601 format) when the inventory item was created."]
+  "updated_at" "timestamp" [note: "The date and time (ISO 8601 format) when the inventory item was last modified."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "An inventory item represents a physical good. It holds essential information about the physical good, including its SKU and whether its inventory is tracked. There is a 1:1 relationship between a product variant and an inventory item.\n"
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__inventory_item_tmp" {
+  "id" "int64"
+  "_fivetran_synced" "string"
+  "cost" "int64"
+  "created_at" "timestamp"
+  "requires_shipping" "int64"
+  "sku" "int64"
+  "tracked" "int64"
+  "updated_at" "timestamp"
+  "country_code_of_origin" "int64"
+  "province_code_of_origin" "int64"
+  "_fivetran_deleted" "bool"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__inventory_level" {
+  "inventory_item_id" "int64" [note: "The ID of the inventory item associated with the inventory level."]
+  "location_id" "int64" [note: "The ID of the location that the inventory level belongs to."]
+  "available_quantity" "int64" [note: "The available quantity of an inventory item at the inventory level's associated location. Returns null if the inventory item is not tracked."]
+  "updated_at" "timestamp" [note: "The date and time (ISO 8601 format) when the inventory level was last modified."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "An inventory level represents the quantities of an inventory item for a location.\nEach inventory level belongs to one inventory item and has one location. For every location where an inventory item can be stocked, there's an inventory level that represents  the inventory item's quantities relating to that location.\n"
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__inventory_level_tmp" {
+  "inventory_item_id" "int64"
+  "location_id" "int64"
+  "_fivetran_synced" "string"
+  "available" "int64"
+  "updated_at" "timestamp"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__location" {
+  "location_id" "int64" [note: "The ID of the location."]
+  "name" "string" [note: "The name of the location."]
+  "is_deleted" "bool" [note: "Boolean representing whether the record was soft-deleted in Shopify."]
+  "is_active" "bool" [note: "Boolean representing whether the location is active. If true, then the location can be used to sell products, stock inventory, and fulfill orders.\n"]
+  "address_1" "string" [note: "The location's street address."]
+  "address_2" "int64" [note: "The optional second line of the location's street address."]
+  "city" "string" [note: "The city the location is in."]
+  "country" "string" [note: "The country the location is in (two-letter code)."]
+  "country_code" "string" [note: "The two-letter code (ISO 3166-1 alpha-2 format) corresponding to country the location is in."]
+  "country_name" "string" [note: "Full name of the location's country."]
+  "is_legacy" "bool" [note: "Boolean representing whether this is a fulfillment service location. If true, then the location is a fulfillment service location.  If false, then the location was created by the merchant and isn't tied to a fulfillment service.\n"]
+  "localized_country_name" "string" [note: "The localized name of the location's country."]
+  "localized_province_name" "string" [note: "The localized name of the location's region. Typically a province, state, or district."]
+  "phone" "int64" [note: "The phone number of the location. This value can contain special characters, such as - or +."]
+  "province" "string" [note: "The province, state, or district of the location."]
+  "province_code" "string" [note: "The province, state, or district code (ISO 3166-2 alpha-2 format) of the location."]
+  "zip" "int64" [note: "The zip or postal code."]
+  "created_at" "timestamp" [note: "The date and time (ISO 8601 format) when the location was created."]
+  "updated_at" "timestamp" [note: "The date and time (ISO 8601 format) when the location was last updated."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "A location represents a geographical location where your stores, pop-up stores, headquarters, and warehouses exist."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__location_tmp" {
+  "id" "int64"
+  "_fivetran_synced" "string"
+  "active" "bool"
+  "address_1" "string"
+  "address_2" "int64"
+  "city" "string"
+  "country" "string"
+  "created_at" "string"
+  "legacy" "bool"
+  "name" "string"
+  "phone" "int64"
+  "province" "string"
+  "updated_at" "string"
+  "zip" "int64"
+  "country_code" "string"
+  "country_name" "string"
+  "localized_country_name" "string"
+  "localized_province_name" "string"
+  "province_code" "string"
+  "_fivetran_deleted" "bool"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__metafield" {
+  "metafield_id" "int64" [note: "The unique ID of the metafield."]
+  "description" "int64" [note: "A description of the information that the metafield contains."]
+  "namespace" "string" [note: "A container for a group of metafields. Grouping metafields within a namespace prevents your metafields from conflicting with other metafields with the same key name. Must have between 3-255 characters."]
+  "key" "string" [note: "The key of the metafield. Keys can be up to 64 characters long and can contain alphanumeric characters, hyphens, underscores, and periods."]
+  "value" "string" [note: "The data to store in the metafield. The value is always stored as a string, regardless of the metafield's type."]
+  "value_type" "string" [note: "The type of data that the metafield stores in the `value` field. Refer to the [list](https://shopify.dev/apps/metafields/types) of supported types. Coalescing of type and value_type"]
+  "owner_resource_id" "int64" [note: "The unique ID of the resource that the metafield is attached to."]
+  "owner_resource" "string" [note: "The type of resource (table) that the metafield is attached to."]
+  "created_at" "timestamp" [note: "The date and time (ISO 8601 format) when the metafield was created."]
+  "updated_at" "timestamp" [note: "The date and time (ISO 8601 format) when the metafield was last updated."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "metafield_reference" "string" [note: "Combination of the namespace and key columns. This field is key for metafield mapping in downstream models."]
+  "is_most_recent_record" "bool" [note: "Boolean indicating the most up to date record identified by the most recent updated_at field."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Metafields are a flexible way to attach additional information to a Shopify resource (e.g. Product, Collection, etc.). Some examples of data stored using metafields include specifications, size charts,  downloadable documents, release dates, images, or part numbers. Metafields are identified by an owner resource, a namespace, and a key and they store a value along with type information for that context.\n"
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__metafield_tmp" {
+  "id" "int64"
+  "_fivetran_synced" "string"
+  "created_at" "string"
+  "description" "int64"
+  "key" "string"
+  "namespace" "string"
+  "owner_id" "int64"
+  "owner_resource" "string"
+  "updated_at" "string"
+  "value" "string"
+  "value_type" "string"
+  "type" "string"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order" {
+  "order_id" "int64" [note: "The ID of the order, used for API purposes. This is different from the order_number property, which is the ID used by the shop owner and customer."]
+  "user_id" "int64" [note: "The ID of the user logged into Shopify POS who processed the order, if applicable."]
+  "total_discounts" "float64" [note: "The total discounts applied to the price of the order in the shop currency."]
+  "total_discounts_set" "string" [note: "The total discounts applied to the price of the order in shop and presentment currencies."]
+  "total_line_items_price" "float64" [note: "The sum of all line item prices in the shop currency."]
+  "total_line_items_price_set" "string" [note: "The total of all line item prices in shop and presentment currencies."]
+  "total_price" "float64" [note: "The sum of all line item prices, discounts, shipping, taxes, and tips in the shop currency. Must be positive."]
+  "total_price_set" "string" [note: "The total price of the order in shop and presentment currencies."]
+  "total_price_usd" "float64" [note: "The sum of all line item prices, discounts, shipping, taxes, and tips in USD. Must be positive."]
+  "total_tax_set" "string" [note: "The total tax applied to the order in shop and presentment currencies."]
+  "total_tax" "int64" [note: "The sum of all the taxes applied to the order in th shop currency. Must be positive)."]
+  "source_name" "string" [note: "Where the order originated. Can be set only during order creation, and is not writeable afterwards."]
+  "subtotal_price" "float64" [note: "The price of the order in the shop currency after discounts but before shipping, taxes, and tips."]
+  "has_taxes_included" "bool" [note: "Whether taxes are included in the order subtotal."]
+  "total_weight" "int64" [note: "The sum of all line item weights in grams."]
+  "total_tip_received" "float64" [note: "The sum of all the tips in the order in the shop currency."]
+  "landing_site_base_url" "string" [note: "The URL for the page where the buyer landed when they entered the shop."]
+  "location_id" "int64" [note: "The ID of the physical location where the order was processed."]
+  "name" "string" [note: "The order name, generated by combining the order_number property with the order prefix and suffix that are set in the merchant's general settings."]
+  "note" "string" [note: "An optional note that a shop owner can attach to the order."]
+  "number" "int64" [note: "The order's position in the shop's count of orders. Numbers are sequential and start at 1."]
+  "order_number" "int64" [note: "The order 's position in the shop's count of orders starting at 1001. Order numbers are sequential and start at 1001."]
+  "cancel_reason" "int64" [note: "The reason why the order was canceled."]
+  "cart_token" "string" [note: "The ID of the cart that's associated with the order."]
+  "checkout_token" "string" [note: "A unique value when referencing the checkout that's associated with the order."]
+  "created_timestamp" "timestamp" [note: "The autogenerated date and time when the order was created in Shopify."]
+  "cancelled_timestamp" "timestamp" [note: "The date and time when the order was canceled."]
+  "closed_timestamp" "timestamp" [note: "The date and time when the order was closed (archived)."]
+  "processed_timestamp" "timestamp" [note: "The date and time when an order was processed. This value is the date that appears on your orders and that's used in the analytic reports."]
+  "updated_timestamp" "timestamp" [note: "The date and time (ISO 8601 format) when the order was last modified."]
+  "currency" "string" [note: "The three-letter code for the shop currency."]
+  "customer_id" "int64" [note: "The ID of the order's customer."]
+  "email" "string" [note: "The customer's email address."]
+  "financial_status" "string" [note: "The status of payments associated with the order. Can only be set when the order is created"]
+  "fulfillment_status" "string" [note: "The order's status in terms of fulfilled line items."]
+  "processing_method" "string" [note: "How the payment was processed."]
+  "referring_site" "string" [note: "The website where the customer clicked a link to the shop."]
+  "billing_address_address_1" "string" [note: "The street address of the billing address."]
+  "billing_address_address_2" "string" [note: "An optional additional field for the street address of the billing address."]
+  "billing_address_city" "string" [note: "The city, town, or village of the billing address."]
+  "billing_address_company" "string" [note: "The company of the person associated with the billing address."]
+  "billing_address_country" "string" [note: "The name of the country of the billing address."]
+  "billing_address_country_code" "string" [note: "The two-letter code (ISO 3166-1 format) for the country of the billing address."]
+  "billing_address_first_name" "string" [note: "The first name of the person associated with the payment method."]
+  "billing_address_last_name" "string" [note: "The last name of the person associated with the payment method."]
+  "billing_address_latitude" "string" [note: "The latitude of the billing address."]
+  "billing_address_longitude" "string" [note: "The longitude of the billing address."]
+  "billing_address_name" "string" [note: "The full name of the person associated with the payment method."]
+  "billing_address_phone" "string" [note: "The phone number at the billing address."]
+  "billing_address_province" "string" [note: "The name of the region (province, state, prefecture, \u2026) of the billing address."]
+  "billing_address_province_code" "int64" [note: "The two-letter abbreviation of the region of the billing address."]
+  "billing_address_zip" "string" [note: "The postal code (zip, postcode, Eircode, \u2026) of the billing address."]
+  "browser_ip" "string" [note: "The IP address of the browser used by the customer when they placed the order."]
+  "total_shipping_price_set" "string" [note: "The total shipping price of the order, excluding discounts and returns, in shop and presentment currencies. If taxes_included is set to true, then total_shipping_price_set includes taxes."]
+  "shipping_address_address_1" "string" [note: "The street address of the shipping address."]
+  "shipping_address_address_2" "string" [note: "An optional additional field for the street address of the shipping address."]
+  "shipping_address_city" "string" [note: "The city, town, or village of the shipping address."]
+  "shipping_address_company" "string" [note: "The company of the person associated with the shipping address."]
+  "shipping_address_country" "string" [note: "The name of the country of the shipping address."]
+  "shipping_address_country_code" "string" [note: "The two-letter code (ISO 3166-1 format) for the country of the shipping address."]
+  "shipping_address_first_name" "string" [note: "The first name of the person associated with the shipping address."]
+  "shipping_address_last_name" "string" [note: "The last name of the person associated with the shipping address."]
+  "shipping_address_latitude" "string" [note: "The latitude of the shipping address."]
+  "shipping_address_longitude" "string" [note: "The longitude of the shipping address."]
+  "shipping_address_name" "string" [note: "The full name of the person associated with the payment method."]
+  "shipping_address_phone" "string" [note: "The phone number at the shipping address."]
+  "shipping_address_province" "string" [note: "The name of the region (province, state, prefecture, \u2026) of the shipping address."]
+  "shipping_address_province_code" "int64" [note: "The two-letter abbreviation of the region of the shipping address."]
+  "shipping_address_zip" "string" [note: "The postal code (zip, postcode, Eircode, \u2026) of the shipping address."]
+  "token" "string" [note: "A unique token for the order."]
+  "app_id" "int64" [note: "The ID of the app that created the order."]
+  "checkout_id" "int64" [note: "ID of the order's checkout."]
+  "client_details_user_agent" "string" [note: "Details of the browsing client, including software and operating versions."]
+  "customer_locale" "string" [note: "A two-letter or three-letter language code, optionally followed by a region modifier."]
+  "order_status_url" "string" [note: "The URL pointing to the order status web page, if applicable."]
+  "presentment_currency" "string" [note: "The presentment currency that was used to display prices to the customer."]
+  "is_test_order" "bool" [note: "Whether this is a test order."]
+  "is_deleted" "bool" [note: "Boolean representing whether the record was soft-deleted in Shopify."]
+  "has_buyer_accepted_marketing" "bool" [note: "Whether the customer consented to receive email updates from the shop."]
+  "is_confirmed" "bool" [note: "Whether the order is confirmed."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+  "current_total_price" "unknown" [note: "The current total price of the order in the shop currency. The value of this field reflects order edits, returns, and refunds."]
+  "source_identifier" "unknown" [note: "The ID of the order placed on the originating platform. This value doesn't correspond to the Shopify ID that's generated from a completed draft."]
+
+  Note: "Each record represents an order in Shopify."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_adjustment" {
+  "order_adjustment_id" "int64" [note: "The unique numeric identifier for the order adjustment."]
+  "order_id" "int64" [note: "Reference to the order which the adjustment is associated."]
+  "refund_id" "int64" [note: "Reference to the refund which the adjustment is associated."]
+  "amount" "int64" [note: "Amount of the adjustment."]
+  "amount_set" "int64" [note: "Amount set towards the order adjustment in presentment and shop currencies."]
+  "tax_amount" "float64" [note: "Tax amount applied to the order adjustment in the shop currency."]
+  "tax_amount_set" "int64" [note: "Tax amount set towards the order adjustment in the shop and presentment currencies."]
+  "kind" "string" [note: "The kind of order adjustment (eg. refund, restock, etc.)."]
+  "reason" "string" [note: "The reason for the order adjustment."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Each record represents and adjustment to and order within Shopify."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_adjustment_tmp" {
+  "id" "int64"
+  "order_id" "int64"
+  "refund_id" "int64"
+  "amount" "int64"
+  "tax_amount" "float64"
+  "kind" "string"
+  "reason" "string"
+  "amount_set" "int64"
+  "tax_amount_set" "int64"
+  "_fivetran_synced" "string"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_discount_code" {
+  "order_id" "int64" [note: "Associated order ID."]
+  "code" "string" [note: "This property returns the discount code that was entered at checkout. Otherwise this property returns the title of the discount that was applied."]
+  "type" "string" [note: "The type of discount - `fixed_amount`, `percentage`, or `shipping`."]
+  "amount" "float64" [note: "The amount that's deducted from the order total."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Discount codes placed on orders."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_discount_code_tmp" {
+  "index" "int64"
+  "order_id" "int64"
+  "_fivetran_synced" "string"
+  "amount" "float64"
+  "code" "string"
+  "type" "string"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_line" {
+  "order_line_id" "int64" [note: "The ID of the line item."]
+  "index" "int64" [note: "Index of the order line."]
+  "name" "string" [note: "The name of the product variant."]
+  "order_id" "int64" [note: "The ID of the related order."]
+  "fulfillable_quantity" "int64" [note: "The amount available to fulfill, calculated as follows: quantity - max(refunded_quantity, fulfilled_quantity) - pending_fulfilled_quantity - open_fulfilled_quantity"]
+  "fulfillment_service" "string" [note: "The service provider that's fulfilling the item."]
+  "fulfillment_status" "string" [note: "How far along an order is in terms line items fulfilled."]
+  "is_gift_card" "bool" [note: "Whether the item is a gift card. If true, then the item is not taxed or considered for shipping charges."]
+  "grams" "int64" [note: "The weight of the item in grams."]
+  "pre_tax_price" "int64" [note: "The pre tax price of the line item in shop currency."]
+  "pre_tax_price_set" "string" [note: "The pre tax price of the line item in shop currency and presentment currency."]
+  "price" "float64" [note: "The price of the item before discounts have been applied in the shop currency."]
+  "price_set" "string" [note: "The price of the line item in shop and presentment currencies."]
+  "product_id" "int64" [note: "The ID of the product that the line item belongs to. Can be null if the original product associated with the order is deleted at a later date."]
+  "quantity" "int64" [note: "The number of items that were purchased."]
+  "is_shipping_required" "bool" [note: "Whether the item requires shipping."]
+  "sku" "string" [note: "The item's SKU (stock keeping unit)."]
+  "is_taxable" "bool" [note: "Whether the item was taxable."]
+  "tax_code" "string" [note: "Tax code applied to the line item. As multiple taxes can apply to a line item, we recommend referring to `stg_shopify__tax_line`."]
+  "title" "string" [note: "The title of the product."]
+  "total_discount" "int64" [note: "The total amount of the discount allocated to the line item in the shop currency."]
+  "total_discount_set" "string" [note: "The total amount allocated to the line item in the presentment currency."]
+  "variant_id" "int64" [note: "The ID of the product variant."]
+  "variant_title" "string" [note: "The title of the product variant."]
+  "variant_inventory_management" "string" [note: "The fulfillment service that tracks the number of items in stock for the product variant."]
+  "vendor" "string" [note: "The name of the item's supplier."]
+  "properties" "string" [note: "Line item properties."]
+  "destination_location_address_1" "string" [note: "The street address of the assigned location."]
+  "destination_location_address_2" "string" [note: "An optional additional field for the street address of the assigned location."]
+  "destination_location_city" "string" [note: "City of the destination where the items should be sent."]
+  "destination_location_country_code" "string" [note: "Two-letter country code (ISO 3166-1 format) of the destination where the items should be sent."]
+  "destination_location_id" "int64" [note: "ID of the destination where the items should be sent."]
+  "destination_location_name" "string" [note: "Name of the destination where the items should be sent."]
+  "destination_location_province_code" "string" [note: "Two-letter province code of the destination where the items should be sent."]
+  "destination_location_zip" "string" [note: "Zip code of the destination where the items should be sent."]
+  "origin_location_address_1" "string" [note: "The street address of the item's supplier."]
+  "origin_location_address_2" "string" [note: "The suite number of the item's supplier."]
+  "origin_location_city" "string" [note: "The city of the item's supplier."]
+  "origin_location_country_code" "string" [note: "The two-letter code (ISO 3166-1 format) for the country of the item's supplier."]
+  "origin_location_id" "int64" [note: "The location ID of the line item\u2019s fulfillment origin. Used by Shopify to calculate applicable taxes. This is not the ID of the location where the order was placed. You can use the FulfillmentOrder resource to determine the location an item will be sourced from."]
+  "origin_location_name" "string" [note: "The name of the item's supplier."]
+  "origin_location_province_code" "string" [note: "The two-letter abbreviation for the region of the item's supplier."]
+  "origin_location_zip" "string" [note: "The zip of the item's supplier."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Each record represents a line item from an order in Shopify."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_line_refund" {
+  "order_line_refund_id" "int64" [note: "The unique identifier of the line item in the refund."]
+  "location_id" "int64" [note: "TThe unique identifier of the location where the items will be restockedBD"]
+  "order_line_id" "int64" [note: "The ID of the related line item in the order."]
+  "subtotal" "numeric" [note: "Subtotal amount of the order line refund in shop currency."]
+  "subtotal_set" "string" [note: "The subtotal of the refund line item in shop and presentment currencies."]
+  "total_tax" "numeric" [note: "The total tax applied to the refund in the shop currency."]
+  "total_tax_set" "string" [note: "The total tax of the line item in shop and presentment currencies."]
+  "quantity" "int64" [note: "The quantity of the associated line item that was returned."]
+  "refund_id" "int64" [note: "The ID of the related refund."]
+  "restock_type" "int64" [note: "How this refund line item affects inventory levels."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Each record represents a line item from an order in Shopify."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_line_refund_tmp" {
+  "id" "int64"
+  "location_id" "int64"
+  "refund_id" "int64"
+  "restock_type" "int64"
+  "quantity" "int64"
+  "order_line_id" "int64"
+  "_fivetran_synced" "timestamp"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_line_tmp" {
+  "order_id" "int64"
+  "id" "int64"
+  "product_id" "int64"
+  "variant_id" "int64"
+  "name" "string"
+  "title" "string"
+  "vendor" "string"
+  "price" "float64"
+  "quantity" "int64"
+  "grams" "int64"
+  "sku" "string"
+  "fulfillable_quantity" "int64"
+  "fulfillment_service" "string"
+  "gift_card" "bool"
+  "requires_shipping" "bool"
+  "taxable" "bool"
+  "index" "int64"
+  "total_discount" "int64"
+  "pre_tax_price" "int64"
+  "fulfillment_status" "string"
+  "_fivetran_synced" "timestamp"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_note_attribute" {
+  "order_id" "int64" [note: "ID referencing the order the note attribute belongs to."]
+  "name" "string" [note: "Name of the attribute."]
+  "value" "string" [note: "Value of the attribute."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Table storing custom attributes placed on orders."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_note_attribute_tmp" {
+  "name" "string"
+  "order_id" "int64"
+  "_fivetran_synced" "string"
+  "value" "string"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_shipping_line" {
+  "order_shipping_line_id" "int64" [note: "A globally-unique identifier."]
+  "order_id" "int64" [note: "ID of the associated order."]
+  "carrier_identifier" "int64" [note: "A reference to the carrier service that provided the rate. Present when the rate was computed by a third-party carrier service."]
+  "code" "string" [note: "A reference to the shipping method."]
+  "delivery_category" "int64" [note: "The general classification of the delivery method."]
+  "discounted_price" "float64" [note: "The pre-tax shipping price with discounts applied in shop currency."]
+  "discounted_price_set" "string" [note: "The pre-tax shipping price with discounts applied (JSON) in presentment and shop currencies."]
+  "phone" "int64" [note: "The phone number at the shipping address."]
+  "price" "float64" [note: "Returns the price of the shipping line in shop currency."]
+  "price_set" "string" [note: "Returns the price of the shipping line (JSON) in shop and presentment currencies."]
+  "is_third_party_required" "bool" [note: "The fulfillment service requested for the shipping method. Present if the shipping method requires processing by a third party fulfillment service."]
+  "source" "string" [note: "Returns the rate source for the shipping line."]
+  "title" "string" [note: "Returns the title of the shipping line."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Represents the shipping details that the customer chose for their order."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_shipping_line_tmp" {
+  "id" "int64"
+  "order_id" "int64"
+  "_fivetran_synced" "string"
+  "carrier_identifier" "int64"
+  "code" "string"
+  "delivery_category" "int64"
+  "discounted_price" "float64"
+  "phone" "int64"
+  "price" "float64"
+  "requested_fulfillment_service_id" "int64"
+  "source" "string"
+  "title" "string"
+  "discounted_price_set" "string"
+  "price_set" "string"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_shipping_tax_line" {
+  "order_shipping_line_id" "int64" [note: "ID of the order shipping line this record is associated with."]
+  "index" "int64" [note: "Index (from 1) representing the order of shipping lines per order."]
+  "price" "float64" [note: "The amount of tax, in shop currency, after discounts and before returns."]
+  "price_set" "string" [note: "The amount of tax, in shop and presentment currencies, after discounts and before returns (JSON)."]
+  "rate" "float64" [note: "The proportion of the line item price that the tax represents as a decimal."]
+  "title" "string" [note: "The name of the tax."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Represents taxes associated with order shipping lines."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_shipping_tax_line_tmp" {
+  "index" "int64"
+  "order_shipping_line_id" "int64"
+  "_fivetran_synced" "string"
+  "price" "float64"
+  "rate" "float64"
+  "title" "string"
+  "price_set" "string"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_tag" {
+  "order_id" "int64" [note: "ID of the order being tagged."]
+  "index" "int64" [note: "Index (starting from 1) representing when the tag was placed on the order."]
+  "value" "string" [note: "Value of the tag."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Tags that the shop owner has attached to the order."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_tag_tmp" {
+  "index" "int64"
+  "order_id" "int64"
+  "_fivetran_synced" "string"
+  "value" "string"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_tmp" {
+  "id" "int64"
+  "note" "string"
+  "email" "string"
+  "taxes_included" "bool"
+  "currency" "string"
+  "subtotal_price" "float64"
+  "total_tax" "int64"
+  "total_price" "float64"
+  "created_at" "timestamp"
+  "updated_at" "timestamp"
+  "name" "string"
+  "shipping_address_name" "string"
+  "shipping_address_first_name" "string"
+  "shipping_address_last_name" "string"
+  "shipping_address_company" "string"
+  "shipping_address_phone" "string"
+  "shipping_address_address_1" "string"
+  "shipping_address_address_2" "string"
+  "shipping_address_city" "string"
+  "shipping_address_country" "string"
+  "shipping_address_country_code" "string"
+  "shipping_address_province" "string"
+  "shipping_address_province_code" "int64"
+  "shipping_address_zip" "string"
+  "shipping_address_latitude" "string"
+  "shipping_address_longitude" "string"
+  "billing_address_name" "string"
+  "billing_address_first_name" "string"
+  "billing_address_last_name" "string"
+  "billing_address_company" "string"
+  "billing_address_phone" "string"
+  "billing_address_address_1" "string"
+  "billing_address_address_2" "string"
+  "billing_address_city" "string"
+  "billing_address_country" "string"
+  "billing_address_country_code" "string"
+  "billing_address_province" "string"
+  "billing_address_province_code" "int64"
+  "billing_address_zip" "string"
+  "billing_address_latitude" "string"
+  "billing_address_longitude" "string"
+  "customer_id" "int64"
+  "location_id" "int64"
+  "user_id" "int64"
+  "number" "int64"
+  "order_number" "int64"
+  "financial_status" "string"
+  "fulfillment_status" "string"
+  "processed_at" "timestamp"
+  "processing_method" "string"
+  "referring_site" "string"
+  "cancel_reason" "int64"
+  "cancelled_at" "timestamp"
+  "closed_at" "string"
+  "total_discounts" "float64"
+  "total_line_items_price" "float64"
+  "total_weight" "int64"
+  "source_name" "string"
+  "browser_ip" "string"
+  "buyer_accepts_marketing" "bool"
+  "token" "string"
+  "cart_token" "string"
+  "checkout_token" "string"
+  "test" "bool"
+  "landing_site_base_url" "string"
+  "_fivetran_synced" "timestamp"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_url_tag" {
+  "order_id" "int64" [note: "ID of the order url being tagged."]
+  "key" "string" [note: "Key of the tag pair."]
+  "value" "string" [note: "Value of the tag."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Key-value tags that the shop owner has attached to the order url."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__order_url_tag_tmp" {
+  "key" "string"
+  "order_id" "int64"
+  "_fivetran_synced" "string"
+  "value" "string"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__price_rule" {
+  "price_rule_id" "int64" [note: "The ID for the price rule."]
+  "allocation_limit" "int64" [note: "The number of times the discount can be allocated on the cart - if eligible. For example a Buy 1 hat Get 1 hat for free discount can be applied 3 times on a cart having more than 6 hats,  where maximum of 3 hats get discounted - if the allocation_limit is 3. Empty (null) allocation_limit means unlimited number of allocations.\n"]
+  "allocation_method" "string" [note: "The allocation method of the price rule. Valid values include `each` (the discount is applied to each of the entitled items. For example, for a price rule that takes $15 off, each entitled line item in a checkout will be discounted by $15) and `across` (the calculated discount amount will be applied across the entitled items. For example, for a price rule that takes $15 off, the discount will be applied across all the entitled items).\n"]
+  "customer_selection" "string" [note: "The customer selection for the price rule. Valid values include `all` (the price rule is valid for all customers) and `prerequisite`  (the customer must either belong to one of the customer segments specified by customer_segment_prerequisite_ids, or be one of the customers specified by prerequisite_customer_ids).\n"]
+  "is_once_per_customer" "bool" [note: "Boolean representing whether the generated discount code will be valid only for a single use per customer. This is tracked using customer ID."]
+  "prereq_min_quantity" "int64" [note: "If `customer_selection` is `prerequisite`, the minimum number of items for the price rule to be applicable. The quantity of an entitled cart item must be greater than or equal to this value."]
+  "prereq_max_shipping_price" "int64" [note: "If `customer_selection` is `prerequisite`, the maximum shipping price for the price rule to be applicable. The shipping price must be less than or equal to this value"]
+  "prereq_min_subtotal" "float64" [note: "If `customer_selection` is `prerequisite`, the minimum subtotal for the price rule to be applicable. The subtotal of the entitled cart items must be greater than or equal to this value for the discount to apply."]
+  "prereq_min_purchase_quantity_for_entitlement" "int64" [note: "If `customer_selection` is `prerequisite`, the prerequisite purchase for a Buy X Get Y discount. The minimum purchase amount required to be entitled to the discount."]
+  "prereq_buy_x_get_this" "int64" [note: "If `customer_selection` is `prerequisite`, in a Buy/Get ratio for a Buy X Get Y discount, this is the offered 'get' quantity."]
+  "prereq_buy_this_get_y" "int64" [note: "If `customer_selection` is `prerequisite`, in a Buy/Get ratio for a Buy X Get Y discount, this defines the necessary 'buy' quantity."]
+  "target_selection" "string" [note: "The target selection method of the price rule. Valid values include `all` (the price rule applies the discount to all line items in the checkout) and  `entitled` (the price rule applies the discount to selected entitlements only).\n"]
+  "target_type" "string" [note: "The target type that the price rule applies to. Valid values include `line_item` (the price rule applies to the cart's line items) and `shipping_line` (the price rule applies to the cart's shipping lines)."]
+  "title" "string" [note: "The title of the price rule. This is used by the Shopify admin search to retrieve discounts. It is also displayed on the Discounts page of the Shopify admin for bulk discounts.  Shopify recommends that this map onto the associated `discount_code.code`.\n"]
+  "usage_limit" "int64" [note: "The maximum number of times the price rule can be used, per discount code."]
+  "value" "float64" [note: "The value of the price rule. If if the value of `target_type` is `shipping_line`, then only -100 is accepted. The value must be negative."]
+  "value_type" "string" [note: "The value type of the price rule. Valid values include `fixed_amount` (applies a discount of value as a unit of the store's currency. For example, if value is -30 and the store's currency is USD, then $30 USD is deducted when the discount is applied) and `percentage` (applies a percentage discount of value. For example, if value is -30, then 30% will be deducted when the discount is applied).\nIf `target_type` is `shipping_line`, then only `percentage` is accepted.\n"]
+  "starts_at" "timestamp" [note: "The date and time (ISO 8601 format) when the price rule starts."]
+  "ends_at" "timestamp" [note: "The date and time (ISO 8601 format) when the price rule ends. Must be after starts_at."]
+  "created_at" "timestamp" [note: "The date and time (ISO 8601 format) when the price rule was created."]
+  "updated_at" "timestamp" [note: "The date and time (ISO 8601 format) when the price rule was updated."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Table storing price rules. You can use price rules to create discounts dependent on conditions. Merchants can distribute the discount codes to their customers.  Using price rules, you can create discounts that specify a discount as a percentage, a fixed amount, or free shipping. You use entitlements and prerequisites to dynamically build these discounts.\n"
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__price_rule_tmp" {
+  "id" "int64"
+  "_fivetran_synced" "string"
+  "allocation_limit" "int64"
+  "allocation_method" "string"
+  "created_at" "string"
+  "customer_selection" "string"
+  "ends_at" "string"
+  "once_per_customer" "bool"
+  "prerequisite_quantity_range" "int64"
+  "prerequisite_shipping_price_range" "int64"
+  "prerequisite_subtotal_range" "float64"
+  "quantity_ratio_entitled_quantity" "int64"
+  "quantity_ratio_prerequisite_quantity" "int64"
+  "starts_at" "string"
+  "target_selection" "string"
+  "target_type" "string"
+  "title" "string"
+  "updated_at" "string"
+  "usage_limit" "int64"
+  "value" "float64"
+  "value_type" "string"
+  "prerequisite_to_entitlement_purchase_prerequisite_amount" "int64"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__product" {
+  "product_id" "int64" [note: "An unsigned 64-bit integer that's used as a unique identifier for the product. Each id is unique across the Shopify system. No two products will have the same id, even if they're from different shops."]
+  "handle" "string" [note: "A unique human-friendly string for the product. Automatically generated from the product's title."]
+  "product_type" "string" [note: "A categorization for the product used for filtering and searching products."]
+  "published_scope" "string" [note: "Whether the product is published to the Point of Sale channel."]
+  "title" "string" [note: "The name of the product."]
+  "vendor" "string" [note: "The name of the product's vendor."]
+  "status" "string" [note: "The status of the product. Valid values: - active: The product is ready to sell and is available to customers on the online store, sales channels, and apps. By default, existing products are set to active. - archived: The product is no longer being sold and isn't available to customers on sales channels and apps. - draft: The product isn't ready to sell and is unavailable to customers on sales channels and apps. By default, duplicated and unarchived products are set to draft.\n"]
+  "is_deleted" "bool" [note: "Whether the record has been deleted in the source system."]
+  "created_timestamp" "timestamp" [note: "The date and time when the product was created."]
+  "updated_timestamp" "timestamp" [note: "The date and time when the product was last modified."]
+  "published_timestamp" "timestamp" [note: "The date and time (ISO 8601 format) when the product was published. Can be set to null to unpublish the product from the Online Store channel."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Each record represents a product in Shopify."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__product_image" {
+  "product_image_id" "int64" [note: "Unique numeric identifier of the product image."]
+  "product_id" "int64" [note: "The id of the product associated with the image."]
+  "height" "int64" [note: "Height dimension of the image which is determined on upload."]
+  "position" "int64" [note: "The order of the product image in the list. The first product image is at position 1 and is the \"main\" image for the product."]
+  "src" "string" [note: "Specifies the location of the product image. This parameter supports URL filters that you can use to retrieve modified copies of the image."]
+  "variant_ids" "string" [note: "An array of variant ids associated with the image."]
+  "width" "int64" [note: "Width dimension of the image which is determined on upload."]
+  "created_at" "timestamp" [note: "The date and time when the product image was created. The API returns this value in ISO 8601 format."]
+  "updated_at" "timestamp" [note: "The date and time when the product image was last modified. The API returns this value in ISO 8601 format."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Table storing hosted images of products."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__product_image_tmp" {
+  "id" "int64"
+  "product_id" "int64"
+  "_fivetran_deleted" "bool"
+  "_fivetran_synced" "string"
+  "alt" "int64"
+  "created_at" "string"
+  "height" "int64"
+  "position" "int64"
+  "src" "string"
+  "updated_at" "string"
+  "width" "int64"
+  "is_default" "bool"
+  "variant_ids" "string"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__product_tag" {
+  "product_id" "int64" [note: "ID of the product being tagged."]
+  "index" "int64" [note: "Index (starting from 1) representing when the tag was placed on the product."]
+  "value" "string" [note: "Value of the tag."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Tags that the shop owner has attached to the product."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__product_tag_tmp" {
+  "index" "int64"
+  "product_id" "int64"
+  "_fivetran_synced" "string"
+  "value" "string"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__product_tmp" {
+  "id" "int64"
+  "title" "string"
+  "handle" "string"
+  "product_type" "string"
+  "vendor" "string"
+  "created_at" "timestamp"
+  "updated_at" "timestamp"
+  "published_at" "timestamp"
+  "published_scope" "string"
+  "_fivetran_deleted" "bool"
+  "_fivetran_synced" "timestamp"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__product_variant" {
+  "variant_id" "int64" [note: "The unique numeric identifier for the product variant."]
+  "product_id" "int64" [note: "The unique numeric identifier for the product."]
+  "inventory_item_id" "int64" [note: "The unique identifier for the inventory item, which is used in the Inventory API to query for inventory information."]
+  "image_id" "int64" [note: "The unique numeric identifier for a product's image. The image must be associated to the same product as the variant."]
+  "title" "string" [note: "The title of the product variant. The title field is a concatenation of the option1, option2, and option3 fields. You can only update title indirectly using the option fields."]
+  "price" "int64" [note: "The price of the product variant."]
+  "sku" "int64" [note: "A unique identifier for the product variant in the shop. Required in order to connect to a FulfillmentService."]
+  "position" "int64" [note: "The order of the product variant in the list of product variants. The first position in the list is 1. The position of variants is indicated by the order in which they are listed."]
+  "inventory_policy" "string" [note: "Whether customers are allowed to place an order for the product variant when it's out of stock."]
+  "compare_at_price" "int64" [note: "The original price of the item before an adjustment or a sale in shop currency"]
+  "fulfillment_service" "string" [note: "The fulfillment service associated with the product variant."]
+  "inventory_management" "string" [note: "The fulfillment service that tracks the number of items in stock for the product variant."]
+  "is_taxable" "bool" [note: "Whether a tax is charged when the product variant is sold."]
+  "barcode" "int64" [note: "The barcode, UPC, or ISBN number for the product."]
+  "grams" "int64" [note: "The weight of the product variant in grams."]
+  "inventory_quantity" "int64" [note: "An aggregate of inventory across all locations. To adjust inventory at a specific location, use the InventoryLevel resource."]
+  "weight" "int64" [note: "The weight of the product variant in the unit system specified with weight_unit."]
+  "weight_unit" "string" [note: "The unit of measurement that applies to the product variant's weight. If you don't specify a value for weight_unit, then the shop's default unit of measurement is applied. Valid values: g, kg, oz, and lb."]
+  "option_1" "string" [note: "The custom properties that a shop owner uses to define product variants. You can define three options for a product variant: option1, option2, option3."]
+  "option_2" "int64" [note: "The custom properties that a shop owner uses to define product variants. You can define three options for a product variant: option1, option2, option3."]
+  "option_3" "int64" [note: "The custom properties that a shop owner uses to define product variants. You can define three options for a product variant: option1, option2, option3."]
+  "tax_code" "string" [note: "This parameter applies only to the stores that have the Avalara AvaTax app installed. Specifies the Avalara tax code for the product variant."]
+  "created_timestamp" "timestamp" [note: "The date and time (ISO 8601 format) when the product variant was created."]
+  "updated_timestamp" "timestamp" [note: "The date and time when the product variant was last modified. Gets returned in ISO 8601 format."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Each record represents a product variant in Shopify"
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__product_variant_tmp" {
+  "id" "int64"
+  "product_id" "int64"
+  "inventory_item_id" "int64"
+  "title" "string"
+  "price" "int64"
+  "sku" "int64"
+  "position" "int64"
+  "inventory_policy" "string"
+  "compare_at_price" "int64"
+  "fulfillment_service" "string"
+  "inventory_management" "string"
+  "created_at" "string"
+  "updated_at" "string"
+  "taxable" "bool"
+  "barcode" "int64"
+  "grams" "int64"
+  "image_id" "int64"
+  "inventory_quantity" "int64"
+  "weight" "int64"
+  "weight_unit" "string"
+  "old_inventory_quantity" "int64"
+  "requires_shipping" "bool"
+  "_fivetran_synced" "string"
+  "option_2" "int64"
+  "tax_code" "string"
+  "option_3" "int64"
+  "option_1" "string"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__refund" {
+  "refund_id" "int64" [note: "The unique numeric identifier for the refund."]
+  "note" "string" [note: "User generated note attached to the refund."]
+  "order_id" "int64" [note: "Reference to the order which the refund is associated."]
+  "restock" "bool" [note: "Boolean indicating if the refund is a result of a restock."]
+  "total_duties_set" "int64" [note: "Record representing total duties set for the refund."]
+  "user_id" "int64" [note: "Reference to the user id which generated the refund."]
+  "created_at" "timestamp" [note: "Timestamp of the date when the refund was created."]
+  "processed_at" "timestamp" [note: "Timestamp of the date when the refund was processed."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Each record represents a refund within Shopify."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__refund_tmp" {
+  "id" "int64"
+  "created_at" "string"
+  "processed_at" "string"
+  "note" "string"
+  "restock" "bool"
+  "user_id" "int64"
+  "_fivetran_synced" "string"
+  "total_duties_set" "int64"
+  "order_id" "int64"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__shop" {
+  "shop_id" "int64" [note: "The ID for the shop. A 64-bit unsigned integer."]
+  "name" "string" [note: "The name of the shop."]
+  "is_deleted" "bool" [note: "Boolean representing whether the record was soft-deleted in Shopify."]
+  "address_1" "string" [note: "The shop's street address."]
+  "address_2" "string" [note: "The optional second line of the shop's street address."]
+  "city" "string" [note: "The shop's city."]
+  "province" "string" [note: "The shop's normalized province or state name."]
+  "province_code" "string" [note: "The two- or three-letter code for the shop's province or state."]
+  "country" "string" [note: "The shop's country. In most cases, this value matches the country_code."]
+  "country_code" "string" [note: "The two-letter country code corresponding to the shop's country."]
+  "country_name" "string" [note: "The shop's normalized country name."]
+  "zip" "int64" [note: "The shop's zip or postal code."]
+  "latitude" "float64" [note: "The latitude of the shop's location."]
+  "longitude" "float64" [note: "The longitude of the shop's location."]
+  "has_county_taxes" "bool" [note: "Boolean representing whether the shop is applying taxes on a per-county basis. Only applicable to shops based in the US. Either `true` or `null` (not false, according to Shopify API docs)."]
+  "currency" "string" [note: "The three-letter code (ISO 4217 format) for the shop's default currency."]
+  "enabled_presentment_currencies" "string" [note: "An array of of enabled currencies (ISO 4217 format) that the shop accepts. Merchants can enable currencies from their Shopify Payments settings in the Shopify Admin."]
+  "customer_email" "string" [note: "The contact email used for communication between the shop owner and the customer."]
+  "email" "string" [note: "The contact email used for communication between Shopify and the shop owner."]
+  "domain" "string" [note: "The shop's domain."]
+  "phone" "int64" [note: "The contact phone number for the shop."]
+  "timezone" "string" [note: "The name of the timezone the shop is in."]
+  "iana_timezone" "string" [note: "The name of the timezone assigned by the [IANA](https://www.iana.org/time-zones)."]
+  "primary_locale" "string" [note: "The shop's primary locale, as configured in the language settings of the shop's theme."]
+  "weight_unit" "string" [note: "The default unit of weight measurement for the shop."]
+  "myshopify_domain" "string" [note: "The shop's .myshopify.com domain."]
+  "cookie_consent_level" "string" [note: "The cookie consent level defined on the shop's online store."]
+  "shop_owner" "string" [note: "The username of the shop owner."]
+  "source" "int64" [note: "The handle of the partner account that referred the merchant to Shopify, if applicable."]
+  "has_shipping_taxes" "int64" [note: "Boolean representing whether taxes are charged for shipping. Valid values are true or false."]
+  "has_taxes_included_in_price" "bool" [note: "Boolean representing whether applicable taxes are included in product prices. Valid values are true or null."]
+  "has_discounts" "bool" [note: "Boolean representing whether any active discounts exist for the shop."]
+  "has_gift_cards" "bool" [note: "Boolean representing whether any active gift cards exist for the shop."]
+  "has_storefront" "bool" [note: "Boolean representing whether this shop has an online store."]
+  "has_checkout_api_supported" "bool" [note: "Boolean representing whether the shop is capable of accepting payments directly through the Checkout API."]
+  "is_eligible_for_card_reader_giveaway" "bool" [note: "Boolean representing whether the shop is eligible to receive a free credit card reader from Shopify."]
+  "is_eligible_for_payments" "bool" [note: "Boolean representing whether the shop is eligible to use Shopify Payments."]
+  "google_apps_domain" "int64" [note: "The GSuite URL for the store, if applicable."]
+  "is_google_apps_login_enabled" "bool" [note: "Boolean representing whether the GSuite login is enabled. Shops with this feature will be able to log in through the GSuite login page. Valid values are `true` and `null`."]
+  "money_format" "string" [note: "A string representing the way currency is formatted when the currency isn't specified."]
+  "money_in_emails_format" "string" [note: "A string representing the way currency is formatted in email notifications when the currency isn't specified."]
+  "money_with_currency_format" "string" [note: "A string representing the way currency is formatted when the currency is specified."]
+  "money_with_currency_in_emails_format" "string" [note: "A string representing the way currency is formatted in email notifications when the currency is specified."]
+  "plan_display_name" "string" [note: "The display name of the Shopify plan the shop is on."]
+  "plan_name" "string" [note: "The name of the Shopify plan the shop is on."]
+  "is_password_enabled" "bool" [note: "Boolean representing whether the password protection page is enabled on the shop's online store."]
+  "is_pre_launch_enabled" "bool" [note: "Boolean representing whether the pre-launch page is enabled on the shop's online store."]
+  "is_extra_payments_agreement_required" "bool" [note: "Boolean representing whether the shop requires an extra Shopify Payments agreement."]
+  "is_setup_required" "bool" [note: "Boolean representing whether the shop has any outstanding setup steps."]
+  "created_at" "timestamp" [note: "The date and time (ISO 8601) when the shop was created."]
+  "updated_at" "timestamp" [note: "The date and time (ISO 8601) when the shop was last updated."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "The Shop resource is a collection of general business and store management settings and information about the store."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__shop_tmp" {
+  "id" "int64"
+  "_fivetran_deleted" "bool"
+  "_fivetran_synced" "string"
+  "address_1" "string"
+  "address_2" "string"
+  "auto_configure_tax_inclusivity" "int64"
+  "checkout_api_supported" "bool"
+  "city" "string"
+  "cookie_consent_level" "string"
+  "country" "string"
+  "country_code" "string"
+  "country_name" "string"
+  "county_taxes" "bool"
+  "created_at" "string"
+  "currency" "string"
+  "customer_email" "string"
+  "domain" "string"
+  "eligible_for_card_reader_giveaway" "bool"
+  "eligible_for_payments" "bool"
+  "email" "string"
+  "enabled_presentment_currencies" "string"
+  "force_ssl" "bool"
+  "google_apps_domain" "int64"
+  "google_apps_login_enabled" "bool"
+  "has_discounts" "bool"
+  "has_gift_cards" "bool"
+  "has_storefront" "bool"
+  "iana_timezone" "string"
+  "latitude" "float64"
+  "longitude" "float64"
+  "money_format" "string"
+  "money_in_emails_format" "string"
+  "money_with_currency_format" "string"
+  "money_with_currency_in_emails_format" "string"
+  "multi_location_enabled" "bool"
+  "myshopify_domain" "string"
+  "name" "string"
+  "password_enabled" "bool"
+  "phone" "int64"
+  "plan_display_name" "string"
+  "plan_name" "string"
+  "pre_launch_enabled" "bool"
+  "primary_locale" "string"
+  "primary_location_id" "int64"
+  "province" "string"
+  "province_code" "string"
+  "requires_extra_payments_agreement" "bool"
+  "setup_required" "bool"
+  "shop_owner" "string"
+  "source" "int64"
+  "tax_shipping" "int64"
+  "taxes_included" "bool"
+  "timezone" "string"
+  "updated_at" "string"
+  "visitor_tracking_consent_preference" "string"
+  "weight_unit" "string"
+  "zip" "int64"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__tax_line" {
+  "index" "int64" [note: "The index of the tax line."]
+  "order_line_id" "int64" [note: "The order line that this tax line is associated with."]
+  "price" "float64" [note: "The amount of tax, in shop currency, after discounts and before returns."]
+  "price_set" "string" [note: "The amount of tax, in shop and presentment currencies, after discounts and before returns."]
+  "rate" "float64" [note: "The proportion of the line item price that the tax represents as a decimal."]
+  "title" "string" [note: "The name of the tax."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string"
+
+  Note: "Represents a single tax applied to the associated line item."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__tax_line_tmp" {
+  "index" "int64"
+  "order_line_id" "int64"
+  "_fivetran_synced" "string"
+  "price" "float64"
+  "rate" "float64"
+  "title" "string"
+  "price_set" "string"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__tender_transaction" {
+  "transaction_id" "int64" [note: "The ID of the transaction."]
+  "order_id" "int64" [note: "The ID of the order that the tender transaction belongs to."]
+  "amount" "float64" [note: "The amount of the tender transaction in the shop's currency."]
+  "currency" "string" [note: "The three-letter code (ISO 4217 format) for the currency used for the tender transaction."]
+  "payment_method" "string" [note: "Information about the payment method used for this transaction. Valid values include: - credit_card - cash - android_pay - apple_pay - google_pay - samsung_pay - shopify_pay - amazon - klarna - paypal - unknown - other\n"]
+  "remote_reference" "int64" [note: "The remote (gateway) reference associated with the tender."]
+  "user_id" "int64" [note: "The ID of the user logged into the Shopify POS device that processed the tender transaction, if applicable."]
+  "processed_at" "timestamp" [note: "The date and time (ISO 8601 format) when the tender transaction was processed."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+
+  Note: "Each tender transaction represents money passing between the merchant and a customer. A tender transaction with a positive amount  represents a transaction where the customer paid money to the merchant. A negative amount represents a transaction where the  merchant refunded money back to the customer. Tender transactions represent transactions that modify the shop's balance.\n"
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__tender_transaction_tmp" {
+  "id" "int64"
+  "_fivetran_synced" "string"
+  "amount" "float64"
+  "currency" "string"
+  "order_id" "int64"
+  "payment_details_credit_card_company" "int64"
+  "payment_details_credit_card_number" "int64"
+  "payment_method" "string"
+  "processed_at" "string"
+  "remote_reference" "int64"
+  "test" "bool"
+  "user_id" "int64"
+
+  Note: ""
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__transaction" {
+  "transaction_id" "int64" [note: "The ID for the transaction."]
+  "order_id" "int64" [note: "The ID for the order that the transaction is associated with."]
+  "refund_id" "int64" [note: "The ID associated with a refund in the refund table."]
+  "amount" "float64" [note: "The amount of money included in the transaction."]
+  "device_id" "int64" [note: "The ID for the device."]
+  "gateway" "string" [note: "The name of the gateway the transaction was issued through."]
+  "source_name" "string" [note: "The origin of the transaction."]
+  "message" "string" [note: "A string generated by the payment provider with additional information about why the transaction succeeded or failed."]
+  "currency" "string" [note: "The three-letter code (ISO 4217 format) for the currency used for the payment."]
+  "location_id" "int64" [note: "The ID of the physical location where the transaction was processed."]
+  "parent_id" "int64" [note: "The ID of an associated transaction."]
+  "payment_avs_result_code" "string" [note: "The response code from the address verification system."]
+  "payment_credit_card_bin" "int64" [note: "The issuer identification number (IIN), formerly known as bank identification number (BIN) of the customer's credit card."]
+  "payment_cvv_result_code" "int64" [note: "The response code from the credit card company indicating whether the customer entered the card security code, or card verification value, correctly."]
+  "payment_credit_card_number" "int64" [note: "The customer's credit card number, with most of the leading digits redacted."]
+  "payment_credit_card_company" "int64" [note: "The name of the company that issued the customer's credit card."]
+  "kind" "string" [note: "The transaction's type."]
+  "receipt" "string" [note: "A transaction receipt attached to the transaction by the gateway."]
+  "currency_exchange_id" "int64" [note: "The ID of the adjustment."]
+  "currency_exchange_adjustment" "int64" [note: "The difference between the amounts on the associated transaction and the parent transaction."]
+  "currency_exchange_original_amount" "int64" [note: "The amount of the parent transaction in the shop currency."]
+  "currency_exchange_final_amount" "int64" [note: "The amount of the associated transaction in the shop currency."]
+  "currency_exchange_currency" "int64" [note: "The shop currency."]
+  "error_code" "int64" [note: "A standardized error code, independent of the payment provider."]
+  "status" "string" [note: "The status of the transaction."]
+  "user_id" "int64" [note: "The ID for the user who was logged into the Shopify POS device when the order was processed, if applicable."]
+  "authorization_code" "string" [note: "The authorization code associated with the transaction."]
+  "created_timestamp" "timestamp" [note: "The date and time when the transaction was created."]
+  "processed_timestamp" "timestamp" [note: "The date and time when a transaction was processed."]
+  "authorization_expires_at" "timestamp" [note: "The date and time (ISO 8601 format) when the Shopify Payments authorization expires."]
+  "_fivetran_synced" "timestamp" [note: "The time when a record was last updated by Fivetran."]
+  "source_relation" "string" [note: "The schema or database this record came from if you are making use of the `shopify_union_schemas` or `shopify_union_databases` variables, respectively. Empty string if you are not using either of these variables to union together multiple Shopify connectors."]
+  "test" "unknown" [note: "Whether the transaction is a test transaction."]
+
+  Note: "Each record represents a transaction in Shopify."
+}
+//--configured at schema: dbt-package-testing.shopify_source_integration_tests_1_stg_shopify
+Table "model.shopify_source.stg_shopify__transaction_tmp" {
+  "id" "int64"
+  "order_id" "int64"
+  "refund_id" "int64"
+  "amount" "float64"
+  "authorization" "string"
+  "created_at" "string"
+  "processed_at" "string"
+  "device_id" "int64"
+  "gateway" "string"
+  "source_name" "string"
+  "message" "string"
+  "currency" "string"
+  "location_id" "int64"
+  "parent_id" "int64"
+  "payment_avs_result_code" "string"
+  "kind" "string"
+  "currency_exchange_id" "int64"
+  "currency_exchange_adjustment" "int64"
+  "currency_exchange_original_amount" "int64"
+  "currency_exchange_final_amount" "int64"
+  "currency_exchange_currency" "int64"
+  "error_code" "int64"
+  "status" "string"
+  "test" "bool"
+  "user_id" "int64"
+  "_fivetran_synced" "string"
+  "payment_credit_card_bin" "int64"
+  "payment_cvv_result_code" "int64"
+  "payment_credit_card_number" "int64"
+  "payment_credit_card_company" "int64"
+  "receipt" "string"
+
+  Note: ""
+}
+//Refs (based on the DBT Relationship Tests)

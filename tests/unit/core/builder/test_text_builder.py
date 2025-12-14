@@ -9,7 +9,7 @@ class TestTextERDBuilder:
         builder.add_header("erDiagram")
         builder.add_section("-- Tables --")
         result = builder.build()
-        assert result == "erDiagram\n-- Tables --"
+        assert result == "erDiagram\n-- Tables --\n"
 
     def test_build_with_custom_separator(self):
         """Test build with custom separator."""
@@ -17,7 +17,7 @@ class TestTextERDBuilder:
         builder.add_section("line1")
         builder.add_section("line2")
         result = builder.build(separator="\n\n")
-        assert result == "line1\n\nline2"
+        assert result == "line1\n\nline2\n"
 
     def test_build_with_tables_and_relationships(self):
         """Test build with formatted tables and relationships."""
@@ -53,7 +53,7 @@ class TestTextERDBuilder:
         builder.add_section("content")
         builder.clear()
         result = builder.build()
-        assert result == ""
+        assert result == "\n"  # Empty content still returns trailing newline
 
     def test_method_chaining(self):
         """Test method chaining returns self."""

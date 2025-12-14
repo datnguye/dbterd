@@ -1,0 +1,446 @@
+digraph g {
+  fontname="Helvetica,Arial,sans-serif"
+  node [fontname="Helvetica,Arial,sans-serif"]
+  edge [fontname="Helvetica,Arial,sans-serif"]
+  graph [fontsize=30 labelloc="t" label="" splines=true overlap=false rankdir="LR"];
+  ratio=auto;
+  "mart.dim_box" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">mart.dim_box</font></td></tr>
+         <tr><td align="left">(varchar) box_key</td></tr>
+         <tr><td align="left">(varchar) box_id</td></tr>
+         <tr><td align="left">(date) box_date</td></tr>
+         <tr><td align="left">(nvarchar) box_result_numbers</td></tr>
+         <tr><td align="left">(int) box_result_number_1</td></tr>
+         <tr><td align="left">(int) box_result_number_2</td></tr>
+         <tr><td align="left">(int) box_result_number_3</td></tr>
+         <tr><td align="left">(int) box_result_number_4</td></tr>
+         <tr><td align="left">(int) box_result_number_5</td></tr>
+         <tr><td align="left">(int) box_result_number_6</td></tr>
+         <tr><td align="left">(int) box_result_number_7</td></tr>
+      </table>> ];
+  "mart.dim_date" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">mart.dim_date</font></td></tr>
+         <tr><td align="left">(date) date_key</td></tr>
+         <tr><td align="left">(date) box_date</td></tr>
+         <tr><td align="left">(int) box_day</td></tr>
+         <tr><td align="left">(int) box_week</td></tr>
+         <tr><td align="left">(int) box_month</td></tr>
+         <tr><td align="left">(varchar) box_month_name</td></tr>
+         <tr><td align="left">(int) box_year</td></tr>
+      </table>> ];
+  "mart.dim_prize" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">mart.dim_prize</font></td></tr>
+         <tr><td align="left">(varchar) prize_key</td></tr>
+         <tr><td align="left">(nvarchar) prize_name</td></tr>
+         <tr><td align="left">(int) prize_order</td></tr>
+      </table>> ];
+  "mart.fact_number" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">mart.fact_number</font></td></tr>
+         <tr><td align="left">(int) number_value</td></tr>
+         <tr><td align="left">(int) occurrence</td></tr>
+         <tr><td align="left">(int) occurrence_pos_1</td></tr>
+         <tr><td align="left">(int) occurrence_pos_2</td></tr>
+         <tr><td align="left">(int) occurrence_pos_3</td></tr>
+         <tr><td align="left">(int) occurrence_pos_4</td></tr>
+         <tr><td align="left">(int) occurrence_pos_5</td></tr>
+         <tr><td align="left">(int) occurrence_pos_6</td></tr>
+         <tr><td align="left">(int) occurrence_pos_7</td></tr>
+         <tr><td align="left">(date) last_appearance</td></tr>
+         <tr><td align="left">(date) last_appearance_pos_1</td></tr>
+         <tr><td align="left">(date) last_appearance_pos_2</td></tr>
+         <tr><td align="left">(date) last_appearance_pos_3</td></tr>
+         <tr><td align="left">(date) last_appearance_pos_4</td></tr>
+         <tr><td align="left">(date) last_appearance_pos_5</td></tr>
+         <tr><td align="left">(date) last_appearance_pos_6</td></tr>
+         <tr><td align="left">(date) last_appearance_pos_7</td></tr>
+      </table>> ];
+  "mart.fact_number_forecast" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">mart.fact_number_forecast</font></td></tr>
+         <tr><td align="left">(date) forecast_date</td></tr>
+         <tr><td align="left">(date) last_box_date</td></tr>
+         <tr><td align="left">(varchar) forecast_numbers</td></tr>
+         <tr><td align="left">(nvarchar) last_box_result_numbers</td></tr>
+         <tr><td align="left">(int) forecast_1</td></tr>
+         <tr><td align="left">(int) last_box_result_number_1</td></tr>
+         <tr><td align="left">(int) forecast_2</td></tr>
+         <tr><td align="left">(int) last_box_result_number_2</td></tr>
+         <tr><td align="left">(int) forecast_3</td></tr>
+         <tr><td align="left">(int) last_box_result_number_3</td></tr>
+         <tr><td align="left">(int) forecast_4</td></tr>
+         <tr><td align="left">(int) last_box_result_number_4</td></tr>
+         <tr><td align="left">(int) forecast_5</td></tr>
+         <tr><td align="left">(int) last_box_result_number_5</td></tr>
+         <tr><td align="left">(int) forecast_6</td></tr>
+         <tr><td align="left">(int) last_box_result_number_6</td></tr>
+      </table>> ];
+  "mart.fact_number_scoring" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">mart.fact_number_scoring</font></td></tr>
+         <tr><td align="left">(varchar) fact_key</td></tr>
+         <tr><td align="left">(date) forecast_date</td></tr>
+         <tr><td align="left">(int) number_value</td></tr>
+         <tr><td align="left">(int) score_1</td></tr>
+         <tr><td align="left">(int) score_2</td></tr>
+         <tr><td align="left">(int) score_3</td></tr>
+         <tr><td align="left">(int) score_4</td></tr>
+         <tr><td align="left">(int) score_5</td></tr>
+         <tr><td align="left">(int) score_6</td></tr>
+         <tr><td align="left">(float) rank_pos_1</td></tr>
+         <tr><td align="left">(float) rank_pos_2</td></tr>
+         <tr><td align="left">(float) rank_pos_3</td></tr>
+         <tr><td align="left">(float) rank_pos_4</td></tr>
+         <tr><td align="left">(float) rank_pos_5</td></tr>
+         <tr><td align="left">(float) rank_pos_6</td></tr>
+      </table>> ];
+  "mart.fact_result" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">mart.fact_result</font></td></tr>
+         <tr><td align="left">(varchar) fact_result_key</td></tr>
+         <tr><td align="left">(varchar) box_key</td></tr>
+         <tr><td align="left">(varchar) prize_key</td></tr>
+         <tr><td align="left">(date) date_key</td></tr>
+         <tr><td align="left">(int) no_of_won</td></tr>
+         <tr><td align="left">(float) prize_value</td></tr>
+         <tr><td align="left">(float) prize_paid</td></tr>
+         <tr><td align="left">(int) is_prize_taken</td></tr>
+      </table>> ];
+  "mart.fact_set_number" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">mart.fact_set_number</font></td></tr>
+         <tr><td align="left">(nvarchar) box_result_numbers</td></tr>
+         <tr><td align="left">(int) occurrence</td></tr>
+         <tr><td align="left">(date) last_appearance</td></tr>
+      </table>> ];
+  "staging.staging_power655_box" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">staging.staging_power655_box</font></td></tr>
+         <tr><td align="left">(varchar) sk_box</td></tr>
+         <tr><td align="left">(date) box_date</td></tr>
+         <tr><td align="left">(varchar) box_id</td></tr>
+         <tr><td align="left">(nvarchar) box_name</td></tr>
+         <tr><td align="left">(nvarchar) box_result_numbers</td></tr>
+         <tr><td align="left">(int) box_result_number_1</td></tr>
+         <tr><td align="left">(int) box_result_number_2</td></tr>
+         <tr><td align="left">(int) box_result_number_3</td></tr>
+         <tr><td align="left">(int) box_result_number_4</td></tr>
+         <tr><td align="left">(int) box_result_number_5</td></tr>
+         <tr><td align="left">(int) box_result_number_6</td></tr>
+         <tr><td align="left">(int) box_result_number_7</td></tr>
+      </table>> ];
+  "staging.staging_power655_box_detail" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">staging.staging_power655_box_detail</font></td></tr>
+         <tr><td align="left">(varchar) sk_box_detail</td></tr>
+         <tr><td align="left">(varchar) box_id</td></tr>
+         <tr><td align="left">(nvarchar) prize_name_raw</td></tr>
+         <tr><td align="left">(nvarchar) prize_name</td></tr>
+         <tr><td align="left">(int) prize_won</td></tr>
+         <tr><td align="left">(nvarchar) prize_value_raw</td></tr>
+         <tr><td align="left">(float) prize_value</td></tr>
+      </table>> ];
+  "resto.verify_datepart" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">resto.verify_datepart</font></td></tr>
+         <tr><td align="left">(datetime) input</td></tr>
+         <tr><td align="left">(varchar) date_part</td></tr>
+         <tr><td align="left">(int) actual</td></tr>
+         <tr><td align="left">(int) expected</td></tr>
+      </table>> ];
+  "resto.verify_generate_schema_name" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">resto.verify_generate_schema_name</font></td></tr>
+         <tr><td align="left">(varchar) actual</td></tr>
+         <tr><td align="left">(varchar) expected</td></tr>
+      </table>> ];
+  "resto.verify_get_base_times_hour" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">resto.verify_get_base_times_hour</font></td></tr>
+         <tr><td align="left">(datetime) time_value</td></tr>
+      </table>> ];
+  "resto.verify_get_base_times_minute" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">resto.verify_get_base_times_minute</font></td></tr>
+         <tr><td align="left">(datetime) time_value</td></tr>
+      </table>> ];
+  "resto.verify_get_base_times_second" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">resto.verify_get_base_times_second</font></td></tr>
+         <tr><td align="left">(datetime) time_value</td></tr>
+      </table>> ];
+  "resto.verify_get_table_alias" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">resto.verify_get_table_alias</font></td></tr>
+         <tr><td align="left">(varchar) actual</td></tr>
+         <tr><td align="left">(varchar) expected</td></tr>
+      </table>> ];
+  "resto.verify_get_time_dimension_hour" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">resto.verify_get_time_dimension_hour</font></td></tr>
+         <tr><td align="left">(datetime) time_value</td></tr>
+         <tr><td align="left">(nvarchar) time_string</td></tr>
+         <tr><td align="left">(nvarchar) time24_string</td></tr>
+         <tr><td align="left">(int) hour_number</td></tr>
+         <tr><td align="left">(nvarchar) hour_name</td></tr>
+         <tr><td align="left">(int) hour24_number</td></tr>
+         <tr><td align="left">(nvarchar) hour24_name</td></tr>
+         <tr><td align="left">(bigint) time_key</td></tr>
+      </table>> ];
+  "resto.verify_get_time_dimension_minute" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">resto.verify_get_time_dimension_minute</font></td></tr>
+         <tr><td align="left">(datetime) time_value</td></tr>
+         <tr><td align="left">(nvarchar) time_string</td></tr>
+         <tr><td align="left">(nvarchar) time24_string</td></tr>
+         <tr><td align="left">(int) hour_number</td></tr>
+         <tr><td align="left">(nvarchar) hour_name</td></tr>
+         <tr><td align="left">(int) hour24_number</td></tr>
+         <tr><td align="left">(nvarchar) hour24_name</td></tr>
+         <tr><td align="left">(int) minute_number</td></tr>
+         <tr><td align="left">(nvarchar) hour_minute_name</td></tr>
+         <tr><td align="left">(nvarchar) hour24_minute_name</td></tr>
+         <tr><td align="left">(bigint) time_key</td></tr>
+      </table>> ];
+  "resto.verify_get_time_dimension_second" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">resto.verify_get_time_dimension_second</font></td></tr>
+         <tr><td align="left">(datetime) time_value</td></tr>
+         <tr><td align="left">(nvarchar) time_string</td></tr>
+         <tr><td align="left">(nvarchar) time24_string</td></tr>
+         <tr><td align="left">(int) hour_number</td></tr>
+         <tr><td align="left">(nvarchar) hour_name</td></tr>
+         <tr><td align="left">(int) hour24_number</td></tr>
+         <tr><td align="left">(nvarchar) hour24_name</td></tr>
+         <tr><td align="left">(int) minute_number</td></tr>
+         <tr><td align="left">(nvarchar) hour_minute_name</td></tr>
+         <tr><td align="left">(nvarchar) hour24_minute_name</td></tr>
+         <tr><td align="left">(int) second_number</td></tr>
+         <tr><td align="left">(bigint) time_key</td></tr>
+      </table>> ];
+  "resto.verify_get_time_key" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">resto.verify_get_time_key</font></td></tr>
+         <tr><td align="left">(nvarchar) actual</td></tr>
+         <tr><td align="left">(varchar) expected</td></tr>
+      </table>> ];
+  "resto.verify_if_column_value_to_match_regex" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">resto.verify_if_column_value_to_match_regex</font></td></tr>
+         <tr><td align="left">(varchar) text_only</td></tr>
+         <tr><td align="left">(varchar) number_only</td></tr>
+      </table>> ];
+  "resto.verify_materialized_view" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">resto.verify_materialized_view</font></td></tr>
+         <tr><td align="left">(int) time_key</td></tr>
+         <tr><td align="left">(int) time_value</td></tr>
+      </table>> ];
+  "resto.verify_str_to_date" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">resto.verify_str_to_date</font></td></tr>
+         <tr><td align="left">(date) actual</td></tr>
+         <tr><td align="left">(date) expected</td></tr>
+      </table>> ];
+  "mart.fact_number" -> "mart.dim_date" [
+    penwidth = 1
+    fontsize = 12
+    fontcolor = "black"
+    label = "last_appearance = date_key"
+  ];
+  "mart.fact_number" -> "mart.dim_date" [
+    penwidth = 1
+    fontsize = 12
+    fontcolor = "black"
+    label = "last_appearance_pos_1 = date_key"
+  ];
+  "mart.fact_number" -> "mart.dim_date" [
+    penwidth = 1
+    fontsize = 12
+    fontcolor = "black"
+    label = "last_appearance_pos_2 = date_key"
+  ];
+  "mart.fact_number" -> "mart.dim_date" [
+    penwidth = 1
+    fontsize = 12
+    fontcolor = "black"
+    label = "last_appearance_pos_3 = date_key"
+  ];
+  "mart.fact_number" -> "mart.dim_date" [
+    penwidth = 1
+    fontsize = 12
+    fontcolor = "black"
+    label = "last_appearance_pos_4 = date_key"
+  ];
+  "mart.fact_number" -> "mart.dim_date" [
+    penwidth = 1
+    fontsize = 12
+    fontcolor = "black"
+    label = "last_appearance_pos_5 = date_key"
+  ];
+  "mart.fact_number" -> "mart.dim_date" [
+    penwidth = 1
+    fontsize = 12
+    fontcolor = "black"
+    label = "last_appearance_pos_6 = date_key"
+  ];
+  "mart.fact_result" -> "mart.dim_box" [
+    penwidth = 1
+    fontsize = 12
+    fontcolor = "black"
+    label = "box_key = box_key"
+  ];
+  "mart.fact_result" -> "mart.dim_date" [
+    penwidth = 1
+    fontsize = 12
+    fontcolor = "black"
+    label = "date_key = date_key"
+  ];
+  "mart.fact_result" -> "mart.dim_prize" [
+    penwidth = 1
+    fontsize = 12
+    fontcolor = "black"
+    label = "prize_key = prize_key"
+  ];
+}

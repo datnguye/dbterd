@@ -4,8 +4,10 @@ This module provides the main Executor class that orchestrates
 ERD generation from dbt artifacts.
 """
 
+import importlib
 import os
 from pathlib import Path
+import pkgutil
 from typing import Optional
 
 import click
@@ -24,9 +26,15 @@ from dbterd.plugins.dbt_cloud.discovery import DbtCloudMetadata
 from dbterd.plugins.dbt_core.dbt_invocation import DbtInvocation
 
 
-# Adapter modules - imported to trigger plugin registration via decorators
-ALGO_MODULES = [algos]
-TARGET_MODULES = [targets]
+def _register_adapters() -> None:
+    """Import adapter modules to trigger plugin registration via decorators."""
+    adapter_packages = [algos, targets]
+    for package in adapter_packages:
+        for _, module_name, _ in pkgutil.iter_modules(package.__path__):
+            importlib.import_module(f"{package.__name__}.{module_name}")
+
+
+_register_adapters()
 
 
 class Executor:
