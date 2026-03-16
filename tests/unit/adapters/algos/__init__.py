@@ -239,6 +239,162 @@ class CatalogNodeColumn:
 
 
 @dataclass
+class ConstraintType:
+    value: str
+
+
+@dataclass
+class ManifestNodeConstraint:
+    type: ConstraintType
+    name: str = None
+    expression: str = None
+    to: str = None
+    to_columns: list = None
+    columns: list = None  # model-level only
+
+
+@dataclass
+class ManifestNodeColumnWithConstraints:
+    name: str
+    data_type: str = "unknown"
+    description: str = ""
+    constraints: list = field(default_factory=list)
+    meta: dict = field(default_factory=dict)
+
+
+@dataclass
+class ManifestNodeWithConstraints:
+    columns: dict
+    constraints: list = field(default_factory=list)
+    database: str = ""
+    schema_: str = ""
+    meta: dict = field(default_factory=dict)
+    description: str = ""
+    raw_sql: str = ""
+
+
+@dataclass
+class DummyManifestWithColumnLevelConstraints:
+    nodes: ClassVar[dict] = {
+        "model.pkg.orders": ManifestNodeWithConstraints(
+            database="db",
+            schema_="public",
+            columns={
+                "id": ManifestNodeColumnWithConstraints(
+                    name="id",
+                    constraints=[
+                        ManifestNodeConstraint(type=ConstraintType("primary_key")),
+                        ManifestNodeConstraint(type=ConstraintType("not_null")),
+                    ],
+                ),
+                "customer_id": ManifestNodeColumnWithConstraints(
+                    name="customer_id",
+                    constraints=[
+                        ManifestNodeConstraint(
+                            type=ConstraintType("foreign_key"),
+                            to="ref('customers')",
+                            to_columns=["id"],
+                        ),
+                    ],
+                ),
+                "product_id": ManifestNodeColumnWithConstraints(
+                    name="product_id",
+                    constraints=[
+                        ManifestNodeConstraint(
+                            type=ConstraintType("foreign_key"),
+                            to="ref('products')",
+                            to_columns=["id"],
+                        ),
+                    ],
+                ),
+            },
+        ),
+        "model.pkg.customers": ManifestNodeWithConstraints(
+            database="db",
+            schema_="public",
+            columns={
+                "id": ManifestNodeColumnWithConstraints(
+                    name="id",
+                    constraints=[
+                        ManifestNodeConstraint(type=ConstraintType("primary_key")),
+                    ],
+                ),
+            },
+        ),
+        "model.pkg.products": ManifestNodeWithConstraints(
+            database="db",
+            schema_="public",
+            columns={
+                "id": ManifestNodeColumnWithConstraints(
+                    name="id",
+                    constraints=[
+                        ManifestNodeConstraint(type=ConstraintType("primary_key")),
+                    ],
+                ),
+            },
+        ),
+    }
+    sources: ClassVar[dict] = {}
+
+
+@dataclass
+class DummyManifestWithModelLevelConstraints:
+    nodes: ClassVar[dict] = {
+        "model.pkg.orders": ManifestNodeWithConstraints(
+            database="db",
+            schema_="public",
+            columns={
+                "customer_id": ManifestNodeColumnWithConstraints(name="customer_id"),
+                "org_id": ManifestNodeColumnWithConstraints(name="org_id"),
+                "dept_id": ManifestNodeColumnWithConstraints(name="dept_id"),
+            },
+            constraints=[
+                ManifestNodeConstraint(
+                    type=ConstraintType("foreign_key"),
+                    to="ref('customers')",
+                    to_columns=["id"],
+                    columns=["customer_id"],
+                ),
+                ManifestNodeConstraint(
+                    type=ConstraintType("foreign_key"),
+                    to="ref('departments')",
+                    to_columns=["org_id", "dept_id"],
+                    columns=["org_id", "dept_id"],
+                ),
+            ],
+        ),
+        "model.pkg.customers": ManifestNodeWithConstraints(
+            database="db",
+            schema_="public",
+            columns={"id": ManifestNodeColumnWithConstraints(name="id")},
+        ),
+        "model.pkg.departments": ManifestNodeWithConstraints(
+            database="db",
+            schema_="public",
+            columns={
+                "org_id": ManifestNodeColumnWithConstraints(name="org_id"),
+                "dept_id": ManifestNodeColumnWithConstraints(name="dept_id"),
+            },
+        ),
+    }
+    sources: ClassVar[dict] = {}
+
+
+@dataclass
+class DummyManifestNoConstraintsAttr:
+    """Simulates older manifest versions where nodes lack constraints attributes."""
+
+    nodes: ClassVar[dict] = {
+        "model.pkg.orders": ManifestNode(
+            test_metadata=ManifestNodeTestMetaData(kwargs={}),
+            meta={},
+            columns={},
+        ),
+    }
+    sources: ClassVar[dict] = {}
+
+
+@dataclass
 class DummyCatalogTable:
     nodes: ClassVar[dict[str, "ManifestNode"]] = {
         "model.dbt_resto.table1": CatalogNode(columns={"name1": CatalogNodeColumn(type="--name1-type--")}),

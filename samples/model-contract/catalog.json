@@ -1,0 +1,63 @@
+{
+    "metadata": {
+        "dbt_schema_version": "https://schemas.getdbt.com/dbt/catalog/v1.json",
+        "dbt_version": "1.9.0",
+        "generated_at": "2026-03-16T00:00:00.000000Z",
+        "invocation_id": "00000000-0000-0000-0000-000000000000",
+        "env": {}
+    },
+    "nodes": {
+        "model.model_contract_demo.customers": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "public",
+                "name": "customers",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "id": {"type": "integer", "index": 1, "name": "id", "comment": null},
+                "name": {"type": "character varying", "index": 2, "name": "name", "comment": null}
+            },
+            "stats": {},
+            "unique_id": "model.model_contract_demo.customers"
+        },
+        "model.model_contract_demo.products": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "public",
+                "name": "products",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "id": {"type": "integer", "index": 1, "name": "id", "comment": null},
+                "name": {"type": "character varying", "index": 2, "name": "name", "comment": null}
+            },
+            "stats": {},
+            "unique_id": "model.model_contract_demo.products"
+        },
+        "model.model_contract_demo.orders": {
+            "metadata": {
+                "type": "BASE TABLE",
+                "schema": "public",
+                "name": "orders",
+                "database": "demo",
+                "comment": null,
+                "owner": "postgres"
+            },
+            "columns": {
+                "id": {"type": "integer", "index": 1, "name": "id", "comment": null},
+                "customer_id": {"type": "integer", "index": 2, "name": "customer_id", "comment": null},
+                "product_id": {"type": "integer", "index": 3, "name": "product_id", "comment": null},
+                "amount": {"type": "numeric", "index": 4, "name": "amount", "comment": null}
+            },
+            "stats": {},
+            "unique_id": "model.model_contract_demo.orders"
+        }
+    },
+    "sources": {},
+    "errors": null
+}

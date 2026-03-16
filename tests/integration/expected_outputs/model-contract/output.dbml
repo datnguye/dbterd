@@ -1,0 +1,27 @@
+//Tables (based on the selection criteria)
+//--configured at schema: demo.public
+Table "model.model_contract_demo.customers" {
+  "id" "integer" [note: "Primary key"]
+  "name" "character varying" [note: "Customer name"]
+
+  Note: "customers table"
+}
+//--configured at schema: demo.public
+Table "model.model_contract_demo.orders" {
+  "id" "integer" [note: "Primary key"]
+  "customer_id" "integer" [note: "FK to customers"]
+  "product_id" "integer" [note: "FK to products"]
+  "amount" "numeric" [note: "Order amount"]
+
+  Note: "orders table"
+}
+//--configured at schema: demo.public
+Table "model.model_contract_demo.products" {
+  "id" "integer" [note: "Primary key"]
+  "name" "character varying" [note: "Product name"]
+
+  Note: "products table"
+}
+//Refs (based on the DBT Relationship Tests)
+Ref: "model.model_contract_demo.orders"."customer_id" > "model.model_contract_demo.customers"."id"
+Ref: "model.model_contract_demo.orders"."product_id" > "model.model_contract_demo.products"."id"

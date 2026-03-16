@@ -1,0 +1,479 @@
+{
+    "metadata": {
+        "dbt_schema_version": "https://schemas.getdbt.com/dbt/manifest/v12.json",
+        "dbt_version": "1.8.4",
+        "generated_at": "2024-07-28T01:54:24.620460Z",
+        "invocation_id": "f06e159b-5afc-49ef-98b4-43a9bd2bb77a",
+        "env": {},
+        "project_name": "model_contract_demo",
+        "project_id": "06e5b98c2db46f8a72cc4f66410e9b3b",
+        "user_id": "532144f1-0463-485d-92a4-36afa29065fa",
+        "send_anonymous_usage_stats": true,
+        "adapter_type": "postgres"
+    },
+    "nodes": {
+        "model.model_contract_demo.customers": {
+            "database": "demo",
+            "schema": "public",
+            "name": "customers",
+            "resource_type": "model",
+            "package_name": "model_contract_demo",
+            "path": "customers.sql",
+            "original_file_path": "models/customers.sql",
+            "unique_id": "model.model_contract_demo.customers",
+            "fqn": [
+                "model_contract_demo",
+                "customers"
+            ],
+            "alias": "customers",
+            "checksum": {
+                "name": "sha256",
+                "checksum": "40e76c2534cb7e32a1b6bf67883e240644ef4a97041a0feae0969590ac2e4017"
+            },
+            "config": {
+                "enabled": true,
+                "alias": null,
+                "schema": null,
+                "database": null,
+                "tags": [],
+                "meta": {},
+                "group": null,
+                "materialized": "table",
+                "incremental_strategy": null,
+                "persist_docs": {},
+                "post-hook": [],
+                "pre-hook": [],
+                "quoting": {},
+                "column_types": {},
+                "full_refresh": null,
+                "unique_key": null,
+                "on_schema_change": "ignore",
+                "on_configuration_change": "apply",
+                "grants": {},
+                "packages": [],
+                "docs": {
+                    "show": true,
+                    "node_color": null
+                },
+                "contract": {
+                    "enforced": false,
+                    "alias_types": true
+                },
+                "access": "protected"
+            },
+            "tags": [],
+            "description": "customers table",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "description": "Primary key",
+                    "meta": {},
+                    "data_type": "integer",
+                    "constraints": [
+                        {
+                            "type": "not_null",
+                            "name": null,
+                            "expression": null,
+                            "warn_unenforced": true,
+                            "warn_unsupported": true,
+                            "to": null,
+                            "to_columns": []
+                        },
+                        {
+                            "type": "primary_key",
+                            "name": null,
+                            "expression": null,
+                            "warn_unenforced": true,
+                            "warn_unsupported": true,
+                            "to": null,
+                            "to_columns": []
+                        }
+                    ],
+                    "quote": null,
+                    "tags": []
+                },
+                "name": {
+                    "name": "name",
+                    "description": "Customer name",
+                    "meta": {},
+                    "data_type": "varchar",
+                    "constraints": [],
+                    "quote": null,
+                    "tags": []
+                }
+            },
+            "meta": {},
+            "group": null,
+            "docs": {
+                "show": true,
+                "node_color": null
+            },
+            "patch_path": "jaffle_shop://models\\marts\\customers.yml",
+            "build_path": null,
+            "unrendered_config": {
+                "materialized": "table"
+            },
+            "created_at": 1722131666.4223976,
+            "relation_name": "\"demo\".\"public\".\"customers\"",
+            "raw_code": "select * from customers",
+            "language": "sql",
+            "refs": [],
+            "sources": [],
+            "metrics": [],
+            "depends_on": {
+                "macros": [],
+                "nodes": []
+            },
+            "compiled_path": "target\\compiled\\jaffle_shop\\models\\marts\\customers.sql",
+            "compiled": true,
+            "compiled_code": "select * from customers",
+            "extra_ctes_injected": true,
+            "extra_ctes": [],
+            "contract": {
+                "enforced": true,
+                "alias_types": true,
+                "checksum": null
+            },
+            "access": "public",
+            "constraints": [],
+            "version": null,
+            "latest_version": null,
+            "deprecation_date": null
+        },
+        "model.model_contract_demo.products": {
+            "database": "demo",
+            "schema": "public",
+            "name": "products",
+            "resource_type": "model",
+            "package_name": "model_contract_demo",
+            "path": "products.sql",
+            "original_file_path": "models/products.sql",
+            "unique_id": "model.model_contract_demo.products",
+            "fqn": [
+                "model_contract_demo",
+                "products"
+            ],
+            "alias": "products",
+            "checksum": {
+                "name": "sha256",
+                "checksum": "40e76c2534cb7e32a1b6bf67883e240644ef4a97041a0feae0969590ac2e4017"
+            },
+            "config": {
+                "enabled": true,
+                "alias": null,
+                "schema": null,
+                "database": null,
+                "tags": [],
+                "meta": {},
+                "group": null,
+                "materialized": "table",
+                "incremental_strategy": null,
+                "persist_docs": {},
+                "post-hook": [],
+                "pre-hook": [],
+                "quoting": {},
+                "column_types": {},
+                "full_refresh": null,
+                "unique_key": null,
+                "on_schema_change": "ignore",
+                "on_configuration_change": "apply",
+                "grants": {},
+                "packages": [],
+                "docs": {
+                    "show": true,
+                    "node_color": null
+                },
+                "contract": {
+                    "enforced": false,
+                    "alias_types": true
+                },
+                "access": "protected"
+            },
+            "tags": [],
+            "description": "products table",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "description": "Primary key",
+                    "meta": {},
+                    "data_type": "integer",
+                    "constraints": [
+                        {
+                            "type": "not_null",
+                            "name": null,
+                            "expression": null,
+                            "warn_unenforced": true,
+                            "warn_unsupported": true,
+                            "to": null,
+                            "to_columns": []
+                        },
+                        {
+                            "type": "primary_key",
+                            "name": null,
+                            "expression": null,
+                            "warn_unenforced": true,
+                            "warn_unsupported": true,
+                            "to": null,
+                            "to_columns": []
+                        }
+                    ],
+                    "quote": null,
+                    "tags": []
+                },
+                "name": {
+                    "name": "name",
+                    "description": "Product name",
+                    "meta": {},
+                    "data_type": "varchar",
+                    "constraints": [],
+                    "quote": null,
+                    "tags": []
+                }
+            },
+            "meta": {},
+            "group": null,
+            "docs": {
+                "show": true,
+                "node_color": null
+            },
+            "patch_path": "jaffle_shop://models\\marts\\customers.yml",
+            "build_path": null,
+            "unrendered_config": {
+                "materialized": "table"
+            },
+            "created_at": 1722131666.4223976,
+            "relation_name": "\"demo\".\"public\".\"products\"",
+            "raw_code": "select * from products",
+            "language": "sql",
+            "refs": [],
+            "sources": [],
+            "metrics": [],
+            "depends_on": {
+                "macros": [],
+                "nodes": []
+            },
+            "compiled_path": "target\\compiled\\jaffle_shop\\models\\marts\\customers.sql",
+            "compiled": true,
+            "compiled_code": "select * from products",
+            "extra_ctes_injected": true,
+            "extra_ctes": [],
+            "contract": {
+                "enforced": true,
+                "alias_types": true,
+                "checksum": null
+            },
+            "access": "public",
+            "constraints": [],
+            "version": null,
+            "latest_version": null,
+            "deprecation_date": null
+        },
+        "model.model_contract_demo.orders": {
+            "database": "demo",
+            "schema": "public",
+            "name": "orders",
+            "resource_type": "model",
+            "package_name": "model_contract_demo",
+            "path": "orders.sql",
+            "original_file_path": "models/orders.sql",
+            "unique_id": "model.model_contract_demo.orders",
+            "fqn": [
+                "model_contract_demo",
+                "orders"
+            ],
+            "alias": "orders",
+            "checksum": {
+                "name": "sha256",
+                "checksum": "40e76c2534cb7e32a1b6bf67883e240644ef4a97041a0feae0969590ac2e4017"
+            },
+            "config": {
+                "enabled": true,
+                "alias": null,
+                "schema": null,
+                "database": null,
+                "tags": [],
+                "meta": {},
+                "group": null,
+                "materialized": "table",
+                "incremental_strategy": null,
+                "persist_docs": {},
+                "post-hook": [],
+                "pre-hook": [],
+                "quoting": {},
+                "column_types": {},
+                "full_refresh": null,
+                "unique_key": null,
+                "on_schema_change": "ignore",
+                "on_configuration_change": "apply",
+                "grants": {},
+                "packages": [],
+                "docs": {
+                    "show": true,
+                    "node_color": null
+                },
+                "contract": {
+                    "enforced": false,
+                    "alias_types": true
+                },
+                "access": "protected"
+            },
+            "tags": [],
+            "description": "orders table",
+            "columns": {
+                "id": {
+                    "name": "id",
+                    "description": "Primary key",
+                    "meta": {},
+                    "data_type": "integer",
+                    "constraints": [
+                        {
+                            "type": "not_null",
+                            "name": null,
+                            "expression": null,
+                            "warn_unenforced": true,
+                            "warn_unsupported": true,
+                            "to": null,
+                            "to_columns": []
+                        },
+                        {
+                            "type": "primary_key",
+                            "name": null,
+                            "expression": null,
+                            "warn_unenforced": true,
+                            "warn_unsupported": true,
+                            "to": null,
+                            "to_columns": []
+                        }
+                    ],
+                    "quote": null,
+                    "tags": []
+                },
+                "customer_id": {
+                    "name": "customer_id",
+                    "description": "FK to customers",
+                    "meta": {},
+                    "data_type": "integer",
+                    "constraints": [
+                        {
+                            "type": "not_null",
+                            "name": null,
+                            "expression": null,
+                            "warn_unenforced": true,
+                            "warn_unsupported": true,
+                            "to": null,
+                            "to_columns": []
+                        },
+                        {
+                            "type": "foreign_key",
+                            "name": "fk_orders_customer",
+                            "expression": null,
+                            "warn_unenforced": true,
+                            "warn_unsupported": true,
+                            "to": "ref('customers')",
+                            "to_columns": [
+                                "id"
+                            ]
+                        }
+                    ],
+                    "quote": null,
+                    "tags": []
+                },
+                "product_id": {
+                    "name": "product_id",
+                    "description": "FK to products",
+                    "meta": {},
+                    "data_type": "integer",
+                    "constraints": [
+                        {
+                            "type": "foreign_key",
+                            "name": "fk_orders_product",
+                            "expression": null,
+                            "warn_unenforced": true,
+                            "warn_unsupported": true,
+                            "to": "ref('products')",
+                            "to_columns": [
+                                "id"
+                            ]
+                        }
+                    ],
+                    "quote": null,
+                    "tags": []
+                },
+                "amount": {
+                    "name": "amount",
+                    "description": "Order amount",
+                    "meta": {},
+                    "data_type": "numeric",
+                    "constraints": [],
+                    "quote": null,
+                    "tags": []
+                }
+            },
+            "meta": {},
+            "group": null,
+            "docs": {
+                "show": true,
+                "node_color": null
+            },
+            "patch_path": "jaffle_shop://models\\marts\\customers.yml",
+            "build_path": null,
+            "unrendered_config": {
+                "materialized": "table"
+            },
+            "created_at": 1722131666.4223976,
+            "relation_name": "\"demo\".\"public\".\"orders\"",
+            "raw_code": "select * from orders",
+            "language": "sql",
+            "refs": [
+                {
+                    "name": "customers",
+                    "package": null,
+                    "version": null
+                },
+                {
+                    "name": "products",
+                    "package": null,
+                    "version": null
+                }
+            ],
+            "sources": [],
+            "metrics": [],
+            "depends_on": {
+                "macros": [],
+                "nodes": [
+                    "model.model_contract_demo.customers",
+                    "model.model_contract_demo.products"
+                ]
+            },
+            "compiled_path": "target\\compiled\\jaffle_shop\\models\\marts\\customers.sql",
+            "compiled": true,
+            "compiled_code": "select * from orders",
+            "extra_ctes_injected": true,
+            "extra_ctes": [],
+            "contract": {
+                "enforced": true,
+                "alias_types": true,
+                "checksum": null
+            },
+            "access": "public",
+            "constraints": [],
+            "version": null,
+            "latest_version": null,
+            "deprecation_date": null
+        }
+    },
+    "sources": {},
+    "macros": {},
+    "docs": {},
+    "exposures": {},
+    "metrics": {},
+    "groups": {},
+    "selectors": {},
+    "disabled": {},
+    "parent_map": {},
+    "child_map": {},
+    "group_map": {},
+    "saved_queries": {},
+    "semantic_models": {},
+    "unit_tests": {}
+}
