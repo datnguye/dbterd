@@ -144,7 +144,7 @@ models:
 The result will include the relationship inferred from the constraint:
 
 ```
-Ref: "orders"."location_id" > "locations"."location_id"
+Ref: "model.dbt_project.orders"."location_id" > "model.dbt_project.locations"."location_id"
 ```
 
 ### Model-level FK (composite relationships)
@@ -168,7 +168,7 @@ models:
 The result will include the multi-column relationship:
 
 ```
-Ref: "fct_customer_segment_orders".("customer_id", "segment_code") > "dim_customer_segment".("customer_id", "segment_code")
+Ref: "model.dbt_project.fct_customer_segment_orders".("customer_id", "segment_code") > "model.dbt_project.dim_customer_segment".("customer_id", "segment_code")
 ```
 
 ### Primary key detection
@@ -205,6 +205,9 @@ models:
 The affected columns will appear with a `[pk]` index in the ERD output.
 
 ### Relationship labels
+
+!!! note
+    Relationship labels are only rendered in the **Mermaid** target. Other output formats ignore this field.
 
 To annotate a relationship edge with a label, add a `relationship_labels` dict to the model's `meta`, keyed by the constraint name:
 
