@@ -10,7 +10,7 @@ from dbterd.adapters.algos.model_contract import (
     _get_relationship_type,
     _resolve_to_node_id,
 )
-from dbterd.core.models import Ref
+from dbterd.core.models import Column, Ref, Table
 from tests.unit.adapters.algos import (
     ConstraintType,
     DummyManifestNoConstraintsAttr,
@@ -142,8 +142,6 @@ class TestExtractPkColumnNames:
 class TestEnrichTablesWithPkInfo:
     def test_marks_pk_columns(self):
         """Columns matching PK constraints have is_primary_key set to True."""
-        from dbterd.core.models import Column, Table
-
         table = Table(
             name="orders",
             node_name="model.pkg.orders",
@@ -176,7 +174,6 @@ class TestEnrichTablesWithPkInfo:
 
     def test_no_nodes_attr(self):
         """Manifest without nodes attribute returns tables unchanged."""
-        from dbterd.core.models import Column, Table
 
         class _Manifest:
             pass
@@ -194,8 +191,6 @@ class TestEnrichTablesWithPkInfo:
 
     def test_table_without_matching_node(self):
         """Table with no matching manifest node is left unchanged."""
-        from dbterd.core.models import Column, Table
-
         table = Table(
             name="orphan",
             node_name="model.pkg.orphan",

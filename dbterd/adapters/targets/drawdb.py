@@ -166,7 +166,9 @@ class DrawdbAdapter(BaseTargetAdapter):
         """Format a single relationship as DrawDB dict."""
         return {
             "id": idx,
-            "name": f"fk__{relationship.table_map[1]}_{relationship.table_map[0]}__{'_'.join(relationship.column_map[1])}",
+            "name": (
+                f"fk__{relationship.table_map[1]}_{relationship.table_map[0]}__{'_'.join(relationship.column_map[1])}"
+            ),
             "cardinality": self.get_rel_symbol(relationship.type),
             "startTableId": graphic_tables.get(relationship.table_map[1], {}).get("id"),
             "endTableId": graphic_tables.get(relationship.table_map[0], {}).get("id"),
