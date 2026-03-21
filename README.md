@@ -19,14 +19,17 @@ Transform your dbt artifact files or metadata into stunning Entity Relationship 
 
 ## 🎯 Entity Relationship Detection
 
-dbterd intelligently detects entity relationships through:
+dbterd intelligently detects entity relationships through three algorithms — pick the one that matches how your dbt project expresses its data contracts:
 
-- **🧪 [Test Relationships](https://docs.getdbt.com/reference/resource-properties/data-tests#relationships)** (default method)
-- **🏛️ [Semantic Entities](https://docs.getdbt.com/docs/build/entities)** (use `-a` option)
+- **🧪 [Test Relationships](https://docs.getdbt.com/reference/resource-properties/data-tests#relationships)** *(default)* — infers relationships from dbt `relationships` data tests
+- **🏛️ [Semantic Entities](https://docs.getdbt.com/docs/build/entities)** (`-a entity_relationship`) — detects relationships via dbt Semantic Layer entity definitions
+- **📜 Model Contract Constraints** (`-a model_contract`) — detects relationships via dbt [model contract](https://docs.getdbt.com/docs/collaborate/govern/model-contracts) `foreign_key` constraints (dbt 1.9+ / manifest v12+)
 
 For detailed configuration options, see our [CLI References](https://dbterd.datnguyen.de/latest/nav/guide/cli-references.html#dbterd-run-algo-a).
 
 ## 🎨 Supported Output Formats
+
+No need to pick just one — dbterd has a format for every occasion, from quick GitHub previews to full-blown interactive database designers.
 
 | Format | Description | Use Case |
 |--------|-------------|----------|
@@ -61,7 +64,7 @@ dbterd --version
 
 ## ⚙️ Configuration Files
 
-Tired of typing the same CLI arguments repeatedly? `dbterd` supports configuration files to streamline your workflow!
+Tired of typing the same CLI arguments repeatedly? Your fingers deserve better. `dbterd` supports configuration files to streamline your workflow!
 
 ```bash
 # Initialize a configuration file
@@ -168,9 +171,9 @@ erDiagram
 
 ## 🤝 Contributing
 
-We welcome contributions! 🎉
+We welcome contributions! Whether you've found a bug, dreamed up a feature, or just want to fix a typo — you're very welcome here.
 
-**Ways to contribute:** 🐛 Report bugs | 💡 Suggest features  | 📝 Improve documentation | 🔧 Submit pull requests
+**Ways to contribute:** 🐛 Report bugs | 💡 Suggest features | 📝 Improve documentation | 🔧 Submit pull requests
 
 See our **[Contributing Guide](https://dbterd.datnguyen.de/latest/nav/development/contributing-guide.html)** for detailed information.
 
@@ -184,7 +187,7 @@ See our **[Contributing Guide](https://dbterd.datnguyen.de/latest/nav/developmen
 
 ## 👥 Contributors
 
-A huge thanks to our amazing contributors! 🙏
+A huge thanks to our amazing contributors — the people who turned "wouldn't it be nice if..." into actual working code. 🙏
 
 <a href="https://github.com/datnguye/dbterd/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=datnguye/dbterd" />
