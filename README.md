@@ -23,7 +23,7 @@ dbterd intelligently detects entity relationships through three algorithms — p
 
 - **🧪 [Test Relationships](https://docs.getdbt.com/reference/resource-properties/data-tests#relationships)** *(default)* — infers relationships from dbt `relationships` data tests
 - **🏛️ [Semantic Entities](https://docs.getdbt.com/docs/build/entities)** (`-a entity_relationship`) — detects relationships via dbt Semantic Layer entity definitions
-- **📜 Model Contract Constraints** (`-a model_contract`) — detects relationships via dbt [model contract](https://docs.getdbt.com/docs/collaborate/govern/model-contracts) `foreign_key` constraints (dbt 1.9+ / manifest v12+)
+- **📜 [Model Contract Constraints](https://docs.getdbt.com/docs/collaborate/govern/model-contracts)** (`-a model_contract`) — detects relationships via dbt model contract's `foreign_key` constraints (dbt 1.9+ / manifest v12+)
 
 For detailed configuration options, see our [CLI References](https://dbterd.datnguyen.de/latest/nav/guide/cli-references.html#dbterd-run-algo-a).
 
