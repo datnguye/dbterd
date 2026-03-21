@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import ClassVar
 from unittest import mock
 
@@ -6,7 +7,7 @@ import pytest
 from dbterd.adapters.algos.model_contract import (
     ModelContractAlgo,
     _get_relationship_type,
-    _resolve_ref_to_node_id,
+    _resolve_to_node_id,
 )
 from dbterd.core.models import Ref
 from tests.unit.adapters.algos import (
@@ -20,31 +21,44 @@ from tests.unit.adapters.algos import (
 )
 
 
-class TestResolveRefToNodeId:
+class TestResolveToNodeId:
+    @dataclass
+    class _Node:
+        relation_name: str
+
     NODES: ClassVar[dict] = {
-        "model.pkg.customers": None,
-        "model.pkg.orders": None,
-        "model.other_pkg.customers": None,
-        "seed.pkg.raw_data": None,
+        "model.pkg.customers": _Node(relation_name="db.public.customers"),
+        "model.pkg.orders": _Node(relation_name="db.public.orders"),
+        "model.other_pkg.customers": _Node(relation_name="db.other.customers"),
+        "seed.pkg.raw_data": _Node(relation_name="db.public.raw_data"),
     }
 
     @pytest.mark.parametrize(
-        "ref_str, expected",
+        "to_str, expected",
         [
-            ("ref('customers')", "model.pkg.customers"),
-            ('ref("customers")', "model.pkg.customers"),
-            ("ref('pkg', 'customers')", "model.pkg.customers"),
-            ('ref("pkg", "customers")', "model.pkg.customers"),
-            ("ref('orders')", "model.pkg.orders"),
-            ("ref('nonexistent')", None),
+            ("db.public.customers", "model.pkg.customers"),
+            ("db.public.orders", "model.pkg.orders"),
+            ("db.other.customers", "model.other_pkg.customers"),
+            ("db.nonexistent.table", None),
             ("", None),
-            ("not_a_ref", None),
-            ("ref()", None),
         ],
     )
-    def test_resolve_ref(self, ref_str, expected):
-        result = _resolve_ref_to_node_id(ref_str, self.NODES)
+    def test_resolve_to_node_id(self, to_str, expected):
+        result = _resolve_to_node_id(to_str, self.NODES)
         assert result == expected
+
+    def test_model_takes_priority_over_seed(self):
+        """When relation_name matches both a model and another resource, model wins."""
+
+        @dataclass
+        class _Node:
+            relation_name: str
+
+        nodes = {
+            "seed.pkg.raw": _Node(relation_name="db.public.raw"),
+            "model.pkg.raw": _Node(relation_name="db.public.raw"),
+        }
+        assert _resolve_to_node_id("db.public.raw", nodes) == "model.pkg.raw"
 
 
 class TestGetRelationshipType:
@@ -208,7 +222,7 @@ class TestAlgoModelContract:
                             constraints=[
                                 ManifestNodeConstraint(
                                     type=ConstraintType("foreign_key"),
-                                    to="ref('deleted_model')",
+                                    to="db.public.deleted_model",
                                     to_columns=["id"],
                                 ),
                             ],
@@ -232,14 +246,14 @@ class TestAlgoModelContract:
                             constraints=[
                                 ManifestNodeConstraint(
                                     type=ConstraintType("foreign_key"),
-                                    to="ref('customers')",
+                                    to="db.public.customers",
                                     to_columns=None,
                                 ),
                             ],
                         ),
                     },
                 ),
-                "model.pkg.customers": ManifestNodeWithConstraints(columns={}),
+                "model.pkg.customers": ManifestNodeWithConstraints(columns={}, relation_name="db.public.customers"),
             }
 
         algo = ModelContractAlgo()
@@ -247,17 +261,46 @@ class TestAlgoModelContract:
         assert len(refs) == 1
         assert refs[0].column_map == ["customer_id", "customer_id"]
 
+    def test_get_relationships_fk_with_multiple_to_columns(self):
+        """Column-level FK with multiple to_columns generates one Ref per to_column."""
+
+        class _Manifest:
+            nodes: ClassVar[dict] = {
+                "model.pkg.orders": ManifestNodeWithConstraints(
+                    columns={
+                        "fk_col": ManifestNodeColumnWithConstraints(
+                            name="fk_col",
+                            constraints=[
+                                ManifestNodeConstraint(
+                                    type=ConstraintType("foreign_key"),
+                                    to="db.public.locations",
+                                    to_columns=["city_id", "country_id"],
+                                ),
+                            ],
+                        ),
+                    },
+                ),
+                "model.pkg.locations": ManifestNodeWithConstraints(columns={}, relation_name="db.public.locations"),
+            }
+
+        algo = ModelContractAlgo()
+        refs = algo.get_relationships(manifest=_Manifest())
+        assert len(refs) == 2
+        assert refs[0].column_map == ["city_id", "fk_col"]
+        assert refs[1].column_map == ["country_id", "fk_col"]
+
     def test_get_relationships_self_referential(self):
         class _Manifest:
             nodes: ClassVar[dict] = {
                 "model.pkg.employee": ManifestNodeWithConstraints(
+                    relation_name="db.public.employee",
                     columns={
                         "manager_id": ManifestNodeColumnWithConstraints(
                             name="manager_id",
                             constraints=[
                                 ManifestNodeConstraint(
                                     type=ConstraintType("foreign_key"),
-                                    to="ref('employee')",
+                                    to="db.public.employee",
                                     to_columns=["id"],
                                 ),
                             ],
@@ -282,14 +325,14 @@ class TestAlgoModelContract:
                             constraints=[
                                 ManifestNodeConstraint(
                                     type=ConstraintType("foreign_key"),
-                                    to="ref('customers')",
+                                    to="db.public.customers",
                                     to_columns=["id"],
                                 ),
                             ],
                         ),
                     },
                 ),
-                "model.pkg.customers": ManifestNodeWithConstraints(columns={}),
+                "model.pkg.customers": ManifestNodeWithConstraints(columns={}, relation_name="db.public.customers"),
             }
 
         algo = ModelContractAlgo()
@@ -307,13 +350,13 @@ class TestAlgoModelContract:
                     constraints=[
                         ManifestNodeConstraint(
                             type=ConstraintType("foreign_key"),
-                            to="ref('customers')",
+                            to="db.public.customers",
                             to_columns=["id"],
                             columns=None,
                         ),
                     ],
                 ),
-                "model.pkg.customers": ManifestNodeWithConstraints(columns={}),
+                "model.pkg.customers": ManifestNodeWithConstraints(columns={}, relation_name="db.public.customers"),
             }
 
         algo = ModelContractAlgo()
@@ -329,13 +372,13 @@ class TestAlgoModelContract:
                     constraints=[
                         ManifestNodeConstraint(
                             type=ConstraintType("foreign_key"),
-                            to="ref('customers')",
+                            to="db.public.customers",
                             to_columns=None,
                             columns=["customer_id"],
                         ),
                     ],
                 ),
-                "model.pkg.customers": ManifestNodeWithConstraints(columns={}),
+                "model.pkg.customers": ManifestNodeWithConstraints(columns={}, relation_name="db.public.customers"),
             }
 
         algo = ModelContractAlgo()
@@ -354,13 +397,13 @@ class TestAlgoModelContract:
                     constraints=[
                         ManifestNodeConstraint(
                             type=ConstraintType("foreign_key"),
-                            to="ref('customers')",
+                            to="db.public.customers",
                             to_columns=["id"],
                             columns=["customer_id"],
                         ),
                     ],
                 ),
-                "model.pkg.customers": ManifestNodeWithConstraints(columns={}),
+                "model.pkg.customers": ManifestNodeWithConstraints(columns={}, relation_name="db.public.customers"),
             }
 
         algo = ModelContractAlgo()
@@ -380,7 +423,7 @@ class TestAlgoModelContract:
                             constraints=[
                                 ManifestNodeConstraint(
                                     type=ConstraintType("foreign_key"),
-                                    to="ref('customers')",
+                                    to="db.public.customers",
                                     to_columns=["id"],
                                 ),
                             ],
@@ -389,13 +432,13 @@ class TestAlgoModelContract:
                     constraints=[
                         ManifestNodeConstraint(
                             type=ConstraintType("foreign_key"),
-                            to="ref('customers')",
+                            to="db.public.customers",
                             to_columns=["id"],
                             columns=["customer_id"],
                         ),
                     ],
                 ),
-                "model.pkg.customers": ManifestNodeWithConstraints(columns={}),
+                "model.pkg.customers": ManifestNodeWithConstraints(columns={}, relation_name="db.public.customers"),
             }
 
         algo = ModelContractAlgo()
@@ -502,14 +545,14 @@ class TestAlgoModelContract:
                             constraints=[
                                 ManifestNodeConstraint(
                                     type=ConstraintType("foreign_key"),
-                                    to="ref('customers')",
+                                    to="db.public.customers",
                                     to_columns=["id"],
                                 ),
                             ],
                         ),
                     },
                 ),
-                "model.pkg.customers": ManifestNodeWithConstraints(columns={}),
+                "model.pkg.customers": ManifestNodeWithConstraints(columns={}, relation_name="db.public.customers"),
             }
 
         algo = ModelContractAlgo()
@@ -569,7 +612,7 @@ class TestAlgoModelContract:
                     constraints=[
                         ManifestNodeConstraint(
                             type=ConstraintType("foreign_key"),
-                            to="ref('nonexistent')",
+                            to="db.public.nonexistent",
                             to_columns=["id"],
                             columns=["fk_col"],
                         ),

@@ -2,9 +2,9 @@
     "metadata": {
         "dbt_schema_version": "https://schemas.getdbt.com/dbt/manifest/v12.json",
         "dbt_version": "1.11.7",
-        "generated_at": "2026-03-21T03:18:18.601752Z",
-        "invocation_id": "46779c10-98bb-455b-86ca-fb3b35c27238",
-        "invocation_started_at": "2026-03-21T03:18:18.179888Z",
+        "generated_at": "2026-03-21T03:44:54.322017Z",
+        "invocation_id": "1d87d4a4-2b1c-4ba5-aad0-03972b125c05",
+        "invocation_started_at": "2026-03-21T03:18:18.179888+00:00",
         "env": {},
         "project_name": "jaffle_shop",
         "project_id": "06e5b98c2db46f8a72cc4f66410e9b3b",
@@ -1272,425 +1272,6 @@
             ],
             "time_spine": null
         },
-        "model.jaffle_shop.orders": {
-            "database": "shaman",
-            "schema": "dummy",
-            "name": "orders",
-            "resource_type": "model",
-            "package_name": "jaffle_shop",
-            "path": "marts/orders.sql",
-            "original_file_path": "models/marts/orders.sql",
-            "unique_id": "model.jaffle_shop.orders",
-            "fqn": [
-                "jaffle_shop",
-                "marts",
-                "orders"
-            ],
-            "alias": "orders",
-            "checksum": {
-                "name": "sha256",
-                "checksum": "672fab3cb996bc7652da3f751da1f11f2674290bb3fdd3b5ed4fc35b0bbb6460"
-            },
-            "config": {
-                "enabled": true,
-                "alias": null,
-                "schema": null,
-                "database": null,
-                "tags": [],
-                "meta": {},
-                "group": null,
-                "materialized": "table",
-                "incremental_strategy": null,
-                "batch_size": null,
-                "lookback": 1,
-                "begin": null,
-                "persist_docs": {},
-                "post-hook": [],
-                "pre-hook": [],
-                "quoting": {},
-                "column_types": {},
-                "full_refresh": null,
-                "unique_key": null,
-                "on_schema_change": "ignore",
-                "on_configuration_change": "apply",
-                "grants": {},
-                "packages": [],
-                "docs": {
-                    "show": true,
-                    "node_color": null
-                },
-                "contract": {
-                    "enforced": true,
-                    "alias_types": true
-                },
-                "event_time": null,
-                "concurrent_batches": null,
-                "access": "protected",
-                "freshness": null
-            },
-            "tags": [],
-            "description": "Order overview data mart, offering key details for each order inlcluding if it's a customer's first order and a food vs. drink item breakdown. One row per order.",
-            "columns": {
-                "order_id": {
-                    "name": "order_id",
-                    "description": "The unique key of the orders mart.",
-                    "meta": {},
-                    "data_type": "integer",
-                    "constraints": [
-                        {
-                            "type": "primary_key",
-                            "name": null,
-                            "expression": null,
-                            "warn_unenforced": true,
-                            "warn_unsupported": true,
-                            "to": null,
-                            "to_columns": []
-                        }
-                    ],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "customer_id": {
-                    "name": "customer_id",
-                    "description": "The foreign key relating to the customer who placed the order.",
-                    "meta": {},
-                    "data_type": "integer",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "location_id": {
-                    "name": "location_id",
-                    "description": "The foreign key relating to the location where the order was placed.",
-                    "meta": {},
-                    "data_type": "integer",
-                    "constraints": [
-                        {
-                            "type": "foreign_key",
-                            "name": null,
-                            "expression": null,
-                            "warn_unenforced": true,
-                            "warn_unsupported": true,
-                            "to": "shaman.dummy.locations",
-                            "to_columns": [
-                                "location_id"
-                            ]
-                        }
-                    ],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "order_total": {
-                    "name": "order_total",
-                    "description": "The total amount of the order in USD including tax.",
-                    "meta": {},
-                    "data_type": "numeric",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "ordered_at": {
-                    "name": "ordered_at",
-                    "description": "The timestamp the order was placed at.",
-                    "meta": {},
-                    "data_type": "date",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "subtotal_cents": {
-                    "name": "subtotal_cents",
-                    "description": "The pre-tax subtotal of the order in cents.",
-                    "meta": {},
-                    "data_type": "integer",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "tax_paid_cents": {
-                    "name": "tax_paid_cents",
-                    "description": "The tax portion of the order in cents.",
-                    "meta": {},
-                    "data_type": "integer",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "order_total_cents": {
-                    "name": "order_total_cents",
-                    "description": "The total amount of the order in cents including tax.",
-                    "meta": {},
-                    "data_type": "integer",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "subtotal": {
-                    "name": "subtotal",
-                    "description": "The pre-tax subtotal of the order in USD.",
-                    "meta": {},
-                    "data_type": "numeric",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "tax_paid": {
-                    "name": "tax_paid",
-                    "description": "The tax portion of the order in USD.",
-                    "meta": {},
-                    "data_type": "numeric",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "order_cost": {
-                    "name": "order_cost",
-                    "description": "The sum of supply expenses to fulfill the order.",
-                    "meta": {},
-                    "data_type": "numeric",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "order_items_subtotal": {
-                    "name": "order_items_subtotal",
-                    "description": "The sum of product prices for all items in the order.",
-                    "meta": {},
-                    "data_type": "numeric",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "count_order_items": {
-                    "name": "count_order_items",
-                    "description": "The number of items in the order.",
-                    "meta": {},
-                    "data_type": "bigint",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "count_food_items": {
-                    "name": "count_food_items",
-                    "description": "The number of food items in the order.",
-                    "meta": {},
-                    "data_type": "bigint",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "count_drink_items": {
-                    "name": "count_drink_items",
-                    "description": "The number of drink items in the order.",
-                    "meta": {},
-                    "data_type": "bigint",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "is_food_order": {
-                    "name": "is_food_order",
-                    "description": "A boolean indicating if this order included any food items.",
-                    "meta": {},
-                    "data_type": "boolean",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "is_drink_order": {
-                    "name": "is_drink_order",
-                    "description": "A boolean indicating if this order included any drink items.",
-                    "meta": {},
-                    "data_type": "boolean",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "customer_order_number": {
-                    "name": "customer_order_number",
-                    "description": "The sequential order number for this customer (1 = first order).",
-                    "meta": {},
-                    "data_type": "bigint",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                }
-            },
-            "meta": {},
-            "group": null,
-            "docs": {
-                "show": true,
-                "node_color": null
-            },
-            "patch_path": "jaffle_shop://models/marts/orders.yml",
-            "build_path": null,
-            "unrendered_config": {
-                "materialized": "table",
-                "contract": {
-                    "enforced": true
-                }
-            },
-            "created_at": 1774063099.420039,
-            "relation_name": "shaman.dummy.orders",
-            "raw_code": "with\n\norders as (\n\n    select * from {{ ref('stg_orders') }}\n\n),\n\norder_items as (\n\n    select * from {{ ref('order_items') }}\n\n),\n\norder_items_summary as (\n\n    select\n        order_id,\n\n        sum(supply_cost) as order_cost,\n        sum(product_price) as order_items_subtotal,\n        count(order_item_id) as count_order_items,\n        sum(\n            case\n                when is_food_item then 1\n                else 0\n            end\n        ) as count_food_items,\n        sum(\n            case\n                when is_drink_item then 1\n                else 0\n            end\n        ) as count_drink_items\n\n    from order_items\n\n    group by 1\n\n),\n\ncompute_booleans as (\n\n    select\n        orders.*,\n\n        order_items_summary.order_cost,\n        order_items_summary.order_items_subtotal,\n        order_items_summary.count_food_items,\n        order_items_summary.count_drink_items,\n        order_items_summary.count_order_items,\n        order_items_summary.count_food_items > 0 as is_food_order,\n        order_items_summary.count_drink_items > 0 as is_drink_order\n\n    from orders\n\n    left join\n        order_items_summary\n        on orders.order_id = order_items_summary.order_id\n\n),\n\ncustomer_order_count as (\n\n    select\n        *,\n\n        row_number() over (\n            partition by customer_id\n            order by ordered_at asc\n        ) as customer_order_number\n\n    from compute_booleans\n\n)\n\nselect * from customer_order_count",
-            "doc_blocks": [],
-            "language": "sql",
-            "refs": [
-                {
-                    "name": "stg_orders",
-                    "package": null,
-                    "version": null
-                },
-                {
-                    "name": "order_items",
-                    "package": null,
-                    "version": null
-                },
-                {
-                    "name": "locations",
-                    "package": null,
-                    "version": null
-                }
-            ],
-            "sources": [],
-            "metrics": [],
-            "functions": [],
-            "depends_on": {
-                "macros": [],
-                "nodes": [
-                    "model.jaffle_shop.stg_orders",
-                    "model.jaffle_shop.order_items",
-                    "model.jaffle_shop.locations"
-                ]
-            },
-            "compiled_path": "target/compiled/jaffle_shop/models/marts/orders.sql",
-            "compiled": true,
-            "compiled_code": "with\n\norders as (\n\n    select * from shaman.dummy.stg_orders\n\n),\n\norder_items as (\n\n    select * from shaman.dummy.order_items\n\n),\n\norder_items_summary as (\n\n    select\n        order_id,\n\n        sum(supply_cost) as order_cost,\n        sum(product_price) as order_items_subtotal,\n        count(order_item_id) as count_order_items,\n        sum(\n            case\n                when is_food_item then 1\n                else 0\n            end\n        ) as count_food_items,\n        sum(\n            case\n                when is_drink_item then 1\n                else 0\n            end\n        ) as count_drink_items\n\n    from order_items\n\n    group by 1\n\n),\n\ncompute_booleans as (\n\n    select\n        orders.*,\n\n        order_items_summary.order_cost,\n        order_items_summary.order_items_subtotal,\n        order_items_summary.count_food_items,\n        order_items_summary.count_drink_items,\n        order_items_summary.count_order_items,\n        order_items_summary.count_food_items > 0 as is_food_order,\n        order_items_summary.count_drink_items > 0 as is_drink_order\n\n    from orders\n\n    left join\n        order_items_summary\n        on orders.order_id = order_items_summary.order_id\n\n),\n\ncustomer_order_count as (\n\n    select\n        *,\n\n        row_number() over (\n            partition by customer_id\n            order by ordered_at asc\n        ) as customer_order_number\n\n    from compute_booleans\n\n)\n\nselect * from customer_order_count",
-            "extra_ctes_injected": true,
-            "extra_ctes": [],
-            "contract": {
-                "enforced": true,
-                "alias_types": true,
-                "checksum": "c0ec5caf0632e8eb1ad347fb9739ebf18cb026d94a5e6f6da2346c43967de22f"
-            },
-            "access": "protected",
-            "constraints": [],
-            "version": null,
-            "latest_version": null,
-            "deprecation_date": null,
-            "primary_key": [
-                "order_id"
-            ],
-            "time_spine": null
-        },
         "model.jaffle_shop.metricflow_time_spine": {
             "database": "shaman",
             "schema": "dummy",
@@ -1748,20 +1329,36 @@
                 "freshness": null
             },
             "tags": [],
-            "description": "",
-            "columns": {},
+            "description": "Time spine table for MetricFlow, one row per day.",
+            "columns": {
+                "date_day": {
+                    "name": "date_day",
+                    "description": "",
+                    "meta": {},
+                    "data_type": null,
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": "day",
+                    "doc_blocks": []
+                }
+            },
             "meta": {},
             "group": null,
             "docs": {
                 "show": true,
                 "node_color": null
             },
-            "patch_path": null,
+            "patch_path": "jaffle_shop://models/marts/metricflow_time_spine.yml",
             "build_path": null,
             "unrendered_config": {
                 "materialized": "table"
             },
-            "created_at": 1774063099.192417,
+            "created_at": 1774064528.997044,
             "relation_name": "shaman.dummy.metricflow_time_spine",
             "raw_code": "-- metricflow_time_spine.sql\nwith\n\ndays as (\n\n    --for BQ adapters use \"DATE('01/01/2000','mm/dd/yyyy')\"\n    {{ dbt_date.get_base_dates(n_dateparts=365*10, datepart=\"day\") }}\n\n),\n\ncast_to_date as (\n\n    select cast(date_day as date) as date_day\n\n    from days\n\n)\n\nselect * from cast_to_date",
             "doc_blocks": [],
@@ -1792,352 +1389,10 @@
             "latest_version": null,
             "deprecation_date": null,
             "primary_key": [],
-            "time_spine": null
-        },
-        "model.jaffle_shop.order_items": {
-            "database": "shaman",
-            "schema": "dummy",
-            "name": "order_items",
-            "resource_type": "model",
-            "package_name": "jaffle_shop",
-            "path": "marts/order_items.sql",
-            "original_file_path": "models/marts/order_items.sql",
-            "unique_id": "model.jaffle_shop.order_items",
-            "fqn": [
-                "jaffle_shop",
-                "marts",
-                "order_items"
-            ],
-            "alias": "order_items",
-            "checksum": {
-                "name": "sha256",
-                "checksum": "f6268350d0266dc7b23e662349e4c94a9e1d9f4689765055ba7c5ea07d82a06c"
-            },
-            "config": {
-                "enabled": true,
-                "alias": null,
-                "schema": null,
-                "database": null,
-                "tags": [],
-                "meta": {},
-                "group": null,
-                "materialized": "table",
-                "incremental_strategy": null,
-                "batch_size": null,
-                "lookback": 1,
-                "begin": null,
-                "persist_docs": {},
-                "post-hook": [],
-                "pre-hook": [],
-                "quoting": {},
-                "column_types": {},
-                "full_refresh": null,
-                "unique_key": null,
-                "on_schema_change": "ignore",
-                "on_configuration_change": "apply",
-                "grants": {},
-                "packages": [],
-                "docs": {
-                    "show": true,
-                    "node_color": null
-                },
-                "contract": {
-                    "enforced": false,
-                    "alias_types": true
-                },
-                "event_time": null,
-                "concurrent_batches": null,
-                "access": "protected",
-                "freshness": null
-            },
-            "tags": [],
-            "description": "",
-            "columns": {
-                "order_item_id": {
-                    "name": "order_item_id",
-                    "description": "",
-                    "meta": {},
-                    "data_type": null,
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "order_id": {
-                    "name": "order_id",
-                    "description": "",
-                    "meta": {},
-                    "data_type": null,
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                }
-            },
-            "meta": {},
-            "group": null,
-            "docs": {
-                "show": true,
-                "node_color": null
-            },
-            "patch_path": "jaffle_shop://models/marts/order_items.yml",
-            "build_path": null,
-            "unrendered_config": {
-                "materialized": "table"
-            },
-            "created_at": 1774063099.431783,
-            "relation_name": "shaman.dummy.order_items",
-            "raw_code": "with\n\norder_items as (\n\n    select * from {{ ref('stg_order_items') }}\n\n),\n\n\norders as (\n\n    select * from {{ ref('stg_orders') }}\n\n),\n\nproducts as (\n\n    select * from {{ ref('stg_products') }}\n\n),\n\nsupplies as (\n\n    select * from {{ ref('stg_supplies') }}\n\n),\n\norder_supplies_summary as (\n\n    select\n        product_id,\n\n        sum(supply_cost) as supply_cost\n\n    from supplies\n\n    group by 1\n\n),\n\njoined as (\n\n    select\n        order_items.*,\n\n        orders.ordered_at,\n\n        products.product_name,\n        products.product_price,\n        products.is_food_item,\n        products.is_drink_item,\n\n        order_supplies_summary.supply_cost\n\n    from order_items\n\n    left join orders on order_items.order_id = orders.order_id\n\n    left join products on order_items.product_id = products.product_id\n\n    left join order_supplies_summary\n        on order_items.product_id = order_supplies_summary.product_id\n\n)\n\nselect * from joined",
-            "doc_blocks": [],
-            "language": "sql",
-            "refs": [
-                {
-                    "name": "stg_order_items",
-                    "package": null,
-                    "version": null
-                },
-                {
-                    "name": "stg_orders",
-                    "package": null,
-                    "version": null
-                },
-                {
-                    "name": "stg_products",
-                    "package": null,
-                    "version": null
-                },
-                {
-                    "name": "stg_supplies",
-                    "package": null,
-                    "version": null
-                }
-            ],
-            "sources": [],
-            "metrics": [],
-            "functions": [],
-            "depends_on": {
-                "macros": [],
-                "nodes": [
-                    "model.jaffle_shop.stg_order_items",
-                    "model.jaffle_shop.stg_orders",
-                    "model.jaffle_shop.stg_products",
-                    "model.jaffle_shop.stg_supplies"
-                ]
-            },
-            "compiled_path": "target/compiled/jaffle_shop/models/marts/order_items.sql",
-            "compiled": true,
-            "compiled_code": "with\n\norder_items as (\n\n    select * from shaman.dummy.stg_order_items\n\n),\n\n\norders as (\n\n    select * from shaman.dummy.stg_orders\n\n),\n\nproducts as (\n\n    select * from shaman.dummy.stg_products\n\n),\n\nsupplies as (\n\n    select * from shaman.dummy.stg_supplies\n\n),\n\norder_supplies_summary as (\n\n    select\n        product_id,\n\n        sum(supply_cost) as supply_cost\n\n    from supplies\n\n    group by 1\n\n),\n\njoined as (\n\n    select\n        order_items.*,\n\n        orders.ordered_at,\n\n        products.product_name,\n        products.product_price,\n        products.is_food_item,\n        products.is_drink_item,\n\n        order_supplies_summary.supply_cost\n\n    from order_items\n\n    left join orders on order_items.order_id = orders.order_id\n\n    left join products on order_items.product_id = products.product_id\n\n    left join order_supplies_summary\n        on order_items.product_id = order_supplies_summary.product_id\n\n)\n\nselect * from joined",
-            "extra_ctes_injected": true,
-            "extra_ctes": [],
-            "contract": {
-                "enforced": false,
-                "alias_types": true,
-                "checksum": null
-            },
-            "access": "protected",
-            "constraints": [],
-            "version": null,
-            "latest_version": null,
-            "deprecation_date": null,
-            "primary_key": [
-                "order_item_id"
-            ],
-            "time_spine": null
-        },
-        "model.jaffle_shop.locations": {
-            "database": "shaman",
-            "schema": "dummy",
-            "name": "locations",
-            "resource_type": "model",
-            "package_name": "jaffle_shop",
-            "path": "marts/locations.sql",
-            "original_file_path": "models/marts/locations.sql",
-            "unique_id": "model.jaffle_shop.locations",
-            "fqn": [
-                "jaffle_shop",
-                "marts",
-                "locations"
-            ],
-            "alias": "locations",
-            "checksum": {
-                "name": "sha256",
-                "checksum": "01e79fced00fb035440afc48077281f3c01163cfb6ae19ccbc4d73cc1ed7d2cf"
-            },
-            "config": {
-                "enabled": true,
-                "alias": null,
-                "schema": null,
-                "database": null,
-                "tags": [],
-                "meta": {},
-                "group": null,
-                "materialized": "table",
-                "incremental_strategy": null,
-                "batch_size": null,
-                "lookback": 1,
-                "begin": null,
-                "persist_docs": {},
-                "post-hook": [],
-                "pre-hook": [],
-                "quoting": {},
-                "column_types": {},
-                "full_refresh": null,
-                "unique_key": null,
-                "on_schema_change": "ignore",
-                "on_configuration_change": "apply",
-                "grants": {},
-                "packages": [],
-                "docs": {
-                    "show": true,
-                    "node_color": null
-                },
-                "contract": {
-                    "enforced": true,
-                    "alias_types": true
-                },
-                "event_time": null,
-                "concurrent_batches": null,
-                "access": "protected",
-                "freshness": null
-            },
-            "tags": [],
-            "description": "Location overview data mart. One row per location.",
-            "columns": {
-                "location_id": {
-                    "name": "location_id",
-                    "description": "The unique key of the locations mart.",
-                    "meta": {},
-                    "data_type": "integer",
-                    "constraints": [
-                        {
-                            "type": "primary_key",
-                            "name": null,
-                            "expression": null,
-                            "warn_unenforced": true,
-                            "warn_unsupported": true,
-                            "to": null,
-                            "to_columns": []
-                        }
-                    ],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "location_name": {
-                    "name": "location_name",
-                    "description": "The name of the location.",
-                    "meta": {},
-                    "data_type": "text",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "tax_rate": {
-                    "name": "tax_rate",
-                    "description": "The tax rate for the location.",
-                    "meta": {},
-                    "data_type": "numeric",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                },
-                "opened_date": {
-                    "name": "opened_date",
-                    "description": "The date the location opened.",
-                    "meta": {},
-                    "data_type": "date",
-                    "constraints": [],
-                    "quote": null,
-                    "config": {
-                        "meta": {},
-                        "tags": []
-                    },
-                    "tags": [],
-                    "granularity": null,
-                    "doc_blocks": []
-                }
-            },
-            "meta": {},
-            "group": null,
-            "docs": {
-                "show": true,
-                "node_color": null
-            },
-            "patch_path": "jaffle_shop://models/marts/locations.yml",
-            "build_path": null,
-            "unrendered_config": {
-                "materialized": "table",
-                "contract": {
-                    "enforced": true
-                }
-            },
-            "created_at": 1774063099.430203,
-            "relation_name": "shaman.dummy.locations",
-            "raw_code": "with\n\nlocations as (\n\n    select * from {{ ref('stg_locations') }}\n\n)\n\nselect * from locations",
-            "doc_blocks": [],
-            "language": "sql",
-            "refs": [
-                {
-                    "name": "stg_locations",
-                    "package": null,
-                    "version": null
-                }
-            ],
-            "sources": [],
-            "metrics": [],
-            "functions": [],
-            "depends_on": {
-                "macros": [],
-                "nodes": [
-                    "model.jaffle_shop.stg_locations"
-                ]
-            },
-            "compiled_path": "target/compiled/jaffle_shop/models/marts/locations.sql",
-            "compiled": true,
-            "compiled_code": "with\n\nlocations as (\n\n    select * from shaman.dummy.stg_locations\n\n)\n\nselect * from locations",
-            "extra_ctes_injected": true,
-            "extra_ctes": [],
-            "contract": {
-                "enforced": true,
-                "alias_types": true,
-                "checksum": "cbf5a5e1093b654d8a0faa100f4e612234064041e76811293e71937c60bba004"
-            },
-            "access": "protected",
-            "constraints": [],
-            "version": null,
-            "latest_version": null,
-            "deprecation_date": null,
-            "primary_key": [
-                "location_id"
-            ],
-            "time_spine": null
+            "time_spine": {
+                "standard_granularity_column": "date_day",
+                "custom_granularities": []
+            }
         },
         "test.jaffle_shop.not_null_stg_supplies_supply_uuid.515c6eda6d": {
             "database": "shaman",
@@ -3962,6 +3217,1261 @@
                 "namespace": "dbt_utils"
             }
         },
+        "model.jaffle_shop.fct_customer_segment_orders": {
+            "database": "shaman",
+            "schema": "dummy",
+            "name": "fct_customer_segment_orders",
+            "resource_type": "model",
+            "package_name": "jaffle_shop",
+            "path": "marts/fct_customer_segment_orders.sql",
+            "original_file_path": "models/marts/fct_customer_segment_orders.sql",
+            "unique_id": "model.jaffle_shop.fct_customer_segment_orders",
+            "fqn": [
+                "jaffle_shop",
+                "marts",
+                "fct_customer_segment_orders"
+            ],
+            "alias": "fct_customer_segment_orders",
+            "checksum": {
+                "name": "sha256",
+                "checksum": "7560527bfb258b17fa6a538942037f207acf0f88e2d99d2638b411ac80ca7917"
+            },
+            "config": {
+                "enabled": true,
+                "alias": null,
+                "schema": null,
+                "database": null,
+                "tags": [],
+                "meta": {},
+                "group": null,
+                "materialized": "table",
+                "incremental_strategy": null,
+                "batch_size": null,
+                "lookback": 1,
+                "begin": null,
+                "persist_docs": {},
+                "post-hook": [],
+                "pre-hook": [],
+                "quoting": {},
+                "column_types": {},
+                "full_refresh": null,
+                "unique_key": null,
+                "on_schema_change": "ignore",
+                "on_configuration_change": "apply",
+                "grants": {},
+                "packages": [],
+                "docs": {
+                    "show": true,
+                    "node_color": null
+                },
+                "contract": {
+                    "enforced": true,
+                    "alias_types": true
+                },
+                "event_time": null,
+                "concurrent_batches": null,
+                "access": "protected",
+                "freshness": null
+            },
+            "tags": [],
+            "description": "Fact table joining orders to their customer segment at time of order. One row per order.",
+            "columns": {
+                "order_id": {
+                    "name": "order_id",
+                    "description": "The unique key for each order.",
+                    "meta": {},
+                    "data_type": "text",
+                    "constraints": [
+                        {
+                            "type": "not_null",
+                            "name": null,
+                            "expression": null,
+                            "warn_unenforced": true,
+                            "warn_unsupported": true,
+                            "to": null,
+                            "to_columns": []
+                        }
+                    ],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "customer_id": {
+                    "name": "customer_id",
+                    "description": "Part of the composite FK to dim_customer_segment.",
+                    "meta": {},
+                    "data_type": "text",
+                    "constraints": [
+                        {
+                            "type": "not_null",
+                            "name": null,
+                            "expression": null,
+                            "warn_unenforced": true,
+                            "warn_unsupported": true,
+                            "to": null,
+                            "to_columns": []
+                        }
+                    ],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "segment_code": {
+                    "name": "segment_code",
+                    "description": "Part of the composite FK to dim_customer_segment.",
+                    "meta": {},
+                    "data_type": "varchar",
+                    "constraints": [
+                        {
+                            "type": "not_null",
+                            "name": null,
+                            "expression": null,
+                            "warn_unenforced": true,
+                            "warn_unsupported": true,
+                            "to": null,
+                            "to_columns": []
+                        }
+                    ],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "ordered_at": {
+                    "name": "ordered_at",
+                    "description": "The date the order was placed.",
+                    "meta": {},
+                    "data_type": "timestamp_ntz",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "order_total": {
+                    "name": "order_total",
+                    "description": "The total order amount in USD including tax.",
+                    "meta": {},
+                    "data_type": "numeric",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                }
+            },
+            "meta": {},
+            "group": null,
+            "docs": {
+                "show": true,
+                "node_color": null
+            },
+            "patch_path": "jaffle_shop://models/marts/fct_customer_segment_orders.yml",
+            "build_path": null,
+            "unrendered_config": {
+                "materialized": "table",
+                "contract": {
+                    "enforced": true
+                }
+            },
+            "created_at": 1774064361.118193,
+            "relation_name": "shaman.dummy.fct_customer_segment_orders",
+            "raw_code": "with\n\norders as (\n\n    select * from {{ ref('stg_orders') }}\n\n),\n\nsegments as (\n\n    select * from {{ ref('dim_customer_segment') }}\n\n),\n\njoined as (\n\n    select\n        orders.order_id,\n        orders.customer_id,\n        segments.segment_code,\n        orders.ordered_at,\n        orders.order_total\n\n    from orders\n    inner join segments using (customer_id)\n\n)\n\nselect * from joined",
+            "doc_blocks": [],
+            "language": "sql",
+            "refs": [
+                {
+                    "name": "stg_orders",
+                    "package": null,
+                    "version": null
+                },
+                {
+                    "name": "dim_customer_segment",
+                    "package": null,
+                    "version": null
+                },
+                {
+                    "name": "dim_customer_segment",
+                    "package": null,
+                    "version": null
+                }
+            ],
+            "sources": [],
+            "metrics": [],
+            "functions": [],
+            "depends_on": {
+                "macros": [],
+                "nodes": [
+                    "model.jaffle_shop.stg_orders",
+                    "model.jaffle_shop.dim_customer_segment"
+                ]
+            },
+            "compiled_path": "target/compiled/jaffle_shop/models/marts/fct_customer_segment_orders.sql",
+            "compiled": true,
+            "compiled_code": "with\n\norders as (\n\n    select * from shaman.dummy.stg_orders\n\n),\n\nsegments as (\n\n    select * from shaman.dummy.dim_customer_segment\n\n),\n\njoined as (\n\n    select\n        orders.order_id,\n        orders.customer_id,\n        segments.segment_code,\n        orders.ordered_at,\n        orders.order_total\n\n    from orders\n    inner join segments using (customer_id)\n\n)\n\nselect * from joined",
+            "extra_ctes_injected": true,
+            "extra_ctes": [],
+            "contract": {
+                "enforced": true,
+                "alias_types": true,
+                "checksum": "c64d6a98b59aaac85daee674c71cb445fcf76408184af42fd96ba6a11fe3a585"
+            },
+            "access": "protected",
+            "constraints": [
+                {
+                    "type": "primary_key",
+                    "name": null,
+                    "expression": null,
+                    "warn_unenforced": true,
+                    "warn_unsupported": true,
+                    "to": null,
+                    "to_columns": [],
+                    "columns": [
+                        "order_id"
+                    ]
+                },
+                {
+                    "type": "foreign_key",
+                    "name": null,
+                    "expression": null,
+                    "warn_unenforced": true,
+                    "warn_unsupported": true,
+                    "to": "shaman.dummy.dim_customer_segment",
+                    "to_columns": [
+                        "customer_id",
+                        "segment_code"
+                    ],
+                    "columns": [
+                        "customer_id",
+                        "segment_code"
+                    ]
+                }
+            ],
+            "version": null,
+            "latest_version": null,
+            "deprecation_date": null,
+            "primary_key": [
+                "order_id"
+            ],
+            "time_spine": null
+        },
+        "model.jaffle_shop.dim_customer_segment": {
+            "database": "shaman",
+            "schema": "dummy",
+            "name": "dim_customer_segment",
+            "resource_type": "model",
+            "package_name": "jaffle_shop",
+            "path": "marts/dim_customer_segment.sql",
+            "original_file_path": "models/marts/dim_customer_segment.sql",
+            "unique_id": "model.jaffle_shop.dim_customer_segment",
+            "fqn": [
+                "jaffle_shop",
+                "marts",
+                "dim_customer_segment"
+            ],
+            "alias": "dim_customer_segment",
+            "checksum": {
+                "name": "sha256",
+                "checksum": "accd852a31194903481bd5a17217f6de6aec403d82dec6037018e575d1b01ea0"
+            },
+            "config": {
+                "enabled": true,
+                "alias": null,
+                "schema": null,
+                "database": null,
+                "tags": [],
+                "meta": {},
+                "group": null,
+                "materialized": "table",
+                "incremental_strategy": null,
+                "batch_size": null,
+                "lookback": 1,
+                "begin": null,
+                "persist_docs": {},
+                "post-hook": [],
+                "pre-hook": [],
+                "quoting": {},
+                "column_types": {},
+                "full_refresh": null,
+                "unique_key": null,
+                "on_schema_change": "ignore",
+                "on_configuration_change": "apply",
+                "grants": {},
+                "packages": [],
+                "docs": {
+                    "show": true,
+                    "node_color": null
+                },
+                "contract": {
+                    "enforced": true,
+                    "alias_types": true
+                },
+                "event_time": null,
+                "concurrent_batches": null,
+                "access": "protected",
+                "freshness": null
+            },
+            "tags": [],
+            "description": "Customer dimension with segment classification. One row per customer per segment code (composite grain).",
+            "columns": {
+                "customer_id": {
+                    "name": "customer_id",
+                    "description": "The foreign key to the customer.",
+                    "meta": {},
+                    "data_type": "text",
+                    "constraints": [
+                        {
+                            "type": "not_null",
+                            "name": null,
+                            "expression": null,
+                            "warn_unenforced": true,
+                            "warn_unsupported": true,
+                            "to": null,
+                            "to_columns": []
+                        }
+                    ],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "segment_code": {
+                    "name": "segment_code",
+                    "description": "The customer segment — NEW, REGULAR, or VIP.",
+                    "meta": {},
+                    "data_type": "varchar",
+                    "constraints": [
+                        {
+                            "type": "not_null",
+                            "name": null,
+                            "expression": null,
+                            "warn_unenforced": true,
+                            "warn_unsupported": true,
+                            "to": null,
+                            "to_columns": []
+                        }
+                    ],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "lifetime_order_count": {
+                    "name": "lifetime_order_count",
+                    "description": "Total number of orders placed by the customer.",
+                    "meta": {},
+                    "data_type": "bigint",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                }
+            },
+            "meta": {},
+            "group": null,
+            "docs": {
+                "show": true,
+                "node_color": null
+            },
+            "patch_path": "jaffle_shop://models/marts/dim_customer_segment.yml",
+            "build_path": null,
+            "unrendered_config": {
+                "materialized": "table",
+                "contract": {
+                    "enforced": true
+                }
+            },
+            "created_at": 1774064361.1197,
+            "relation_name": "shaman.dummy.dim_customer_segment",
+            "raw_code": "with\n\ncustomers as (\n\n    select * from {{ ref('stg_customers') }}\n\n),\n\norders as (\n\n    select * from {{ ref('stg_orders') }}\n\n),\n\norder_counts as (\n\n    select\n        customer_id,\n        count(*) as lifetime_order_count\n\n    from orders\n    group by 1\n\n),\n\nsegmented as (\n\n    select\n        customers.customer_id,\n        case\n            when order_counts.lifetime_order_count >= 10 then 'VIP'\n            when order_counts.lifetime_order_count >= 3  then 'REGULAR'\n            else                                              'NEW'\n        end as segment_code,\n        order_counts.lifetime_order_count\n\n    from customers\n    left join order_counts using (customer_id)\n\n)\n\nselect * from segmented",
+            "doc_blocks": [],
+            "language": "sql",
+            "refs": [
+                {
+                    "name": "stg_customers",
+                    "package": null,
+                    "version": null
+                },
+                {
+                    "name": "stg_orders",
+                    "package": null,
+                    "version": null
+                }
+            ],
+            "sources": [],
+            "metrics": [],
+            "functions": [],
+            "depends_on": {
+                "macros": [],
+                "nodes": [
+                    "model.jaffle_shop.stg_customers",
+                    "model.jaffle_shop.stg_orders"
+                ]
+            },
+            "compiled_path": "target/compiled/jaffle_shop/models/marts/dim_customer_segment.sql",
+            "compiled": true,
+            "compiled_code": "with\n\ncustomers as (\n\n    select * from shaman.dummy.stg_customers\n\n),\n\norders as (\n\n    select * from shaman.dummy.stg_orders\n\n),\n\norder_counts as (\n\n    select\n        customer_id,\n        count(*) as lifetime_order_count\n\n    from orders\n    group by 1\n\n),\n\nsegmented as (\n\n    select\n        customers.customer_id,\n        case\n            when order_counts.lifetime_order_count >= 10 then 'VIP'\n            when order_counts.lifetime_order_count >= 3  then 'REGULAR'\n            else                                              'NEW'\n        end as segment_code,\n        order_counts.lifetime_order_count\n\n    from customers\n    left join order_counts using (customer_id)\n\n)\n\nselect * from segmented",
+            "extra_ctes_injected": true,
+            "extra_ctes": [],
+            "contract": {
+                "enforced": true,
+                "alias_types": true,
+                "checksum": "20f7301ac3b07bfdb3c6d78307fd79052cb5ba26ec287c2b26f12efa8a409c26"
+            },
+            "access": "protected",
+            "constraints": [
+                {
+                    "type": "primary_key",
+                    "name": null,
+                    "expression": null,
+                    "warn_unenforced": true,
+                    "warn_unsupported": true,
+                    "to": null,
+                    "to_columns": [],
+                    "columns": [
+                        "customer_id",
+                        "segment_code"
+                    ]
+                }
+            ],
+            "version": null,
+            "latest_version": null,
+            "deprecation_date": null,
+            "primary_key": [
+                "customer_id",
+                "segment_code"
+            ],
+            "time_spine": null
+        },
+        "model.jaffle_shop.locations": {
+            "database": "shaman",
+            "schema": "dummy",
+            "name": "locations",
+            "resource_type": "model",
+            "package_name": "jaffle_shop",
+            "path": "marts/locations.sql",
+            "original_file_path": "models/marts/locations.sql",
+            "unique_id": "model.jaffle_shop.locations",
+            "fqn": [
+                "jaffle_shop",
+                "marts",
+                "locations"
+            ],
+            "alias": "locations",
+            "checksum": {
+                "name": "sha256",
+                "checksum": "01e79fced00fb035440afc48077281f3c01163cfb6ae19ccbc4d73cc1ed7d2cf"
+            },
+            "config": {
+                "enabled": true,
+                "alias": null,
+                "schema": null,
+                "database": null,
+                "tags": [],
+                "meta": {},
+                "group": null,
+                "materialized": "table",
+                "incremental_strategy": null,
+                "batch_size": null,
+                "lookback": 1,
+                "begin": null,
+                "persist_docs": {},
+                "post-hook": [],
+                "pre-hook": [],
+                "quoting": {},
+                "column_types": {},
+                "full_refresh": null,
+                "unique_key": null,
+                "on_schema_change": "ignore",
+                "on_configuration_change": "apply",
+                "grants": {},
+                "packages": [],
+                "docs": {
+                    "show": true,
+                    "node_color": null
+                },
+                "contract": {
+                    "enforced": true,
+                    "alias_types": true
+                },
+                "event_time": null,
+                "concurrent_batches": null,
+                "access": "protected",
+                "freshness": null
+            },
+            "tags": [],
+            "description": "Location overview data mart. One row per location.",
+            "columns": {
+                "location_id": {
+                    "name": "location_id",
+                    "description": "The unique key of the locations mart.",
+                    "meta": {},
+                    "data_type": "text",
+                    "constraints": [
+                        {
+                            "type": "primary_key",
+                            "name": null,
+                            "expression": null,
+                            "warn_unenforced": true,
+                            "warn_unsupported": true,
+                            "to": null,
+                            "to_columns": []
+                        }
+                    ],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "location_name": {
+                    "name": "location_name",
+                    "description": "The name of the location.",
+                    "meta": {},
+                    "data_type": "text",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "tax_rate": {
+                    "name": "tax_rate",
+                    "description": "The tax rate for the location.",
+                    "meta": {},
+                    "data_type": "float",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "opened_date": {
+                    "name": "opened_date",
+                    "description": "The date the location opened.",
+                    "meta": {},
+                    "data_type": "timestamp_ntz",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                }
+            },
+            "meta": {},
+            "group": null,
+            "docs": {
+                "show": true,
+                "node_color": null
+            },
+            "patch_path": "jaffle_shop://models/marts/locations.yml",
+            "build_path": null,
+            "unrendered_config": {
+                "materialized": "table",
+                "contract": {
+                    "enforced": true
+                }
+            },
+            "created_at": 1774064442.2255318,
+            "relation_name": "shaman.dummy.locations",
+            "raw_code": "with\n\nlocations as (\n\n    select * from {{ ref('stg_locations') }}\n\n)\n\nselect * from locations",
+            "doc_blocks": [],
+            "language": "sql",
+            "refs": [
+                {
+                    "name": "stg_locations",
+                    "package": null,
+                    "version": null
+                }
+            ],
+            "sources": [],
+            "metrics": [],
+            "functions": [],
+            "depends_on": {
+                "macros": [],
+                "nodes": [
+                    "model.jaffle_shop.stg_locations"
+                ]
+            },
+            "compiled_path": "target/compiled/jaffle_shop/models/marts/locations.sql",
+            "compiled": true,
+            "compiled_code": "with\n\nlocations as (\n\n    select * from shaman.dummy.stg_locations\n\n)\n\nselect * from locations",
+            "extra_ctes_injected": true,
+            "extra_ctes": [],
+            "contract": {
+                "enforced": true,
+                "alias_types": true,
+                "checksum": "46e65a1c39c160649b4c991267b0280adc86be808e881e69214ebb8bcaae2db6"
+            },
+            "access": "protected",
+            "constraints": [],
+            "version": null,
+            "latest_version": null,
+            "deprecation_date": null,
+            "primary_key": [
+                "location_id"
+            ],
+            "time_spine": null
+        },
+        "test.jaffle_shop.not_null_locations_location_id.7cc3d904c1": {
+            "database": "shaman",
+            "schema": "dummy",
+            "name": "not_null_locations_location_id",
+            "resource_type": "test",
+            "package_name": "jaffle_shop",
+            "path": "not_null_locations_location_id.sql",
+            "original_file_path": "models/marts/locations.yml",
+            "unique_id": "test.jaffle_shop.not_null_locations_location_id.7cc3d904c1",
+            "fqn": [
+                "jaffle_shop",
+                "marts",
+                "not_null_locations_location_id"
+            ],
+            "alias": "not_null_locations_location_id",
+            "checksum": {
+                "name": "none",
+                "checksum": ""
+            },
+            "config": {
+                "enabled": true,
+                "alias": null,
+                "schema": "dbt_test__audit",
+                "database": null,
+                "tags": [],
+                "meta": {},
+                "group": null,
+                "materialized": "test",
+                "severity": "ERROR",
+                "store_failures": null,
+                "store_failures_as": null,
+                "where": null,
+                "limit": null,
+                "fail_calc": "count(*)",
+                "warn_if": "!= 0",
+                "error_if": "!= 0"
+            },
+            "tags": [],
+            "description": "",
+            "columns": {},
+            "meta": {},
+            "group": null,
+            "docs": {
+                "show": true,
+                "node_color": null
+            },
+            "patch_path": null,
+            "build_path": null,
+            "unrendered_config": {},
+            "created_at": 1774064442.250048,
+            "relation_name": null,
+            "raw_code": "{{ test_not_null(**_dbt_generic_test_kwargs) }}",
+            "doc_blocks": [],
+            "language": "sql",
+            "refs": [
+                {
+                    "name": "locations",
+                    "package": null,
+                    "version": null
+                }
+            ],
+            "sources": [],
+            "metrics": [],
+            "functions": [],
+            "depends_on": {
+                "macros": [
+                    "macro.dbt.test_not_null",
+                    "macro.dbt.get_where_subquery"
+                ],
+                "nodes": [
+                    "model.jaffle_shop.locations"
+                ]
+            },
+            "compiled_path": "target/compiled/jaffle_shop/models/marts/locations.yml/not_null_locations_location_id.sql",
+            "compiled": true,
+            "compiled_code": "\n    \n    \n\n\n\nselect location_id\nfrom shaman.dummy.locations\nwhere location_id is null\n\n\n",
+            "extra_ctes_injected": true,
+            "extra_ctes": [],
+            "contract": {
+                "enforced": false,
+                "alias_types": true,
+                "checksum": null
+            },
+            "column_name": "location_id",
+            "file_key_name": "models.locations",
+            "attached_node": "model.jaffle_shop.locations",
+            "test_metadata": {
+                "name": "not_null",
+                "kwargs": {
+                    "column_name": "location_id",
+                    "model": "{{ get_where_subquery(ref('locations')) }}"
+                },
+                "namespace": null
+            }
+        },
+        "test.jaffle_shop.unique_locations_location_id.3d912557dd": {
+            "database": "shaman",
+            "schema": "dummy",
+            "name": "unique_locations_location_id",
+            "resource_type": "test",
+            "package_name": "jaffle_shop",
+            "path": "unique_locations_location_id.sql",
+            "original_file_path": "models/marts/locations.yml",
+            "unique_id": "test.jaffle_shop.unique_locations_location_id.3d912557dd",
+            "fqn": [
+                "jaffle_shop",
+                "marts",
+                "unique_locations_location_id"
+            ],
+            "alias": "unique_locations_location_id",
+            "checksum": {
+                "name": "none",
+                "checksum": ""
+            },
+            "config": {
+                "enabled": true,
+                "alias": null,
+                "schema": "dbt_test__audit",
+                "database": null,
+                "tags": [],
+                "meta": {},
+                "group": null,
+                "materialized": "test",
+                "severity": "ERROR",
+                "store_failures": null,
+                "store_failures_as": null,
+                "where": null,
+                "limit": null,
+                "fail_calc": "count(*)",
+                "warn_if": "!= 0",
+                "error_if": "!= 0"
+            },
+            "tags": [],
+            "description": "",
+            "columns": {},
+            "meta": {},
+            "group": null,
+            "docs": {
+                "show": true,
+                "node_color": null
+            },
+            "patch_path": null,
+            "build_path": null,
+            "unrendered_config": {},
+            "created_at": 1774064442.250817,
+            "relation_name": null,
+            "raw_code": "{{ test_unique(**_dbt_generic_test_kwargs) }}",
+            "doc_blocks": [],
+            "language": "sql",
+            "refs": [
+                {
+                    "name": "locations",
+                    "package": null,
+                    "version": null
+                }
+            ],
+            "sources": [],
+            "metrics": [],
+            "functions": [],
+            "depends_on": {
+                "macros": [
+                    "macro.dbt.test_unique",
+                    "macro.dbt.get_where_subquery"
+                ],
+                "nodes": [
+                    "model.jaffle_shop.locations"
+                ]
+            },
+            "compiled_path": "target/compiled/jaffle_shop/models/marts/locations.yml/unique_locations_location_id.sql",
+            "compiled": true,
+            "compiled_code": "\n    \n    \n\nselect\n    location_id as unique_field,\n    count(*) as n_records\n\nfrom shaman.dummy.locations\nwhere location_id is not null\ngroup by location_id\nhaving count(*) > 1\n\n\n",
+            "extra_ctes_injected": true,
+            "extra_ctes": [],
+            "contract": {
+                "enforced": false,
+                "alias_types": true,
+                "checksum": null
+            },
+            "column_name": "location_id",
+            "file_key_name": "models.locations",
+            "attached_node": "model.jaffle_shop.locations",
+            "test_metadata": {
+                "name": "unique",
+                "kwargs": {
+                    "column_name": "location_id",
+                    "model": "{{ get_where_subquery(ref('locations')) }}"
+                },
+                "namespace": null
+            }
+        },
+        "model.jaffle_shop.orders": {
+            "database": "shaman",
+            "schema": "dummy",
+            "name": "orders",
+            "resource_type": "model",
+            "package_name": "jaffle_shop",
+            "path": "marts/orders.sql",
+            "original_file_path": "models/marts/orders.sql",
+            "unique_id": "model.jaffle_shop.orders",
+            "fqn": [
+                "jaffle_shop",
+                "marts",
+                "orders"
+            ],
+            "alias": "orders",
+            "checksum": {
+                "name": "sha256",
+                "checksum": "672fab3cb996bc7652da3f751da1f11f2674290bb3fdd3b5ed4fc35b0bbb6460"
+            },
+            "config": {
+                "enabled": true,
+                "alias": null,
+                "schema": null,
+                "database": null,
+                "tags": [],
+                "meta": {},
+                "group": null,
+                "materialized": "table",
+                "incremental_strategy": null,
+                "batch_size": null,
+                "lookback": 1,
+                "begin": null,
+                "persist_docs": {},
+                "post-hook": [],
+                "pre-hook": [],
+                "quoting": {},
+                "column_types": {},
+                "full_refresh": null,
+                "unique_key": null,
+                "on_schema_change": "ignore",
+                "on_configuration_change": "apply",
+                "grants": {},
+                "packages": [],
+                "docs": {
+                    "show": true,
+                    "node_color": null
+                },
+                "contract": {
+                    "enforced": true,
+                    "alias_types": true
+                },
+                "event_time": null,
+                "concurrent_batches": null,
+                "access": "protected",
+                "freshness": null
+            },
+            "tags": [],
+            "description": "Order overview data mart, offering key details for each order inlcluding if it's a customer's first order and a food vs. drink item breakdown. One row per order.",
+            "columns": {
+                "order_id": {
+                    "name": "order_id",
+                    "description": "The unique key of the orders mart.",
+                    "meta": {},
+                    "data_type": "text",
+                    "constraints": [
+                        {
+                            "type": "primary_key",
+                            "name": null,
+                            "expression": null,
+                            "warn_unenforced": true,
+                            "warn_unsupported": true,
+                            "to": null,
+                            "to_columns": []
+                        }
+                    ],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "customer_id": {
+                    "name": "customer_id",
+                    "description": "The foreign key relating to the customer who placed the order.",
+                    "meta": {},
+                    "data_type": "text",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "location_id": {
+                    "name": "location_id",
+                    "description": "The foreign key relating to the location where the order was placed.",
+                    "meta": {},
+                    "data_type": "text",
+                    "constraints": [
+                        {
+                            "type": "foreign_key",
+                            "name": null,
+                            "expression": null,
+                            "warn_unenforced": true,
+                            "warn_unsupported": true,
+                            "to": "shaman.dummy.locations",
+                            "to_columns": [
+                                "location_id"
+                            ]
+                        }
+                    ],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "order_total": {
+                    "name": "order_total",
+                    "description": "The total amount of the order in USD including tax.",
+                    "meta": {},
+                    "data_type": "numeric",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "ordered_at": {
+                    "name": "ordered_at",
+                    "description": "The timestamp the order was placed at.",
+                    "meta": {},
+                    "data_type": "timestamp_ntz",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "subtotal_cents": {
+                    "name": "subtotal_cents",
+                    "description": "The pre-tax subtotal of the order in cents.",
+                    "meta": {},
+                    "data_type": "integer",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "tax_paid_cents": {
+                    "name": "tax_paid_cents",
+                    "description": "The tax portion of the order in cents.",
+                    "meta": {},
+                    "data_type": "integer",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "order_total_cents": {
+                    "name": "order_total_cents",
+                    "description": "The total amount of the order in cents including tax.",
+                    "meta": {},
+                    "data_type": "integer",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "subtotal": {
+                    "name": "subtotal",
+                    "description": "The pre-tax subtotal of the order in USD.",
+                    "meta": {},
+                    "data_type": "numeric",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "tax_paid": {
+                    "name": "tax_paid",
+                    "description": "The tax portion of the order in USD.",
+                    "meta": {},
+                    "data_type": "numeric",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "order_cost": {
+                    "name": "order_cost",
+                    "description": "The sum of supply expenses to fulfill the order.",
+                    "meta": {},
+                    "data_type": "numeric",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "order_items_subtotal": {
+                    "name": "order_items_subtotal",
+                    "description": "The sum of product prices for all items in the order.",
+                    "meta": {},
+                    "data_type": "numeric",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "count_order_items": {
+                    "name": "count_order_items",
+                    "description": "The number of items in the order.",
+                    "meta": {},
+                    "data_type": "bigint",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "count_food_items": {
+                    "name": "count_food_items",
+                    "description": "The number of food items in the order.",
+                    "meta": {},
+                    "data_type": "bigint",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "count_drink_items": {
+                    "name": "count_drink_items",
+                    "description": "The number of drink items in the order.",
+                    "meta": {},
+                    "data_type": "bigint",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "is_food_order": {
+                    "name": "is_food_order",
+                    "description": "A boolean indicating if this order included any food items.",
+                    "meta": {},
+                    "data_type": "boolean",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "is_drink_order": {
+                    "name": "is_drink_order",
+                    "description": "A boolean indicating if this order included any drink items.",
+                    "meta": {},
+                    "data_type": "boolean",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "customer_order_number": {
+                    "name": "customer_order_number",
+                    "description": "The sequential order number for this customer (1 = first order).",
+                    "meta": {},
+                    "data_type": "bigint",
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                }
+            },
+            "meta": {},
+            "group": null,
+            "docs": {
+                "show": true,
+                "node_color": null
+            },
+            "patch_path": "jaffle_shop://models/marts/orders.yml",
+            "build_path": null,
+            "unrendered_config": {
+                "materialized": "table",
+                "contract": {
+                    "enforced": true
+                }
+            },
+            "created_at": 1774064478.395257,
+            "relation_name": "shaman.dummy.orders",
+            "raw_code": "with\n\norders as (\n\n    select * from {{ ref('stg_orders') }}\n\n),\n\norder_items as (\n\n    select * from {{ ref('order_items') }}\n\n),\n\norder_items_summary as (\n\n    select\n        order_id,\n\n        sum(supply_cost) as order_cost,\n        sum(product_price) as order_items_subtotal,\n        count(order_item_id) as count_order_items,\n        sum(\n            case\n                when is_food_item then 1\n                else 0\n            end\n        ) as count_food_items,\n        sum(\n            case\n                when is_drink_item then 1\n                else 0\n            end\n        ) as count_drink_items\n\n    from order_items\n\n    group by 1\n\n),\n\ncompute_booleans as (\n\n    select\n        orders.*,\n\n        order_items_summary.order_cost,\n        order_items_summary.order_items_subtotal,\n        order_items_summary.count_food_items,\n        order_items_summary.count_drink_items,\n        order_items_summary.count_order_items,\n        order_items_summary.count_food_items > 0 as is_food_order,\n        order_items_summary.count_drink_items > 0 as is_drink_order\n\n    from orders\n\n    left join\n        order_items_summary\n        on orders.order_id = order_items_summary.order_id\n\n),\n\ncustomer_order_count as (\n\n    select\n        *,\n\n        row_number() over (\n            partition by customer_id\n            order by ordered_at asc\n        ) as customer_order_number\n\n    from compute_booleans\n\n)\n\nselect * from customer_order_count",
+            "doc_blocks": [],
+            "language": "sql",
+            "refs": [
+                {
+                    "name": "stg_orders",
+                    "package": null,
+                    "version": null
+                },
+                {
+                    "name": "order_items",
+                    "package": null,
+                    "version": null
+                },
+                {
+                    "name": "locations",
+                    "package": null,
+                    "version": null
+                }
+            ],
+            "sources": [],
+            "metrics": [],
+            "functions": [],
+            "depends_on": {
+                "macros": [],
+                "nodes": [
+                    "model.jaffle_shop.stg_orders",
+                    "model.jaffle_shop.order_items",
+                    "model.jaffle_shop.locations"
+                ]
+            },
+            "compiled_path": "target/compiled/jaffle_shop/models/marts/orders.sql",
+            "compiled": true,
+            "compiled_code": "with\n\norders as (\n\n    select * from shaman.dummy.stg_orders\n\n),\n\norder_items as (\n\n    select * from shaman.dummy.order_items\n\n),\n\norder_items_summary as (\n\n    select\n        order_id,\n\n        sum(supply_cost) as order_cost,\n        sum(product_price) as order_items_subtotal,\n        count(order_item_id) as count_order_items,\n        sum(\n            case\n                when is_food_item then 1\n                else 0\n            end\n        ) as count_food_items,\n        sum(\n            case\n                when is_drink_item then 1\n                else 0\n            end\n        ) as count_drink_items\n\n    from order_items\n\n    group by 1\n\n),\n\ncompute_booleans as (\n\n    select\n        orders.*,\n\n        order_items_summary.order_cost,\n        order_items_summary.order_items_subtotal,\n        order_items_summary.count_food_items,\n        order_items_summary.count_drink_items,\n        order_items_summary.count_order_items,\n        order_items_summary.count_food_items > 0 as is_food_order,\n        order_items_summary.count_drink_items > 0 as is_drink_order\n\n    from orders\n\n    left join\n        order_items_summary\n        on orders.order_id = order_items_summary.order_id\n\n),\n\ncustomer_order_count as (\n\n    select\n        *,\n\n        row_number() over (\n            partition by customer_id\n            order by ordered_at asc\n        ) as customer_order_number\n\n    from compute_booleans\n\n)\n\nselect * from customer_order_count",
+            "extra_ctes_injected": true,
+            "extra_ctes": [],
+            "contract": {
+                "enforced": true,
+                "alias_types": true,
+                "checksum": "a434fde5ad8b9e610c55fec0b814828a7a00a1e45b01511e822eb9f43a7a3ac7"
+            },
+            "access": "protected",
+            "constraints": [],
+            "version": null,
+            "latest_version": null,
+            "deprecation_date": null,
+            "primary_key": [
+                "order_id"
+            ],
+            "time_spine": null
+        },
         "test.jaffle_shop.not_null_orders_order_id.cf6c17daed": {
             "database": "shaman",
             "schema": "dummy",
@@ -4011,7 +4521,7 @@
             "patch_path": null,
             "build_path": null,
             "unrendered_config": {},
-            "created_at": 1774063099.420384,
+            "created_at": 1774064478.395617,
             "relation_name": null,
             "raw_code": "{{ test_not_null(**_dbt_generic_test_kwargs) }}",
             "doc_blocks": [],
@@ -4106,7 +4616,7 @@
             "patch_path": null,
             "build_path": null,
             "unrendered_config": {},
-            "created_at": 1774063099.4208362,
+            "created_at": 1774064478.396061,
             "relation_name": null,
             "raw_code": "{{ test_unique(**_dbt_generic_test_kwargs) }}",
             "doc_blocks": [],
@@ -4203,7 +4713,7 @@
             "unrendered_config": {
                 "alias": "relationships_orders_0389c224a99a98c0b58aedb753f052f0"
             },
-            "created_at": 1774063099.421273,
+            "created_at": 1774064478.3965151,
             "relation_name": null,
             "raw_code": "{{ test_relationships(**_dbt_generic_test_kwargs) }}{{ config(alias=\"relationships_orders_0389c224a99a98c0b58aedb753f052f0\") }}",
             "doc_blocks": [],
@@ -4308,7 +4818,7 @@
             "unrendered_config": {
                 "alias": "dbt_utils_expression_is_true_o_c0acd0b625f5605c61af04356663a823"
             },
-            "created_at": 1774063099.422838,
+            "created_at": 1774064478.397871,
             "relation_name": null,
             "raw_code": "{{ dbt_utils.test_expression_is_true(**_dbt_generic_test_kwargs) }}{{ config(alias=\"dbt_utils_expression_is_true_o_c0acd0b625f5605c61af04356663a823\") }}",
             "doc_blocks": [],
@@ -4405,7 +4915,7 @@
             "unrendered_config": {
                 "alias": "dbt_utils_expression_is_true_o_bf2cfee53d5bb32a0a918086ae35fff9"
             },
-            "created_at": 1774063099.424055,
+            "created_at": 1774064478.4008892,
             "relation_name": null,
             "raw_code": "{{ dbt_utils.test_expression_is_true(**_dbt_generic_test_kwargs) }}{{ config(alias=\"dbt_utils_expression_is_true_o_bf2cfee53d5bb32a0a918086ae35fff9\") }}",
             "doc_blocks": [],
@@ -4451,63 +4961,130 @@
                 "namespace": "dbt_utils"
             }
         },
-        "test.jaffle_shop.not_null_locations_location_id.7cc3d904c1": {
+        "model.jaffle_shop.order_items": {
             "database": "shaman",
             "schema": "dummy",
-            "name": "not_null_locations_location_id",
-            "resource_type": "test",
+            "name": "order_items",
+            "resource_type": "model",
             "package_name": "jaffle_shop",
-            "path": "not_null_locations_location_id.sql",
-            "original_file_path": "models/marts/locations.yml",
-            "unique_id": "test.jaffle_shop.not_null_locations_location_id.7cc3d904c1",
+            "path": "marts/order_items.sql",
+            "original_file_path": "models/marts/order_items.sql",
+            "unique_id": "model.jaffle_shop.order_items",
             "fqn": [
                 "jaffle_shop",
                 "marts",
-                "not_null_locations_location_id"
+                "order_items"
             ],
-            "alias": "not_null_locations_location_id",
+            "alias": "order_items",
             "checksum": {
-                "name": "none",
-                "checksum": ""
+                "name": "sha256",
+                "checksum": "f6268350d0266dc7b23e662349e4c94a9e1d9f4689765055ba7c5ea07d82a06c"
             },
             "config": {
                 "enabled": true,
                 "alias": null,
-                "schema": "dbt_test__audit",
+                "schema": null,
                 "database": null,
                 "tags": [],
                 "meta": {},
                 "group": null,
-                "materialized": "test",
-                "severity": "ERROR",
-                "store_failures": null,
-                "store_failures_as": null,
-                "where": null,
-                "limit": null,
-                "fail_calc": "count(*)",
-                "warn_if": "!= 0",
-                "error_if": "!= 0"
+                "materialized": "table",
+                "incremental_strategy": null,
+                "batch_size": null,
+                "lookback": 1,
+                "begin": null,
+                "persist_docs": {},
+                "post-hook": [],
+                "pre-hook": [],
+                "quoting": {},
+                "column_types": {},
+                "full_refresh": null,
+                "unique_key": null,
+                "on_schema_change": "ignore",
+                "on_configuration_change": "apply",
+                "grants": {},
+                "packages": [],
+                "docs": {
+                    "show": true,
+                    "node_color": null
+                },
+                "contract": {
+                    "enforced": false,
+                    "alias_types": true
+                },
+                "event_time": null,
+                "concurrent_batches": null,
+                "access": "protected",
+                "freshness": null
             },
             "tags": [],
             "description": "",
-            "columns": {},
+            "columns": {
+                "order_item_id": {
+                    "name": "order_item_id",
+                    "description": "",
+                    "meta": {},
+                    "data_type": null,
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                },
+                "order_id": {
+                    "name": "order_id",
+                    "description": "",
+                    "meta": {},
+                    "data_type": null,
+                    "constraints": [],
+                    "quote": null,
+                    "config": {
+                        "meta": {},
+                        "tags": []
+                    },
+                    "tags": [],
+                    "granularity": null,
+                    "doc_blocks": []
+                }
+            },
             "meta": {},
             "group": null,
             "docs": {
                 "show": true,
                 "node_color": null
             },
-            "patch_path": null,
+            "patch_path": "jaffle_shop://models/marts/order_items.yml",
             "build_path": null,
-            "unrendered_config": {},
-            "created_at": 1774063099.430468,
-            "relation_name": null,
-            "raw_code": "{{ test_not_null(**_dbt_generic_test_kwargs) }}",
+            "unrendered_config": {
+                "materialized": "table"
+            },
+            "created_at": 1774064528.997605,
+            "relation_name": "shaman.dummy.order_items",
+            "raw_code": "with\n\norder_items as (\n\n    select * from {{ ref('stg_order_items') }}\n\n),\n\n\norders as (\n\n    select * from {{ ref('stg_orders') }}\n\n),\n\nproducts as (\n\n    select * from {{ ref('stg_products') }}\n\n),\n\nsupplies as (\n\n    select * from {{ ref('stg_supplies') }}\n\n),\n\norder_supplies_summary as (\n\n    select\n        product_id,\n\n        sum(supply_cost) as supply_cost\n\n    from supplies\n\n    group by 1\n\n),\n\njoined as (\n\n    select\n        order_items.*,\n\n        orders.ordered_at,\n\n        products.product_name,\n        products.product_price,\n        products.is_food_item,\n        products.is_drink_item,\n\n        order_supplies_summary.supply_cost\n\n    from order_items\n\n    left join orders on order_items.order_id = orders.order_id\n\n    left join products on order_items.product_id = products.product_id\n\n    left join order_supplies_summary\n        on order_items.product_id = order_supplies_summary.product_id\n\n)\n\nselect * from joined",
             "doc_blocks": [],
             "language": "sql",
             "refs": [
                 {
-                    "name": "locations",
+                    "name": "stg_order_items",
+                    "package": null,
+                    "version": null
+                },
+                {
+                    "name": "stg_orders",
+                    "package": null,
+                    "version": null
+                },
+                {
+                    "name": "stg_products",
+                    "package": null,
+                    "version": null
+                },
+                {
+                    "name": "stg_supplies",
                     "package": null,
                     "version": null
                 }
@@ -4516,17 +5093,17 @@
             "metrics": [],
             "functions": [],
             "depends_on": {
-                "macros": [
-                    "macro.dbt.test_not_null",
-                    "macro.dbt.get_where_subquery"
-                ],
+                "macros": [],
                 "nodes": [
-                    "model.jaffle_shop.locations"
+                    "model.jaffle_shop.stg_order_items",
+                    "model.jaffle_shop.stg_orders",
+                    "model.jaffle_shop.stg_products",
+                    "model.jaffle_shop.stg_supplies"
                 ]
             },
-            "compiled_path": "target/compiled/jaffle_shop/models/marts/locations.yml/not_null_locations_location_id.sql",
+            "compiled_path": "target/compiled/jaffle_shop/models/marts/order_items.sql",
             "compiled": true,
-            "compiled_code": "\n    \n    \n\n\n\nselect location_id\nfrom shaman.dummy.locations\nwhere location_id is null\n\n\n",
+            "compiled_code": "with\n\norder_items as (\n\n    select * from shaman.dummy.stg_order_items\n\n),\n\n\norders as (\n\n    select * from shaman.dummy.stg_orders\n\n),\n\nproducts as (\n\n    select * from shaman.dummy.stg_products\n\n),\n\nsupplies as (\n\n    select * from shaman.dummy.stg_supplies\n\n),\n\norder_supplies_summary as (\n\n    select\n        product_id,\n\n        sum(supply_cost) as supply_cost\n\n    from supplies\n\n    group by 1\n\n),\n\njoined as (\n\n    select\n        order_items.*,\n\n        orders.ordered_at,\n\n        products.product_name,\n        products.product_price,\n        products.is_food_item,\n        products.is_drink_item,\n\n        order_supplies_summary.supply_cost\n\n    from order_items\n\n    left join orders on order_items.order_id = orders.order_id\n\n    left join products on order_items.product_id = products.product_id\n\n    left join order_supplies_summary\n        on order_items.product_id = order_supplies_summary.product_id\n\n)\n\nselect * from joined",
             "extra_ctes_injected": true,
             "extra_ctes": [],
             "contract": {
@@ -4534,112 +5111,15 @@
                 "alias_types": true,
                 "checksum": null
             },
-            "column_name": "location_id",
-            "file_key_name": "models.locations",
-            "attached_node": "model.jaffle_shop.locations",
-            "test_metadata": {
-                "name": "not_null",
-                "kwargs": {
-                    "column_name": "location_id",
-                    "model": "{{ get_where_subquery(ref('locations')) }}"
-                },
-                "namespace": null
-            }
-        },
-        "test.jaffle_shop.unique_locations_location_id.3d912557dd": {
-            "database": "shaman",
-            "schema": "dummy",
-            "name": "unique_locations_location_id",
-            "resource_type": "test",
-            "package_name": "jaffle_shop",
-            "path": "unique_locations_location_id.sql",
-            "original_file_path": "models/marts/locations.yml",
-            "unique_id": "test.jaffle_shop.unique_locations_location_id.3d912557dd",
-            "fqn": [
-                "jaffle_shop",
-                "marts",
-                "unique_locations_location_id"
+            "access": "protected",
+            "constraints": [],
+            "version": null,
+            "latest_version": null,
+            "deprecation_date": null,
+            "primary_key": [
+                "order_item_id"
             ],
-            "alias": "unique_locations_location_id",
-            "checksum": {
-                "name": "none",
-                "checksum": ""
-            },
-            "config": {
-                "enabled": true,
-                "alias": null,
-                "schema": "dbt_test__audit",
-                "database": null,
-                "tags": [],
-                "meta": {},
-                "group": null,
-                "materialized": "test",
-                "severity": "ERROR",
-                "store_failures": null,
-                "store_failures_as": null,
-                "where": null,
-                "limit": null,
-                "fail_calc": "count(*)",
-                "warn_if": "!= 0",
-                "error_if": "!= 0"
-            },
-            "tags": [],
-            "description": "",
-            "columns": {},
-            "meta": {},
-            "group": null,
-            "docs": {
-                "show": true,
-                "node_color": null
-            },
-            "patch_path": null,
-            "build_path": null,
-            "unrendered_config": {},
-            "created_at": 1774063099.4308858,
-            "relation_name": null,
-            "raw_code": "{{ test_unique(**_dbt_generic_test_kwargs) }}",
-            "doc_blocks": [],
-            "language": "sql",
-            "refs": [
-                {
-                    "name": "locations",
-                    "package": null,
-                    "version": null
-                }
-            ],
-            "sources": [],
-            "metrics": [],
-            "functions": [],
-            "depends_on": {
-                "macros": [
-                    "macro.dbt.test_unique",
-                    "macro.dbt.get_where_subquery"
-                ],
-                "nodes": [
-                    "model.jaffle_shop.locations"
-                ]
-            },
-            "compiled_path": "target/compiled/jaffle_shop/models/marts/locations.yml/unique_locations_location_id.sql",
-            "compiled": true,
-            "compiled_code": "\n    \n    \n\nselect\n    location_id as unique_field,\n    count(*) as n_records\n\nfrom shaman.dummy.locations\nwhere location_id is not null\ngroup by location_id\nhaving count(*) > 1\n\n\n",
-            "extra_ctes_injected": true,
-            "extra_ctes": [],
-            "contract": {
-                "enforced": false,
-                "alias_types": true,
-                "checksum": null
-            },
-            "column_name": "location_id",
-            "file_key_name": "models.locations",
-            "attached_node": "model.jaffle_shop.locations",
-            "test_metadata": {
-                "name": "unique",
-                "kwargs": {
-                    "column_name": "location_id",
-                    "model": "{{ get_where_subquery(ref('locations')) }}"
-                },
-                "namespace": null
-            }
+            "time_spine": null
         },
         "test.jaffle_shop.not_null_order_items_order_item_id.c6fda366bd": {
             "database": "shaman",
@@ -4690,7 +5170,7 @@
             "patch_path": null,
             "build_path": null,
             "unrendered_config": {},
-            "created_at": 1774063099.432019,
+            "created_at": 1774064529.021152,
             "relation_name": null,
             "raw_code": "{{ test_not_null(**_dbt_generic_test_kwargs) }}",
             "doc_blocks": [],
@@ -4785,7 +5265,7 @@
             "patch_path": null,
             "build_path": null,
             "unrendered_config": {},
-            "created_at": 1774063099.432429,
+            "created_at": 1774064529.0217469,
             "relation_name": null,
             "raw_code": "{{ test_unique(**_dbt_generic_test_kwargs) }}",
             "doc_blocks": [],
@@ -4880,7 +5360,7 @@
             "patch_path": null,
             "build_path": null,
             "unrendered_config": {},
-            "created_at": 1774063099.432847,
+            "created_at": 1774064529.0222,
             "relation_name": null,
             "raw_code": "{{ test_relationships(**_dbt_generic_test_kwargs) }}",
             "doc_blocks": [],
@@ -4926,9 +5406,9 @@
             "test_metadata": {
                 "name": "relationships",
                 "kwargs": {
+                    "column_name": "order_id",
                     "to": "ref('orders')",
                     "field": "order_id",
-                    "column_name": "order_id",
                     "model": "{{ get_where_subquery(ref('order_items')) }}"
                 },
                 "namespace": null
@@ -27321,21 +27801,7 @@
             "model.jaffle_shop.orders",
             "model.jaffle_shop.stg_customers"
         ],
-        "model.jaffle_shop.orders": [
-            "model.jaffle_shop.locations",
-            "model.jaffle_shop.order_items",
-            "model.jaffle_shop.stg_orders"
-        ],
         "model.jaffle_shop.metricflow_time_spine": [],
-        "model.jaffle_shop.order_items": [
-            "model.jaffle_shop.stg_order_items",
-            "model.jaffle_shop.stg_orders",
-            "model.jaffle_shop.stg_products",
-            "model.jaffle_shop.stg_supplies"
-        ],
-        "model.jaffle_shop.locations": [
-            "model.jaffle_shop.stg_locations"
-        ],
         "test.jaffle_shop.not_null_stg_supplies_supply_uuid.515c6eda6d": [
             "model.jaffle_shop.stg_supplies"
         ],
@@ -27394,6 +27860,28 @@
         "test.jaffle_shop.dbt_utils_expression_is_true_customers_lifetime_spend_pretax_lifetime_tax_paid_lifetime_spend.ad37c989b6": [
             "model.jaffle_shop.customers"
         ],
+        "model.jaffle_shop.fct_customer_segment_orders": [
+            "model.jaffle_shop.dim_customer_segment",
+            "model.jaffle_shop.stg_orders"
+        ],
+        "model.jaffle_shop.dim_customer_segment": [
+            "model.jaffle_shop.stg_customers",
+            "model.jaffle_shop.stg_orders"
+        ],
+        "model.jaffle_shop.locations": [
+            "model.jaffle_shop.stg_locations"
+        ],
+        "test.jaffle_shop.not_null_locations_location_id.7cc3d904c1": [
+            "model.jaffle_shop.locations"
+        ],
+        "test.jaffle_shop.unique_locations_location_id.3d912557dd": [
+            "model.jaffle_shop.locations"
+        ],
+        "model.jaffle_shop.orders": [
+            "model.jaffle_shop.locations",
+            "model.jaffle_shop.order_items",
+            "model.jaffle_shop.stg_orders"
+        ],
         "test.jaffle_shop.not_null_orders_order_id.cf6c17daed": [
             "model.jaffle_shop.orders"
         ],
@@ -27410,11 +27898,11 @@
         "test.jaffle_shop.dbt_utils_expression_is_true_orders_order_total_subtotal_tax_paid.2aba85df92": [
             "model.jaffle_shop.orders"
         ],
-        "test.jaffle_shop.not_null_locations_location_id.7cc3d904c1": [
-            "model.jaffle_shop.locations"
-        ],
-        "test.jaffle_shop.unique_locations_location_id.3d912557dd": [
-            "model.jaffle_shop.locations"
+        "model.jaffle_shop.order_items": [
+            "model.jaffle_shop.stg_order_items",
+            "model.jaffle_shop.stg_orders",
+            "model.jaffle_shop.stg_products",
+            "model.jaffle_shop.stg_supplies"
         ],
         "test.jaffle_shop.not_null_order_items_order_item_id.c6fda366bd": [
             "model.jaffle_shop.order_items"
@@ -27547,6 +28035,7 @@
         ],
         "model.jaffle_shop.stg_customers": [
             "model.jaffle_shop.customers",
+            "model.jaffle_shop.dim_customer_segment",
             "test.jaffle_shop.not_null_stg_customers_customer_id.e2cfb1f9aa",
             "test.jaffle_shop.relationships_orders_customer_id__customer_id__ref_stg_customers_.918495ce16",
             "test.jaffle_shop.unique_stg_customers_customer_id.c7614daada"
@@ -27558,6 +28047,8 @@
             "test.jaffle_shop.unique_stg_supplies_supply_uuid.c9e3edcfed"
         ],
         "model.jaffle_shop.stg_orders": [
+            "model.jaffle_shop.dim_customer_segment",
+            "model.jaffle_shop.fct_customer_segment_orders",
             "model.jaffle_shop.order_items",
             "model.jaffle_shop.orders",
             "test.jaffle_shop.dbt_utils_expression_is_true_stg_orders_order_total_tax_paid_subtotal.bfb885d7fc",
@@ -27591,32 +28082,7 @@
             "test.jaffle_shop.not_null_customers_customer_id.5c9bf9911d",
             "test.jaffle_shop.unique_customers_customer_id.c5af1ff4b1"
         ],
-        "model.jaffle_shop.orders": [
-            "model.jaffle_shop.customers",
-            "semantic_model.jaffle_shop.orders",
-            "test.jaffle_shop.dbt_utils_expression_is_true_orders_order_items_subtotal_subtotal.b1416e07ec",
-            "test.jaffle_shop.dbt_utils_expression_is_true_orders_order_total_subtotal_tax_paid.2aba85df92",
-            "test.jaffle_shop.not_null_orders_order_id.cf6c17daed",
-            "test.jaffle_shop.relationships_order_items_order_id__order_id__ref_orders_.a799023ee8",
-            "test.jaffle_shop.relationships_orders_customer_id__customer_id__ref_stg_customers_.918495ce16",
-            "test.jaffle_shop.unique_orders_order_id.fed79b3a6e",
-            "unit_test.jaffle_shop.orders.test_order_items_compute_to_bools_correctly"
-        ],
         "model.jaffle_shop.metricflow_time_spine": [],
-        "model.jaffle_shop.order_items": [
-            "model.jaffle_shop.orders",
-            "semantic_model.jaffle_shop.order_item",
-            "test.jaffle_shop.not_null_order_items_order_item_id.c6fda366bd",
-            "test.jaffle_shop.relationships_order_items_order_id__order_id__ref_orders_.a799023ee8",
-            "test.jaffle_shop.unique_order_items_order_item_id.7d0a7e900a",
-            "unit_test.jaffle_shop.order_items.test_supply_costs_sum_correctly"
-        ],
-        "model.jaffle_shop.locations": [
-            "model.jaffle_shop.orders",
-            "semantic_model.jaffle_shop.locations",
-            "test.jaffle_shop.not_null_locations_location_id.7cc3d904c1",
-            "test.jaffle_shop.unique_locations_location_id.3d912557dd"
-        ],
         "test.jaffle_shop.not_null_stg_supplies_supply_uuid.515c6eda6d": [],
         "test.jaffle_shop.unique_stg_supplies_supply_uuid.c9e3edcfed": [],
         "test.jaffle_shop.not_null_stg_orders_order_id.81cfe2fe64": [],
@@ -27636,13 +28102,42 @@
         "test.jaffle_shop.unique_customers_customer_id.c5af1ff4b1": [],
         "test.jaffle_shop.accepted_values_customers_customer_type__new__returning.d12f0947c8": [],
         "test.jaffle_shop.dbt_utils_expression_is_true_customers_lifetime_spend_pretax_lifetime_tax_paid_lifetime_spend.ad37c989b6": [],
+        "model.jaffle_shop.fct_customer_segment_orders": [],
+        "model.jaffle_shop.dim_customer_segment": [
+            "model.jaffle_shop.fct_customer_segment_orders"
+        ],
+        "model.jaffle_shop.locations": [
+            "model.jaffle_shop.orders",
+            "semantic_model.jaffle_shop.locations",
+            "test.jaffle_shop.not_null_locations_location_id.7cc3d904c1",
+            "test.jaffle_shop.unique_locations_location_id.3d912557dd"
+        ],
+        "test.jaffle_shop.not_null_locations_location_id.7cc3d904c1": [],
+        "test.jaffle_shop.unique_locations_location_id.3d912557dd": [],
+        "model.jaffle_shop.orders": [
+            "model.jaffle_shop.customers",
+            "semantic_model.jaffle_shop.orders",
+            "test.jaffle_shop.dbt_utils_expression_is_true_orders_order_items_subtotal_subtotal.b1416e07ec",
+            "test.jaffle_shop.dbt_utils_expression_is_true_orders_order_total_subtotal_tax_paid.2aba85df92",
+            "test.jaffle_shop.not_null_orders_order_id.cf6c17daed",
+            "test.jaffle_shop.relationships_order_items_order_id__order_id__ref_orders_.a799023ee8",
+            "test.jaffle_shop.relationships_orders_customer_id__customer_id__ref_stg_customers_.918495ce16",
+            "test.jaffle_shop.unique_orders_order_id.fed79b3a6e",
+            "unit_test.jaffle_shop.orders.test_order_items_compute_to_bools_correctly"
+        ],
         "test.jaffle_shop.not_null_orders_order_id.cf6c17daed": [],
         "test.jaffle_shop.unique_orders_order_id.fed79b3a6e": [],
         "test.jaffle_shop.relationships_orders_customer_id__customer_id__ref_stg_customers_.918495ce16": [],
         "test.jaffle_shop.dbt_utils_expression_is_true_orders_order_items_subtotal_subtotal.b1416e07ec": [],
         "test.jaffle_shop.dbt_utils_expression_is_true_orders_order_total_subtotal_tax_paid.2aba85df92": [],
-        "test.jaffle_shop.not_null_locations_location_id.7cc3d904c1": [],
-        "test.jaffle_shop.unique_locations_location_id.3d912557dd": [],
+        "model.jaffle_shop.order_items": [
+            "model.jaffle_shop.orders",
+            "semantic_model.jaffle_shop.order_item",
+            "test.jaffle_shop.not_null_order_items_order_item_id.c6fda366bd",
+            "test.jaffle_shop.relationships_order_items_order_id__order_id__ref_orders_.a799023ee8",
+            "test.jaffle_shop.unique_order_items_order_item_id.7d0a7e900a",
+            "unit_test.jaffle_shop.order_items.test_supply_costs_sum_correctly"
+        ],
         "test.jaffle_shop.not_null_order_items_order_item_id.c6fda366bd": [],
         "test.jaffle_shop.unique_order_items_order_item_id.7d0a7e900a": [],
         "test.jaffle_shop.relationships_order_items_order_id__order_id__ref_orders_.a799023ee8": [],

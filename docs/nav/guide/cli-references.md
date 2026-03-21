@@ -386,6 +386,7 @@ Supported ones:
 
 - `test_relationship`: Looking for all relationship tests to understand the ERs
 - `semantic`: Looking for all semantic models' entities (primary & foreign) to understand the ERs
+- `model_contract`: Looking for all `foreign_key` constraints in model contracts (manifest v12+ / dbt 1.9+) to understand the ERs
 
 In the advanced use case of `test_relationship`, the test name can be configurable by following syntax:
 
@@ -423,6 +424,14 @@ In the above:
 
     # Example with dbtresto sample (using semantic algorithm)
     dbterd run --artifacts-dir ./samples/dbtresto -a semantic -t d2
+    ```
+=== "CLI (model_contract)"
+
+    ```bash
+    dbterd run -a model_contract
+
+    # Example with model-contract sample (using model_contract algorithm)
+    dbterd run --artifacts-dir ./samples/model-contract -a model_contract -t dbml
     ```
 === "CLI (long style)"
 

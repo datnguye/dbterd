@@ -1,9 +1,10 @@
 # Choosing the algorithm (parsers) to parse the Entity Relationships (ERs)
 
-There are 2 approaches (or 2 modules) we can use here to let `dbterd` look at how the ERs can be recognized between the dbt models:
+There are 3 approaches (or 3 modules) we can use here to let `dbterd` look at how the ERs can be recognized between the dbt models:
 
 1. **Test Relationship** ([docs](https://docs.getdbt.com/reference/resource-properties/data-tests#relationships), [source](https://github.com/datnguye/dbterd/blob/main/dbterd/adapters/algos/test_relationship.py)) (default)
 2. **Semantic Entities** ([docs](https://docs.getdbt.com/docs/build/entities), [source](https://github.com/datnguye/dbterd/blob/main/dbterd/adapters/algos/semantic.py))
+3. **Model Contract** ([docs](https://docs.getdbt.com/docs/collaborate/govern/model-contracts), [source](https://github.com/datnguye/dbterd/blob/main/dbterd/adapters/algos/model_contract.py))
 
 ## Test Relationship
 
@@ -103,6 +104,45 @@ dbterd run -enf table -a semantic
 ```
 
 The result DBML code will be the same as the 1st option. Voila! 🎉🎉
+
+## Model Contract
+
+Since dbt v1.9, dbt supports enforcing [model contracts](https://docs.getdbt.com/docs/collaborate/govern/model-contracts) with column-level and model-level constraints, including `foreign_key`. When a `foreign_key` constraint carries a `to` field pointing to another model, `dbterd` can read those declarations directly to infer relationships — no tests or semantic models required.
+
+This algorithm requires **manifest v12+** (dbt 1.9+).
+
+!!! warning "Contract must be enforced"
+    The `foreign_key` constraint's `to` field is only populated in the manifest when `contract.enforced: true` is set on the model. Without enforcement, dbt will not write the FK target into the artifact and `dbterd` will find no relationships.
+
+Using the same [Jaffle Shop](https://github.com/dbt-labs/jaffle-shop) project, here is a sample contract with a foreign key from `orders` to `locations`:
+
+```yaml
+models:
+  - name: orders
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: location_id
+        constraints:
+          - type: foreign_key
+            to: ref('locations')
+            to_columns: [location_id]
+```
+
+Run `dbterd` with the `model_contract` algorithm:
+
+```bash
+dbterd run -a model_contract
+```
+
+The result will include the relationship inferred from the constraint:
+
+```
+Ref: "orders"."location_id" > "locations"."location_id"
+```
+
+No duplicate test definitions needed — the contract itself is the source of truth. 🎉🎉🎉
 
 ## New module(s)?
 

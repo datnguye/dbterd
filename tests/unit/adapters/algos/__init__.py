@@ -271,6 +271,7 @@ class ManifestNodeWithConstraints:
     meta: dict = field(default_factory=dict)
     description: str = ""
     raw_sql: str = ""
+    relation_name: str = ""
 
 
 @dataclass
@@ -279,6 +280,7 @@ class DummyManifestWithColumnLevelConstraints:
         "model.pkg.orders": ManifestNodeWithConstraints(
             database="db",
             schema_="public",
+            relation_name="db.public.orders",
             columns={
                 "id": ManifestNodeColumnWithConstraints(
                     name="id",
@@ -292,7 +294,7 @@ class DummyManifestWithColumnLevelConstraints:
                     constraints=[
                         ManifestNodeConstraint(
                             type=ConstraintType("foreign_key"),
-                            to="ref('customers')",
+                            to="db.public.customers",
                             to_columns=["id"],
                         ),
                     ],
@@ -302,7 +304,7 @@ class DummyManifestWithColumnLevelConstraints:
                     constraints=[
                         ManifestNodeConstraint(
                             type=ConstraintType("foreign_key"),
-                            to="ref('products')",
+                            to="db.public.products",
                             to_columns=["id"],
                         ),
                     ],
@@ -312,6 +314,7 @@ class DummyManifestWithColumnLevelConstraints:
         "model.pkg.customers": ManifestNodeWithConstraints(
             database="db",
             schema_="public",
+            relation_name="db.public.customers",
             columns={
                 "id": ManifestNodeColumnWithConstraints(
                     name="id",
@@ -324,6 +327,7 @@ class DummyManifestWithColumnLevelConstraints:
         "model.pkg.products": ManifestNodeWithConstraints(
             database="db",
             schema_="public",
+            relation_name="db.public.products",
             columns={
                 "id": ManifestNodeColumnWithConstraints(
                     name="id",
@@ -343,6 +347,7 @@ class DummyManifestWithModelLevelConstraints:
         "model.pkg.orders": ManifestNodeWithConstraints(
             database="db",
             schema_="public",
+            relation_name="db.public.orders",
             columns={
                 "customer_id": ManifestNodeColumnWithConstraints(name="customer_id"),
                 "org_id": ManifestNodeColumnWithConstraints(name="org_id"),
@@ -351,13 +356,13 @@ class DummyManifestWithModelLevelConstraints:
             constraints=[
                 ManifestNodeConstraint(
                     type=ConstraintType("foreign_key"),
-                    to="ref('customers')",
+                    to="db.public.customers",
                     to_columns=["id"],
                     columns=["customer_id"],
                 ),
                 ManifestNodeConstraint(
                     type=ConstraintType("foreign_key"),
-                    to="ref('departments')",
+                    to="db.public.departments",
                     to_columns=["org_id", "dept_id"],
                     columns=["org_id", "dept_id"],
                 ),
@@ -366,11 +371,13 @@ class DummyManifestWithModelLevelConstraints:
         "model.pkg.customers": ManifestNodeWithConstraints(
             database="db",
             schema_="public",
+            relation_name="db.public.customers",
             columns={"id": ManifestNodeColumnWithConstraints(name="id")},
         ),
         "model.pkg.departments": ManifestNodeWithConstraints(
             database="db",
             schema_="public",
+            relation_name="db.public.departments",
             columns={
                 "org_id": ManifestNodeColumnWithConstraints(name="org_id"),
                 "dept_id": ManifestNodeColumnWithConstraints(name="dept_id"),

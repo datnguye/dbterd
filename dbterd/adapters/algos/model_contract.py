@@ -227,21 +227,19 @@ class ModelContractAlgo(BaseAlgoAdapter):
                 if not to_node_id:
                     continue
 
-                to_columns = getattr(constraint, "to_columns", None)
-                to_column = to_columns[0] if to_columns else col_name
-                from_column = col_name
-
+                to_columns = getattr(constraint, "to_columns", None) or [col_name]
                 col_meta = getattr(col, "meta", None) or {}
                 relationship_type = _get_relationship_type(col_meta.get(TEST_META_RELATIONSHIP_TYPE, ""))
 
-                refs.append(
-                    Ref(
-                        name=node_name,
-                        table_map=[to_node_id, node_name],
-                        column_map=[to_column, from_column],
-                        type=relationship_type,
+                for to_column in to_columns:
+                    refs.append(
+                        Ref(
+                            name=node_name,
+                            table_map=[to_node_id, node_name],
+                            column_map=[to_column, col_name],
+                            type=relationship_type,
+                        )
                     )
-                )
 
         return refs
 
