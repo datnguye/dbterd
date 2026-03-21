@@ -343,7 +343,7 @@ class TestRelationshipAlgo(BaseAlgoAdapter):
         Returns:
             str: |
                 Short relationship type. Accepted values: '0n','01','11','nn','n1' and '1n'.
-                And `1n` is default/fallback value
+                And `n1` is default/fallback value
 
         """
         if meta.lower() == "zero-to-many":

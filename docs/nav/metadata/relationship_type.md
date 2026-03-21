@@ -25,6 +25,7 @@ List of accepted values:
 |--------|--------|
 | one-to-many | 1n |
 | zero-to-many | 0n |
+| zero-to-one | 01 |
 | many-to-many | nn |
 | one-to-one | 11 |
 | many-to-one | n1 |

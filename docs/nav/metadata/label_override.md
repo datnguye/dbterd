@@ -20,6 +20,9 @@ This will display the model as `customers` in the ERD instead of the actual mode
 
 ### Override Relationship Display Names
 
+!!! note
+    Relationship labels are only rendered in the **Mermaid** target. Other output formats ignore this field.
+
 #### test_relationship algorithm
 
 Add `relationship_label` to your test's meta to customize the relationship name:
