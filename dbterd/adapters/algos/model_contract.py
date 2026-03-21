@@ -64,6 +64,37 @@ def _get_relationship_type(meta_value: str) -> str:
     return mapping.get(meta_value.lower(), "n1")
 
 
+def _extract_pk_column_names(node) -> list[str]:
+    """Extract primary key column names from a manifest node's constraints.
+
+    Checks both model-level constraints (constraint.columns where type=primary_key)
+    and column-level constraints (column.constraints where type=primary_key).
+
+    Args:
+        node: The manifest node object
+
+    Returns:
+        List of column names that are part of the primary key.
+
+    """
+    pk_columns = []
+
+    if hasattr(node, "constraints") and node.constraints:
+        for constraint in node.constraints:
+            if constraint.type.value == "primary_key" and getattr(constraint, "columns", None):
+                pk_columns.extend(constraint.columns)
+
+    if hasattr(node, "columns") and node.columns:
+        for col_name, col in node.columns.items():
+            if not hasattr(col, "constraints") or not col.constraints:
+                continue
+            for constraint in col.constraints:
+                if constraint.type.value == "primary_key":
+                    pk_columns.append(col_name)
+
+    return pk_columns
+
+
 @register_algo("model_contract", description="Detect relationships via dbt model contract constraints")
 class ModelContractAlgo(BaseAlgoAdapter):
     """Algorithm adapter using dbt model contract constraints.
@@ -76,6 +107,7 @@ class ModelContractAlgo(BaseAlgoAdapter):
         """Parse from file-based manifest/catalog artifacts."""
         tables = self.get_tables(manifest=manifest, catalog=catalog, **kwargs)
         tables = self.filter_tables_based_on_selection(tables=tables, **kwargs)
+        tables = self._enrich_tables_with_pk_info(tables=tables, manifest=manifest)
 
         relationships = self.get_relationships(manifest=manifest, **kwargs)
         relationships = self.make_up_relationships(relationships=relationships, tables=tables)
@@ -87,6 +119,36 @@ class ModelContractAlgo(BaseAlgoAdapter):
             sorted(tables, key=lambda tbl: tbl.node_name),
             sorted(relationships, key=lambda rel: rel.name),
         )
+
+    def _enrich_tables_with_pk_info(self, tables: list[Table], manifest: Manifest) -> list[Table]:
+        """Mark columns as primary key based on manifest constraints.
+
+        Args:
+            tables: List of parsed tables
+            manifest: Manifest data
+
+        Returns:
+            Tables with is_primary_key set on relevant columns.
+
+        """
+        if not hasattr(manifest, "nodes"):
+            return tables
+
+        pk_map: dict[str, set[str]] = {}
+        for node_name, node in manifest.nodes.items():
+            pk_cols = _extract_pk_column_names(node)
+            if pk_cols:
+                pk_map[node_name] = {c.lower() for c in pk_cols}
+
+        for table in tables:
+            pks = pk_map.get(table.node_name, set())
+            if not pks:
+                continue
+            for col in table.columns:
+                if col.name.lower() in pks:
+                    col.is_primary_key = True
+
+        return tables
 
     def parse_metadata(self, data: dict, **kwargs) -> tuple[list[Table], list[Ref]]:
         """Parse from dbt Cloud metadata API response.
@@ -236,7 +298,7 @@ class ModelContractAlgo(BaseAlgoAdapter):
                         Ref(
                             name=node_name,
                             table_map=[to_node_id, node_name],
-                            column_map=[to_column, col_name],
+                            column_map=([to_column], [col_name]),
                             type=relationship_type,
                         )
                     )
@@ -272,18 +334,17 @@ class ModelContractAlgo(BaseAlgoAdapter):
             if not to_node_id:
                 continue
 
-            to_columns = getattr(constraint, "to_columns", None) or constraint.columns
+            to_columns = list(getattr(constraint, "to_columns", None) or constraint.columns)
             node_meta = getattr(node, "meta", None) or {}
             relationship_type = _get_relationship_type(node_meta.get(TEST_META_RELATIONSHIP_TYPE, ""))
 
-            for from_col, to_col in zip(constraint.columns, to_columns):
-                refs.append(
-                    Ref(
-                        name=node_name,
-                        table_map=[to_node_id, node_name],
-                        column_map=[to_col, from_col],
-                        type=relationship_type,
-                    )
+            refs.append(
+                Ref(
+                    name=node_name,
+                    table_map=[to_node_id, node_name],
+                    column_map=(to_columns, list(constraint.columns)),
+                    type=relationship_type,
                 )
+            )
 
         return refs

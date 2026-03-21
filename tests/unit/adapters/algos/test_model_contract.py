@@ -6,6 +6,7 @@ import pytest
 
 from dbterd.adapters.algos.model_contract import (
     ModelContractAlgo,
+    _extract_pk_column_names,
     _get_relationship_type,
     _resolve_to_node_id,
 )
@@ -79,6 +80,138 @@ class TestGetRelationshipType:
         assert _get_relationship_type(meta_value) == expected
 
 
+class TestExtractPkColumnNames:
+    def test_model_level_pk(self):
+        """Model-level primary_key constraint columns are extracted."""
+        node = ManifestNodeWithConstraints(
+            columns={},
+            constraints=[
+                ManifestNodeConstraint(
+                    type=ConstraintType("primary_key"),
+                    columns=["id", "tenant_id"],
+                ),
+            ],
+        )
+        assert _extract_pk_column_names(node) == ["id", "tenant_id"]
+
+    def test_column_level_pk(self):
+        """Column-level primary_key constraints are extracted."""
+        node = ManifestNodeWithConstraints(
+            columns={
+                "id": ManifestNodeColumnWithConstraints(
+                    name="id",
+                    constraints=[ManifestNodeConstraint(type=ConstraintType("primary_key"))],
+                ),
+            },
+        )
+        assert _extract_pk_column_names(node) == ["id"]
+
+    def test_no_pk(self):
+        """Node with no PK constraints returns empty list."""
+        node = ManifestNodeWithConstraints(
+            columns={
+                "name": ManifestNodeColumnWithConstraints(
+                    name="name",
+                    constraints=[ManifestNodeConstraint(type=ConstraintType("not_null"))],
+                ),
+                "empty_col": ManifestNodeColumnWithConstraints(name="empty_col", constraints=[]),
+            },
+        )
+        assert _extract_pk_column_names(node) == []
+
+    def test_node_without_constraints_attr(self):
+        """Node without constraints attribute returns empty list."""
+
+        class _Node:
+            pass
+
+        assert _extract_pk_column_names(_Node()) == []
+
+    def test_model_level_pk_ignores_non_pk(self):
+        """Only primary_key model-level constraints are included."""
+        node = ManifestNodeWithConstraints(
+            columns={},
+            constraints=[
+                ManifestNodeConstraint(type=ConstraintType("unique"), columns=["email"]),
+                ManifestNodeConstraint(type=ConstraintType("primary_key"), columns=["id"]),
+            ],
+        )
+        assert _extract_pk_column_names(node) == ["id"]
+
+
+class TestEnrichTablesWithPkInfo:
+    def test_marks_pk_columns(self):
+        """Columns matching PK constraints have is_primary_key set to True."""
+        from dbterd.core.models import Column, Table
+
+        table = Table(
+            name="orders",
+            node_name="model.pkg.orders",
+            database="db",
+            schema="public",
+            columns=[
+                Column(name="id"),
+                Column(name="name"),
+            ],
+        )
+
+        class _Manifest:
+            nodes: ClassVar[dict] = {
+                "model.pkg.orders": ManifestNodeWithConstraints(
+                    columns={
+                        "id": ManifestNodeColumnWithConstraints(
+                            name="id",
+                            constraints=[ManifestNodeConstraint(type=ConstraintType("primary_key"))],
+                        ),
+                    },
+                ),
+            }
+
+        algo = ModelContractAlgo()
+        enriched = algo._enrich_tables_with_pk_info(tables=[table], manifest=_Manifest())
+        id_col = next(c for c in enriched[0].columns if c.name == "id")
+        name_col = next(c for c in enriched[0].columns if c.name == "name")
+        assert id_col.is_primary_key is True
+        assert name_col.is_primary_key is False
+
+    def test_no_nodes_attr(self):
+        """Manifest without nodes attribute returns tables unchanged."""
+        from dbterd.core.models import Column, Table
+
+        class _Manifest:
+            pass
+
+        table = Table(
+            name="t1",
+            node_name="model.pkg.t1",
+            database="db",
+            schema="public",
+            columns=[Column(name="id")],
+        )
+        algo = ModelContractAlgo()
+        result = algo._enrich_tables_with_pk_info(tables=[table], manifest=_Manifest())
+        assert result[0].columns[0].is_primary_key is False
+
+    def test_table_without_matching_node(self):
+        """Table with no matching manifest node is left unchanged."""
+        from dbterd.core.models import Column, Table
+
+        table = Table(
+            name="orphan",
+            node_name="model.pkg.orphan",
+            database="db",
+            schema="public",
+            columns=[Column(name="id")],
+        )
+
+        class _Manifest:
+            nodes: ClassVar[dict] = {}
+
+        algo = ModelContractAlgo()
+        result = algo._enrich_tables_with_pk_info(tables=[table], manifest=_Manifest())
+        assert result[0].columns[0].is_primary_key is False
+
+
 class TestAlgoModelContract:
     def test_get_relationships_column_level_fk(self):
         algo = ModelContractAlgo()
@@ -88,7 +221,7 @@ class TestAlgoModelContract:
             Ref(
                 name="model.pkg.orders",
                 table_map=["model.pkg.customers", "model.pkg.orders"],
-                column_map=["id", "customer_id"],
+                column_map=(["id"], ["customer_id"]),
                 type="n1",
             )
             in refs
@@ -97,7 +230,7 @@ class TestAlgoModelContract:
             Ref(
                 name="model.pkg.orders",
                 table_map=["model.pkg.products", "model.pkg.orders"],
-                column_map=["id", "product_id"],
+                column_map=(["id"], ["product_id"]),
                 type="n1",
             )
             in refs
@@ -110,29 +243,21 @@ class TestAlgoModelContract:
             Ref(
                 name="model.pkg.orders",
                 table_map=["model.pkg.customers", "model.pkg.orders"],
-                column_map=["id", "customer_id"],
+                column_map=(["id"], ["customer_id"]),
                 type="n1",
             )
             in refs
         )
 
     def test_get_relationships_model_level_composite_fk(self):
+        """Model-level composite FK produces a single Ref with all columns."""
         algo = ModelContractAlgo()
         refs = algo.get_relationships(manifest=DummyManifestWithModelLevelConstraints())
         assert (
             Ref(
                 name="model.pkg.orders",
                 table_map=["model.pkg.departments", "model.pkg.orders"],
-                column_map=["org_id", "org_id"],
-                type="n1",
-            )
-            in refs
-        )
-        assert (
-            Ref(
-                name="model.pkg.orders",
-                table_map=["model.pkg.departments", "model.pkg.orders"],
-                column_map=["dept_id", "dept_id"],
+                column_map=(["org_id", "dept_id"], ["org_id", "dept_id"]),
                 type="n1",
             )
             in refs
@@ -259,7 +384,7 @@ class TestAlgoModelContract:
         algo = ModelContractAlgo()
         refs = algo.get_relationships(manifest=_Manifest())
         assert len(refs) == 1
-        assert refs[0].column_map == ["customer_id", "customer_id"]
+        assert refs[0].column_map == (["customer_id"], ["customer_id"])
 
     def test_get_relationships_fk_with_multiple_to_columns(self):
         """Column-level FK with multiple to_columns generates one Ref per to_column."""
@@ -286,8 +411,8 @@ class TestAlgoModelContract:
         algo = ModelContractAlgo()
         refs = algo.get_relationships(manifest=_Manifest())
         assert len(refs) == 2
-        assert refs[0].column_map == ["city_id", "fk_col"]
-        assert refs[1].column_map == ["country_id", "fk_col"]
+        assert refs[0].column_map == (["city_id"], ["fk_col"])
+        assert refs[1].column_map == (["country_id"], ["fk_col"])
 
     def test_get_relationships_self_referential(self):
         class _Manifest:
@@ -384,7 +509,7 @@ class TestAlgoModelContract:
         algo = ModelContractAlgo()
         refs = algo.get_relationships(manifest=_Manifest())
         assert len(refs) == 1
-        assert refs[0].column_map == ["customer_id", "customer_id"]
+        assert refs[0].column_map == (["customer_id"], ["customer_id"])
 
     def test_get_relationships_model_level_with_relationship_type(self):
         """Model-level meta.relationship_type is respected."""

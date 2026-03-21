@@ -14,6 +14,30 @@ Table "model.jaffle_shop.customers" {
   Note: "Customer overview data mart, offering key details for each unique customer. One row per customer."
 }
 //--configured at schema: shaman.dummy
+Table "model.jaffle_shop.dim_customer_segment" {
+  "customer_id" "text" [note: "The foreign key to the customer."]
+  "segment_code" "varchar" [note: "The customer segment \u2014 NEW, REGULAR, or VIP."]
+  "lifetime_order_count" "bigint" [note: "Total number of orders placed by the customer."]
+
+  Note: "Customer dimension with segment classification. One row per customer per segment code (composite grain)."
+  indexes {
+    (customer_id, segment_code) [pk]
+  }
+}
+//--configured at schema: shaman.dummy
+Table "model.jaffle_shop.fct_customer_segment_orders" {
+  "order_id" "text" [note: "The unique key for each order."]
+  "customer_id" "text" [note: "Part of the composite FK to dim_customer_segment."]
+  "segment_code" "varchar" [note: "Part of the composite FK to dim_customer_segment."]
+  "ordered_at" "timestamp_ntz" [note: "The date the order was placed."]
+  "order_total" "numeric" [note: "The total order amount in USD including tax."]
+
+  Note: "Fact table joining orders to their customer segment at time of order. One row per order."
+  indexes {
+    (order_id) [pk]
+  }
+}
+//--configured at schema: shaman.dummy
 Table "model.jaffle_shop.locations" {
   "location_id" "text" [note: "The unique key of the locations mart."]
   "location_name" "text" [note: "The name of the location."]
@@ -21,12 +45,15 @@ Table "model.jaffle_shop.locations" {
   "opened_date" "timestamp_ntz" [note: "The date the location opened."]
 
   Note: "Location overview data mart. One row per location."
+  indexes {
+    (location_id) [pk]
+  }
 }
 //--configured at schema: shaman.dummy
 Table "model.jaffle_shop.metricflow_time_spine" {
   "date_day" "date"
 
-  Note: ""
+  Note: "Time spine table for MetricFlow, one row per day."
 }
 //--configured at schema: shaman.dummy
 Table "model.jaffle_shop.order_items" {
@@ -64,6 +91,9 @@ Table "model.jaffle_shop.orders" {
   "customer_order_number" "number" [note: "The sequential order number for this customer (1 = first order)."]
 
   Note: "Order overview data mart, offering key details for each order inlcluding if it's a customer's first order and a food vs. drink item breakdown. One row per order."
+  indexes {
+    (order_id) [pk]
+  }
 }
 //--configured at schema: shaman.dummy
 Table "model.jaffle_shop.products" {
@@ -151,4 +181,5 @@ Table "model.jaffle_shop.supplies" {
   Note: ""
 }
 //Refs (based on the DBT Relationship Tests)
+Ref: "model.jaffle_shop.fct_customer_segment_orders".("customer_id", "segment_code") > "model.jaffle_shop.dim_customer_segment".("customer_id", "segment_code")
 Ref: "model.jaffle_shop.orders"."location_id" > "model.jaffle_shop.locations"."location_id"

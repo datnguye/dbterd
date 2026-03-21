@@ -152,9 +152,9 @@ class DrawdbAdapter(BaseTargetAdapter):
                     "type": col.data_type,
                     "default": "",
                     "check": "",
-                    "primary": False,
+                    "primary": col.is_primary_key,
                     "unique": False,
-                    "notNull": False,
+                    "notNull": col.is_primary_key,
                     "increment": False,
                     "comment": col.description,
                 }
@@ -166,20 +166,20 @@ class DrawdbAdapter(BaseTargetAdapter):
         """Format a single relationship as DrawDB dict."""
         return {
             "id": idx,
-            "name": f"fk__{relationship.table_map[1]}_{relationship.table_map[0]}__{relationship.column_map[1]}",
+            "name": f"fk__{relationship.table_map[1]}_{relationship.table_map[0]}__{'_'.join(relationship.column_map[1])}",
             "cardinality": self.get_rel_symbol(relationship.type),
             "startTableId": graphic_tables.get(relationship.table_map[1], {}).get("id"),
             "endTableId": graphic_tables.get(relationship.table_map[0], {}).get("id"),
             "startFieldId": (
                 graphic_tables.get(relationship.table_map[1], {})
                 .get("fields", {})
-                .get(relationship.column_map[1], {})
+                .get(relationship.column_map[1][0], {})
                 .get("id")
             ),
             "endFieldId": (
                 graphic_tables.get(relationship.table_map[0], {})
                 .get("fields", {})
-                .get(relationship.column_map[0], {})
+                .get(relationship.column_map[0][0], {})
                 .get("id")
             ),
             "updateConstraint": "No action",

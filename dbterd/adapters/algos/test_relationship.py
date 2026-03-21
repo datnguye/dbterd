@@ -133,13 +133,13 @@ class TestRelationshipAlgo(BaseAlgoAdapter):
             Ref(
                 name=x,
                 table_map=self.get_table_map(test_node=manifest.nodes[x], **kwargs),
-                column_map=[
-                    _extract_column_name(manifest.nodes[x].test_metadata.kwargs, rule.get("c_to")),
-                    (
+                column_map=(
+                    [_extract_column_name(manifest.nodes[x].test_metadata.kwargs, rule.get("c_to"))],
+                    [
                         str(manifest.nodes[x].test_metadata.kwargs.get("column_name") or "").replace('"', "").lower()
                         or _extract_column_name(manifest.nodes[x].test_metadata.kwargs, rule.get("c_from"))
-                    ),
-                ],
+                    ],
+                ),
                 type=self.get_relationship_type(manifest.nodes[x].meta.get(TEST_META_RELATIONSHIP_TYPE, "")),
                 relationship_label=manifest.nodes[x].meta.get("relationship_label"),
             )
@@ -181,13 +181,13 @@ class TestRelationshipAlgo(BaseAlgoAdapter):
                         Ref(
                             name=test_id,
                             table_map=self.get_table_map_from_metadata(test_node=test, **kwargs),
-                            column_map=[
-                                _extract_column_name(test_metadata_kwargs, rule.get("c_to")),
-                                (
+                            column_map=(
+                                [_extract_column_name(test_metadata_kwargs, rule.get("c_to"))],
+                                [
                                     str(test_metadata_kwargs.get("columnName") or "").replace('"', "").lower()
                                     or _extract_column_name(test_metadata_kwargs, rule.get("c_from"))
-                                ),
-                            ],
+                                ],
+                            ),
                             type=self.get_relationship_type(test_meta.get(TEST_META_RELATIONSHIP_TYPE, "")),
                             relationship_label=test_meta.get("relationship_label"),
                         )

@@ -53,6 +53,7 @@ class MermaidAdapter(BaseTargetAdapter):
 
         columns = "\n".join(
             f"    {self.replace_column_type(col.data_type)} {self.replace_column_name(col.name)}"
+            + (" PK" if col.is_primary_key else "")
             for col in table.columns
         )
         return f'  "{table_name}"{table_label} {{\n{columns}\n  }}'
@@ -62,9 +63,11 @@ class MermaidAdapter(BaseTargetAdapter):
         key_from = f'"{relationship.table_map[1]}"'
         key_to = f'"{relationship.table_map[0]}"'
 
-        reference_text = self.replace_column_name(relationship.column_map[0])
-        if relationship.column_map[0] != relationship.column_map[1]:
-            reference_text += f"--{self.replace_column_name(relationship.column_map[1])}"
+        col_map_0 = "__".join(relationship.column_map[0])
+        col_map_1 = "__".join(relationship.column_map[1])
+        reference_text = self.replace_column_name(col_map_0)
+        if col_map_0 != col_map_1:
+            reference_text += f"--{self.replace_column_name(col_map_1)}"
 
         if hasattr(relationship, "relationship_label") and relationship.relationship_label:
             reference_text = self.replace_column_name(relationship.relationship_label)

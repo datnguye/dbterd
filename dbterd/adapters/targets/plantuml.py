@@ -51,7 +51,18 @@ class PlantumlAdapter(BaseTargetAdapter):
 
     def format_table(self, table: Table, **kwargs) -> str:
         """Format a single table in PlantUML syntax."""
-        columns = "\n".join(f"    {col.name} : {col.data_type}" for col in table.columns)
+        pk_columns = [col for col in table.columns if col.is_primary_key]
+        non_pk_columns = [col for col in table.columns if not col.is_primary_key]
+
+        lines = []
+        for col in pk_columns:
+            lines.append(f"    *{col.name} : {col.data_type} <<PK>>")
+        if pk_columns and non_pk_columns:
+            lines.append("    --")
+        for col in non_pk_columns:
+            lines.append(f"    {col.name} : {col.data_type}")
+
+        columns = "\n".join(lines)
         return f'entity "{table.name}" {{\n{columns}\n  }}'
 
     def format_relationship(self, relationship: Ref, **kwargs) -> str:

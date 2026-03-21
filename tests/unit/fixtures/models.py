@@ -26,9 +26,10 @@ def make_column(
     name: str = "column1",
     data_type: str = "varchar",
     description: str = "",
+    is_primary_key: bool = False,
 ) -> Column:
     """Create a Column object with sensible defaults."""
-    return Column(name=name, data_type=data_type, description=description)
+    return Column(name=name, data_type=data_type, description=description, is_primary_key=is_primary_key)
 
 
 def make_table(
@@ -59,7 +60,7 @@ def make_table(
 def make_ref(
     name: str = "test.dbt_resto.relationships_table1",
     table_map: list[str] | None = None,
-    column_map: list[str] | None = None,
+    column_map: tuple[list[str], list[str]] | None = None,
     ref_type: str = "n1",
     relationship_label: str | None = None,
 ) -> Ref:
@@ -67,7 +68,7 @@ def make_ref(
     return Ref(
         name=name,
         table_map=table_map or ["model.dbt_resto.table2", "model.dbt_resto.table1"],
-        column_map=column_map or ["name2", "name1"],
+        column_map=column_map or (["name2"], ["name1"]),
         type=ref_type,
         relationship_label=relationship_label,
     )
@@ -109,7 +110,7 @@ def get_basic_ref() -> Ref:
 
 def get_ref_with_missing_columns() -> Ref:
     """Get relationship referencing columns that don't exist initially."""
-    return make_ref(column_map=["name-notexist2", "name-notexist1"])
+    return make_ref(column_map=(["name-notexist2"], ["name-notexist1"]))
 
 
 @pytest.fixture

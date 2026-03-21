@@ -48,7 +48,10 @@ class GraphvizAdapter(BaseTargetAdapter):
     def format_table(self, table: Table, **kwargs) -> str:
         """Format a single table in GraphViz syntax."""
         columns = "\n".join(
-            f'         <tr><td align="left">({col.data_type}) {col.name}</td></tr>' for col in table.columns
+            f'         <tr><td align="left"><b>({col.data_type}) {col.name} [PK]</b></td></tr>'
+            if col.is_primary_key
+            else f'         <tr><td align="left">({col.data_type}) {col.name}</td></tr>'
+            for col in table.columns
         )
 
         return (
@@ -70,7 +73,7 @@ class GraphvizAdapter(BaseTargetAdapter):
         """Format a single relationship in GraphViz syntax."""
         key_from = f'"{relationship.table_map[1]}"'
         key_to = f'"{relationship.table_map[0]}"'
-        connector = f"{relationship.column_map[1]} = {relationship.column_map[0]}"
+        connector = f"{', '.join(relationship.column_map[1])} = {', '.join(relationship.column_map[0])}"
         symbol = self.get_rel_symbol(relationship.type)
 
         return (

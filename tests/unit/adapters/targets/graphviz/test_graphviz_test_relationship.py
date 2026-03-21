@@ -82,12 +82,12 @@ class TestGraphVizTestRelationship:
                     Ref(
                         name="test.dbt_resto.relationships_table1",
                         table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
-                        column_map=["name2", "name1"],
+                        column_map=(["name2"], ["name1"]),
                     ),
                     Ref(
                         name="test.dbt_resto.relationships_table1",
                         table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
-                        column_map=["name-notexist2", "name-notexist1"],
+                        column_map=(["name-notexist2"], ["name-notexist1"]),
                     ),
                 ],
                 [],
@@ -311,6 +311,49 @@ class TestGraphVizTestRelationship:
                             <tr><td bgcolor="black" align="center" colspan="2">
                             <font color="white">model.dbt_resto.table1</font></td></tr>
                             <tr><td align="left">(name1-type) name1</td></tr>
+                            </table>> ];
+                }
+                """,
+            ),
+            # Test with composite primary key columns
+            (
+                [
+                    Table(
+                        name="model.dbt_resto.table1",
+                        node_name="model.dbt_resto.table1",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[
+                            Column(name="id1", data_type="int", is_primary_key=True),
+                            Column(name="id2", data_type="int", is_primary_key=True),
+                            Column(name="value", data_type="text"),
+                        ],
+                        raw_sql="--irrelevant--",
+                    ),
+                ],
+                [],
+                [],
+                [],
+                ["model"],
+                """digraph g {
+                    fontname="Helvetica,Arial,sans-serif"
+                    node [fontname="Helvetica,Arial,sans-serif"]
+                    edge [fontname="Helvetica,Arial,sans-serif"]
+                    graph [fontsize=30 labelloc="t" label="" splines=true overlap=false rankdir="LR"];
+                    ratio=auto;
+                    "model.dbt_resto.table1" [
+                        style = "filled, bold"
+                        penwidth = 1
+                        fillcolor = "white"
+                        fontname = "Courier New"
+                        shape = "Mrecord"
+                        label =<
+                            <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+                            <tr><td bgcolor="black" align="center" colspan="2">
+                            <font color="white">model.dbt_resto.table1</font></td></tr>
+                            <tr><td align="left"><b>(int) id1 [PK]</b></td></tr>
+                            <tr><td align="left"><b>(int) id2 [PK]</b></td></tr>
+                            <tr><td align="left">(text) value</td></tr>
                             </table>> ];
                 }
                 """,

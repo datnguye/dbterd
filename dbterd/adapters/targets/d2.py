@@ -36,13 +36,18 @@ class D2Adapter(BaseTargetAdapter):
 
     def format_table(self, table: Table, **kwargs) -> str:
         """Format a single table in D2 syntax."""
-        columns = "\n".join(f"  {col.name}: {col.data_type}" for col in table.columns)
+        columns = "\n".join(
+            f"  {col.name}: {col.data_type} {{constraint: primary_key}}"
+            if col.is_primary_key
+            else f"  {col.name}: {col.data_type}"
+            for col in table.columns
+        )
         return f'"{table.name}": {{\n  shape: sql_table\n{columns}\n}}'
 
     def format_relationship(self, relationship: Ref, **kwargs) -> str:
         """Format a single relationship in D2 syntax."""
         key_from = f'"{relationship.table_map[1]}"'
         key_to = f'"{relationship.table_map[0]}"'
-        connector = f"{relationship.column_map[1]} = {relationship.column_map[0]}"
+        connector = f"{', '.join(relationship.column_map[1])} = {', '.join(relationship.column_map[0])}"
         symbol = self.get_rel_symbol(relationship.type)
         return f'{key_from} {symbol} {key_to}: "{connector}"'
