@@ -214,7 +214,7 @@ class TestAlgoModelContract:
         assert len(refs) == 2
         assert (
             Ref(
-                name="model.pkg.orders",
+                name="fk_orders_customer_id",  # constraint name used as Ref name
                 table_map=["model.pkg.customers", "model.pkg.orders"],
                 column_map=(["id"], ["customer_id"]),
                 type="n1",
@@ -223,7 +223,7 @@ class TestAlgoModelContract:
         )
         assert (
             Ref(
-                name="model.pkg.orders",
+                name="fk_orders_product_id",  # constraint name used as Ref name
                 table_map=["model.pkg.products", "model.pkg.orders"],
                 column_map=(["id"], ["product_id"]),
                 type="n1",
@@ -236,7 +236,7 @@ class TestAlgoModelContract:
         refs = algo.get_relationships(manifest=DummyManifestWithModelLevelConstraints())
         assert (
             Ref(
-                name="model.pkg.orders",
+                name="fk_orders_customer_id",  # constraint name used as Ref name
                 table_map=["model.pkg.customers", "model.pkg.orders"],
                 column_map=(["id"], ["customer_id"]),
                 type="n1",
@@ -250,7 +250,7 @@ class TestAlgoModelContract:
         refs = algo.get_relationships(manifest=DummyManifestWithModelLevelConstraints())
         assert (
             Ref(
-                name="model.pkg.orders",
+                name="fk_orders_department",  # constraint name used as Ref name
                 table_map=["model.pkg.departments", "model.pkg.orders"],
                 column_map=(["org_id", "dept_id"], ["org_id", "dept_id"]),
                 type="n1",
@@ -507,7 +507,7 @@ class TestAlgoModelContract:
         assert refs[0].column_map == (["customer_id"], ["customer_id"])
 
     def test_get_relationships_model_level_with_relationship_type(self):
-        """Model-level meta.relationship_type is respected."""
+        """Model-level meta.relationship_type is ignored (not supported), defaults to n1."""
 
         class _Manifest:
             nodes: ClassVar[dict] = {
@@ -529,7 +529,251 @@ class TestAlgoModelContract:
         algo = ModelContractAlgo()
         refs = algo.get_relationships(manifest=_Manifest())
         assert len(refs) == 1
-        assert refs[0].type == "1n"
+        assert refs[0].type == "n1"
+
+    def test_get_relationships_model_level_relationship_types_dict_by_constraint_name(self):
+        """Node meta relationship_types dict keyed by constraint name is used as relationship type."""
+
+        class _Manifest:
+            nodes: ClassVar[dict] = {
+                "model.pkg.orders": ManifestNodeWithConstraints(
+                    columns={},
+                    meta={"relationship_types": {"fk_orders_customer": "one-to-one"}},
+                    constraints=[
+                        ManifestNodeConstraint(
+                            type=ConstraintType("foreign_key"),
+                            name="fk_orders_customer",
+                            to="db.public.customers",
+                            to_columns=["id"],
+                            columns=["customer_id"],
+                        ),
+                    ],
+                ),
+                "model.pkg.customers": ManifestNodeWithConstraints(columns={}, relation_name="db.public.customers"),
+            }
+
+        algo = ModelContractAlgo()
+        refs = algo.get_relationships(manifest=_Manifest())
+        assert len(refs) == 1
+        assert refs[0].type == "11"
+
+    def test_get_relationships_column_level_constraint_name_as_ref_name(self):
+        """Column-level FK uses constraint name as Ref.name when available."""
+
+        class _Manifest:
+            nodes: ClassVar[dict] = {
+                "model.pkg.orders": ManifestNodeWithConstraints(
+                    columns={
+                        "customer_id": ManifestNodeColumnWithConstraints(
+                            name="customer_id",
+                            constraints=[
+                                ManifestNodeConstraint(
+                                    type=ConstraintType("foreign_key"),
+                                    name="fk_orders_customer",
+                                    to="db.public.customers",
+                                    to_columns=["id"],
+                                ),
+                            ],
+                        ),
+                    },
+                ),
+                "model.pkg.customers": ManifestNodeWithConstraints(columns={}, relation_name="db.public.customers"),
+            }
+
+        algo = ModelContractAlgo()
+        refs = algo.get_relationships(manifest=_Manifest())
+        assert len(refs) == 1
+        assert refs[0].name == "fk_orders_customer"
+
+    def test_get_relationships_column_level_fallback_to_node_name_when_no_constraint_name(self):
+        """Column-level FK without constraint name falls back to node_name as Ref.name."""
+
+        class _Manifest:
+            nodes: ClassVar[dict] = {
+                "model.pkg.orders": ManifestNodeWithConstraints(
+                    columns={
+                        "customer_id": ManifestNodeColumnWithConstraints(
+                            name="customer_id",
+                            constraints=[
+                                ManifestNodeConstraint(
+                                    type=ConstraintType("foreign_key"),
+                                    to="db.public.customers",
+                                    to_columns=["id"],
+                                ),
+                            ],
+                        ),
+                    },
+                ),
+                "model.pkg.customers": ManifestNodeWithConstraints(columns={}, relation_name="db.public.customers"),
+            }
+
+        algo = ModelContractAlgo()
+        refs = algo.get_relationships(manifest=_Manifest())
+        assert len(refs) == 1
+        assert refs[0].name == "model.pkg.orders"
+
+    def test_get_relationships_column_level_no_relationship_label_without_labels_dict(self):
+        """Column-level FK with no node meta relationship_labels dict yields None relationship_label."""
+
+        class _Manifest:
+            nodes: ClassVar[dict] = {
+                "model.pkg.orders": ManifestNodeWithConstraints(
+                    columns={
+                        "customer_id": ManifestNodeColumnWithConstraints(
+                            name="customer_id",
+                            constraints=[
+                                ManifestNodeConstraint(
+                                    type=ConstraintType("foreign_key"),
+                                    name="fk_orders_customer",
+                                    to="db.public.customers",
+                                    to_columns=["id"],
+                                ),
+                            ],
+                        ),
+                    },
+                    meta={},
+                ),
+                "model.pkg.customers": ManifestNodeWithConstraints(columns={}, relation_name="db.public.customers"),
+            }
+
+        algo = ModelContractAlgo()
+        refs = algo.get_relationships(manifest=_Manifest())
+        assert len(refs) == 1
+        assert refs[0].name == "fk_orders_customer"
+        assert refs[0].relationship_label is None
+
+    def test_get_relationships_column_level_relationship_labels_dict_by_constraint_name(self):
+        """Node meta relationship_labels dict keyed by constraint name is used as Ref.relationship_label for column-level FKs."""  # noqa: E501
+
+        class _Manifest:
+            nodes: ClassVar[dict] = {
+                "model.pkg.orders": ManifestNodeWithConstraints(
+                    columns={
+                        "customer_id": ManifestNodeColumnWithConstraints(
+                            name="customer_id",
+                            constraints=[
+                                ManifestNodeConstraint(
+                                    type=ConstraintType("foreign_key"),
+                                    name="fk_orders_customer",
+                                    to="db.public.customers",
+                                    to_columns=["id"],
+                                ),
+                            ],
+                        ),
+                    },
+                    meta={"relationship_labels": {"fk_orders_customer": "order_placed_by_customer"}},
+                ),
+                "model.pkg.customers": ManifestNodeWithConstraints(columns={}, relation_name="db.public.customers"),
+            }
+
+        algo = ModelContractAlgo()
+        refs = algo.get_relationships(manifest=_Manifest())
+        assert len(refs) == 1
+        assert refs[0].name == "fk_orders_customer"
+        assert refs[0].relationship_label == "order_placed_by_customer"
+
+    def test_get_relationships_model_level_constraint_name_as_ref_name(self):
+        """Model-level FK uses constraint name as Ref.name when available."""
+
+        class _Manifest:
+            nodes: ClassVar[dict] = {
+                "model.pkg.orders": ManifestNodeWithConstraints(
+                    columns={},
+                    constraints=[
+                        ManifestNodeConstraint(
+                            type=ConstraintType("foreign_key"),
+                            name="fk_orders_customer",
+                            to="db.public.customers",
+                            to_columns=["id"],
+                            columns=["customer_id"],
+                        ),
+                    ],
+                ),
+                "model.pkg.customers": ManifestNodeWithConstraints(columns={}, relation_name="db.public.customers"),
+            }
+
+        algo = ModelContractAlgo()
+        refs = algo.get_relationships(manifest=_Manifest())
+        assert len(refs) == 1
+        assert refs[0].name == "fk_orders_customer"
+
+    def test_get_relationships_model_level_fallback_to_node_name_when_no_constraint_name(self):
+        """Model-level FK without constraint name falls back to node_name as Ref.name."""
+
+        class _Manifest:
+            nodes: ClassVar[dict] = {
+                "model.pkg.orders": ManifestNodeWithConstraints(
+                    columns={},
+                    constraints=[
+                        ManifestNodeConstraint(
+                            type=ConstraintType("foreign_key"),
+                            to="db.public.customers",
+                            to_columns=["id"],
+                            columns=["customer_id"],
+                        ),
+                    ],
+                ),
+                "model.pkg.customers": ManifestNodeWithConstraints(columns={}, relation_name="db.public.customers"),
+            }
+
+        algo = ModelContractAlgo()
+        refs = algo.get_relationships(manifest=_Manifest())
+        assert len(refs) == 1
+        assert refs[0].name == "model.pkg.orders"
+
+    def test_get_relationships_model_level_relationship_label_from_meta(self):
+        """Node meta relationship_label is used as Ref.relationship_label."""
+
+        class _Manifest:
+            nodes: ClassVar[dict] = {
+                "model.pkg.orders": ManifestNodeWithConstraints(
+                    columns={},
+                    meta={"relationship_label": "placed_by"},
+                    constraints=[
+                        ManifestNodeConstraint(
+                            type=ConstraintType("foreign_key"),
+                            name="fk_orders_customer",
+                            to="db.public.customers",
+                            to_columns=["id"],
+                            columns=["customer_id"],
+                        ),
+                    ],
+                ),
+                "model.pkg.customers": ManifestNodeWithConstraints(columns={}, relation_name="db.public.customers"),
+            }
+
+        algo = ModelContractAlgo()
+        refs = algo.get_relationships(manifest=_Manifest())
+        assert len(refs) == 1
+        assert refs[0].name == "fk_orders_customer"
+        assert refs[0].relationship_label == "placed_by"
+
+    def test_get_relationships_model_level_relationship_labels_dict_by_constraint_name(self):
+        """Node meta relationship_labels dict keyed by constraint name is used as Ref.relationship_label."""
+
+        class _Manifest:
+            nodes: ClassVar[dict] = {
+                "model.pkg.orders": ManifestNodeWithConstraints(
+                    columns={},
+                    meta={"relationship_labels": {"fk_orders_customer": "order_to_customer_label"}},
+                    constraints=[
+                        ManifestNodeConstraint(
+                            type=ConstraintType("foreign_key"),
+                            name="fk_orders_customer",
+                            to="db.public.customers",
+                            to_columns=["id"],
+                            columns=["customer_id"],
+                        ),
+                    ],
+                ),
+                "model.pkg.customers": ManifestNodeWithConstraints(columns={}, relation_name="db.public.customers"),
+            }
+
+        algo = ModelContractAlgo()
+        refs = algo.get_relationships(manifest=_Manifest())
+        assert len(refs) == 1
+        assert refs[0].name == "fk_orders_customer"
+        assert refs[0].relationship_label == "order_to_customer_label"
 
     def test_get_relationships_deduplication(self):
         """Duplicate FK constraints (same table_map + column_map) are deduplicated."""

@@ -248,16 +248,16 @@ digraph g {
          <tr><td align="left">(number) supply_cost</td></tr>
          <tr><td align="left">(boolean) is_perishable_supply</td></tr>
       </table>> ];
-  "model.jaffle_shop.fct_customer_segment_orders" -> "model.jaffle_shop.dim_customer_segment" [
-    penwidth = 1
-    fontsize = 12
-    fontcolor = "black"
-    label = "customer_id, segment_code = customer_id, segment_code"
-  ];
   "model.jaffle_shop.orders" -> "model.jaffle_shop.locations" [
     penwidth = 1
     fontsize = 12
     fontcolor = "black"
     label = "location_id = location_id"
+  ];
+  "model.jaffle_shop.fct_customer_segment_orders" -> "model.jaffle_shop.dim_customer_segment" [
+    penwidth = 1
+    fontsize = 12
+    fontcolor = "black"
+    label = "customer_id, segment_code = customer_id, segment_code"
   ];
 }

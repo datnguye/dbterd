@@ -10,12 +10,12 @@ erDiagram
     number lifetime_spend
     text customer_type
   }
-  "MODEL.JAFFLE_SHOP.DIM_CUSTOMER_SEGMENT" {
+  "MODEL.JAFFLE_SHOP.DIM_CUSTOMER_SEGMENT"["CUSTOMER_SEGMENT"] {
     text customer_id PK
     varchar segment_code PK
     bigint lifetime_order_count
   }
-  "MODEL.JAFFLE_SHOP.FCT_CUSTOMER_SEGMENT_ORDERS" {
+  "MODEL.JAFFLE_SHOP.FCT_CUSTOMER_SEGMENT_ORDERS"["SEGMENT_ORDERS"] {
     text order_id PK
     text customer_id
     varchar segment_code
@@ -123,5 +123,5 @@ erDiagram
     number supply_cost
     boolean is_perishable_supply
   }
-  "MODEL.JAFFLE_SHOP.FCT_CUSTOMER_SEGMENT_ORDERS" }|--|| "MODEL.JAFFLE_SHOP.DIM_CUSTOMER_SEGMENT": customer_id__segment_code
-  "MODEL.JAFFLE_SHOP.ORDERS" }|--|| "MODEL.JAFFLE_SHOP.LOCATIONS": location_id
+  "MODEL.JAFFLE_SHOP.ORDERS" }|--|| "MODEL.JAFFLE_SHOP.LOCATIONS": order_to_location
+  "MODEL.JAFFLE_SHOP.FCT_CUSTOMER_SEGMENT_ORDERS" }|--|| "MODEL.JAFFLE_SHOP.DIM_CUSTOMER_SEGMENT": segment_order_to_customer_segment

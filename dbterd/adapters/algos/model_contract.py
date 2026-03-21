@@ -293,13 +293,17 @@ class ModelContractAlgo(BaseAlgoAdapter):
                 col_meta = getattr(col, "meta", None) or {}
                 relationship_type = _get_relationship_type(col_meta.get(TEST_META_RELATIONSHIP_TYPE, ""))
 
+                constraint_name = getattr(constraint, "name", None) or None
+                node_meta = getattr(node, "meta", None) or {}
+                relationship_label = node_meta.get("relationship_labels", {}).get(constraint_name)
                 for to_column in to_columns:
                     refs.append(
                         Ref(
-                            name=node_name,
+                            name=constraint_name or node_name,
                             table_map=[to_node_id, node_name],
                             column_map=([to_column], [col_name]),
                             type=relationship_type,
+                            relationship_label=relationship_label,
                         )
                     )
 
@@ -336,14 +340,21 @@ class ModelContractAlgo(BaseAlgoAdapter):
 
             to_columns = list(getattr(constraint, "to_columns", None) or constraint.columns)
             node_meta = getattr(node, "meta", None) or {}
-            relationship_type = _get_relationship_type(node_meta.get(TEST_META_RELATIONSHIP_TYPE, ""))
+            constraint_name = getattr(constraint, "name", None) or None
+            relationship_type = _get_relationship_type(
+                node_meta.get("relationship_types", {}).get(constraint_name) or ""
+            )
+            relationship_label = node_meta.get("relationship_labels", {}).get(constraint_name) or node_meta.get(
+                "relationship_label"
+            )
 
             refs.append(
                 Ref(
-                    name=node_name,
+                    name=constraint_name or node_name,
                     table_map=[to_node_id, node_name],
                     column_map=(to_columns, list(constraint.columns)),
                     type=relationship_type,
+                    relationship_label=relationship_label,
                 )
             )
 

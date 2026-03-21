@@ -20,7 +20,9 @@ This will display the model as `customers` in the ERD instead of the actual mode
 
 ### Override Relationship Display Names
 
-Add `relationship_label` attribute to your test's meta to customize the relationship name:
+#### test_relationship algorithm
+
+Add `relationship_label` to your test's meta to customize the relationship name:
 
 ```yaml
 models:
@@ -37,6 +39,30 @@ models:
 
 This will display the relationship as `placed_by` instead of the default relationship name.
 
+#### model_contract algorithm
+
+The `model_contract` algorithm reads relationship labels from `meta.relationship_labels` on the **model** (not the constraint), keyed by the constraint's `name`:
+
+```yaml
+models:
+  - name: orders
+    meta:
+      relationship_labels:
+        fk_order_to_location: order_to_location
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: location_id
+        constraints:
+          - type: foreign_key
+            name: fk_order_to_location
+            to: ref('locations')
+            to_columns: [location_id]
+```
+
+This will display the relationship as `order_to_location`. The key in `relationship_labels` must match the constraint's `name` field exactly.
+
 ### Use Cases
 
 - **Simplify complex naming conventions**: Transform technical names like `stg_erp__customer_master_v2` to readable names like `Customers`
@@ -45,6 +71,8 @@ This will display the relationship as `placed_by` instead of the default relatio
 - **Internationalization**: Display table names in different languages while maintaining consistent model names
 
 ### Example
+
+#### test_relationship algorithm
 
 Here's a complete example showing both table and relationship label overrides:
 
@@ -90,6 +118,46 @@ This configuration will generate an ERD where:
 - `dim_store_locations` appears as `Stores`
 - The relationship from Daily Revenue to Products is labeled as `sold_product`
 - The relationship from Daily Revenue to Stores is labeled as `generated_at`
+
+#### model_contract algorithm
+
+Here's the equivalent using model contract constraints:
+
+```yaml
+models:
+  - name: fct_daily_revenue_agg
+    meta:
+      label: Daily Revenue
+      relationship_labels:
+        fk_revenue_to_product: sold_product
+        fk_revenue_to_store: generated_at
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: product_id
+        constraints:
+          - type: foreign_key
+            name: fk_revenue_to_product
+            to: ref('dim_product_catalog')
+            to_columns: [product_id]
+      - name: store_id
+        constraints:
+          - type: foreign_key
+            name: fk_revenue_to_store
+            to: ref('dim_store_locations')
+            to_columns: [store_id]
+
+  - name: dim_product_catalog
+    meta:
+      label: Products
+
+  - name: dim_store_locations
+    meta:
+      label: Stores
+```
+
+This produces the same ERD output as the `test_relationship` example above.
 
 The resulting ERD would look like this:
 

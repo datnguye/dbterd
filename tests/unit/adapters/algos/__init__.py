@@ -294,6 +294,7 @@ class DummyManifestWithColumnLevelConstraints:
                     constraints=[
                         ManifestNodeConstraint(
                             type=ConstraintType("foreign_key"),
+                            name="fk_orders_customer_id",
                             to="db.public.customers",
                             to_columns=["id"],
                         ),
@@ -304,6 +305,7 @@ class DummyManifestWithColumnLevelConstraints:
                     constraints=[
                         ManifestNodeConstraint(
                             type=ConstraintType("foreign_key"),
+                            name="fk_orders_product_id",
                             to="db.public.products",
                             to_columns=["id"],
                         ),
@@ -356,12 +358,14 @@ class DummyManifestWithModelLevelConstraints:
             constraints=[
                 ManifestNodeConstraint(
                     type=ConstraintType("foreign_key"),
+                    name="fk_orders_customer_id",
                     to="db.public.customers",
                     to_columns=["id"],
                     columns=["customer_id"],
                 ),
                 ManifestNodeConstraint(
                     type=ConstraintType("foreign_key"),
+                    name="fk_orders_department",
                     to="db.public.departments",
                     to_columns=["org_id", "dept_id"],
                     columns=["org_id", "dept_id"],

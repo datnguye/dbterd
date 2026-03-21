@@ -127,6 +127,6 @@ entity "model.jaffle_shop.supplies" {
     supply_cost : number
     is_perishable_supply : boolean
   }
-  "model.jaffle_shop.fct_customer_segment_orders" }|--|| "model.jaffle_shop.dim_customer_segment"
   "model.jaffle_shop.orders" }|--|| "model.jaffle_shop.locations"
+  "model.jaffle_shop.fct_customer_segment_orders" }|--|| "model.jaffle_shop.dim_customer_segment"
 @enduml

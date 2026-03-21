@@ -181,5 +181,5 @@ Table "model.jaffle_shop.supplies" {
   Note: ""
 }
 //Refs (based on the DBT Relationship Tests)
-Ref: "model.jaffle_shop.fct_customer_segment_orders".("customer_id", "segment_code") > "model.jaffle_shop.dim_customer_segment".("customer_id", "segment_code")
 Ref: "model.jaffle_shop.orders"."location_id" > "model.jaffle_shop.locations"."location_id"
+Ref: "model.jaffle_shop.fct_customer_segment_orders".("customer_id", "segment_code") > "model.jaffle_shop.dim_customer_segment".("customer_id", "segment_code")

@@ -114,7 +114,17 @@ This algorithm requires **manifest v12+** (dbt 1.9+).
 !!! warning "Contract must be enforced"
     The `foreign_key` constraint's `to` field is only populated in the manifest when `contract.enforced: true` is set on the model. Without enforcement, dbt will not write the FK target into the artifact and `dbterd` will find no relationships.
 
-Using the same [Jaffle Shop](https://github.com/dbt-labs/jaffle-shop) project, here is a sample contract with a foreign key from `orders` to `locations`:
+Run `dbterd` with the `model_contract` algorithm:
+
+```bash
+dbterd run -a model_contract
+```
+
+No duplicate test definitions needed — the contract itself is the source of truth.
+
+### Column-level FK
+
+Using the same [Jaffle Shop](https://github.com/dbt-labs/jaffle-shop) project, here is a sample contract with a single-column foreign key from `orders` to `locations`:
 
 ```yaml
 models:
@@ -126,14 +136,9 @@ models:
       - name: location_id
         constraints:
           - type: foreign_key
+            name: fk_order_to_location
             to: ref('locations')
             to_columns: [location_id]
-```
-
-Run `dbterd` with the `model_contract` algorithm:
-
-```bash
-dbterd run -a model_contract
 ```
 
 The result will include the relationship inferred from the constraint:
@@ -142,7 +147,113 @@ The result will include the relationship inferred from the constraint:
 Ref: "orders"."location_id" > "locations"."location_id"
 ```
 
-No duplicate test definitions needed — the contract itself is the source of truth. 🎉🎉🎉
+### Model-level FK (composite relationships)
+
+When a foreign key spans multiple columns, define it at the model level using `constraints`:
+
+```yaml
+models:
+  - name: fct_customer_segment_orders
+    config:
+      contract:
+        enforced: true
+    constraints:
+      - type: foreign_key
+        name: fk_segment_order_to_customer_segment
+        to: ref('dim_customer_segment')
+        columns: [customer_id, segment_code]
+        to_columns: [customer_id, segment_code]
+```
+
+The result will include the multi-column relationship:
+
+```
+Ref: "fct_customer_segment_orders".("customer_id", "segment_code") > "dim_customer_segment".("customer_id", "segment_code")
+```
+
+### Primary key detection
+
+`dbterd` automatically marks columns as primary keys from `primary_key` constraints — both at the column level and the model level (for composite PKs).
+
+**Column-level PK:**
+
+```yaml
+models:
+  - name: orders
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: order_id
+        constraints:
+          - type: primary_key
+```
+
+**Model-level composite PK:**
+
+```yaml
+models:
+  - name: dim_customer_segment
+    config:
+      contract:
+        enforced: true
+    constraints:
+      - type: primary_key
+        columns: [customer_id, segment_code]
+```
+
+The affected columns will appear with a `[pk]` index in the ERD output.
+
+### Relationship labels
+
+To annotate a relationship edge with a label, add a `relationship_labels` dict to the model's `meta`, keyed by the constraint name:
+
+```yaml
+models:
+  - name: orders
+    meta:
+      relationship_labels:
+        fk_order_to_location: order_to_location
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: location_id
+        constraints:
+          - type: foreign_key
+            name: fk_order_to_location
+            to: ref('locations')
+            to_columns: [location_id]
+```
+
+### Relationship types
+
+To control cardinality per constraint, add a `relationship_types` dict to the model's `meta`, keyed by constraint name — mirroring how `relationship_labels` works:
+
+```yaml
+models:
+  - name: orders
+    meta:
+      relationship_types:
+        fk_order_to_location: many-to-one
+        fk_order_to_customer: zero-to-many
+    config:
+      contract:
+        enforced: true
+    constraints:
+      - type: foreign_key
+        name: fk_order_to_location
+        to: ref('locations')
+        columns: [location_id]
+        to_columns: [location_id]
+      - type: foreign_key
+        name: fk_order_to_customer
+        to: ref('customers')
+        columns: [customer_id]
+        to_columns: [customer_id]
+```
+
+Supported values: `zero-to-many`, `zero-to-one`, `one-to-one`, `many-to-many`, `one-to-many`, `many-to-one` (default).
 
 ## New module(s)?
 
