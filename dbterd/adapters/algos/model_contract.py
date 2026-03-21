@@ -5,7 +5,6 @@ using dbt model contract constraints (foreign_key) to determine connections.
 Requires manifest v12+ (dbt 1.9+) for the `to` and `to_columns` fields.
 """
 
-import re
 from typing import Optional, Union
 
 from dbterd.constants import TEST_META_RELATIONSHIP_TYPE
@@ -16,36 +15,30 @@ from dbterd.helpers.log import logger
 from dbterd.types import Catalog, Manifest
 
 
-def _resolve_ref_to_node_id(ref_str: str, manifest_nodes: dict) -> Optional[str]:
-    """Resolve a ref string like ref('model_name') to a manifest node unique ID.
+def _resolve_to_node_id(to_str: str, manifest_nodes: dict) -> Optional[str]:
+    """Resolve constraint.to to a manifest node unique ID.
 
-    Supports:
-        - ref('model_name')
-        - ref("model_name")
-        - ref('package', 'model_name')
-        - ref("package", "model_name")
+    The constraint.to value is a fully qualified relation name in the format:
+        <database>.<schema>.<table_name>  (e.g. "shaman.dummy.locations")
+
+    This is matched against each node's relation_name field.
+    Only model resource type is currently supported.
 
     Args:
-        ref_str: The ref string from constraint.to
+        to_str: The constraint.to string (<database>.<schema>.<table_name>)
         manifest_nodes: Dict of manifest node IDs to node objects
 
     Returns:
         Matching node unique ID, or None if not found.
 
     """
-    if not ref_str:
+    if not to_str:
         return None
 
-    match = re.match(r"""ref\(\s*['"]([^'"]+)['"]\s*(?:,\s*['"]([^'"]+)['"]\s*)?\)""", ref_str)
-    if not match:
-        return None
-
-    first_arg = match.group(1)
-    second_arg = match.group(2)
-    model_name = second_arg if second_arg else first_arg
-
-    for node_id in manifest_nodes:
-        if node_id.startswith("model.") and node_id.split(".")[-1] == model_name:
+    # model resource type takes priority over other resource types
+    sorted_nodes = sorted(manifest_nodes.items(), key=lambda x: (0 if x[0].startswith("model.") else 1))
+    for node_id, node in sorted_nodes:
+        if getattr(node, "relation_name", None) == to_str:
             return node_id
 
     return None
@@ -190,14 +183,14 @@ class ModelContractAlgo(BaseAlgoAdapter):
                     continue
                 for constraint in col.constraints:
                     if constraint.type.value == "foreign_key" and getattr(constraint, "to", None):
-                        target_id = _resolve_ref_to_node_id(constraint.to, manifest_nodes)
+                        target_id = _resolve_to_node_id(constraint.to, manifest_nodes)
                         if target_id:
                             targets.append(target_id)
 
         if hasattr(node, "constraints") and node.constraints:
             for constraint in node.constraints:
                 if constraint.type.value == "foreign_key" and getattr(constraint, "to", None):
-                    target_id = _resolve_ref_to_node_id(constraint.to, manifest_nodes)
+                    target_id = _resolve_to_node_id(constraint.to, manifest_nodes)
                     if target_id:
                         targets.append(target_id)
 
@@ -230,7 +223,7 @@ class ModelContractAlgo(BaseAlgoAdapter):
                 if not getattr(constraint, "to", None):
                     continue
 
-                to_node_id = _resolve_ref_to_node_id(constraint.to, manifest_nodes)
+                to_node_id = _resolve_to_node_id(constraint.to, manifest_nodes)
                 if not to_node_id:
                     continue
 
@@ -277,7 +270,7 @@ class ModelContractAlgo(BaseAlgoAdapter):
             if not getattr(constraint, "columns", None):
                 continue
 
-            to_node_id = _resolve_ref_to_node_id(constraint.to, manifest_nodes)
+            to_node_id = _resolve_to_node_id(constraint.to, manifest_nodes)
             if not to_node_id:
                 continue
 
