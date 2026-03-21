@@ -24,7 +24,8 @@ Transform your dbt artifact files or metadata into stunning Entity Relationship 
 dbterd intelligently detects entity relationships through:
 
 - **🧪 [Test Relationships](https://docs.getdbt.com/reference/resource-properties/data-tests#relationships)** (default method)
-- **🏛️ [Semantic Entities](https://docs.getdbt.com/docs/build/entities)** (use `-a` option)
+- **🏛️ [Semantic Entities](https://docs.getdbt.com/docs/build/entities)** (use `-a semantic` option)
+- **📜 [Model Contract Constraints](https://docs.getdbt.com/docs/collaborate/govern/model-contracts)** (use `-a model_contract` option, requires dbt 1.9+ / manifest v12+)
 
 For detailed configuration options, see our [CLI References](./nav/guide/cli-references.md#dbterd-run-algo-a).
 
