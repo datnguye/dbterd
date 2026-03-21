@@ -195,7 +195,13 @@ A huge thanks to our amazing contributors! 🙏
 **Need help?** We're here for you! Check 📖 [Documentation](https://dbterd.datnguyen.de/), 🐛 [Report Issues](https://github.com/datnguye/dbterd/issues) and 💬 [Discussions](https://github.com/datnguye/dbterd/discussions)
 
 
-[![Star History Chart](https://api.star-history.com/image?repos=datnguye/dbterd&type=date&legend=top-left)](https://www.star-history.com/?repos=datnguye%2Fdbterd&type=date&legend=top-left)
+<a href="https://www.star-history.com/?repos=datnguye%2Fdbterd&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/image?repos=datnguye/dbterd&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/image?repos=datnguye/dbterd&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/image?repos=datnguye/dbterd&type=date&legend=top-left" />
+ </picture>
+</a>
 
 ---
 
