@@ -1,9 +1,10 @@
 # Choosing the algorithm (parsers) to parse the Entity Relationships (ERs)
 
-There are 2 approaches (or 2 modules) we can use here to let `dbterd` look at how the ERs can be recognized between the dbt models:
+There are 3 approaches (or 3 modules) we can use here to let `dbterd` look at how the ERs can be recognized between the dbt models:
 
 1. **Test Relationship** ([docs](https://docs.getdbt.com/reference/resource-properties/data-tests#relationships), [source](https://github.com/datnguye/dbterd/blob/main/dbterd/adapters/algos/test_relationship.py)) (default)
 2. **Semantic Entities** ([docs](https://docs.getdbt.com/docs/build/entities), [source](https://github.com/datnguye/dbterd/blob/main/dbterd/adapters/algos/semantic.py))
+3. **Model Contract** ([docs](https://docs.getdbt.com/docs/collaborate/govern/model-contracts), [source](https://github.com/datnguye/dbterd/blob/main/dbterd/adapters/algos/model_contract.py))
 
 ## Test Relationship
 
@@ -103,6 +104,156 @@ dbterd run -enf table -a semantic
 ```
 
 The result DBML code will be the same as the 1st option. Voila! 🎉🎉
+
+## Model Contract
+
+Since dbt v1.9, dbt supports enforcing [model contracts](https://docs.getdbt.com/docs/collaborate/govern/model-contracts) with column-level and model-level constraints, including `foreign_key`. When a `foreign_key` constraint carries a `to` field pointing to another model, `dbterd` can read those declarations directly to infer relationships — no tests or semantic models required.
+
+This algorithm requires **manifest v12+** (dbt 1.9+).
+
+!!! warning "Contract must be enforced"
+    The `foreign_key` constraint's `to` field is only populated in the manifest when `contract.enforced: true` is set on the model. Without enforcement, dbt will not write the FK target into the artifact and `dbterd` will find no relationships.
+
+Run `dbterd` with the `model_contract` algorithm:
+
+```bash
+dbterd run -a model_contract
+```
+
+No duplicate test definitions needed — the contract itself is the source of truth.
+
+### Column-level FK
+
+Using the same [Jaffle Shop](https://github.com/dbt-labs/jaffle-shop) project, here is a sample contract with a single-column foreign key from `orders` to `locations`:
+
+```yaml
+models:
+  - name: orders
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: location_id
+        constraints:
+          - type: foreign_key
+            name: fk_order_to_location
+            to: ref('locations')
+            to_columns: [location_id]
+```
+
+The result will include the relationship inferred from the constraint:
+
+```
+Ref: "orders"."location_id" > "locations"."location_id"
+```
+
+### Model-level FK (composite relationships)
+
+When a foreign key spans multiple columns, define it at the model level using `constraints`:
+
+```yaml
+models:
+  - name: fct_customer_segment_orders
+    config:
+      contract:
+        enforced: true
+    constraints:
+      - type: foreign_key
+        name: fk_segment_order_to_customer_segment
+        to: ref('dim_customer_segment')
+        columns: [customer_id, segment_code]
+        to_columns: [customer_id, segment_code]
+```
+
+The result will include the multi-column relationship:
+
+```
+Ref: "fct_customer_segment_orders".("customer_id", "segment_code") > "dim_customer_segment".("customer_id", "segment_code")
+```
+
+### Primary key detection
+
+`dbterd` automatically marks columns as primary keys from `primary_key` constraints — both at the column level and the model level (for composite PKs).
+
+**Column-level PK:**
+
+```yaml
+models:
+  - name: orders
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: order_id
+        constraints:
+          - type: primary_key
+```
+
+**Model-level composite PK:**
+
+```yaml
+models:
+  - name: dim_customer_segment
+    config:
+      contract:
+        enforced: true
+    constraints:
+      - type: primary_key
+        columns: [customer_id, segment_code]
+```
+
+The affected columns will appear with a `[pk]` index in the ERD output.
+
+### Relationship labels
+
+To annotate a relationship edge with a label, add a `relationship_labels` dict to the model's `meta`, keyed by the constraint name:
+
+```yaml
+models:
+  - name: orders
+    meta:
+      relationship_labels:
+        fk_order_to_location: order_to_location
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: location_id
+        constraints:
+          - type: foreign_key
+            name: fk_order_to_location
+            to: ref('locations')
+            to_columns: [location_id]
+```
+
+### Relationship types
+
+To control cardinality per constraint, add a `relationship_types` dict to the model's `meta`, keyed by constraint name — mirroring how `relationship_labels` works:
+
+```yaml
+models:
+  - name: orders
+    meta:
+      relationship_types:
+        fk_order_to_location: many-to-one
+        fk_order_to_customer: zero-to-many
+    config:
+      contract:
+        enforced: true
+    constraints:
+      - type: foreign_key
+        name: fk_order_to_location
+        to: ref('locations')
+        columns: [location_id]
+        to_columns: [location_id]
+      - type: foreign_key
+        name: fk_order_to_customer
+        to: ref('customers')
+        columns: [customer_id]
+        to_columns: [customer_id]
+```
+
+Supported values: `zero-to-many`, `zero-to-one`, `one-to-one`, `many-to-many`, `one-to-many`, `many-to-one` (default).
 
 ## New module(s)?
 

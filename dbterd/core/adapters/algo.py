@@ -247,11 +247,18 @@ class BaseAlgoAdapter(ABC):
         copied_tables = copy.deepcopy(tables)
         for relationship in relationships:
             for table in copied_tables:
-                table_columns = [x.name.lower() for x in table.columns]
-                if table.name == relationship.table_map[0] and relationship.column_map[0].lower() not in table_columns:
-                    table.columns.append(Column(name=relationship.column_map[0]))
-                if table.name == relationship.table_map[1] and relationship.column_map[1].lower() not in table_columns:
-                    table.columns.append(Column(name=relationship.column_map[1]))
+                if table.name == relationship.table_map[0]:
+                    table_columns = [x.name.lower() for x in table.columns]
+                    for col_name in relationship.column_map[0]:
+                        if col_name.lower() not in table_columns:
+                            table.columns.append(Column(name=col_name))
+                            table_columns.append(col_name.lower())
+                if table.name == relationship.table_map[1]:
+                    table_columns = [x.name.lower() for x in table.columns]
+                    for col_name in relationship.column_map[1]:
+                        if col_name.lower() not in table_columns:
+                            table.columns.append(Column(name=col_name))
+                            table_columns.append(col_name.lower())
         return copied_tables
 
     def get_table_from_metadata(self, model_metadata, exposures=None, **kwargs) -> Table:

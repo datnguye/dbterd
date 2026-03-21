@@ -49,20 +49,23 @@ class DbmlAdapter(BaseTargetAdapter):
         """Format a single table in DBML syntax."""
         quote = kwargs.get("quote", '"')
         columns = self._format_columns(table.columns)
+        pk_columns = [col.name for col in table.columns if col.is_primary_key]
+        indexes_block = self._format_indexes_block(pk_columns) if pk_columns else ""
 
         return (
             f"//--configured at schema: {table.database}.{table.schema}\n"
             f"Table {quote}{table.name}{quote} {{\n"
             f"{columns}\n\n"
             f"  Note: {json.dumps(table.description)}\n"
+            f"{indexes_block}"
             f"}}"
         )
 
     def format_relationship(self, relationship: Ref, **kwargs) -> str:
         """Format a single relationship in DBML syntax."""
         quote = kwargs.get("quote", '"')
-        key_from = f'{quote}{relationship.table_map[1]}{quote}."{relationship.column_map[1]}"'
-        key_to = f'{quote}{relationship.table_map[0]}{quote}."{relationship.column_map[0]}"'
+        key_from = self._format_column_ref(relationship.table_map[1], relationship.column_map[1], quote)
+        key_to = self._format_column_ref(relationship.table_map[0], relationship.column_map[0], quote)
         symbol = self.get_rel_symbol(relationship.type)
         return f"Ref: {key_from} {symbol} {key_to}"
 
@@ -77,3 +80,19 @@ class DbmlAdapter(BaseTargetAdapter):
             )
             for col in columns
         )
+
+    def _format_column_ref(self, table: str, columns: list[str], quote: str) -> str:
+        """Format a table.column(s) reference in DBML syntax.
+
+        For a single column: `"table"."col"`
+        For multiple columns: `"table".("col1", "col2")`
+        """
+        if len(columns) == 1:
+            return f'{quote}{table}{quote}."{columns[0]}"'
+        cols_str = ", ".join(f'"{c}"' for c in columns)
+        return f"{quote}{table}{quote}.({cols_str})"
+
+    def _format_indexes_block(self, pk_columns: list[str]) -> str:
+        """Format a DBML indexes block for a composite or single primary key."""
+        cols_str = ", ".join(pk_columns)
+        return f"  indexes {{\n    ({cols_str}) [pk]\n  }}\n"

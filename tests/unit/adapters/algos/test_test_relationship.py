@@ -121,12 +121,12 @@ class TestAlgoTestRelationship:
                     Ref(
                         name="test.dbt_resto.relationships_table1",
                         table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
-                        column_map=["f2", "f1"],
+                        column_map=(["f2"], ["f1"]),
                     ),
                     Ref(
                         name="test.dbt_resto.relationships_table3",
                         table_map=["model.dbt_resto.tabley", "model.dbt_resto.tablex"],
-                        column_map=["f2", "f1"],
+                        column_map=(["f2"], ["f1"]),
                     ),
                     Ref(
                         name="test.dbt_resto.relationships_table4",
@@ -134,7 +134,7 @@ class TestAlgoTestRelationship:
                             "model.dbt_resto.table-m2",
                             "model.dbt_resto.table-m1",
                         ],
-                        column_map=["f2", "f1"],
+                        column_map=(["f2"], ["f1"]),
                         type="11",
                     ),
                     Ref(
@@ -143,12 +143,12 @@ class TestAlgoTestRelationship:
                             "model.dbt_resto.table-r2",
                             "model.dbt_resto.table-r1",
                         ],
-                        column_map=["f2", "f1"],
+                        column_map=(["f2"], ["f1"]),
                     ),
                     Ref(
                         name="test.dbt_resto.relationships_table1_recursive",
                         table_map=["model.dbt_resto.table1", "model.dbt_resto.table1"],
-                        column_map=["f2", "f1"],
+                        column_map=(["f2"], ["f1"]),
                     ),
                 ],
             ),
@@ -159,7 +159,7 @@ class TestAlgoTestRelationship:
                     Ref(
                         name="test.dbt_resto.foreign_key_table1",
                         table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
-                        column_map=["f2", "f1"],
+                        column_map=(["f2"], ["f1"]),
                     ),
                 ],
             ),
@@ -578,7 +578,7 @@ class TestAlgoTestRelationship:
                     Ref(
                         name="test.relationship_1",
                         table_map=["", ""],
-                        column_map=["colx", "coly"],
+                        column_map=(["colx"], ["coly"]),
                         type="n1",
                     )
                 ],
@@ -614,7 +614,7 @@ class TestAlgoTestRelationship:
                     Ref(
                         name="test.relationship_1",
                         table_map=["model.p.x", "model.p.y"],
-                        column_map=["colx", "coly"],
+                        column_map=(["colx"], ["coly"]),
                         type="n1",
                     )
                 ],
@@ -650,7 +650,7 @@ class TestAlgoTestRelationship:
                     Ref(
                         name="test.relationship_1",
                         table_map=["model.p.x", "model.p.y"],
-                        column_map=["colx", "coly"],
+                        column_map=(["colx"], ["coly"]),
                         type="n1",
                     )
                 ],
@@ -685,7 +685,7 @@ class TestAlgoTestRelationship:
                     Ref(
                         name="test.relationship_1",
                         table_map=["model.p.x", "model.p.x"],
-                        column_map=["colx", "coly"],
+                        column_map=(["colx"], ["coly"]),
                         type="n1",
                     )
                 ],

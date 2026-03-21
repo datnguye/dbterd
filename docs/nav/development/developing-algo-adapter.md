@@ -8,6 +8,7 @@ An algorithm adapter is responsible for parsing dbt artifacts (manifest and cata
 
 - **test_relationship** - Uses dbt's `relationships` test to find foreign keys
 - **semantic** - Uses dbt's Semantic Layer entities (primary/foreign) to determine connections
+- **model_contract** - Uses dbt's model contract `foreign_key` constraints (manifest v12+ / dbt 1.9+) to determine connections
 
 Your custom algorithm might detect relationships through naming conventions (e.g., `*_id` columns), comments, tags, or any other creative method you can dream up.
 

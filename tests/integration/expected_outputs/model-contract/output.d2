@@ -1,0 +1,141 @@
+"model.jaffle_shop.customers": {
+  shape: sql_table
+  customer_id: text
+  customer_name: text
+  count_lifetime_orders: number
+  first_ordered_at: timestamp_ntz
+  last_ordered_at: timestamp_ntz
+  lifetime_spend_pretax: number
+  lifetime_tax_paid: number
+  lifetime_spend: number
+  customer_type: text
+}
+"model.jaffle_shop.dim_customer_segment": {
+  shape: sql_table
+  customer_id: text {constraint: primary_key}
+  segment_code: varchar {constraint: primary_key}
+  lifetime_order_count: bigint
+}
+"model.jaffle_shop.fct_customer_segment_orders": {
+  shape: sql_table
+  order_id: text {constraint: primary_key}
+  customer_id: text
+  segment_code: varchar
+  ordered_at: timestamp_ntz
+  order_total: numeric
+}
+"model.jaffle_shop.locations": {
+  shape: sql_table
+  location_id: text {constraint: primary_key}
+  location_name: text
+  tax_rate: float
+  opened_date: timestamp_ntz
+}
+"model.jaffle_shop.metricflow_time_spine": {
+  shape: sql_table
+  date_day: date
+}
+"model.jaffle_shop.order_items": {
+  shape: sql_table
+  order_item_id: text
+  order_id: text
+  product_id: text
+  ordered_at: timestamp_ntz
+  product_name: text
+  product_price: number
+  is_food_item: boolean
+  is_drink_item: boolean
+  supply_cost: number
+}
+"model.jaffle_shop.orders": {
+  shape: sql_table
+  order_id: text {constraint: primary_key}
+  location_id: text
+  customer_id: text
+  subtotal_cents: number
+  tax_paid_cents: number
+  order_total_cents: number
+  subtotal: number
+  tax_paid: number
+  order_total: number
+  ordered_at: timestamp_ntz
+  order_cost: number
+  order_items_subtotal: number
+  count_food_items: number
+  count_drink_items: number
+  count_order_items: number
+  is_food_order: boolean
+  is_drink_order: boolean
+  customer_order_number: number
+}
+"model.jaffle_shop.products": {
+  shape: sql_table
+  product_id: text
+  product_name: text
+  product_type: text
+  product_description: text
+  product_price: number
+  is_food_item: boolean
+  is_drink_item: boolean
+}
+"model.jaffle_shop.stg_customers": {
+  shape: sql_table
+  customer_id: text
+  customer_name: text
+}
+"model.jaffle_shop.stg_locations": {
+  shape: sql_table
+  location_id: text
+  location_name: text
+  tax_rate: float
+  opened_date: timestamp_ntz
+}
+"model.jaffle_shop.stg_order_items": {
+  shape: sql_table
+  order_item_id: text
+  order_id: text
+  product_id: text
+}
+"model.jaffle_shop.stg_orders": {
+  shape: sql_table
+  order_id: text
+  location_id: text
+  customer_id: text
+  subtotal_cents: number
+  tax_paid_cents: number
+  order_total_cents: number
+  subtotal: number
+  tax_paid: number
+  order_total: number
+  ordered_at: timestamp_ntz
+}
+"model.jaffle_shop.stg_products": {
+  shape: sql_table
+  product_id: text
+  product_name: text
+  product_type: text
+  product_description: text
+  product_price: number
+  is_food_item: boolean
+  is_drink_item: boolean
+}
+"model.jaffle_shop.stg_supplies": {
+  shape: sql_table
+  supply_uuid: text
+  supply_id: text
+  product_id: text
+  supply_name: text
+  supply_cost: number
+  is_perishable_supply: boolean
+}
+"model.jaffle_shop.supplies": {
+  shape: sql_table
+  supply_uuid: text
+  supply_id: text
+  product_id: text
+  supply_name: text
+  supply_cost: number
+  is_perishable_supply: boolean
+}
+"model.jaffle_shop.orders" -> "model.jaffle_shop.locations": "location_id = location_id"
+"model.jaffle_shop.fct_customer_segment_orders" -> "model.jaffle_shop.dim_customer_segment": "customer_id, segment_code = customer_id, segment_code"

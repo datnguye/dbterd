@@ -10,6 +10,7 @@ class Column:
     name: str = "unknown"
     data_type: str = "unknown"
     description: str = ""
+    is_primary_key: bool = False
 
 
 @dataclass
@@ -34,7 +35,7 @@ class Ref:
 
     name: str
     table_map: tuple[str, str]
-    column_map: tuple[str, str]
+    column_map: tuple[list[str], list[str]]
     type: str = "n1"
     relationship_label: Optional[str] = None
 

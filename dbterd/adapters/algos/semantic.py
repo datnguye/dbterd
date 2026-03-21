@@ -259,8 +259,8 @@ class SemanticAlgo(BaseAlgoAdapter):
                     name=primary_entity.semantic_model,
                     table_map=(primary_entity.model, foreign_entity.model),
                     column_map=(
-                        primary_entity.column_name,
-                        foreign_entity.column_name,
+                        [primary_entity.column_name],
+                        [foreign_entity.column_name],
                     ),
                     type=primary_entity.relationship_type,
                 )
@@ -285,8 +285,8 @@ class SemanticAlgo(BaseAlgoAdapter):
                     name=primary_entity.semantic_model,
                     table_map=(primary_entity.model, foreign_entity.model),
                     column_map=(
-                        primary_entity.column_name,
-                        foreign_entity.column_name,
+                        [primary_entity.column_name],
+                        [foreign_entity.column_name],
                     ),
                     type=primary_entity.relationship_type,
                 )

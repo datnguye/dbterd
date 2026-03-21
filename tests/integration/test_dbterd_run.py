@@ -29,6 +29,12 @@ class TestDbterdRun:
                 "output.md",
             ),
             ("shopify", "dbml", "test_relationship", [], "output.dbml"),
+            ("model-contract", "dbml", "model_contract", [], "output.dbml"),
+            ("model-contract", "mermaid", "model_contract", [], "output.md"),
+            ("model-contract", "plantuml", "model_contract", [], "output.plantuml"),
+            ("model-contract", "d2", "model_contract", [], "output.d2"),
+            ("model-contract", "drawdb", "model_contract", [], "output.ddb"),
+            ("model-contract", "graphviz", "model_contract", [], "output.graphviz"),
         ],
     )
     def test_run_and_compare_output(

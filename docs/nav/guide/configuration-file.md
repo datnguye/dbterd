@@ -203,7 +203,7 @@ All CLI parameters can be configured in files. Here's the complete reference:
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| `algo` | string | `test_relationship` | Algorithm for detecting relationships |
+| `algo` | string | `test_relationship` | Algorithm for detecting relationships (`test_relationship`, `semantic`, `model_contract`) |
 
 ### Entity Naming
 

@@ -71,12 +71,12 @@ class TestDbmlTestRelationship:
                     Ref(
                         name="test.dbt_resto.relationships_table1",
                         table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
-                        column_map=["name2", "name1"],
+                        column_map=(["name2"], ["name1"]),
                     ),
                     Ref(
                         name="test.dbt_resto.relationships_table1",
                         table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
-                        column_map=["name-notexist2", "name-notexist1"],
+                        column_map=(["name-notexist2"], ["name-notexist1"]),
                     ),
                 ],
                 [],
@@ -129,7 +129,7 @@ class TestDbmlTestRelationship:
                     Ref(
                         name="test.dbt_resto.relationships_table1",
                         table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
-                        column_map=["name2", "name1"],
+                        column_map=(["name2"], ["name1"]),
                     )
                 ],
                 ["schema:--schema--"],
@@ -391,3 +391,90 @@ class TestDbmlTestRelationship:
             omit_entity_name_quotes=omit_entity_name_quotes,
         )
         assert dbml.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
+
+
+class TestFormatColumnRef:
+    def setup_method(self):
+        self.adapter = DbmlAdapter()
+
+    def test_single_column(self):
+        assert self.adapter._format_column_ref("orders", ["id"], '"') == '"orders"."id"'
+
+    def test_composite_columns(self):
+        assert self.adapter._format_column_ref("orders", ["org_id", "dept_id"], '"') == '"orders".("org_id", "dept_id")'
+
+    def test_no_quote(self):
+        assert self.adapter._format_column_ref("orders", ["id"], "") == 'orders."id"'
+
+
+class TestFormatIndexesBlock:
+    def setup_method(self):
+        self.adapter = DbmlAdapter()
+
+    def test_single_pk(self):
+        result = self.adapter._format_indexes_block(["id"])
+        assert result == "  indexes {\n    (id) [pk]\n  }\n"
+
+    def test_composite_pk(self):
+        result = self.adapter._format_indexes_block(["org_id", "dept_id"])
+        assert result == "  indexes {\n    (org_id, dept_id) [pk]\n  }\n"
+
+
+class TestDbmlCompositeFK:
+    def test_composite_fk_rendered(self):
+        """Composite FK column_map renders as table.(col1, col2) syntax."""
+        adapter = DbmlAdapter()
+        ref = Ref(
+            name="test",
+            table_map=["model.pkg.departments", "model.pkg.orders"],
+            column_map=(["org_id", "dept_id"], ["org_id", "dept_id"]),
+        )
+        result = adapter.format_relationship(ref)
+        assert result == 'Ref: "model.pkg.orders".("org_id", "dept_id") > "model.pkg.departments".("org_id", "dept_id")'
+
+    def test_pk_indexes_block_rendered(self):
+        """Table with is_primary_key columns emits an indexes block."""
+        adapter = DbmlAdapter()
+        table = Table(
+            name="model.pkg.orders",
+            node_name="model.pkg.orders",
+            database="db",
+            schema="public",
+            columns=[
+                Column(name="id", data_type="int", is_primary_key=True),
+                Column(name="name", data_type="varchar"),
+            ],
+        )
+        result = adapter.format_table(table)
+        assert "indexes {" in result
+        assert "(id) [pk]" in result
+        assert "name" in result  # non-PK column still present
+
+    def test_composite_pk_indexes_block(self):
+        """Table with composite PK emits correct indexes block."""
+        adapter = DbmlAdapter()
+        table = Table(
+            name="model.pkg.segments",
+            node_name="model.pkg.segments",
+            database="db",
+            schema="public",
+            columns=[
+                Column(name="customer_id", data_type="int", is_primary_key=True),
+                Column(name="segment_code", data_type="varchar", is_primary_key=True),
+            ],
+        )
+        result = adapter.format_table(table)
+        assert "(customer_id, segment_code) [pk]" in result
+
+    def test_no_pk_no_indexes_block(self):
+        """Table without PK columns emits no indexes block."""
+        adapter = DbmlAdapter()
+        table = Table(
+            name="model.pkg.t1",
+            node_name="model.pkg.t1",
+            database="db",
+            schema="public",
+            columns=[Column(name="name", data_type="varchar")],
+        )
+        result = adapter.format_table(table)
+        assert "indexes" not in result

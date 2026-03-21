@@ -62,12 +62,12 @@ class TestPlantUMLTestRelationship:
                     Ref(
                         name="test.dbt_resto.relationships_table1",
                         table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
-                        column_map=["name2", "name1"],
+                        column_map=(["name2"], ["name1"]),
                     ),
                     Ref(
                         name="test.dbt_resto.relationships_table1",
                         table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
-                        column_map=["name-notexist2", "name-notexist1"],
+                        column_map=(["name-notexist2"], ["name-notexist1"]),
                     ),
                 ],
                 [],
@@ -112,7 +112,7 @@ class TestPlantUMLTestRelationship:
                     Ref(
                         name="test.dbt_resto.relationships_table1",
                         table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
-                        column_map=["name2", "name1"],
+                        column_map=(["name2"], ["name1"]),
                     )
                 ],
                 ["schema:--schema--"],
@@ -222,6 +222,36 @@ class TestPlantUMLTestRelationship:
                 """@startuml
                     entity "model.dbt_resto.table1" {
                         name1 : name1-type
+                    }
+                @enduml
+                """,
+            ),
+            # Test with composite primary key columns
+            (
+                [
+                    Table(
+                        name="model.dbt_resto.table1",
+                        node_name="model.dbt_resto.table1",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[
+                            Column(name="id1", data_type="int", is_primary_key=True),
+                            Column(name="id2", data_type="int", is_primary_key=True),
+                            Column(name="value", data_type="text"),
+                        ],
+                        raw_sql="--irrelevant--",
+                    ),
+                ],
+                [],
+                [],
+                [],
+                ["model"],
+                """@startuml
+                    entity "model.dbt_resto.table1" {
+                        *id1 : int <<PK>>
+                        *id2 : int <<PK>>
+                        --
+                        value : text
                     }
                 @enduml
                 """,

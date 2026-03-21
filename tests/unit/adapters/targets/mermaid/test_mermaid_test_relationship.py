@@ -170,7 +170,7 @@ class TestMermaidTestRelationship:
                 [
                     make_ref(
                         table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
-                        column_map=["name2.first_name", "name1.first_name"],
+                        column_map=(["name2.first_name"], ["name1.first_name"]),
                     ),
                 ],
                 [],
@@ -202,6 +202,31 @@ class TestMermaidTestRelationship:
                   }
                 """,
             ),
+            # Test with composite primary key columns
+            (
+                [
+                    make_table(
+                        name="model.dbt_resto.table1",
+                        columns=[
+                            make_column(name="id1", data_type="int", is_primary_key=True),
+                            make_column(name="id2", data_type="int", is_primary_key=True),
+                            make_column(name="value", data_type="text"),
+                        ],
+                    ),
+                ],
+                [],
+                [],
+                [],
+                ["model"],
+                False,
+                """erDiagram
+                  "MODEL.DBT_RESTO.TABLE1" {
+                      int id1 PK
+                      int id2 PK
+                      text value
+                  }
+                """,
+            ),
             # Test with relationship label
             (
                 [
@@ -222,7 +247,7 @@ class TestMermaidTestRelationship:
                 [
                     make_ref(
                         table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
-                        column_map=["name2.first_name", "name1.first_name"],
+                        column_map=(["name2.first_name"], ["name1.first_name"]),
                         relationship_label="Preferred_Relationship_Name",
                     ),
                 ],

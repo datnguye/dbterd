@@ -1,0 +1,263 @@
+digraph g {
+  fontname="Helvetica,Arial,sans-serif"
+  node [fontname="Helvetica,Arial,sans-serif"]
+  edge [fontname="Helvetica,Arial,sans-serif"]
+  graph [fontsize=30 labelloc="t" label="" splines=true overlap=false rankdir="LR"];
+  ratio=auto;
+  "model.jaffle_shop.customers" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">model.jaffle_shop.customers</font></td></tr>
+         <tr><td align="left">(text) customer_id</td></tr>
+         <tr><td align="left">(text) customer_name</td></tr>
+         <tr><td align="left">(number) count_lifetime_orders</td></tr>
+         <tr><td align="left">(timestamp_ntz) first_ordered_at</td></tr>
+         <tr><td align="left">(timestamp_ntz) last_ordered_at</td></tr>
+         <tr><td align="left">(number) lifetime_spend_pretax</td></tr>
+         <tr><td align="left">(number) lifetime_tax_paid</td></tr>
+         <tr><td align="left">(number) lifetime_spend</td></tr>
+         <tr><td align="left">(text) customer_type</td></tr>
+      </table>> ];
+  "model.jaffle_shop.dim_customer_segment" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">model.jaffle_shop.dim_customer_segment</font></td></tr>
+         <tr><td align="left"><b>(text) customer_id [PK]</b></td></tr>
+         <tr><td align="left"><b>(varchar) segment_code [PK]</b></td></tr>
+         <tr><td align="left">(bigint) lifetime_order_count</td></tr>
+      </table>> ];
+  "model.jaffle_shop.fct_customer_segment_orders" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">model.jaffle_shop.fct_customer_segment_orders</font></td></tr>
+         <tr><td align="left"><b>(text) order_id [PK]</b></td></tr>
+         <tr><td align="left">(text) customer_id</td></tr>
+         <tr><td align="left">(varchar) segment_code</td></tr>
+         <tr><td align="left">(timestamp_ntz) ordered_at</td></tr>
+         <tr><td align="left">(numeric) order_total</td></tr>
+      </table>> ];
+  "model.jaffle_shop.locations" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">model.jaffle_shop.locations</font></td></tr>
+         <tr><td align="left"><b>(text) location_id [PK]</b></td></tr>
+         <tr><td align="left">(text) location_name</td></tr>
+         <tr><td align="left">(float) tax_rate</td></tr>
+         <tr><td align="left">(timestamp_ntz) opened_date</td></tr>
+      </table>> ];
+  "model.jaffle_shop.metricflow_time_spine" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">model.jaffle_shop.metricflow_time_spine</font></td></tr>
+         <tr><td align="left">(date) date_day</td></tr>
+      </table>> ];
+  "model.jaffle_shop.order_items" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">model.jaffle_shop.order_items</font></td></tr>
+         <tr><td align="left">(text) order_item_id</td></tr>
+         <tr><td align="left">(text) order_id</td></tr>
+         <tr><td align="left">(text) product_id</td></tr>
+         <tr><td align="left">(timestamp_ntz) ordered_at</td></tr>
+         <tr><td align="left">(text) product_name</td></tr>
+         <tr><td align="left">(number) product_price</td></tr>
+         <tr><td align="left">(boolean) is_food_item</td></tr>
+         <tr><td align="left">(boolean) is_drink_item</td></tr>
+         <tr><td align="left">(number) supply_cost</td></tr>
+      </table>> ];
+  "model.jaffle_shop.orders" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">model.jaffle_shop.orders</font></td></tr>
+         <tr><td align="left"><b>(text) order_id [PK]</b></td></tr>
+         <tr><td align="left">(text) location_id</td></tr>
+         <tr><td align="left">(text) customer_id</td></tr>
+         <tr><td align="left">(number) subtotal_cents</td></tr>
+         <tr><td align="left">(number) tax_paid_cents</td></tr>
+         <tr><td align="left">(number) order_total_cents</td></tr>
+         <tr><td align="left">(number) subtotal</td></tr>
+         <tr><td align="left">(number) tax_paid</td></tr>
+         <tr><td align="left">(number) order_total</td></tr>
+         <tr><td align="left">(timestamp_ntz) ordered_at</td></tr>
+         <tr><td align="left">(number) order_cost</td></tr>
+         <tr><td align="left">(number) order_items_subtotal</td></tr>
+         <tr><td align="left">(number) count_food_items</td></tr>
+         <tr><td align="left">(number) count_drink_items</td></tr>
+         <tr><td align="left">(number) count_order_items</td></tr>
+         <tr><td align="left">(boolean) is_food_order</td></tr>
+         <tr><td align="left">(boolean) is_drink_order</td></tr>
+         <tr><td align="left">(number) customer_order_number</td></tr>
+      </table>> ];
+  "model.jaffle_shop.products" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">model.jaffle_shop.products</font></td></tr>
+         <tr><td align="left">(text) product_id</td></tr>
+         <tr><td align="left">(text) product_name</td></tr>
+         <tr><td align="left">(text) product_type</td></tr>
+         <tr><td align="left">(text) product_description</td></tr>
+         <tr><td align="left">(number) product_price</td></tr>
+         <tr><td align="left">(boolean) is_food_item</td></tr>
+         <tr><td align="left">(boolean) is_drink_item</td></tr>
+      </table>> ];
+  "model.jaffle_shop.stg_customers" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">model.jaffle_shop.stg_customers</font></td></tr>
+         <tr><td align="left">(text) customer_id</td></tr>
+         <tr><td align="left">(text) customer_name</td></tr>
+      </table>> ];
+  "model.jaffle_shop.stg_locations" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">model.jaffle_shop.stg_locations</font></td></tr>
+         <tr><td align="left">(text) location_id</td></tr>
+         <tr><td align="left">(text) location_name</td></tr>
+         <tr><td align="left">(float) tax_rate</td></tr>
+         <tr><td align="left">(timestamp_ntz) opened_date</td></tr>
+      </table>> ];
+  "model.jaffle_shop.stg_order_items" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">model.jaffle_shop.stg_order_items</font></td></tr>
+         <tr><td align="left">(text) order_item_id</td></tr>
+         <tr><td align="left">(text) order_id</td></tr>
+         <tr><td align="left">(text) product_id</td></tr>
+      </table>> ];
+  "model.jaffle_shop.stg_orders" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">model.jaffle_shop.stg_orders</font></td></tr>
+         <tr><td align="left">(text) order_id</td></tr>
+         <tr><td align="left">(text) location_id</td></tr>
+         <tr><td align="left">(text) customer_id</td></tr>
+         <tr><td align="left">(number) subtotal_cents</td></tr>
+         <tr><td align="left">(number) tax_paid_cents</td></tr>
+         <tr><td align="left">(number) order_total_cents</td></tr>
+         <tr><td align="left">(number) subtotal</td></tr>
+         <tr><td align="left">(number) tax_paid</td></tr>
+         <tr><td align="left">(number) order_total</td></tr>
+         <tr><td align="left">(timestamp_ntz) ordered_at</td></tr>
+      </table>> ];
+  "model.jaffle_shop.stg_products" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">model.jaffle_shop.stg_products</font></td></tr>
+         <tr><td align="left">(text) product_id</td></tr>
+         <tr><td align="left">(text) product_name</td></tr>
+         <tr><td align="left">(text) product_type</td></tr>
+         <tr><td align="left">(text) product_description</td></tr>
+         <tr><td align="left">(number) product_price</td></tr>
+         <tr><td align="left">(boolean) is_food_item</td></tr>
+         <tr><td align="left">(boolean) is_drink_item</td></tr>
+      </table>> ];
+  "model.jaffle_shop.stg_supplies" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">model.jaffle_shop.stg_supplies</font></td></tr>
+         <tr><td align="left">(text) supply_uuid</td></tr>
+         <tr><td align="left">(text) supply_id</td></tr>
+         <tr><td align="left">(text) product_id</td></tr>
+         <tr><td align="left">(text) supply_name</td></tr>
+         <tr><td align="left">(number) supply_cost</td></tr>
+         <tr><td align="left">(boolean) is_perishable_supply</td></tr>
+      </table>> ];
+  "model.jaffle_shop.supplies" [
+    style = "filled, bold"
+    penwidth = 1
+    fillcolor = "white"
+    fontname = "Courier New"
+    shape = "Mrecord"
+    label =<
+      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">
+         <tr><td bgcolor="black" align="center" colspan="2"><font color="white">model.jaffle_shop.supplies</font></td></tr>
+         <tr><td align="left">(text) supply_uuid</td></tr>
+         <tr><td align="left">(text) supply_id</td></tr>
+         <tr><td align="left">(text) product_id</td></tr>
+         <tr><td align="left">(text) supply_name</td></tr>
+         <tr><td align="left">(number) supply_cost</td></tr>
+         <tr><td align="left">(boolean) is_perishable_supply</td></tr>
+      </table>> ];
+  "model.jaffle_shop.orders" -> "model.jaffle_shop.locations" [
+    penwidth = 1
+    fontsize = 12
+    fontcolor = "black"
+    label = "location_id = location_id"
+  ];
+  "model.jaffle_shop.fct_customer_segment_orders" -> "model.jaffle_shop.dim_customer_segment" [
+    penwidth = 1
+    fontsize = 12
+    fontcolor = "black"
+    label = "customer_id, segment_code = customer_id, segment_code"
+  ];
+}
