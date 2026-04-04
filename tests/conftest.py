@@ -3,6 +3,14 @@
 import warnings
 
 
+pytest_plugins = [
+    "tests.unit.fixtures.cli",
+    "tests.unit.fixtures.executor",
+    "tests.unit.fixtures.models",
+    "tests.unit.fixtures.test_data",
+]
+
+
 def pytest_configure(config):
     """Configure pytest."""
     # Filter out the pydantic warnings from dbt-artifacts-parser
