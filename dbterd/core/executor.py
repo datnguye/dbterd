@@ -47,7 +47,12 @@ def _register_adapters() -> None:
         for _, module_name, _ in pkgutil.iter_modules(package.__path__):
             importlib.import_module(f"{package.__name__}.{module_name}")
 
-    for ep in importlib.metadata.entry_points(group="dbterd.adapters"):
+    try:
+        adapter_eps = importlib.metadata.entry_points(group="dbterd.adapters")
+    except TypeError:
+        # Python < 3.12: entry_points() doesn't accept keyword arguments
+        adapter_eps = importlib.metadata.entry_points().get("dbterd.adapters", [])
+    for ep in adapter_eps:
         try:
             ep.load()
         except (ImportError, AttributeError):
