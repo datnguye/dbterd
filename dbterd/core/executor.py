@@ -5,6 +5,7 @@ ERD generation from dbt artifacts.
 """
 
 import importlib
+import importlib.metadata
 import os
 from pathlib import Path
 import pkgutil
@@ -27,11 +28,35 @@ from dbterd.plugins.dbt_core.dbt_invocation import DbtInvocation
 
 
 def _register_adapters() -> None:
-    """Import adapter modules to trigger plugin registration via decorators."""
+    """Import adapter modules to trigger plugin registration via decorators.
+
+    Discovers adapters from two sources:
+    1. Built-in adapter modules under dbterd/adapters/algos/ and dbterd/adapters/targets/
+    2. External packages that declare entry points in the "dbterd.adapters" group
+
+    External packages register by adding an entry point in their pyproject.toml::
+
+        [project.entry-points."dbterd.adapters"]
+        my_algo = "my_package.module:MyAlgoClass"
+
+    The entry point module just needs to be imported — the @register_algo or
+    @register_target decorator handles the actual registration.
+    """
     adapter_packages = [algos, targets]
     for package in adapter_packages:
         for _, module_name, _ in pkgutil.iter_modules(package.__path__):
             importlib.import_module(f"{package.__name__}.{module_name}")
+
+    try:
+        adapter_eps = importlib.metadata.entry_points(group="dbterd.adapters")
+    except TypeError:
+        # Python < 3.12: entry_points() doesn't accept keyword arguments
+        adapter_eps = importlib.metadata.entry_points().get("dbterd.adapters", [])
+    for ep in adapter_eps:
+        try:
+            ep.load()
+        except (ImportError, AttributeError):
+            logger.warning("Failed to load external adapter entry point '%s'", ep.name)
 
 
 _register_adapters()
