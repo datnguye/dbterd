@@ -36,6 +36,7 @@ nav:
       - Contributing Guide ❤️: nav/development/contributing-guide.md
       - Developing a Target Adapter: nav/development/developing-target-adapter.md
       - Developing an Algorithm Adapter: nav/development/developing-algo-adapter.md
+      - Developing an External Adapter: nav/development/developing-external-adapter.md
     - License 🔑: license.md
     - Change Log ↗️: 'https://github.com/datnguye/dbterd/releases" target="_blank'
 
