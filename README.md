@@ -25,7 +25,7 @@ dbterd intelligently detects entity relationships through three algorithms — p
 - **🏛️ [Semantic Entities](https://docs.getdbt.com/docs/build/entities)** (`-a entity_relationship`) — detects relationships via dbt Semantic Layer entity definitions
 - **📜 [Model Contract Constraints](https://docs.getdbt.com/docs/collaborate/govern/model-contracts)** (`-a model_contract`) — detects relationships via dbt model contract's `foreign_key` constraints (dbt 1.9+ / manifest v12+)
 
-For detailed configuration options, see our [CLI References](https://dbterd.datnguyen.de/latest/nav/guide/cli-references.html#dbterd-run-algo-a).
+For detailed configuration options, see our [CLI References](https://dbterd.datnguye.me/latest/nav/guide/cli-references.html#dbterd-run-algo-a).
 
 ## 🎨 Supported Output Formats
 
@@ -40,7 +40,7 @@ No need to pick just one — dbterd has a format for every occasion, from quick 
 | **[D2](https://d2lang.com/)** | Modern diagram scripting | Beautiful, customizable diagrams |
 | **[DrawDB](https://drawdb.vercel.app/)** | Web-based database designer | Interactive database design |
 
-🎯 **[Try the Quick Demo](https://dbterd.datnguyen.de/latest/nav/guide/targets/generate-dbml.html)** with DBML format!
+🎯 **[Try the Quick Demo](https://dbterd.datnguye.me/latest/nav/guide/targets/generate-dbml.html)** with DBML format!
 
 ## 🚀 Installation
 
@@ -78,7 +78,7 @@ dbterd run
 - `.dbterd.yml` - YAML configuration (recommended)
 - `pyproject.toml` - Add `[tool.dbterd]` section to your existing Python project config
 
-Learn more in the [Configuration Files Guide](https://dbterd.datnguyen.de/latest/nav/guide/configuration-file.html).
+Learn more in the [Configuration Files Guide](https://dbterd.datnguye.me/latest/nav/guide/configuration-file.html).
 
 ## 💡 Examples
 
@@ -175,7 +175,7 @@ We welcome contributions! Whether you've found a bug, dreamed up a feature, or j
 
 **Ways to contribute:** 🐛 Report bugs | 💡 Suggest features | 📝 Improve documentation | 🔧 Submit pull requests
 
-See our **[Contributing Guide](https://dbterd.datnguyen.de/latest/nav/development/contributing-guide.html)** for detailed information.
+See our **[Contributing Guide](https://dbterd.datnguye.me/latest/nav/development/contributing-guide.html)** for detailed information.
 
 **Show your support:**
 - ⭐ Star this repository
@@ -195,7 +195,7 @@ A huge thanks to our amazing contributors — the people who turned "wouldn't it
 
 ## 📧 Support
 
-**Need help?** We're here for you! Check 📖 [Documentation](https://dbterd.datnguyen.de/), 🐛 [Report Issues](https://github.com/datnguye/dbterd/issues) and 💬 [Discussions](https://github.com/datnguye/dbterd/discussions)
+**Need help?** We're here for you! Check 📖 [Documentation](https://dbterd.datnguye.me/), 🐛 [Report Issues](https://github.com/datnguye/dbterd/issues) and 💬 [Discussions](https://github.com/datnguye/dbterd/discussions)
 
 
 <a href="https://www.star-history.com/?repos=datnguye%2Fdbterd&type=date&legend=top-left">

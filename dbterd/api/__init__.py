@@ -33,7 +33,7 @@ class DbtErd:
     erd = DbtErd(select="exposure:my_exposure_name").get_erd()
     ```
     See the
-    [Selection](https://dbterd.datnguyen.de/latest/nav/guide/cli-references.html#dbterd-run-select-s)
+    [Selection](https://dbterd.datnguye.me/latest/nav/guide/cli-references.html#dbterd-run-select-s)
     page for more details.
 
     ## Get a model (named `model.jaffle_shop.my_model`)'s ERD
@@ -52,7 +52,7 @@ class DbtErd:
         """
         Mimic CLI params with overriding `api = True`.\n
         Check
-        [CLI reference page](https://dbterd.datnguyen.de/latest/nav/guide/cli-references.html)
+        [CLI reference page](https://dbterd.datnguye.me/latest/nav/guide/cli-references.html)
         for more details of how the params are used.
         """
         self.__set_params_default_if_not_specified()

@@ -10,7 +10,7 @@ maintainers = [
 ]
 license = {file = "LICENSE"}
 readme = "README.md"
-urls = {Homepage = "https://github.com/datnguye/dbterd", Repository = "https://github.com/datnguye/dbterd", Documentation = "https://dbterd.datnguyen.de/", Issues = "https://github.com/datnguye/dbterd/issues"}
+urls = {Homepage = "https://github.com/datnguye/dbterd", Repository = "https://github.com/datnguye/dbterd", Documentation = "https://dbterd.datnguye.me/", Issues = "https://github.com/datnguye/dbterd/issues"}
 keywords = [
     "dbt",
     "erd",

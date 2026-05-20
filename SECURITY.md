@@ -170,7 +170,7 @@ We believe in recognizing those who help improve our security:
 **For Non-Security Issues:**
 - 🐛 [Bug Reports](https://github.com/datnguye/dbterd/issues)
 - 💡 [Feature Requests](https://github.com/datnguye/dbterd/discussions)
-- 📖 [Documentation](https://dbterd.datnguyen.de/)
+- 📖 [Documentation](https://dbterd.datnguye.me/)
 
 ---
 

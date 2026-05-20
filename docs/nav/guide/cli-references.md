@@ -340,7 +340,7 @@ Configure the output file name
 
 > Default to `dbml`
 
-Supported target, please visit [Generate the Targets](https://dbterd.datnguyen.de/latest/nav/guide/targets/generate-dbml.html)
+Supported target, please visit [Generate the Targets](https://dbterd.datnguye.me/latest/nav/guide/targets/generate-dbml.html)
 
 **Examples:**
 === "CLI"
