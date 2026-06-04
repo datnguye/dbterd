@@ -501,9 +501,9 @@ Specified dbt catalog.json version
 
 Flag to bypass Pydantic validation errors by patching the parser to ignore extra fields.
 
-This option is useful when working with newer dbt versions that introduce fields not yet supported by the `dbt-artifacts-parser` library. When enabled, the parser will ignore unknown fields instead of raising validation errors, allowing you to continue generating ERDs even with newer artifact schemas.
+This option is useful when working with newer dbt versions that introduce fields not yet supported by the `dbt-artifacts-parser` library. When enabled, the parser tolerates both unknown fields and unknown enum values instead of raising validation errors, allowing you to continue generating ERDs even with newer artifact schemas (for example, dbt 1.11 keeps the manifest at version 12 but adds a `config` property to macro nodes and a `javascript` value to `supported_languages`).
 
-> Default to `False`
+> Default to `True` (override with the `DBTERD_BYPASS_VALIDATION` environment variable, e.g. set it to `false` to enforce strict validation)
 
 !!! info "When to use this option"
     You might encounter Pydantic validation errors like `"Error: Could not open file 'catalog.json': File catalog.json is corrupted, please rebuild"` when using artifact files from newer dbt versions. In such cases, enabling this flag can help you work around compatibility issues while waiting for the parser library to catch up with the latest dbt schema changes. Just be aware that any unsupported fields won't be included in the generated ERD (which is usually fine since relationship information remains intact).

@@ -1,10 +1,13 @@
+from enum import Enum
 import json
 import os
 import re
 import sys
-from typing import Optional
+from types import UnionType
+from typing import Optional, Union, get_args, get_origin
 
 from dbt_artifacts_parser import parser
+from pydantic import BaseModel
 
 from dbterd.helpers.log import logger
 from dbterd.types import Catalog, Manifest
@@ -60,12 +63,96 @@ def open_json(fp: str) -> dict:
     return json.loads(load_file_contents(fp))
 
 
+def relax_pydantic_models(artifact_module: object) -> None:
+    """Relax every Pydantic model in a parser module to tolerate unknown fields.
+
+    Switches each model's ``extra`` config from ``forbid`` to ``ignore`` so that
+    fields added by newer dbt versions (under the same schema version number) no
+    longer trip ``extra_forbidden`` validation errors. dbt 1.11, for example, added
+    a ``config`` property to macro nodes while keeping ``manifest_version`` at 12.
+
+    Args:
+        artifact_module: The imported ``*_v{n}`` parser module to patch.
+    """
+    for attr_name in dir(artifact_module):
+        candidate = getattr(artifact_module, attr_name, None)
+        if isinstance(candidate, type) and issubclass(candidate, BaseModel):
+            model_config = getattr(candidate, "model_config", None)
+            if model_config is not None and model_config.get("extra") == "forbid":
+                model_config["extra"] = "ignore"
+                candidate.model_rebuild(force=True)
+
+
+# Enum fields dbterd reads as enums (via ``<field>.value``) are always named ``type``
+# — e.g. ``constraint.type.value``, ``entity.type.value``. We keep those as enums and
+# widen every other enum-typed field to ``str`` so unknown values can't break parsing.
+_CONSUMED_ENUM_FIELDS = frozenset({"type"})
+
+
+def relax_enum_members(artifact_module: object) -> None:
+    """Allow unknown enum values by widening non-consumed enum fields to plain strings.
+
+    Newer dbt/adapter releases occasionally introduce enum values the pinned parser
+    doesn't know about (e.g. ``javascript`` in ``supported_languages``), which raise
+    enum validation errors. Such fields are widened to accept arbitrary strings.
+
+    Fields that dbterd itself reads as enums (see ``_CONSUMED_ENUM_FIELDS``) are left
+    untouched so downstream ``.value`` access keeps working.
+
+    Args:
+        artifact_module: The imported ``*_v{n}`` parser module to patch.
+    """
+    for attr_name in dir(artifact_module):
+        candidate = getattr(artifact_module, attr_name, None)
+        if not (isinstance(candidate, type) and issubclass(candidate, BaseModel)):
+            continue
+
+        rebuilt = False
+        for field_name, field in candidate.model_fields.items():
+            if field_name in _CONSUMED_ENUM_FIELDS:
+                continue
+            if _annotation_references_enum(field.annotation):
+                field.annotation = _replace_enum_with_str(field.annotation)
+                rebuilt = True
+        if rebuilt:
+            candidate.model_rebuild(force=True)
+
+
+def _annotation_references_enum(annotation: object) -> bool:
+    """Return True if a type annotation references an Enum, including within generics."""
+    if isinstance(annotation, type) and issubclass(annotation, Enum):
+        return True
+    return any(_annotation_references_enum(arg) for arg in get_args(annotation))
+
+
+def _replace_enum_with_str(annotation: object) -> object:
+    """Rebuild an annotation with every Enum reference swapped for ``str``."""
+    if isinstance(annotation, type) and issubclass(annotation, Enum):
+        return str
+
+    args = get_args(annotation)
+    if not args:
+        return annotation
+
+    origin = get_origin(annotation)
+    new_args = tuple(_replace_enum_with_str(arg) for arg in args)
+    if origin is UnionType:
+        return Union[new_args]
+    return origin[new_args]
+
+
 def patch_parser_compatibility(artifact: str = "catalog", artifact_version: Optional[int] = None) -> None:
     """
     Conditionally monkey patch dbt-artifacts-parser Pydantic models for compatibility.
 
-    Modifies Metadata model configurations to use 'extra=ignore' instead of 'extra=forbid'
-    to handle fields added in newer dbt versions that aren't yet supported by the parser.
+    Relaxes every model in the versioned parser module so that newer dbt releases
+    sharing the same schema version (e.g. dbt 1.11 still reporting manifest v12) can
+    still be parsed. Two relaxations are applied:
+
+    - ``extra=forbid`` becomes ``extra=ignore`` to tolerate newly added fields
+      (such as the ``config`` property dbt 1.11 added to macro nodes).
+    - Non-consumed enum fields widen to plain strings to tolerate newly added enum
+      values (such as ``javascript`` in ``supported_languages``).
 
     Args:
         artifact: Artifact type ('manifest' or 'catalog'). Defaults to 'catalog'.
@@ -73,17 +160,15 @@ def patch_parser_compatibility(artifact: str = "catalog", artifact_version: Opti
 
     References:
         https://github.com/yu-iskw/dbt-artifacts-parser/issues/160
+        https://github.com/yu-iskw/dbt-artifacts-parser/issues/219
     """
     try:
         artifact_module = __import__(
             f"dbt_artifacts_parser.parsers.{artifact}.{artifact}_v{artifact_version}",
             fromlist=["Metadata"],
         )
-        metadata_class = getattr(artifact_module, "Metadata", None)
-
-        if metadata_class and hasattr(metadata_class, "model_config"):
-            metadata_class.model_config["extra"] = "ignore"
-            metadata_class.model_rebuild(force=True)
+        relax_pydantic_models(artifact_module)
+        relax_enum_members(artifact_module)
 
         artifact_class_name = f"{artifact.capitalize()}V{artifact_version}"
         artifact_class = getattr(artifact_module, artifact_class_name, None)

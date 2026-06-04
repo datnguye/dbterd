@@ -1,9 +1,68 @@
 import contextlib
+from enum import Enum
+import types
+from typing import Optional
 from unittest import mock
 
+from pydantic import BaseModel, ConfigDict
 import pytest
 
 from dbterd.helpers import file
+
+
+@contextlib.contextmanager
+def _patch_parser_import(fake_module: types.ModuleType):
+    """Intercept only the dbt-artifacts-parser import, delegating everything else.
+
+    A blanket ``__import__`` mock would also hijack Pydantic's own internal imports,
+    so we route just the parser module to the fake and pass the rest through.
+    """
+    real_import = __import__
+
+    def fake_import(name, *args, **kwargs):
+        if name.startswith("dbt_artifacts_parser.parsers."):
+            return fake_module
+        return real_import(name, *args, **kwargs)
+
+    with mock.patch("builtins.__import__", side_effect=fake_import):
+        yield
+
+
+def _build_fake_parser_module(artifact: str, version: int) -> types.ModuleType:
+    """Build a throwaway parser-like module mirroring the dbt-artifacts-parser layout.
+
+    Patching against real parser models would mutate global parser state across the
+    test session, so each test gets its own isolated module with fresh model classes.
+    """
+
+    class SupportedLanguage(str, Enum):
+        python = "python"
+        sql = "sql"
+
+    class ConstraintType(str, Enum):
+        primary_key = "primary_key"
+        foreign_key = "foreign_key"
+
+    class Metadata(BaseModel):
+        model_config = ConfigDict(extra="forbid")
+        name: Optional[str] = None
+
+    class Macros(BaseModel):
+        model_config = ConfigDict(extra="forbid")
+        name: Optional[str] = None
+        supported_languages: Optional[list[SupportedLanguage]] = None
+        # PEP 604 union (`X | None`) exercises the types.UnionType rebuild branch.
+        primary_language: SupportedLanguage | None = None
+        # `type` is a consumed enum field (read via `.value`) and must stay an enum.
+        type: Optional[ConstraintType] = None
+
+    module = types.ModuleType(f"{artifact.lower()}_v{version}")
+    module.SupportedLanguage = SupportedLanguage
+    module.ConstraintType = ConstraintType
+    module.Metadata = Metadata
+    module.Macros = Macros
+    setattr(module, f"{artifact}V{version}", Macros)
+    return module
 
 
 class TestFile:
@@ -111,40 +170,54 @@ class TestFile:
         mock_open.assert_called_with("path/to/catalog/catalog.json", "w", encoding="utf-8")
 
     def test_patch_parser_compatibility_catalog(self):
-        with contextlib.ExitStack() as stack:
-            mock_metadata = mock.MagicMock()
-            mock_metadata.model_config = {"extra": "forbid"}
-            mock_catalog = mock.MagicMock()
-
-            mock_module = mock.MagicMock()
-            mock_module.Metadata = mock_metadata
-            mock_module.CatalogV1 = mock_catalog
-
-            stack.enter_context(mock.patch("builtins.__import__", return_value=mock_module))
-
+        fake_module = _build_fake_parser_module("Catalog", 1)
+        with _patch_parser_import(fake_module):
             file.patch_parser_compatibility(artifact="catalog", artifact_version=1)
 
-            assert mock_metadata.model_config["extra"] == "ignore"
-            mock_metadata.model_rebuild.assert_called_once_with(force=True)
-            mock_catalog.model_rebuild.assert_called_once_with(force=True)
+        assert fake_module.Metadata.model_config["extra"] == "ignore"
 
     def test_patch_parser_compatibility_manifest(self):
-        with contextlib.ExitStack() as stack:
-            mock_metadata = mock.MagicMock()
-            mock_metadata.model_config = {"extra": "forbid"}
-            mock_manifest = mock.MagicMock()
-
-            mock_module = mock.MagicMock()
-            mock_module.Metadata = mock_metadata
-            mock_module.ManifestV12 = mock_manifest
-
-            stack.enter_context(mock.patch("builtins.__import__", return_value=mock_module))
-
+        fake_module = _build_fake_parser_module("Manifest", 12)
+        with _patch_parser_import(fake_module):
             file.patch_parser_compatibility(artifact="manifest", artifact_version=12)
 
-            assert mock_metadata.model_config["extra"] == "ignore"
-            mock_metadata.model_rebuild.assert_called_once_with(force=True)
-            mock_manifest.model_rebuild.assert_called_once_with(force=True)
+        # Every forbid-ing model is relaxed, not just Metadata.
+        assert fake_module.Metadata.model_config["extra"] == "ignore"
+        assert fake_module.Macros.model_config["extra"] == "ignore"
+
+    def test_patch_parser_compatibility_tolerates_extra_field(self):
+        """dbt 1.11 added a `config` property to macro nodes (same manifest v12)."""
+        fake_module = _build_fake_parser_module("Manifest", 12)
+        with _patch_parser_import(fake_module):
+            file.patch_parser_compatibility(artifact="manifest", artifact_version=12)
+
+        instance = fake_module.Macros(name="m", config={"meta": {}})
+        assert instance.name == "m"
+
+    def test_patch_parser_compatibility_tolerates_unknown_enum_value(self):
+        """dbt 1.11 added `javascript` to supported_languages enum (same manifest v12)."""
+        fake_module = _build_fake_parser_module("Manifest", 12)
+        with _patch_parser_import(fake_module):
+            file.patch_parser_compatibility(artifact="manifest", artifact_version=12)
+
+        instance = fake_module.Macros(
+            name="m",
+            supported_languages=["python", "javascript"],
+            primary_language="javascript",
+        )
+        # The non-consumed enum fields are widened to str, so unknown values pass.
+        assert instance.supported_languages == ["python", "javascript"]
+        assert instance.primary_language == "javascript"
+
+    def test_patch_parser_compatibility_preserves_consumed_enum_field(self):
+        """`type` fields are read via `.value` by dbterd and must remain enums."""
+        fake_module = _build_fake_parser_module("Manifest", 12)
+        with _patch_parser_import(fake_module):
+            file.patch_parser_compatibility(artifact="manifest", artifact_version=12)
+
+        instance = fake_module.Macros(name="m", type="primary_key")
+        assert isinstance(instance.type, fake_module.ConstraintType)
+        assert instance.type.value == "primary_key"
 
     def test_patch_parser_compatibility_import_error(self):
         with mock.patch("builtins.__import__", side_effect=ImportError("module not found")):
