@@ -1,3 +1,4 @@
+from collections.abc import Iterator
 from enum import Enum
 import json
 import os
@@ -63,6 +64,14 @@ def open_json(fp: str) -> dict:
     return json.loads(load_file_contents(fp))
 
 
+def _iter_pydantic_models(artifact_module: object) -> Iterator[type[BaseModel]]:
+    """Yield every Pydantic model class defined in a parser module."""
+    for attr_name in dir(artifact_module):
+        candidate = getattr(artifact_module, attr_name, None)
+        if isinstance(candidate, type) and issubclass(candidate, BaseModel):
+            yield candidate
+
+
 def relax_pydantic_models(artifact_module: object) -> None:
     """Relax every Pydantic model in a parser module to tolerate unknown fields.
 
@@ -74,18 +83,18 @@ def relax_pydantic_models(artifact_module: object) -> None:
     Args:
         artifact_module: The imported ``*_v{n}`` parser module to patch.
     """
-    for attr_name in dir(artifact_module):
-        candidate = getattr(artifact_module, attr_name, None)
-        if isinstance(candidate, type) and issubclass(candidate, BaseModel):
-            model_config = getattr(candidate, "model_config", None)
-            if model_config is not None and model_config.get("extra") == "forbid":
-                model_config["extra"] = "ignore"
-                candidate.model_rebuild(force=True)
+    for model in _iter_pydantic_models(artifact_module):
+        model_config = getattr(model, "model_config", None)
+        if model_config is not None and model_config.get("extra") == "forbid":
+            model_config["extra"] = "ignore"
+            model.model_rebuild(force=True)
 
 
 # Enum fields dbterd reads as enums (via ``<field>.value``) are always named ``type``
 # — e.g. ``constraint.type.value``, ``entity.type.value``. We keep those as enums and
 # widen every other enum-typed field to ``str`` so unknown values can't break parsing.
+# Trade-off: a NEW value added to a kept ``type`` enum would still raise — acceptable,
+# since keeping it as an enum is what lets the rest of dbterd rely on ``.value``.
 _CONSUMED_ENUM_FIELDS = frozenset({"type"})
 
 
@@ -102,20 +111,16 @@ def relax_enum_members(artifact_module: object) -> None:
     Args:
         artifact_module: The imported ``*_v{n}`` parser module to patch.
     """
-    for attr_name in dir(artifact_module):
-        candidate = getattr(artifact_module, attr_name, None)
-        if not (isinstance(candidate, type) and issubclass(candidate, BaseModel)):
-            continue
-
+    for model in _iter_pydantic_models(artifact_module):
         rebuilt = False
-        for field_name, field in candidate.model_fields.items():
+        for field_name, field in model.model_fields.items():
             if field_name in _CONSUMED_ENUM_FIELDS:
                 continue
             if _annotation_references_enum(field.annotation):
                 field.annotation = _replace_enum_with_str(field.annotation)
                 rebuilt = True
         if rebuilt:
-            candidate.model_rebuild(force=True)
+            model.model_rebuild(force=True)
 
 
 def _annotation_references_enum(annotation: object) -> bool:
@@ -131,10 +136,11 @@ def _replace_enum_with_str(annotation: object) -> object:
         return str
 
     args = get_args(annotation)
-    if not args:
+    origin = get_origin(annotation)
+    if not args or origin is None:
+        # A bare type, or an annotation we can't safely reconstruct — leave as-is.
         return annotation
 
-    origin = get_origin(annotation)
     new_args = tuple(_replace_enum_with_str(arg) for arg in args)
     if origin is UnionType:
         return Union[new_args]
@@ -266,7 +272,7 @@ def read_manifest(path: str, version: Optional[int] = None, enable_compat_patch:
     Args:
         path (str): manifest.json file path
         version (int, optional): Manifest version. Defaults to None (auto-detect).
-        enable_compat_patch (bool, optional): Enable compatibility monkey patching. Defaults to True.
+        enable_compat_patch (bool, optional): Enable compatibility monkey patching. Defaults to False.
 
     Returns:
         dict: Manifest dict
@@ -298,7 +304,7 @@ def read_catalog(path: str, version: Optional[int] = None, enable_compat_patch: 
     Args:
         path (str): catalog.json file path
         version (int, optional): Catalog version. Defaults to None.
-        enable_compat_patch (bool, optional): Enable compatibility monkey patching. Defaults to True.
+        enable_compat_patch (bool, optional): Enable compatibility monkey patching. Defaults to False.
 
     Returns:
         dict: Catalog dict
