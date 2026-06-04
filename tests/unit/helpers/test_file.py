@@ -4,7 +4,7 @@ import types
 from typing import Optional
 from unittest import mock
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, ValidationError as PydanticValidationError
 import pytest
 
 from dbterd.helpers import file
@@ -145,8 +145,8 @@ class TestFile:
     def test_read_manifest_with_compat_patch(self, mock_open_json, mock_patch):
         mock_open_json.return_value = {"data": "dummy"}
         with pytest.raises(ValueError):
-            file.read_manifest(path="path/to/manifest", version=12, enable_compat_patch=True)
-        mock_patch.assert_called_once_with(artifact="manifest", artifact_version=12)
+            file.read_manifest(path="path/to/manifest", version=12, policies=["relax_extra_fields"])
+        mock_patch.assert_called_once_with(artifact="manifest", artifact_version=12, policies=["relax_extra_fields"])
 
     @pytest.mark.parametrize("version", [(-1), (1)])
     @mock.patch("dbterd.helpers.file.open_json")
@@ -161,8 +161,8 @@ class TestFile:
     def test_read_catalog_with_compat_patch(self, mock_open_json, mock_patch):
         mock_open_json.return_value = {"data": "dummy"}
         with pytest.raises(ValueError):
-            file.read_catalog(path="path/to/catalog", version=1, enable_compat_patch=True)
-        mock_patch.assert_called_once_with(artifact="catalog", artifact_version=1)
+            file.read_catalog(path="path/to/catalog", version=1, policies=["relax_extra_fields"])
+        mock_patch.assert_called_once_with(artifact="catalog", artifact_version=1, policies=["relax_extra_fields"])
 
     @mock.patch("builtins.open")
     def test_write_json(self, mock_open):
@@ -218,6 +218,33 @@ class TestFile:
         instance = fake_module.Macros(name="m", type="primary_key")
         assert isinstance(instance.type, fake_module.ConstraintType)
         assert instance.type.value == "primary_key"
+
+    def test_patch_parser_compatibility_empty_policies_skips_patching(self):
+        """An empty policy list applies no relaxation: extra fields still rejected."""
+        fake_module = _build_fake_parser_module("Manifest", 12)
+        with _patch_parser_import(fake_module):
+            file.patch_parser_compatibility(artifact="manifest", artifact_version=12, policies=[])
+
+        with pytest.raises(PydanticValidationError):
+            fake_module.Macros(name="m", config={"meta": {}})
+
+    def test_patch_parser_compatibility_single_policy(self):
+        """Only the listed policy runs: extra fields relaxed but enums stay strict."""
+        fake_module = _build_fake_parser_module("Manifest", 12)
+        with _patch_parser_import(fake_module):
+            file.patch_parser_compatibility(artifact="manifest", artifact_version=12, policies=["relax_extra_fields"])
+
+        # Extra field is tolerated...
+        assert fake_module.Macros(name="m", config={"meta": {}}).name == "m"
+        # ...but an unknown enum value is still rejected (relax_enum_values not listed).
+        with pytest.raises(PydanticValidationError):
+            fake_module.Macros(name="m", supported_languages=["javascript"])
+
+    def test_patch_parser_compatibility_unknown_policy_raises(self):
+        """An unregistered policy name raises a helpful error."""
+        fake_module = _build_fake_parser_module("Manifest", 12)
+        with _patch_parser_import(fake_module), pytest.raises(ValueError, match="Unknown validation policy"):
+            file.patch_parser_compatibility(artifact="manifest", artifact_version=12, policies=["nope"])
 
     def test_patch_parser_compatibility_import_error(self):
         with mock.patch("builtins.__import__", side_effect=ImportError("module not found")):

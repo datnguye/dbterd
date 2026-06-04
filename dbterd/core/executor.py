@@ -199,13 +199,18 @@ class Executor:
             exclude_rules=kwargs.get("exclude"),
         )
 
-    def _read_manifest(self, mp: str, mv: Optional[int] = None, bypass_validation: bool = False):
+    def _read_manifest(
+        self,
+        mp: str,
+        mv: Optional[int] = None,
+        policies: Optional[list[str]] = None,
+    ):
         """Read the Manifest content.
 
         Args:
             mp: manifest.json file path
             mv: Manifest version (None for auto-detect)
-            bypass_validation: Skip validation
+            policies: Validation relaxation policy names (None = all registered)
 
         Returns:
             Manifest object
@@ -220,15 +225,20 @@ class Executor:
         cli_messaging.check_existence(mp, self.filename_manifest)
         conditional = f" or provided version {mv} is incorrect" if mv else ""
         with cli_messaging.handle_read_errors(self.filename_manifest, conditional):
-            return file_handlers.read_manifest(path=mp, version=mv, enable_compat_patch=bypass_validation)
+            return file_handlers.read_manifest(path=mp, version=mv, policies=policies)
 
-    def _read_catalog(self, cp: str, cv: Optional[int] = None, bypass_validation: bool = False):
+    def _read_catalog(
+        self,
+        cp: str,
+        cv: Optional[int] = None,
+        policies: Optional[list[str]] = None,
+    ):
         """Read the Catalog content.
 
         Args:
             cp: catalog.json file path
             cv: Catalog version (None for auto-detect)
-            bypass_validation: Skip validation
+            policies: Validation relaxation policy names (None = all registered)
 
         Returns:
             Catalog object
@@ -242,7 +252,7 @@ class Executor:
 
         cli_messaging.check_existence(cp, self.filename_catalog)
         with cli_messaging.handle_read_errors(self.filename_catalog):
-            return file_handlers.read_catalog(path=cp, version=cv, enable_compat_patch=bypass_validation)
+            return file_handlers.read_catalog(path=cp, version=cv, policies=policies)
 
     def _save_result(self, path, data):
         """Save ERD data to file.
@@ -287,20 +297,50 @@ class Executor:
 
         return kwargs
 
+    @staticmethod
+    def _resolve_validation_policies(relax_policies: object) -> Optional[list[str]]:
+        """Resolve the configured ``relax-policies`` value to a policy-name list.
+
+        Accepts either a list (from ``.dbterd.yml`` / ``pyproject.toml``) or a
+        comma-separated string (from the ``--relax-policies`` CLI option).
+
+        Args:
+            relax_policies: The raw ``relax-policies`` value. ``None`` (absent) means use
+                all registered policies; any provided value (even empty) fully overrides
+                that — an empty list/string yields strict validation.
+
+        Returns:
+            ``None`` to apply all registered policies, otherwise the explicit list.
+
+        Raises:
+            click.UsageError: If ``relax_policies`` is neither a string nor a list.
+
+        """
+        if relax_policies is None:
+            return None
+        if isinstance(relax_policies, str):
+            return [name.strip() for name in relax_policies.split(",") if name.strip()]
+        if isinstance(relax_policies, (list, tuple)):
+            return [str(name).strip() for name in relax_policies]
+        raise click.UsageError(
+            f"`relax-policies` must be a list or comma-separated string, got: {type(relax_policies).__name__}"
+        )
+
     def _run_by_strategy(self, node_unique_id: Optional[str] = None, **kwargs) -> tuple[list[Table], list[Ref]]:
         """Local File - Read artifacts and export the diagram file following the target."""
         if kwargs.get("dbt_cloud"):
             DbtCloudArtifact(**kwargs).get(artifacts_dir=kwargs.get("artifacts_dir"))
 
+        policies = self._resolve_validation_policies(kwargs.get("relax_policies"))
         manifest = self._read_manifest(
             mp=kwargs.get("artifacts_dir"),
             mv=kwargs.get("manifest_version"),
-            bypass_validation=kwargs.get("bypass_validation"),
+            policies=policies,
         )
         catalog = self._read_catalog(
             cp=kwargs.get("artifacts_dir"),
             cv=kwargs.get("catalog_version"),
-            bypass_validation=kwargs.get("bypass_validation"),
+            policies=policies,
         )
 
         if node_unique_id:

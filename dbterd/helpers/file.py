@@ -1,15 +1,15 @@
-from collections.abc import Iterator
-from enum import Enum
+from collections.abc import Iterable
 import json
 import os
 import re
 import sys
-from types import UnionType
-from typing import Optional, Union, get_args, get_origin
+from typing import Optional
 
 from dbt_artifacts_parser import parser
-from pydantic import BaseModel
 
+# Importing relax_policies registers the built-in policies in the relax-policy registry.
+from dbterd.core import relax_policies  # noqa: F401
+from dbterd.core.validation_policy import get_relax_policy, known_relax_policies
 from dbterd.helpers.log import logger
 from dbterd.types import Catalog, Manifest
 
@@ -64,117 +64,49 @@ def open_json(fp: str) -> dict:
     return json.loads(load_file_contents(fp))
 
 
-def _iter_pydantic_models(artifact_module: object) -> Iterator[type[BaseModel]]:
-    """Yield every Pydantic model class defined in a parser module."""
-    for attr_name in dir(artifact_module):
-        candidate = getattr(artifact_module, attr_name, None)
-        if isinstance(candidate, type) and issubclass(candidate, BaseModel):
-            yield candidate
-
-
-def relax_pydantic_models(artifact_module: object) -> None:
-    """Relax every Pydantic model in a parser module to tolerate unknown fields.
-
-    Switches each model's ``extra`` config from ``forbid`` to ``ignore`` so that
-    fields added by newer dbt versions (under the same schema version number) no
-    longer trip ``extra_forbidden`` validation errors. dbt 1.11, for example, added
-    a ``config`` property to macro nodes while keeping ``manifest_version`` at 12.
-
-    Args:
-        artifact_module: The imported ``*_v{n}`` parser module to patch.
-    """
-    for model in _iter_pydantic_models(artifact_module):
-        model_config = getattr(model, "model_config", None)
-        if model_config is not None and model_config.get("extra") == "forbid":
-            model_config["extra"] = "ignore"
-            model.model_rebuild(force=True)
-
-
-# Enum fields dbterd reads as enums (via ``<field>.value``) are always named ``type``
-# — e.g. ``constraint.type.value``, ``entity.type.value``. We keep those as enums and
-# widen every other enum-typed field to ``str`` so unknown values can't break parsing.
-# Trade-off: a NEW value added to a kept ``type`` enum would still raise — acceptable,
-# since keeping it as an enum is what lets the rest of dbterd rely on ``.value``.
-_CONSUMED_ENUM_FIELDS = frozenset({"type"})
-
-
-def relax_enum_members(artifact_module: object) -> None:
-    """Allow unknown enum values by widening non-consumed enum fields to plain strings.
-
-    Newer dbt/adapter releases occasionally introduce enum values the pinned parser
-    doesn't know about (e.g. ``javascript`` in ``supported_languages``), which raise
-    enum validation errors. Such fields are widened to accept arbitrary strings.
-
-    Fields that dbterd itself reads as enums (see ``_CONSUMED_ENUM_FIELDS``) are left
-    untouched so downstream ``.value`` access keeps working.
-
-    Args:
-        artifact_module: The imported ``*_v{n}`` parser module to patch.
-    """
-    for model in _iter_pydantic_models(artifact_module):
-        rebuilt = False
-        for field_name, field in model.model_fields.items():
-            if field_name in _CONSUMED_ENUM_FIELDS:
-                continue
-            if _annotation_references_enum(field.annotation):
-                field.annotation = _replace_enum_with_str(field.annotation)
-                rebuilt = True
-        if rebuilt:
-            model.model_rebuild(force=True)
-
-
-def _annotation_references_enum(annotation: object) -> bool:
-    """Return True if a type annotation references an Enum, including within generics."""
-    if isinstance(annotation, type) and issubclass(annotation, Enum):
-        return True
-    return any(_annotation_references_enum(arg) for arg in get_args(annotation))
-
-
-def _replace_enum_with_str(annotation: object) -> object:
-    """Rebuild an annotation with every Enum reference swapped for ``str``."""
-    if isinstance(annotation, type) and issubclass(annotation, Enum):
-        return str
-
-    args = get_args(annotation)
-    origin = get_origin(annotation)
-    if not args or origin is None:
-        # A bare type, or an annotation we can't safely reconstruct — leave as-is.
-        return annotation
-
-    new_args = tuple(_replace_enum_with_str(arg) for arg in args)
-    if origin is UnionType:
-        return Union[new_args]
-    return origin[new_args]
-
-
-def patch_parser_compatibility(artifact: str = "catalog", artifact_version: Optional[int] = None) -> None:
+def patch_parser_compatibility(
+    artifact: str = "catalog",
+    artifact_version: Optional[int] = None,
+    policies: Optional[Iterable[str]] = None,
+) -> None:
     """
     Conditionally monkey patch dbt-artifacts-parser Pydantic models for compatibility.
 
-    Relaxes every model in the versioned parser module so that newer dbt releases
-    sharing the same schema version (e.g. dbt 1.11 still reporting manifest v12) can
-    still be parsed. Two relaxations are applied:
+    Relaxes models in the versioned parser module so that newer dbt releases sharing
+    the same schema version (e.g. dbt 1.11 still reporting manifest v12) can still be
+    parsed. ``policies`` is the list of relaxation policy names to apply, each resolved
+    via the relax-policy registry:
 
-    - ``extra=forbid`` becomes ``extra=ignore`` to tolerate newly added fields
-      (such as the ``config`` property dbt 1.11 added to macro nodes).
-    - Non-consumed enum fields widen to plain strings to tolerate newly added enum
-      values (such as ``javascript`` in ``supported_languages``).
+    - ``relax_extra_fields``: ``extra=forbid`` becomes ``extra=ignore`` to tolerate
+      newly added fields (such as the ``config`` property dbt 1.11 added to macros).
+    - ``relax_enum_values``: non-consumed enum fields widen to plain strings to
+      tolerate newly added enum values (such as ``javascript`` in ``supported_languages``).
 
     Args:
         artifact: Artifact type ('manifest' or 'catalog'). Defaults to 'catalog'.
         artifact_version: Artifact schema version (e.g., 12 for v12). Required for patching.
+        policies: Policy names to apply. ``None`` applies all registered policies; an
+            empty list applies none (strict validation).
 
     References:
         https://github.com/yu-iskw/dbt-artifacts-parser/issues/160
         https://github.com/yu-iskw/dbt-artifacts-parser/issues/219
     """
+    policy_names = known_relax_policies() if policies is None else tuple(policies)
+    if not policy_names:
+        logger.info(f"Strict validation for {artifact} v{artifact_version} (no relaxation policies)")
+        return
+
+    relax_funcs = [get_relax_policy(name) for name in policy_names]
+    logger.info(f"Patching {artifact} v{artifact_version} with policies: {', '.join(policy_names)}")
+
     try:
         artifact_module = __import__(
             f"dbt_artifacts_parser.parsers.{artifact}.{artifact}_v{artifact_version}",
             fromlist=["Metadata"],
         )
-        relax_pydantic_models(artifact_module)
-        relax_enum_members(artifact_module)
+        for relax in relax_funcs:
+            relax(artifact_module)
 
         artifact_class_name = f"{artifact.capitalize()}V{artifact_version}"
         artifact_class = getattr(artifact_module, artifact_class_name, None)
@@ -265,22 +197,26 @@ def win_prepare_path(path: str) -> str:  # pragma: no cover
     return path
 
 
-def read_manifest(path: str, version: Optional[int] = None, enable_compat_patch: bool = False) -> Manifest:
+def read_manifest(
+    path: str,
+    version: Optional[int] = None,
+    policies: Optional[Iterable[str]] = None,
+) -> Manifest:
     """
     Reads in the manifest.json file, with optional version specification.
 
     Args:
         path (str): manifest.json file path
         version (int, optional): Manifest version. Defaults to None (auto-detect).
-        enable_compat_patch (bool, optional): Enable compatibility monkey patching. Defaults to False.
+        policies (Iterable[str], optional): Validation relaxation policy names. ``None``
+            applies all registered policies; an empty list enforces strict validation.
 
     Returns:
         dict: Manifest dict
 
     """
-    if enable_compat_patch and version:
-        logger.info(f"Patching manifest v{version} for compatibility...")
-        patch_parser_compatibility(artifact="manifest", artifact_version=version)
+    if version:
+        patch_parser_compatibility(artifact="manifest", artifact_version=version, policies=policies)
 
     _dict = open_json(f"{path}/manifest.json")
     default_parser = "parse_manifest"
@@ -297,22 +233,26 @@ def read_manifest(path: str, version: Optional[int] = None, enable_compat_patch:
     return parse_func(manifest=_dict)
 
 
-def read_catalog(path: str, version: Optional[int] = None, enable_compat_patch: bool = False) -> Catalog:
+def read_catalog(
+    path: str,
+    version: Optional[int] = None,
+    policies: Optional[Iterable[str]] = None,
+) -> Catalog:
     """
     Reads in the catalog.json file, with optional version specification.
 
     Args:
         path (str): catalog.json file path
         version (int, optional): Catalog version. Defaults to None.
-        enable_compat_patch (bool, optional): Enable compatibility monkey patching. Defaults to False.
+        policies (Iterable[str], optional): Validation relaxation policy names. ``None``
+            applies all registered policies; an empty list enforces strict validation.
 
     Returns:
         dict: Catalog dict
 
     """
-    if enable_compat_patch and version:
-        logger.info(f"Patching catalog v{version} for compatibility...")
-        patch_parser_compatibility(artifact="catalog", artifact_version=version)
+    if version:
+        patch_parser_compatibility(artifact="catalog", artifact_version=version, policies=policies)
 
     _dict = open_json(f"{path}/catalog.json")
     default_parser = "parse_catalog"

@@ -93,10 +93,6 @@ def default_artifacts_dir() -> str:
     return os.environ.get("DBTERD_ARTIFACTS_DIR", "")
 
 
-def default_bypass_validation() -> bool:
-    return os.environ.get("DBTERD_BYPASS_VALIDATION", "true").lower() in ["true", "yes", "1"]
-
-
 def default_init_template() -> str:
     return os.environ.get("DBTERD_INIT_TEMPLATE", "dbt-core")
 

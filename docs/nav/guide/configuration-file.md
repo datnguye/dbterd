@@ -89,7 +89,10 @@ omit-columns: false
 
 # dbt Artifact Settings
 artifacts-dir: ./target
-bypass-validation: true
+# Parser relaxation policies (omit for all; empty list for strict)
+relax-policies:
+  - relax_extra_fields
+  - relax_enum_values
 
 # dbt Project Settings (if using --dbt flag)
 dbt: false
@@ -121,7 +124,8 @@ omit-entity-name-quotes = false
 omit-columns = false
 
 artifacts-dir = "./target"
-bypass-validation = true
+# Parser relaxation policies (omit for all; empty list for strict)
+relax-policies = ["relax_extra_fields", "relax_enum_values"]
 
 dbt = false
 dbt-project-dir = "."
@@ -220,7 +224,7 @@ All CLI parameters can be configured in files. Here's the complete reference:
 | `artifacts-dir` | string | `./target` | Path to dbt artifacts directory |
 | `manifest-version` | string | auto-detect | dbt manifest.json version |
 | `catalog-version` | string | auto-detect | dbt catalog.json version |
-| `bypass-validation` | boolean | `true` | Bypass Pydantic validation errors |
+| `relax-policies` | list | all policies | Parser relaxation policy names (empty = strict) |
 
 ### dbt Project Settings
 
