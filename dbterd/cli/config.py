@@ -223,7 +223,6 @@ def get_yaml_template(template_type: str = "dbt-core") -> str:
         default_artifact_path=default.default_artifact_path(),
         default_manifest_version=default.default_manifest_version() or "",
         default_catalog_version=default.default_catalog_version() or "",
-        default_bypass_validation=str(default.default_bypass_validation()).lower(),
         default_algo=default.default_algo(),
         default_entity_name_format=default.default_entity_name_format(),
         default_omit_entity_name_quotes=str(default.default_omit_entity_name_quotes()).lower(),

@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 import json
 import os
 import re
@@ -6,6 +7,9 @@ from typing import Optional
 
 from dbt_artifacts_parser import parser
 
+# Importing relax_policies registers the built-in policies in the relax-policy registry.
+from dbterd.core import relax_policies  # noqa: F401
+from dbterd.core.validation_policy import get_relax_policy, known_relax_policies
 from dbterd.helpers.log import logger
 from dbterd.types import Catalog, Manifest
 
@@ -60,30 +64,49 @@ def open_json(fp: str) -> dict:
     return json.loads(load_file_contents(fp))
 
 
-def patch_parser_compatibility(artifact: str = "catalog", artifact_version: Optional[int] = None) -> None:
+def patch_parser_compatibility(
+    artifact: str = "catalog",
+    artifact_version: Optional[int] = None,
+    policies: Optional[Iterable[str]] = None,
+) -> None:
     """
     Conditionally monkey patch dbt-artifacts-parser Pydantic models for compatibility.
 
-    Modifies Metadata model configurations to use 'extra=ignore' instead of 'extra=forbid'
-    to handle fields added in newer dbt versions that aren't yet supported by the parser.
+    Relaxes models in the versioned parser module so that newer dbt releases sharing
+    the same schema version (e.g. dbt 1.11 still reporting manifest v12) can still be
+    parsed. ``policies`` is the list of relaxation policy names to apply, each resolved
+    via the relax-policy registry:
+
+    - ``relax_extra_fields``: ``extra=forbid`` becomes ``extra=ignore`` to tolerate
+      newly added fields (such as the ``config`` property dbt 1.11 added to macros).
+    - ``relax_enum_values``: non-consumed enum fields widen to plain strings to
+      tolerate newly added enum values (such as ``javascript`` in ``supported_languages``).
 
     Args:
         artifact: Artifact type ('manifest' or 'catalog'). Defaults to 'catalog'.
         artifact_version: Artifact schema version (e.g., 12 for v12). Required for patching.
+        policies: Policy names to apply. ``None`` applies all registered policies; an
+            empty list applies none (strict validation).
 
     References:
         https://github.com/yu-iskw/dbt-artifacts-parser/issues/160
+        https://github.com/yu-iskw/dbt-artifacts-parser/issues/219
     """
+    policy_names = known_relax_policies() if policies is None else tuple(policies)
+    if not policy_names:
+        logger.info(f"Strict validation for {artifact} v{artifact_version} (no relaxation policies)")
+        return
+
+    relax_funcs = [get_relax_policy(name) for name in policy_names]
+    logger.info(f"Patching {artifact} v{artifact_version} with policies: {', '.join(policy_names)}")
+
     try:
         artifact_module = __import__(
             f"dbt_artifacts_parser.parsers.{artifact}.{artifact}_v{artifact_version}",
             fromlist=["Metadata"],
         )
-        metadata_class = getattr(artifact_module, "Metadata", None)
-
-        if metadata_class and hasattr(metadata_class, "model_config"):
-            metadata_class.model_config["extra"] = "ignore"
-            metadata_class.model_rebuild(force=True)
+        for relax in relax_funcs:
+            relax(artifact_module)
 
         artifact_class_name = f"{artifact.capitalize()}V{artifact_version}"
         artifact_class = getattr(artifact_module, artifact_class_name, None)
@@ -174,22 +197,26 @@ def win_prepare_path(path: str) -> str:  # pragma: no cover
     return path
 
 
-def read_manifest(path: str, version: Optional[int] = None, enable_compat_patch: bool = False) -> Manifest:
+def read_manifest(
+    path: str,
+    version: Optional[int] = None,
+    policies: Optional[Iterable[str]] = None,
+) -> Manifest:
     """
     Reads in the manifest.json file, with optional version specification.
 
     Args:
         path (str): manifest.json file path
         version (int, optional): Manifest version. Defaults to None (auto-detect).
-        enable_compat_patch (bool, optional): Enable compatibility monkey patching. Defaults to True.
+        policies (Iterable[str], optional): Validation relaxation policy names. ``None``
+            applies all registered policies; an empty list enforces strict validation.
 
     Returns:
         dict: Manifest dict
 
     """
-    if enable_compat_patch and version:
-        logger.info(f"Patching manifest v{version} for compatibility...")
-        patch_parser_compatibility(artifact="manifest", artifact_version=version)
+    if version:
+        patch_parser_compatibility(artifact="manifest", artifact_version=version, policies=policies)
 
     _dict = open_json(f"{path}/manifest.json")
     default_parser = "parse_manifest"
@@ -206,22 +233,26 @@ def read_manifest(path: str, version: Optional[int] = None, enable_compat_patch:
     return parse_func(manifest=_dict)
 
 
-def read_catalog(path: str, version: Optional[int] = None, enable_compat_patch: bool = False) -> Catalog:
+def read_catalog(
+    path: str,
+    version: Optional[int] = None,
+    policies: Optional[Iterable[str]] = None,
+) -> Catalog:
     """
     Reads in the catalog.json file, with optional version specification.
 
     Args:
         path (str): catalog.json file path
         version (int, optional): Catalog version. Defaults to None.
-        enable_compat_patch (bool, optional): Enable compatibility monkey patching. Defaults to True.
+        policies (Iterable[str], optional): Validation relaxation policy names. ``None``
+            applies all registered policies; an empty list enforces strict validation.
 
     Returns:
         dict: Catalog dict
 
     """
-    if enable_compat_patch and version:
-        logger.info(f"Patching catalog v{version} for compatibility...")
-        patch_parser_compatibility(artifact="catalog", artifact_version=version)
+    if version:
+        patch_parser_compatibility(artifact="catalog", artifact_version=version, policies=policies)
 
     _dict = open_json(f"{path}/catalog.json")
     default_parser = "parse_catalog"
