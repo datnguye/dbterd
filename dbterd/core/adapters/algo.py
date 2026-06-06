@@ -303,7 +303,7 @@ class BaseAlgoAdapter(ABC):
             database=node_database,
             schema=node_schema,
             columns=[],
-            resource_type=node_name.split(".")[0],
+            resource_type=node_name.split(".", maxsplit=1)[0],
             exposures=[x.get("exposure_name") for x in exposures if x.get("node_name") == node_name],
             description=node_description,
             label=node_label,
@@ -367,7 +367,7 @@ class BaseAlgoAdapter(ABC):
             database=manifest_node.database.lower(),
             schema=manifest_node.schema_.lower(),
             columns=[],
-            resource_type=node_name.split(".")[0],
+            resource_type=node_name.split(".", maxsplit=1)[0],
             exposures=[x.get("exposure_name") for x in exposures if x.get("node_name") == node_name],
             description=manifest_node.description,
             label=manifest_node.meta.get("label"),
@@ -449,7 +449,7 @@ class BaseAlgoAdapter(ABC):
                 parent_nodes = exposure.get("node", {}).get("parents")
                 for node in parent_nodes:
                     node_name = node.get("uniqueId", "")
-                    if node_name.split(".")[0] in kwargs.get("resource_type", []):
+                    if node_name.split(".", maxsplit=1)[0] in kwargs.get("resource_type", []):
                         exposures.append(
                             {
                                 "node_name": node_name,

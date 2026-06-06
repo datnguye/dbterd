@@ -138,7 +138,7 @@ class Executor:
 
     def load_algo(self, name: str) -> BaseAlgoAdapter:
         """Load and instantiate an algo adapter."""
-        module_name = name.split(":")[0]
+        module_name = name.split(":", maxsplit=1)[0]
         adapter_class = PluginRegistry.get_algo(module_name)
         return adapter_class()
 
