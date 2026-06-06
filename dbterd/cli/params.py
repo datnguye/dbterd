@@ -137,11 +137,14 @@ def run_params(func):
         type=click.STRING,
     )
     @click.option(
-        "--bypass-validation",
-        help="Flag to bypass the Pydantic Validation Error by patching extra to ignored fields",
-        is_flag=True,
-        default=default.default_bypass_validation(),
-        show_default=True,
+        "--relax-policies",
+        help=(
+            "Comma-separated parser relaxation policy names applied when reading "
+            "artifacts (e.g. 'relax_extra_fields,relax_enum_values'). Omit to apply all "
+            "policies; pass an empty value for strict validation."
+        ),
+        type=click.STRING,
+        default=None,
     )
     @click.option(
         "--catalog-version",
@@ -276,11 +279,14 @@ def debug_params(func):
         type=click.STRING,
     )
     @click.option(
-        "--bypass-validation",
-        help="Flag to bypass the Pydantic Validation Error by patching extra to ignored fields",
-        is_flag=True,
-        default=default.default_bypass_validation(),
-        show_default=True,
+        "--relax-policies",
+        help=(
+            "Comma-separated parser relaxation policy names applied when reading "
+            "artifacts (e.g. 'relax_extra_fields,relax_enum_values'). Omit to apply all "
+            "policies; pass an empty value for strict validation."
+        ),
+        type=click.STRING,
+        default=None,
     )
     @click.option(
         "--catalog-version",

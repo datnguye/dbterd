@@ -36,7 +36,7 @@ def _resolve_to_node_id(to_str: str, manifest_nodes: dict) -> Optional[str]:
         return None
 
     # model resource type takes priority over other resource types
-    sorted_nodes = sorted(manifest_nodes.items(), key=lambda x: (0 if x[0].startswith("model.") else 1))
+    sorted_nodes = sorted(manifest_nodes.items(), key=lambda x: 0 if x[0].startswith("model.") else 1)
     for node_id, node in sorted_nodes:
         if getattr(node, "relation_name", None) == to_str:
             return node_id

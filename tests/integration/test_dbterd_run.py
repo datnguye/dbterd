@@ -19,6 +19,10 @@ class TestDbterdRun:
         [
             ("jaffle-shop", "dbml", "test_relationship", [], "output.dbml"),
             ("jaffle-shop", "mermaid", "test_relationship", [], "output.md"),
+            # dbt 1.11 artifacts: same manifest v12, but macros gained a `config`
+            # property and `supported_languages` gained `javascript` (see issue #145).
+            ("jaffle-shop-v1.11", "dbml", "test_relationship", [], "output.dbml"),
+            ("jaffle-shop-v1.11", "mermaid", "test_relationship", [], "output.md"),
             ("dbt-constraints", "plantuml", "test_relationship", [], "output.plantuml"),
             ("facebookad", "drawdb", "test_relationship", [], "output.ddb"),
             (

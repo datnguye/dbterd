@@ -69,8 +69,12 @@ artifacts-dir: {default_artifact_path}
 # dbt catalog.json version (optional - auto-detected from metadata if not specified)
 # catalog-version: {default_catalog_version}
 
-# Flag to bypass Pydantic validation errors by ignoring extra fields
-bypass-validation: {default_bypass_validation}
+# Parser relaxation policies applied when reading artifacts.
+# Omit this key to apply all policies (default); use an empty list for strict validation.
+# Available policies: relax_extra_fields, relax_enum_values
+# relax-policies:
+#   - relax_extra_fields
+#   - relax_enum_values
 
 # dbt project directory for programmatic invocation
 dbt-project-dir: {default_dbt_project_dir}

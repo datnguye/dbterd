@@ -11,6 +11,24 @@ from dbterd.plugins.dbt_core.dbt_invocation import DbtInvocation
 
 
 class TestBase:
+    @pytest.mark.parametrize(
+        "validation, expected",
+        [
+            (None, None),  # absent -> all policies
+            ([], []),  # explicit empty -> strict
+            ("", []),  # empty string -> strict
+            (["relax_extra_fields"], ["relax_extra_fields"]),
+            ("relax_extra_fields, relax_enum_values", ["relax_extra_fields", "relax_enum_values"]),
+            (("relax_enum_values",), ["relax_enum_values"]),
+        ],
+    )
+    def test__resolve_validation_policies(self, validation, expected):
+        assert Executor._resolve_validation_policies(validation) == expected
+
+    def test__resolve_validation_policies_invalid_type(self):
+        with pytest.raises(click.UsageError, match="`relax-policies` must be a list or comma-separated string"):
+            Executor._resolve_validation_policies(123)
+
     @mock.patch("dbterd.core.executor.Executor.evaluate_kwargs")
     @mock.patch("dbterd.core.executor.Executor._run_metadata_by_strategy")
     def test_run_metadata(self, mock_run_metadata_by_strategy, mock_evaluate_kwargs, dummy_executor):
@@ -84,7 +102,7 @@ class TestBase:
             mock_default_manifest_version.assert_called_once_with(artifacts_dir=Path.cwd())
         else:
             assert mock_default_manifest_version.call_count == 0
-        mock_read_manifest.assert_called_once_with(path=Path.cwd(), version=expected_version, enable_compat_patch=False)
+        mock_read_manifest.assert_called_once_with(path=Path.cwd(), version=expected_version, policies=None)
 
     @pytest.mark.parametrize(
         "cv, default_version_return, expected_version, should_call_default",
@@ -107,7 +125,7 @@ class TestBase:
             mock_default_catalog_version.assert_called_once_with(artifacts_dir=Path.cwd())
         else:
             assert mock_default_catalog_version.call_count == 0
-        mock_read_catalog.assert_called_once_with(path=Path.cwd(), version=expected_version, enable_compat_patch=False)
+        mock_read_catalog.assert_called_once_with(path=Path.cwd(), version=expected_version, policies=None)
 
     @mock.patch("dbterd.core.executor.DbtInvocation.get_selection", return_value="dummy")
     def test__get_selection(self, mock_dbt_invocation, dummy_executor):
@@ -308,8 +326,8 @@ class TestBase:
             "i": "irr"
         }
         assert mock_parent.mock_calls == [
-            mock.call.mock_read_manifest(mp=None, mv=None, bypass_validation=None),
-            mock.call.mock_read_catalog(cp=None, cv=None, bypass_validation=None),
+            mock.call.mock_read_manifest(mp=None, mv=None, policies=None),
+            mock.call.mock_read_catalog(cp=None, cv=None, policies=None),
             mock.call.mock_set_single_node_selection(
                 manifest={}, node_unique_id="irr", algo="test_relationship", target="dbml"
             ),

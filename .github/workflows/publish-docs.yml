@@ -28,7 +28,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.10'
 
       - name: Install uv
         uses: astral-sh/setup-uv@v3
@@ -37,9 +37,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/uv
-          key: ubuntu-3.9-uv-${{ hashFiles('**/pyproject.toml') }}
+          key: ubuntu-3.10-uv-${{ hashFiles('**/pyproject.toml') }}
           restore-keys: |
-            ubuntu-3.9-uv-
+            ubuntu-3.10-uv-
 
       - name: Install dependencies
         run: |

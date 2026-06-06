@@ -150,9 +150,10 @@ Command to generate diagram-as-a-code file from dbt artifact files, optionally d
                                       which known as /target directory
       -mv, --manifest-version TEXT    Specified dbt manifest.json version
       -cv, --catalog-version TEXT     Specified dbt catalog.json version
-      --bypass-validation             Flag to bypass the Pydantic Validation Error
-                                      by patching extra to ignored fields
-                                      [default: False]
+      --relax-policies TEXT           Comma-separated parser relaxation policy
+                                      names applied when reading artifacts. Omit
+                                      to apply all policies; pass an empty value
+                                      for strict validation.
       --dbt                           Flag to indicate the Selection to follow
                                       dbt's one leveraging Programmatic Invocation
       -dpd, --dbt-project-dir TEXT    Specified dbt project directory path
@@ -497,22 +498,32 @@ Specified dbt catalog.json version
     dbterd run -cv 7
     ```
 
-### dbterd run --bypass-validation
+### dbterd run --relax-policies
 
-Flag to bypass Pydantic validation errors by patching the parser to ignore extra fields.
+Comma-separated list of parser relaxation policy names applied when reading dbt artifacts. This lets newer dbt versions — which introduce fields or enum values not yet supported by the `dbt-artifacts-parser` library — still be parsed (for example, dbt 1.11 keeps the manifest at version 12 but adds a `config` property to macro nodes and a `javascript` value to `supported_languages`).
 
-This option is useful when working with newer dbt versions that introduce fields not yet supported by the `dbt-artifacts-parser` library. When enabled, the parser will ignore unknown fields instead of raising validation errors, allowing you to continue generating ERDs even with newer artifact schemas.
+Available policies:
 
-> Default to `False`
+- `relax_extra_fields` — ignore unknown fields instead of rejecting them.
+- `relax_enum_values` — accept unknown enum values (widening non-`type` enum fields to strings).
+
+> **Omit** the option to apply **all** policies (the default — keeps things working out of the box). Pass an **empty** value (`--relax-policies ""` or `relax-policies: []` in config) for **strict** validation.
 
 !!! info "When to use this option"
-    You might encounter Pydantic validation errors like `"Error: Could not open file 'catalog.json': File catalog.json is corrupted, please rebuild"` when using artifact files from newer dbt versions. In such cases, enabling this flag can help you work around compatibility issues while waiting for the parser library to catch up with the latest dbt schema changes. Just be aware that any unsupported fields won't be included in the generated ERD (which is usually fine since relationship information remains intact).
+    You might encounter Pydantic validation errors like `"Error: Could not open file 'catalog.json': File catalog.json is corrupted, please rebuild"` when using artifact files from newer dbt versions. The default (all policies) works around these automatically. Narrow the list if you want to relax only specific aspects, or go strict to surface schema drift. Any unsupported fields won't appear in the generated ERD (usually fine since relationship information remains intact).
 
 **Examples:**
 === "CLI"
 
     ```bash
-    dbterd run --bypass-validation -mv 12 -cv 1
+    # Default: all policies (no flag needed)
+    dbterd run -mv 12 -cv 1
+
+    # Only relax extra fields
+    dbterd run --relax-policies relax_extra_fields -mv 12 -cv 1
+
+    # Strict validation
+    dbterd run --relax-policies "" -mv 12 -cv 1
     ```
 
 ### dbterd run --resource-type (-rt)
@@ -883,9 +894,10 @@ Shows hidden configured values, which will help us to see what configs are passe
                                       which known as /target directory
       -mv, --manifest-version TEXT    Specified dbt manifest.json version
       -cv, --catalog-version TEXT     Specified dbt catalog.json version
-      --bypass-validation             Flag to bypass the Pydantic Validation Error
-                                      by patching extra to ignored fields
-                                      [default: False]
+      --relax-policies TEXT           Comma-separated parser relaxation policy
+                                      names applied when reading artifacts. Omit
+                                      to apply all policies; pass an empty value
+                                      for strict validation.
       --dbt                           Flag to indicate the Selection to follow
                                       dbt's one leveraging Programmatic Invocation
       -dpd, --dbt-project-dir TEXT    Specified dbt project directory path
