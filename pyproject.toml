@@ -76,7 +76,6 @@ dev = [
   "coverage[toml] >=6.5.0",  # Test coverage reporting
 
   # Code quality and formatting
-  "black >=24.3.0",
   "ruff >=0.2.0",
   "pre-commit >=2.20.0",
 
