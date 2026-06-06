@@ -85,8 +85,9 @@ def patch_parser_compatibility(
     Args:
         artifact: Artifact type ('manifest' or 'catalog'). Defaults to 'catalog'.
         artifact_version: Artifact schema version (e.g., 12 for v12). Required for patching.
-        policies: Policy names to apply. ``None`` applies all registered policies; an
-            empty list applies none (strict validation).
+        policies: Policy names to apply. ``None`` applies all registered policies
+            (built-in plus any discovered from the ``dbterd.relax_policies`` entry-point
+            group); an empty list applies none (strict validation).
 
     References:
         https://github.com/yu-iskw/dbt-artifacts-parser/issues/160

@@ -413,6 +413,63 @@ pip install -e .
 dbterd run --algo meta_refs
 ```
 
+## Complete Example: External Relax Policy
+
+dbterd reads dbt artifacts through [`dbt-artifacts-parser`](https://github.com/yu-iskw/dbt-artifacts-parser), whose Pydantic models are strict by default. A newer dbt release can keep the same schema version yet add fields or enum values the pinned parser rejects — which is what **relax policies** loosen. dbterd ships two built-ins (`relax_extra_fields`, `relax_enum_values`), and — just like algos and targets — you can contribute your own from an external package without forking.
+
+A relax policy is a plain function that takes the imported versioned parser module and mutates its Pydantic models in place. It registers itself with `@register_relax_policy` and is discovered via the `dbterd.relax_policies` entry-point group.
+
+**`pyproject.toml`**:
+
+```toml
+[project]
+name = "dbterd-relax-myfix"
+version = "0.1.0"
+description = "Custom parser relaxation policy for dbterd"
+requires-python = ">=3.10"
+dependencies = ["dbterd"]
+
+[project.entry-points."dbterd.relax_policies"]
+relax_myfix = "dbterd_relax_myfix.policy"
+```
+
+!!! info "Module, not function"
+    As with adapters, the entry point references the **module**, not the function. Importing the module is what fires the `@register_relax_policy` decorator. The entry-point name (left of `=`) is only used for logging; the policy name users reference in `--relax-policies` is the string you pass to the decorator.
+
+**`dbterd_relax_myfix/policy.py`**:
+
+```python
+"""Custom relax policy: drop a stray field newer dbt added under the same schema version."""
+
+from pydantic import BaseModel
+
+from dbterd.core.validation_policy import register_relax_policy
+
+
+@register_relax_policy("relax_myfix")
+def relax_myfix(artifact_module: object) -> None:
+    """Relax models in a versioned parser module to tolerate a new field."""
+    for attr_name in dir(artifact_module):
+        candidate = getattr(artifact_module, attr_name, None)
+        if isinstance(candidate, type) and issubclass(candidate, BaseModel):
+            config = getattr(candidate, "model_config", None)
+            if config is not None and config.get("extra") == "forbid":
+                config["extra"] = "ignore"
+                candidate.model_rebuild(force=True)
+```
+
+Install and use it by name — alongside or instead of the built-ins:
+
+```bash
+pip install -e .
+dbterd run --relax-policies relax_extra_fields,relax_enum_values,relax_myfix
+```
+
+!!! warning "`--relax-policies` is an explicit allowlist"
+    Omitting `--relax-policies` applies **all** registered policies (built-in plus any discovered external ones). Passing an explicit list applies exactly those, in order — so include the built-ins too if you still want them. An empty value (`--relax-policies ""`) enforces strict validation. See [CLI References](../guide/cli-references.md) for the full semantics.
+
+If your policy name collides with an already-registered one, dbterd logs a warning and the later registration wins — so pick a unique, descriptive name (the `relax_` prefix convention keeps it readable).
+
 ## Testing Your Plugin
 
 You can test your external adapter independently, without needing to install `dbterd` from source. The key is to mock the parts you don't control and test your logic directly:
