@@ -138,7 +138,7 @@ Initialize a standard Python package. Use whatever build system you prefer — t
 name = "dbterd-target-myformat"
 version = "0.1.0"
 description = "MyFormat target adapter for dbterd"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = ["dbterd"]
 
 [project.entry-points."dbterd.adapters"]
@@ -228,7 +228,7 @@ Here's a full working example of an external target adapter that generates a CSV
 name = "dbterd-target-csv"
 version = "0.1.0"
 description = "CSV target adapter for dbterd"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = ["dbterd"]
 
 [project.entry-points."dbterd.adapters"]
@@ -309,7 +309,7 @@ An external algorithm adapter that detects relationships using dbt `meta` tags:
 name = "dbterd-algo-meta-refs"
 version = "0.1.0"
 description = "Meta-based relationship detection for dbterd"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = ["dbterd"]
 
 [project.entry-points."dbterd.adapters"]

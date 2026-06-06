@@ -12,7 +12,7 @@ Transform your dbt artifact files or metadata into stunning Entity Relationship 
 [![PyPI version](https://badge.fury.io/py/dbterd.svg)](https://pypi.org/project/dbterd/)
 ![python-cli](https://img.shields.io/badge/CLI-Python-FFCE3E?labelColor=14354C&logo=python&logoColor=white)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![python](https://img.shields.io/badge/Python-3.9|3.10|3.11|3.12|3.13-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
+[![python](https://img.shields.io/badge/Python-3.10|3.11|3.12|3.13-3776AB.svg?style=flat&logo=python&logoColor=white)](https://www.python.org)
 [![codecov](https://codecov.io/gh/datnguye/dbterd/graph/badge.svg?token=N7DMQBLH4P)](https://codecov.io/gh/datnguye/dbterd)
 
 [![dbterd stars](https://img.shields.io/github/stars/datnguye/dbterd.svg?logo=github&style=for-the-badge&label=Star%20this%20repo)](https://github.com/datnguye/dbterd)
@@ -44,6 +44,8 @@ No need to pick just one — dbterd has a format for every occasion, from quick 
 
 ## 🚀 Installation
 
+> **Requires Python 3.10+.** `dbterd` **1.25** was the last release to support Python 3.9; support was dropped **since 1.26**, as 3.9 reached end-of-life in October 2025 and the dbt 1.11 artifact parser emits `X | Y` type annotations that won't evaluate on it anyway. If you're still on 3.9, pin `dbterd==1.25.*` — otherwise upgrade your interpreter (it's worth it).
+
 ```bash
 pip install dbterd --upgrade
 ```
@@ -59,8 +61,6 @@ dbterd --version
 > ```bash
 > pip install dbt-artifacts-parser --upgrade
 > ```
->
-> **Note**: `dbterd` now automatically bypasses Pydantic validation errors by default, which helps with compatibility when using newer dbt artifact schemas.
 
 ## ⚙️ Configuration Files
 
