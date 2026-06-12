@@ -17,6 +17,21 @@ Transform your dbt artifact files or metadata into stunning Entity Relationship 
 
 [![dbterd stars](https://img.shields.io/github/stars/datnguye/dbterd.svg?logo=github&style=for-the-badge&label=Star%20this%20repo)](https://github.com/datnguye/dbterd)
 
+## 🚀 Quick Start
+
+Two ways to get your first ERD on screen — pick whichever matches your mood:
+
+**🖱️ Prefer a GUI?** Install the **[dbterd for VS Code](https://github.com/datnguye/dbterd-vscode)** extension, open your dbt project, and explore interactive ERDs without touching the command line.
+
+**⌨️ Prefer the CLI?**
+
+```bash
+pip install dbterd --upgrade
+dbterd run -ad samples/dbtresto
+```
+
+That's it — your diagram is generated. Read on for the full tour.
+
 ## 🎯 Entity Relationship Detection
 
 dbterd intelligently detects entity relationships through three algorithms — pick the one that matches how your dbt project expresses its data contracts:
@@ -41,6 +56,15 @@ No need to pick just one — dbterd has a format for every occasion, from quick 
 | **[DrawDB](https://drawdb.vercel.app/)** | Web-based database designer | Interactive database design |
 
 🎯 **[Try the Quick Demo](https://dbterd.datnguye.me/latest/nav/guide/targets/generate-dbml.html)** with DBML format!
+
+## 🌟 Ecosystem
+
+`dbterd` plays well with others. These companion projects build on top of it to take your ERDs beyond the command line:
+
+| Project | What it does |
+|---------|--------------|
+| **[`dbdocs`](https://dbdocs.datnguye.me/latest/)** | An alternative dbt docs site — catalog, ERD, and column-level lineage baked into a single self-contained HTML file. |
+| **[dbterd-vscode](https://github.com/datnguye/dbterd-vscode)** | A VS Code extension that turns your dbt project into interactive ERDs without ever leaving your editor, powered by `dbterd` under the hood. |
 
 ## 🚀 Installation
 

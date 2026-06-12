@@ -32,6 +32,9 @@ nav:
         - Download the latest artifacts from a Job: nav/guide/dbt-cloud/download-artifact-from-a-job.md
         - Read the latest artifacts from an environment: nav/guide/dbt-cloud/read-artifact-from-an-environment.md
       - Python API Reference ↗️: 'api-docs/index.html" target="_blank'  # managed by hook
+    - Ecosystem 🌟:
+      - dbdocs ↗️: 'https://dbdocs.datnguye.me/latest/" target="_blank'
+      - dbterd for VS Code ↗️: 'https://github.com/datnguye/dbterd-vscode" target="_blank'
     - Development 🛠️:
       - Contributing Guide ❤️: nav/development/contributing-guide.md
       - Developing a Target Adapter: nav/development/developing-target-adapter.md
