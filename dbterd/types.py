@@ -1,18 +1,18 @@
 from typing import Union
 
-from dbt_artifacts_parser.parsers.catalog.catalog_v1 import CatalogV1
-from dbt_artifacts_parser.parsers.manifest.manifest_v1 import ManifestV1
-from dbt_artifacts_parser.parsers.manifest.manifest_v2 import ManifestV2
-from dbt_artifacts_parser.parsers.manifest.manifest_v3 import ManifestV3
-from dbt_artifacts_parser.parsers.manifest.manifest_v4 import ManifestV4
-from dbt_artifacts_parser.parsers.manifest.manifest_v5 import ManifestV5
-from dbt_artifacts_parser.parsers.manifest.manifest_v6 import ManifestV6
-from dbt_artifacts_parser.parsers.manifest.manifest_v7 import ManifestV7
-from dbt_artifacts_parser.parsers.manifest.manifest_v8 import ManifestV8
-from dbt_artifacts_parser.parsers.manifest.manifest_v9 import ManifestV9
-from dbt_artifacts_parser.parsers.manifest.manifest_v10 import ManifestV10
-from dbt_artifacts_parser.parsers.manifest.manifest_v11 import ManifestV11
-from dbt_artifacts_parser.parsers.manifest.manifest_v12 import ManifestV12
+from artifact_parser.dbt.generated.models.catalog.catalog_v1 import CatalogV1
+from artifact_parser.dbt.generated.models.manifest.manifest_v1 import ManifestV1
+from artifact_parser.dbt.generated.models.manifest.manifest_v2 import ManifestV2
+from artifact_parser.dbt.generated.models.manifest.manifest_v3 import ManifestV3
+from artifact_parser.dbt.generated.models.manifest.manifest_v4 import ManifestV4
+from artifact_parser.dbt.generated.models.manifest.manifest_v5 import ManifestV5
+from artifact_parser.dbt.generated.models.manifest.manifest_v6 import ManifestV6
+from artifact_parser.dbt.generated.models.manifest.manifest_v7 import ManifestV7
+from artifact_parser.dbt.generated.models.manifest.manifest_v8 import ManifestV8
+from artifact_parser.dbt.generated.models.manifest.manifest_v9 import ManifestV9
+from artifact_parser.dbt.generated.models.manifest.manifest_v10 import ManifestV10
+from artifact_parser.dbt.generated.models.manifest.manifest_v11 import ManifestV11
+from artifact_parser.dbt.generated.models.manifest.manifest_v12 import ManifestV12
 
 
 Manifest = Union[

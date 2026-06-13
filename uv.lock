@@ -34,6 +34,18 @@ wheels = [
 ]
 
 [[package]]
+name = "artifact-parser"
+version = "1.0.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pydantic" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e5/d3/b8523c74bf12393a7e659b855cf3b42bb2b379acd64c9a95e0d2c6d51579/artifact_parser-1.0.0.tar.gz", hash = "sha256:73864c6b2bdcf761adcb4217125bb997d8f1b635f395d080fb4883623e5ac592", size = 201065, upload-time = "2026-06-12T17:05:12.826Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2a/41/19ecd43052c8185ebdefbf41f5a16fbf94348b7b3a4387d0db2752b7d5c4/artifact_parser-1.0.0-py3-none-any.whl", hash = "sha256:47a827e3dffc087ef04efb1119a7118018a1fb1a6fa508162e07e511518ac1d9", size = 261221, upload-time = "2026-06-12T17:05:11.025Z" },
+]
+
+[[package]]
 name = "attrs"
 version = "26.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -360,18 +372,6 @@ wheels = [
 ]
 
 [[package]]
-name = "dbt-artifacts-parser"
-version = "0.13.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pydantic" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/5f/90/5f0461e7de6b56e4d2663172f1c15b5aec7120de640edf774522da4383ec/dbt_artifacts_parser-0.13.2.tar.gz", hash = "sha256:abb798aa73ff8cc295b4ecf03ee02d6a3bc48ad79f7d093d4bb3ffef68e77fb4", size = 70231, upload-time = "2026-05-07T00:20:07.132Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/f8/d2/153780452af94cc9cccd99efd4bce007c645b7a523db8d3c1715e32614d6/dbt_artifacts_parser-0.13.2-py3-none-any.whl", hash = "sha256:9eca1e413f7eee522cc1556634b0b9effe790b70d8ffcc46ae2328b9868efaf1", size = 93230, upload-time = "2026-05-07T00:20:06.05Z" },
-]
-
-[[package]]
 name = "dbt-common"
 version = "1.38.0"
 source = { registry = "https://pypi.org/simple" }
@@ -504,8 +504,8 @@ wheels = [
 name = "dbterd"
 source = { editable = "." }
 dependencies = [
+    { name = "artifact-parser" },
     { name = "click" },
-    { name = "dbt-artifacts-parser" },
     { name = "requests" },
     { name = "tomli", marker = "python_full_version < '3.11'" },
 ]
@@ -541,10 +541,10 @@ test = [
 
 [package.metadata]
 requires-dist = [
+    { name = "artifact-parser", extras = ["dbt"], specifier = ">=1.0.0" },
     { name = "click", specifier = ">=8.1.7" },
     { name = "coverage", extras = ["toml"], marker = "extra == 'dev'", specifier = ">=6.5.0" },
     { name = "coverage", extras = ["toml"], marker = "extra == 'test'", specifier = ">=6.5.0" },
-    { name = "dbt-artifacts-parser", specifier = ">=0.10.0" },
     { name = "dbt-core", marker = "extra == 'dev'", specifier = ">=1.7.11" },
     { name = "dbt-postgres", marker = "extra == 'dev'", specifier = ">=1.7.11" },
     { name = "mike", marker = "extra == 'dev'", specifier = ">=1.1.2" },

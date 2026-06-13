@@ -113,7 +113,7 @@ We are committed to responding promptly to security reports:
 **Installation & Updates:**
 - ✅ Always install from official sources (PyPI: `pip install dbterd`)
 - ✅ Keep dbterd updated to the latest version
-- ✅ Regularly update dependencies: `pip install dbt-artifacts-parser --upgrade`
+- ✅ Regularly update dependencies: `pip install "artifact-parser[dbt]" --upgrade`
 - ✅ Use virtual environments to isolate dependencies
 
 **Configuration Security:**

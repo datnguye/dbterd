@@ -415,7 +415,7 @@ dbterd run --algo meta_refs
 
 ## Complete Example: External Relax Policy
 
-dbterd reads dbt artifacts through [`dbt-artifacts-parser`](https://github.com/yu-iskw/dbt-artifacts-parser), whose Pydantic models are strict by default. A newer dbt release can keep the same schema version yet add fields or enum values the pinned parser rejects — which is what **relax policies** loosen. dbterd ships two built-ins (`relax_extra_fields`, `relax_enum_values`), and — just like algos and targets — you can contribute your own from an external package without forking.
+dbterd reads dbt artifacts through [`artifact-parser`](https://github.com/datnguye/artifact-parser), whose Pydantic models still validate types and enum values. A newer dbt release can keep the same schema version yet add enum values the pinned parser rejects — which is what **relax policies** loosen. dbterd ships two built-ins (`relax_extra_fields`, `relax_enum_values`), and — just like algos and targets — you can contribute your own from an external package without forking.
 
 A relax policy is a plain function that takes the imported versioned parser module and mutates its Pydantic models in place. It registers itself with `@register_relax_policy` and is discovered via the `dbterd.relax_policies` entry-point group.
 

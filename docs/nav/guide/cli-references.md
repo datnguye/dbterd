@@ -500,7 +500,7 @@ Specified dbt catalog.json version
 
 ### dbterd run --relax-policies
 
-Comma-separated list of parser relaxation policy names applied when reading dbt artifacts. This lets newer dbt versions — which introduce fields or enum values not yet supported by the `dbt-artifacts-parser` library — still be parsed (for example, dbt 1.11 keeps the manifest at version 12 but adds a `config` property to macro nodes and a `javascript` value to `supported_languages`).
+Comma-separated list of parser relaxation policy names applied when reading dbt artifacts. This lets newer dbt versions — which introduce fields or enum values not yet supported by the `artifact-parser` library — still be parsed (for example, dbt 1.11 keeps the manifest at version 12 but adds a `config` property to macro nodes and a `javascript` value to `supported_languages`).
 
 Available policies:
 

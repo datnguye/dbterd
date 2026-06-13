@@ -13,7 +13,7 @@ pytest_plugins = [
 
 def pytest_configure(config):
     """Configure pytest."""
-    # Filter out the pydantic warnings from dbt-artifacts-parser
+    # Filter out the pydantic warnings from artifact-parser
     warnings.filterwarnings(
         "ignore",
         message=r"Field \"model_unique_id\" in (ParsedMetric|Metric) has conflict with protected namespace \"model_\"",

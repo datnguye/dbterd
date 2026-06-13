@@ -81,9 +81,9 @@ dbterd --version
 ```
 
 > [!TIP]
-> **For dbt-core users**: It's highly recommended to keep [`dbt-artifacts-parser`](https://github.com/yu-iskw/dbt-artifacts-parser) updated to the latest version to support newer `dbt-core` versions and their [manifest/catalog json schemas](https://schemas.getdbt.com/):
+> **For dbt-core users**: It's highly recommended to keep [`artifact-parser`](https://github.com/datnguye/artifact-parser) updated to the latest version to support newer `dbt-core` versions and their [manifest/catalog json schemas](https://schemas.getdbt.com/):
 > ```bash
-> pip install dbt-artifacts-parser --upgrade
+> pip install "artifact-parser[dbt]" --upgrade
 > ```
 
 ## ⚙️ Configuration Files
