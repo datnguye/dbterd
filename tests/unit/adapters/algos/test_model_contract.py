@@ -44,11 +44,9 @@ class TestResolveToNodeId:
             ("db.other.customers", "model.other_pkg.customers"),
             ("db.nonexistent.table", None),
             ("", None),
-            # Unrendered ref(...) expressions (a parsed/compiled manifest).
+            # An unrendered ref(...) is delegated to _resolve_ref_to_node_id (covered
+            # exhaustively in test_resolve_ref_to_node_id); one case proves the fallback.
             ("ref('orders')", "model.pkg.orders"),
-            ('ref("orders")', "model.pkg.orders"),
-            ("ref('pkg', 'orders')", "model.pkg.orders"),
-            ("ref('nonexistent')", None),
         ],
     )
     def test_resolve_to_node_id(self, to_str, expected):
@@ -64,6 +62,7 @@ class TestResolveToNodeId:
             ('ref("pkg", "orders")', "model.pkg.orders"),
             ("ref('nonexistent')", None),
             ("db.public.orders", None),  # not a ref() expression
+            ("", None),
         ],
     )
     def test_resolve_ref_to_node_id(self, to_str, expected):

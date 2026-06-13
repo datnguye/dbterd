@@ -88,10 +88,6 @@ def patch_parser_compatibility(
         policies: Policy names to apply. ``None`` applies all registered policies
             (built-in plus any discovered from the ``dbterd.relax_policies`` entry-point
             group); an empty list applies none (strict validation).
-
-    References:
-        https://github.com/yu-iskw/dbt-artifacts-parser/issues/160
-        https://github.com/yu-iskw/dbt-artifacts-parser/issues/219
     """
     policy_names = known_relax_policies() if policies is None else tuple(policies)
     if not policy_names:

@@ -36,6 +36,9 @@ def _resolve_ref_to_node_id(to_str: str, manifest_nodes: dict) -> Optional[str]:
         Matching node unique ID, or None if it is not a ref or no model matches.
 
     """
+    if not to_str:
+        return None
+
     match = re.match(r"""ref\(\s*['"]([^'"]+)['"]\s*(?:,\s*['"]([^'"]+)['"]\s*)?\)""", to_str)
     if not match:
         return None
@@ -59,7 +62,7 @@ def _resolve_to_node_id(to_str: str, manifest_nodes: dict) -> Optional[str]:
       ``"shaman.dummy.locations"``), matched against each node's ``relation_name``.
       This is what a built/rendered manifest carries.
     - An unrendered ``ref(...)`` expression (e.g. ``"ref('locations')"``), which a
-      parsed/compiled manifest carries — resolved via :func:`_resolve_ref_to_node_id`.
+      parsed/compiled manifest carries — resolved via _resolve_ref_to_node_id.
 
     Only the model resource type is currently supported.
 
@@ -80,7 +83,7 @@ def _resolve_to_node_id(to_str: str, manifest_nodes: dict) -> Optional[str]:
         if getattr(node, "relation_name", None) == to_str:
             return node_id
 
-    # Fall back to resolving an unrendered ref('...') expression by model name.
+    # Fall back to resolving an unrendered ref('...') expression by model name
     return _resolve_ref_to_node_id(to_str=to_str, manifest_nodes=manifest_nodes)
 
 
