@@ -8,6 +8,7 @@ from dbterd.adapters.algos.model_contract import (
     ModelContractAlgo,
     _extract_pk_column_names,
     _get_relationship_type,
+    _resolve_ref_to_node_id,
     _resolve_to_node_id,
 )
 from dbterd.core.models import Column, Ref, Table
@@ -37,16 +38,36 @@ class TestResolveToNodeId:
     @pytest.mark.parametrize(
         "to_str, expected",
         [
+            # Rendered relation names (a built manifest).
             ("db.public.customers", "model.pkg.customers"),
             ("db.public.orders", "model.pkg.orders"),
             ("db.other.customers", "model.other_pkg.customers"),
             ("db.nonexistent.table", None),
             ("", None),
+            # Unrendered ref(...) expressions (a parsed/compiled manifest).
+            ("ref('orders')", "model.pkg.orders"),
+            ('ref("orders")', "model.pkg.orders"),
+            ("ref('pkg', 'orders')", "model.pkg.orders"),
+            ("ref('nonexistent')", None),
         ],
     )
     def test_resolve_to_node_id(self, to_str, expected):
         result = _resolve_to_node_id(to_str, self.NODES)
         assert result == expected
+
+    @pytest.mark.parametrize(
+        "to_str, expected",
+        [
+            ("ref('orders')", "model.pkg.orders"),
+            ('ref("orders")', "model.pkg.orders"),
+            ("ref('pkg', 'orders')", "model.pkg.orders"),
+            ('ref("pkg", "orders")', "model.pkg.orders"),
+            ("ref('nonexistent')", None),
+            ("db.public.orders", None),  # not a ref() expression
+        ],
+    )
+    def test_resolve_ref_to_node_id(self, to_str, expected):
+        assert _resolve_ref_to_node_id(to_str, self.NODES) == expected
 
     def test_model_takes_priority_over_seed(self):
         """When relation_name matches both a model and another resource, model wins."""

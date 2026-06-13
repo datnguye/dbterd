@@ -5,6 +5,7 @@ using dbt model contract constraints (foreign_key) to determine connections.
 Requires manifest v12+ (dbt 1.9+) for the `to` and `to_columns` fields.
 """
 
+import re
 from typing import Optional, Union
 
 from dbterd.constants import TEST_META_RELATIONSHIP_TYPE
@@ -15,17 +16,55 @@ from dbterd.helpers.log import logger
 from dbterd.types import Catalog, Manifest
 
 
+def _resolve_ref_to_node_id(to_str: str, manifest_nodes: dict) -> Optional[str]:
+    """Resolve an unrendered ``ref(...)`` constraint.to to a manifest node unique ID.
+
+    dbt does not always render the contract foreign-key ``to`` down to a relation
+    name — a manifest produced by ``dbt parse``/``compile`` (rather than a full
+    ``build`` against a live target) keeps it as the literal ``ref('...')``
+    expression. This resolves those by matching the referenced model name.
+
+    Supports:
+        - ``ref('model_name')`` / ``ref("model_name")``
+        - ``ref('package', 'model_name')`` / ``ref("package", "model_name")``
+
+    Args:
+        to_str: The constraint.to string (a ``ref(...)`` expression)
+        manifest_nodes: Dict of manifest node IDs to node objects
+
+    Returns:
+        Matching node unique ID, or None if it is not a ref or no model matches.
+
+    """
+    match = re.match(r"""ref\(\s*['"]([^'"]+)['"]\s*(?:,\s*['"]([^'"]+)['"]\s*)?\)""", to_str)
+    if not match:
+        return None
+
+    first_arg, second_arg = match.group(1), match.group(2)
+    model_name = second_arg if second_arg else first_arg
+
+    for node_id in manifest_nodes:
+        if node_id.startswith("model.") and node_id.split(".")[-1] == model_name:
+            return node_id
+
+    return None
+
+
 def _resolve_to_node_id(to_str: str, manifest_nodes: dict) -> Optional[str]:
     """Resolve constraint.to to a manifest node unique ID.
 
-    The constraint.to value is a fully qualified relation name in the format:
-        <database>.<schema>.<table_name>  (e.g. "shaman.dummy.locations")
+    Handles both shapes dbt may emit for a contract foreign-key ``to``:
 
-    This is matched against each node's relation_name field.
-    Only model resource type is currently supported.
+    - A fully qualified relation name (``<database>.<schema>.<table_name>``, e.g.
+      ``"shaman.dummy.locations"``), matched against each node's ``relation_name``.
+      This is what a built/rendered manifest carries.
+    - An unrendered ``ref(...)`` expression (e.g. ``"ref('locations')"``), which a
+      parsed/compiled manifest carries — resolved via :func:`_resolve_ref_to_node_id`.
+
+    Only the model resource type is currently supported.
 
     Args:
-        to_str: The constraint.to string (<database>.<schema>.<table_name>)
+        to_str: The constraint.to string (relation name or ``ref(...)`` expression)
         manifest_nodes: Dict of manifest node IDs to node objects
 
     Returns:
@@ -41,7 +80,8 @@ def _resolve_to_node_id(to_str: str, manifest_nodes: dict) -> Optional[str]:
         if getattr(node, "relation_name", None) == to_str:
             return node_id
 
-    return None
+    # Fall back to resolving an unrendered ref('...') expression by model name.
+    return _resolve_ref_to_node_id(to_str=to_str, manifest_nodes=manifest_nodes)
 
 
 def _get_relationship_type(meta_value: str) -> str:
