@@ -92,7 +92,7 @@ dbterd --version
     It's highly recommended to keep [`artifact-parser`](https://github.com/datnguye/artifact-parser) updated to the latest version to support newer `dbt-core` versions and their [manifest/catalog json schemas](https://schemas.getdbt.com/):
 
     ```bash
-    pip install artifact-parser --upgrade
+    pip install "artifact-parser[dbt]" --upgrade
     ```
 
 ---

@@ -222,7 +222,7 @@ def read_manifest(
         logger.warning(
             "Manifest version is NOT SUPPORTED in current `artifact-parser` package. \n"
             "Please help to try `-mv {version}` option with other value, OR upgrade the package:\n"
-            "\tpip install artifact-parser --upgrade\n"
+            '\tpip install "artifact-parser[dbt]" --upgrade\n'
             "Try falling back to the latest one..."
         )
         parser_version = default_parser
@@ -258,7 +258,7 @@ def read_catalog(
         logger.warning(
             "Catalog version is NOT SUPPORTED in current `artifact-parser` package. \n"
             "Please help to try `-mv {version}` option with other value, OR upgrade the package:\n"
-            "\tpip install artifact-parser --upgrade\n"
+            '\tpip install "artifact-parser[dbt]" --upgrade\n'
             "Try falling back to the latest one..."
         )
         parser_version = default_parser
