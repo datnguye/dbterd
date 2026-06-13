@@ -2,6 +2,7 @@ import contextlib
 import json
 from pathlib import Path
 
+from artifact_parser.core.exceptions import ArtifactParserError
 import click
 
 
@@ -9,7 +10,7 @@ import click
 def handle_read_errors(filename, conditional_msg: str = ""):
     try:
         yield
-    except (json.JSONDecodeError, ValueError) as e:
+    except (json.JSONDecodeError, ValueError, ArtifactParserError) as e:
         raise click.FileError(
             filename,
             f"File {filename} is corrupted{conditional_msg}, please rebuild",

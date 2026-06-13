@@ -1,6 +1,6 @@
 """Built-in parser relaxation policies.
 
-Each policy loosens dbt-artifacts-parser Pydantic validation in a specific way so that
+Each policy loosens artifact-parser Pydantic validation in a specific way so that
 newer dbt releases (sharing the same schema version) can still be parsed. Policies
 self-register via ``@register_relax_policy`` and are resolved by name from the
 ``relax-policies`` config; importing this module is what populates the registry.

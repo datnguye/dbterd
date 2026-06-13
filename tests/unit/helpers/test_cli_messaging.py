@@ -2,8 +2,8 @@ import contextlib
 from pathlib import Path
 from unittest import mock
 
+from artifact_parser.dbt.generated import parser
 import click
-from dbt_artifacts_parser import parser
 import pytest
 
 from dbterd.helpers import cli_messaging, file

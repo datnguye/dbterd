@@ -4,6 +4,7 @@ import types
 from typing import Optional
 from unittest import mock
 
+from artifact_parser.core.exceptions import ArtifactParserError
 from pydantic import BaseModel, ConfigDict, ValidationError as PydanticValidationError
 import pytest
 
@@ -12,7 +13,7 @@ from dbterd.helpers import file
 
 @contextlib.contextmanager
 def _patch_parser_import(fake_module: types.ModuleType):
-    """Intercept only the dbt-artifacts-parser import, delegating everything else.
+    """Intercept only the artifact-parser model import, delegating everything else.
 
     A blanket ``__import__`` mock would also hijack Pydantic's own internal imports,
     so we route just the parser module to the fake and pass the rest through.
@@ -20,7 +21,7 @@ def _patch_parser_import(fake_module: types.ModuleType):
     real_import = __import__
 
     def fake_import(name, *args, **kwargs):
-        if name.startswith("dbt_artifacts_parser.parsers."):
+        if name.startswith("artifact_parser.dbt.generated.models."):
             return fake_module
         return real_import(name, *args, **kwargs)
 
@@ -29,7 +30,7 @@ def _patch_parser_import(fake_module: types.ModuleType):
 
 
 def _build_fake_parser_module(artifact: str, version: int) -> types.ModuleType:
-    """Build a throwaway parser-like module mirroring the dbt-artifacts-parser layout.
+    """Build a throwaway parser-like module mirroring the artifact-parser layout.
 
     Patching against real parser models would mutate global parser state across the
     test session, so each test gets its own isolated module with fresh model classes.
@@ -136,7 +137,7 @@ class TestFile:
     @mock.patch("dbterd.helpers.file.open_json")
     def test_read_manifest_error(self, mock_open_json, version):
         mock_open_json.return_value = {"data": "dummy"}
-        with pytest.raises(ValueError):
+        with pytest.raises(ArtifactParserError):
             file.read_manifest(path="path/to/manifest", version=version)
         mock_open_json.assert_called_with("path/to/manifest/manifest.json")
 
@@ -144,7 +145,7 @@ class TestFile:
     @mock.patch("dbterd.helpers.file.open_json")
     def test_read_manifest_with_compat_patch(self, mock_open_json, mock_patch):
         mock_open_json.return_value = {"data": "dummy"}
-        with pytest.raises(ValueError):
+        with pytest.raises(ArtifactParserError):
             file.read_manifest(path="path/to/manifest", version=12, policies=["relax_extra_fields"])
         mock_patch.assert_called_once_with(artifact="manifest", artifact_version=12, policies=["relax_extra_fields"])
 
@@ -152,7 +153,7 @@ class TestFile:
     @mock.patch("dbterd.helpers.file.open_json")
     def test_read_catalog_error(self, mock_open_json, version):
         mock_open_json.return_value = {"data": "dummy"}
-        with pytest.raises(ValueError):
+        with pytest.raises(ArtifactParserError):
             file.read_catalog(path="path/to/catalog", version=version)
         mock_open_json.assert_called_with("path/to/catalog/catalog.json")
 
@@ -160,7 +161,7 @@ class TestFile:
     @mock.patch("dbterd.helpers.file.open_json")
     def test_read_catalog_with_compat_patch(self, mock_open_json, mock_patch):
         mock_open_json.return_value = {"data": "dummy"}
-        with pytest.raises(ValueError):
+        with pytest.raises(ArtifactParserError):
             file.read_catalog(path="path/to/catalog", version=1, policies=["relax_extra_fields"])
         mock_patch.assert_called_once_with(artifact="catalog", artifact_version=1, policies=["relax_extra_fields"])
 

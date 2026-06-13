@@ -5,7 +5,7 @@ import re
 import sys
 from typing import Optional
 
-from dbt_artifacts_parser import parser
+from artifact_parser.dbt.generated import parser
 
 # Importing relax_policies registers the built-in policies in the relax-policy registry.
 from dbterd.core import relax_policies  # noqa: F401
@@ -70,7 +70,7 @@ def patch_parser_compatibility(
     policies: Optional[Iterable[str]] = None,
 ) -> None:
     """
-    Conditionally monkey patch dbt-artifacts-parser Pydantic models for compatibility.
+    Conditionally monkey patch artifact-parser Pydantic models for compatibility.
 
     Relaxes models in the versioned parser module so that newer dbt releases sharing
     the same schema version (e.g. dbt 1.11 still reporting manifest v12) can still be
@@ -103,7 +103,7 @@ def patch_parser_compatibility(
 
     try:
         artifact_module = __import__(
-            f"dbt_artifacts_parser.parsers.{artifact}.{artifact}_v{artifact_version}",
+            f"artifact_parser.dbt.generated.models.{artifact}.{artifact}_v{artifact_version}",
             fromlist=["Metadata"],
         )
         for relax in relax_funcs:
@@ -224,9 +224,9 @@ def read_manifest(
     parser_version = f"parse_manifest_v{version}" if version else default_parser
     if not hasattr(parser, parser_version):
         logger.warning(
-            "Manifest version is NOT SUPPORTED in current `dbt-artifacts-parser` package. \n"
+            "Manifest version is NOT SUPPORTED in current `artifact-parser` package. \n"
             "Please help to try `-mv {version}` option with other value, OR upgrade the package:\n"
-            "\tpip install dbt-artifacts-parser --upgrade\n"
+            "\tpip install artifact-parser --upgrade\n"
             "Try falling back to the latest one..."
         )
         parser_version = default_parser
@@ -260,9 +260,9 @@ def read_catalog(
     parser_version = f"parse_catalog_v{version}" if version else default_parser
     if not hasattr(parser, parser_version):
         logger.warning(
-            "Catalog version is NOT SUPPORTED in current `dbt-artifacts-parser` package. \n"
+            "Catalog version is NOT SUPPORTED in current `artifact-parser` package. \n"
             "Please help to try `-mv {version}` option with other value, OR upgrade the package:\n"
-            "\tpip install dbt-artifacts-parser --upgrade\n"
+            "\tpip install artifact-parser --upgrade\n"
             "Try falling back to the latest one..."
         )
         parser_version = default_parser

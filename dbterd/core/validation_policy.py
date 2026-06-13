@@ -1,6 +1,6 @@
 """Registry of named validation-relaxation policies.
 
-Each policy is a function that loosens dbt-artifacts-parser Pydantic validation in a
+Each policy is a function that loosens artifact-parser Pydantic validation in a
 specific way (e.g. ignore unknown fields, widen unknown enum values). Users opt in by
 listing policy names in the ``relax-policies`` config; only listed policies run, so an
 empty list means strict validation.
