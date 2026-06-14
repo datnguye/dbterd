@@ -76,7 +76,7 @@ Here is a trimmed sample of the output:
 
 Every payload carries a `$schema` URL pinned to the dbterd version that produced it. The
 schema is published on this site at
-[`schemas/erd/latest/erd.json`](../../../../schemas/erd/latest/erd.json)
+[`schemas/erd/latest/erd.json`](https://dbterd.datnguye.me/latest/schemas/erd/latest/erd.json)
 (versioned copies live at `schemas/erd/{version}/erd.json`), so you can validate output in CI:
 
 ```bash
