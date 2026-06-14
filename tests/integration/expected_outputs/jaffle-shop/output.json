@@ -1,0 +1,815 @@
+{
+  "$schema": "https://datnguye.github.io/dbterd/schemas/erd/latest/erd.json",
+  "nodes": [
+    {
+      "id": "model.jaffle_shop.customers",
+      "name": "model.jaffle_shop.customers",
+      "label": null,
+      "description": "Customer overview data mart, offering key details for each unique customer. One row per customer.",
+      "resource_type": "model",
+      "schema_name": "public",
+      "database": "demo",
+      "columns": [
+        {
+          "name": "customer_id",
+          "data_type": "text",
+          "description": "The unique key of the orders mart.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "customer_name",
+          "data_type": "text",
+          "description": "Customers' full name.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "count_lifetime_orders",
+          "data_type": "bigint",
+          "description": "Total number of orders a customer has ever placed.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "first_ordered_at",
+          "data_type": "timestamp without time zone",
+          "description": "The timestamp when a customer placed their first order.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "last_ordered_at",
+          "data_type": "timestamp without time zone",
+          "description": "The timestamp of a customer's most recent order.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "lifetime_spend_pretax",
+          "data_type": "numeric",
+          "description": "The sum of all the pre-tax subtotals of every order a customer has placed.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "lifetime_tax_paid",
+          "data_type": "numeric",
+          "description": "The sum of all the tax portion of every order a customer has placed.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "lifetime_spend",
+          "data_type": "numeric",
+          "description": "The sum of all the order totals (including tax) that a customer has ever placed.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "customer_type",
+          "data_type": "text",
+          "description": "Options are 'new' or 'returning', indicating if a customer has ordered more than once or has only placed their first order to date.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "compiled_sql": "with\n\ncustomers as (\n\n    select * from \"demo\".\"public\".\"stg_customers\"\n\n),\n\norders as (\n\n    select * from \"demo\".\"public\".\"orders\"\n\n),\n\ncustomer_orders_summary as (\n\n    select\n        orders.customer_id,\n\n        count(distinct orders.order_id) as count_lifetime_orders,\n        count(distinct orders.order_id) > 1 as is_repeat_buyer,\n        min(orders.ordered_at) as first_ordered_at,\n        max(orders.ordered_at) as last_ordered_at,\n        sum(orders.subtotal) as lifetime_spend_pretax,\n        sum(orders.tax_paid) as lifetime_tax_paid,\n        sum(orders.order_total) as lifetime_spend\n\n    from orders\n\n    group by 1\n\n),\n\njoined as (\n\n    select\n        customers.*,\n\n        customer_orders_summary.count_lifetime_orders,\n        customer_orders_summary.first_ordered_at,\n        customer_orders_summary.last_ordered_at,\n        customer_orders_summary.lifetime_spend_pretax,\n        customer_orders_summary.lifetime_tax_paid,\n        customer_orders_summary.lifetime_spend,\n\n        case\n            when customer_orders_summary.is_repeat_buyer then 'returning'\n            else 'new'\n        end as customer_type\n\n    from customers\n\n    left join customer_orders_summary\n        on customers.customer_id = customer_orders_summary.customer_id\n\n)\n\nselect * from joined"
+    },
+    {
+      "id": "model.jaffle_shop.locations",
+      "name": "model.jaffle_shop.locations",
+      "label": null,
+      "description": null,
+      "resource_type": "model",
+      "schema_name": "public",
+      "database": "demo",
+      "columns": [
+        {
+          "name": "location_id",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "location_name",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "tax_rate",
+          "data_type": "double precision",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "opened_date",
+          "data_type": "timestamp without time zone",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "compiled_sql": "with\n\nlocations as (\n\n    select * from \"demo\".\"public\".\"stg_locations\"\n\n)\n\nselect * from locations"
+    },
+    {
+      "id": "model.jaffle_shop.metricflow_time_spine",
+      "name": "model.jaffle_shop.metricflow_time_spine",
+      "label": null,
+      "description": null,
+      "resource_type": "model",
+      "schema_name": "public",
+      "database": "demo",
+      "columns": [
+        {
+          "name": "date_day",
+          "data_type": "date",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "compiled_sql": "-- metricflow_time_spine.sql\nwith\n\ndays as (\n\n    --for BQ adapters use \"DATE('01/01/2000','mm/dd/yyyy')\"\n    \n    with date_spine as\n(\n\n    \n\n\n\n\n\nwith rawdata as (\n\n    \n\n    \n\n    with p as (\n        select 0 as generated_number union all select 1\n    ), unioned as (\n\n    select\n\n    \n    p0.generated_number * power(2, 0)\n     + \n    \n    p1.generated_number * power(2, 1)\n     + \n    \n    p2.generated_number * power(2, 2)\n     + \n    \n    p3.generated_number * power(2, 3)\n     + \n    \n    p4.generated_number * power(2, 4)\n     + \n    \n    p5.generated_number * power(2, 5)\n     + \n    \n    p6.generated_number * power(2, 6)\n     + \n    \n    p7.generated_number * power(2, 7)\n     + \n    \n    p8.generated_number * power(2, 8)\n     + \n    \n    p9.generated_number * power(2, 9)\n     + \n    \n    p10.generated_number * power(2, 10)\n     + \n    \n    p11.generated_number * power(2, 11)\n    \n    \n    + 1\n    as generated_number\n\n    from\n\n    \n    p as p0\n     cross join \n    \n    p as p1\n     cross join \n    \n    p as p2\n     cross join \n    \n    p as p3\n     cross join \n    \n    p as p4\n     cross join \n    \n    p as p5\n     cross join \n    \n    p as p6\n     cross join \n    \n    p as p7\n     cross join \n    \n    p as p8\n     cross join \n    \n    p as p9\n     cross join \n    \n    p as p10\n     cross join \n    \n    p as p11\n    \n    \n\n    )\n\n    select *\n    from unioned\n    where generated_number <= 3651\n    order by generated_number\n\n\n\n),\n\nall_periods as (\n\n    select (\n        \n\n    \n\n    cast(cast(\n    cast(now() as timestamp)\n        at time zone 'UTC' at time zone 'America/Los_Angeles' as timestamp\n) as date) + ((interval '1 day') * (-3650))\n\n + ((interval '1 day') * ((row_number() over (order by 1) - 1)))\n\n\n    ) as date_day\n    from rawdata\n\n),\n\nfiltered as (\n\n    select *\n    from all_periods\n    where date_day <= cast(\n\n    cast(cast(\n    cast(now() as timestamp)\n        at time zone 'UTC' at time zone 'America/Los_Angeles' as timestamp\n) as date) + ((interval '1 day') * (1))\n\n as date)\n\n)\n\nselect * from filtered\n\n\n\n)\nselect\n    cast(d.date_day as timestamp) as date_day\nfrom\n    date_spine d\n\n\n\n),\n\ncast_to_date as (\n\n    select cast(date_day as date) as date_day\n\n    from days\n\n)\n\nselect * from cast_to_date"
+    },
+    {
+      "id": "model.jaffle_shop.order_items",
+      "name": "model.jaffle_shop.order_items",
+      "label": null,
+      "description": null,
+      "resource_type": "model",
+      "schema_name": "public",
+      "database": "demo",
+      "columns": [
+        {
+          "name": "order_item_id",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "order_id",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": true
+        },
+        {
+          "name": "product_id",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "ordered_at",
+          "data_type": "timestamp without time zone",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "product_name",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "product_price",
+          "data_type": "numeric",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "is_food_item",
+          "data_type": "boolean",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "is_drink_item",
+          "data_type": "boolean",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "supply_cost",
+          "data_type": "numeric",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "compiled_sql": "with\n\norder_items as (\n\n    select * from \"demo\".\"public\".\"stg_order_items\"\n\n),\n\n\norders as (\n\n    select * from \"demo\".\"public\".\"stg_orders\"\n\n),\n\nproducts as (\n\n    select * from \"demo\".\"public\".\"stg_products\"\n\n),\n\nsupplies as (\n\n    select * from \"demo\".\"public\".\"stg_supplies\"\n\n),\n\norder_supplies_summary as (\n\n    select\n        product_id,\n\n        sum(supply_cost) as supply_cost\n\n    from supplies\n\n    group by 1\n\n),\n\njoined as (\n\n    select\n        order_items.*,\n\n        orders.ordered_at,\n\n        products.product_name,\n        products.product_price,\n        products.is_food_item,\n        products.is_drink_item,\n\n        order_supplies_summary.supply_cost\n\n    from order_items\n\n    left join orders on order_items.order_id = orders.order_id\n\n    left join products on order_items.product_id = products.product_id\n\n    left join order_supplies_summary\n        on order_items.product_id = order_supplies_summary.product_id\n\n)\n\nselect * from joined"
+    },
+    {
+      "id": "model.jaffle_shop.orders",
+      "name": "model.jaffle_shop.orders",
+      "label": null,
+      "description": "Order overview data mart, offering key details for each order inlcluding if it's a customer's first order and a food vs. drink item breakdown. One row per order.",
+      "resource_type": "model",
+      "schema_name": "public",
+      "database": "demo",
+      "columns": [
+        {
+          "name": "order_id",
+          "data_type": "text",
+          "description": "The unique key of the orders mart.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "location_id",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "customer_id",
+          "data_type": "text",
+          "description": "The foreign key relating to the customer who placed the order.",
+          "is_primary_key": false,
+          "is_foreign_key": true
+        },
+        {
+          "name": "subtotal_cents",
+          "data_type": "integer",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "tax_paid_cents",
+          "data_type": "integer",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "order_total_cents",
+          "data_type": "integer",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "subtotal",
+          "data_type": "numeric",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "tax_paid",
+          "data_type": "numeric",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "order_total",
+          "data_type": "numeric",
+          "description": "The total amount of the order in USD including tax.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "ordered_at",
+          "data_type": "timestamp without time zone",
+          "description": "The timestamp the order was placed at.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "order_cost",
+          "data_type": "numeric",
+          "description": "The sum of supply expenses to fulfill the order.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "order_items_subtotal",
+          "data_type": "numeric",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "count_food_items",
+          "data_type": "bigint",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "count_drink_items",
+          "data_type": "bigint",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "count_order_items",
+          "data_type": "bigint",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "is_food_order",
+          "data_type": "boolean",
+          "description": "A boolean indicating if this order included any food items.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "is_drink_order",
+          "data_type": "boolean",
+          "description": "A boolean indicating if this order included any drink items.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "customer_order_number",
+          "data_type": "bigint",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "compiled_sql": "with\n\norders as (\n\n    select * from \"demo\".\"public\".\"stg_orders\"\n\n),\n\norder_items as (\n\n    select * from \"demo\".\"public\".\"order_items\"\n\n),\n\norder_items_summary as (\n\n    select\n        order_id,\n\n        sum(supply_cost) as order_cost,\n        sum(product_price) as order_items_subtotal,\n        count(order_item_id) as count_order_items,\n        sum(\n            case\n                when is_food_item then 1\n                else 0\n            end\n        ) as count_food_items,\n        sum(\n            case\n                when is_drink_item then 1\n                else 0\n            end\n        ) as count_drink_items\n\n    from order_items\n\n    group by 1\n\n),\n\ncompute_booleans as (\n\n    select\n        orders.*,\n\n        order_items_summary.order_cost,\n        order_items_summary.order_items_subtotal,\n        order_items_summary.count_food_items,\n        order_items_summary.count_drink_items,\n        order_items_summary.count_order_items,\n        order_items_summary.count_food_items > 0 as is_food_order,\n        order_items_summary.count_drink_items > 0 as is_drink_order\n\n    from orders\n\n    left join\n        order_items_summary\n        on orders.order_id = order_items_summary.order_id\n\n),\n\ncustomer_order_count as (\n\n    select\n        *,\n\n        row_number() over (\n            partition by customer_id\n            order by ordered_at asc\n        ) as customer_order_number\n\n    from compute_booleans\n\n)\n\nselect * from customer_order_count"
+    },
+    {
+      "id": "model.jaffle_shop.products",
+      "name": "model.jaffle_shop.products",
+      "label": null,
+      "description": null,
+      "resource_type": "model",
+      "schema_name": "public",
+      "database": "demo",
+      "columns": [
+        {
+          "name": "product_id",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "product_name",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "product_type",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "product_description",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "product_price",
+          "data_type": "numeric",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "is_food_item",
+          "data_type": "boolean",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "is_drink_item",
+          "data_type": "boolean",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "compiled_sql": "with\n\nproducts as (\n\n    select * from \"demo\".\"public\".\"stg_products\"\n\n)\n\nselect * from products"
+    },
+    {
+      "id": "model.jaffle_shop.stg_customers",
+      "name": "model.jaffle_shop.stg_customers",
+      "label": null,
+      "description": "Customer data with basic cleaning and transformation applied, one row per customer.",
+      "resource_type": "model",
+      "schema_name": "public",
+      "database": "demo",
+      "columns": [
+        {
+          "name": "customer_id",
+          "data_type": "text",
+          "description": "The unique key for each customer.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "customer_name",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "compiled_sql": "with\n\nsource as (\n\n    select * from \"demo\".\"raw\".\"raw_customers\"\n\n),\n\nrenamed as (\n\n    select\n\n        ----------  ids\n        id as customer_id,\n\n        ---------- text\n        name as customer_name\n\n    from source\n\n)\n\nselect * from renamed"
+    },
+    {
+      "id": "model.jaffle_shop.stg_locations",
+      "name": "model.jaffle_shop.stg_locations",
+      "label": null,
+      "description": "List of open locations with basic cleaning and transformation applied, one row per location.",
+      "resource_type": "model",
+      "schema_name": "public",
+      "database": "demo",
+      "columns": [
+        {
+          "name": "location_id",
+          "data_type": "text",
+          "description": "The unique key for each location.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "location_name",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "tax_rate",
+          "data_type": "double precision",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "opened_date",
+          "data_type": "timestamp without time zone",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "compiled_sql": "with\n\nsource as (\n\n    select * from \"demo\".\"raw\".\"raw_stores\"\n\n),\n\nrenamed as (\n\n    select\n\n        ----------  ids\n        id as location_id,\n\n        ---------- text\n        name as location_name,\n\n        ---------- numerics\n        tax_rate,\n\n        ---------- timestamps\n        date_trunc('day', opened_at) as opened_date\n\n    from source\n\n)\n\nselect * from renamed"
+    },
+    {
+      "id": "model.jaffle_shop.stg_order_items",
+      "name": "model.jaffle_shop.stg_order_items",
+      "label": null,
+      "description": "Individual food and drink items that make up our orders, one row per item.",
+      "resource_type": "model",
+      "schema_name": "public",
+      "database": "demo",
+      "columns": [
+        {
+          "name": "order_item_id",
+          "data_type": "text",
+          "description": "The unique key for each order item.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "order_id",
+          "data_type": "text",
+          "description": "The corresponding order each order item belongs to",
+          "is_primary_key": false,
+          "is_foreign_key": true
+        },
+        {
+          "name": "product_id",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "compiled_sql": "with\n\nsource as (\n\n    select * from \"demo\".\"raw\".\"raw_items\"\n\n),\n\nrenamed as (\n\n    select\n\n        ----------  ids\n        id as order_item_id,\n        order_id,\n        sku as product_id\n\n    from source\n\n)\n\nselect * from renamed"
+    },
+    {
+      "id": "model.jaffle_shop.stg_orders",
+      "name": "model.jaffle_shop.stg_orders",
+      "label": null,
+      "description": "Order data with basic cleaning and transformation applied, one row per order.",
+      "resource_type": "model",
+      "schema_name": "public",
+      "database": "demo",
+      "columns": [
+        {
+          "name": "order_id",
+          "data_type": "text",
+          "description": "The unique key for each order.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "location_id",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "customer_id",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "subtotal_cents",
+          "data_type": "integer",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "tax_paid_cents",
+          "data_type": "integer",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "order_total_cents",
+          "data_type": "integer",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "subtotal",
+          "data_type": "numeric",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "tax_paid",
+          "data_type": "numeric",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "order_total",
+          "data_type": "numeric",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "ordered_at",
+          "data_type": "timestamp without time zone",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "compiled_sql": "with\n\nsource as (\n\n    select * from \"demo\".\"raw\".\"raw_orders\"\n\n),\n\nrenamed as (\n\n    select\n\n        ----------  ids\n        id as order_id,\n        store_id as location_id,\n        customer as customer_id,\n\n        ---------- numerics\n        subtotal as subtotal_cents,\n        tax_paid as tax_paid_cents,\n        order_total as order_total_cents,\n        (subtotal::numeric(16, 2) / 100) as subtotal,\n        (tax_paid::numeric(16, 2) / 100) as tax_paid,\n        (order_total::numeric(16, 2) / 100) as order_total,\n\n        ---------- timestamps\n        date_trunc('day', ordered_at) as ordered_at\n\n    from source\n\n)\n\nselect * from renamed"
+    },
+    {
+      "id": "model.jaffle_shop.stg_products",
+      "name": "model.jaffle_shop.stg_products",
+      "label": null,
+      "description": "Product (food and drink items that can be ordered) data with basic cleaning and transformation applied, one row per product.",
+      "resource_type": "model",
+      "schema_name": "public",
+      "database": "demo",
+      "columns": [
+        {
+          "name": "product_id",
+          "data_type": "text",
+          "description": "The unique key for each product.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "product_name",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "product_type",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "product_description",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "product_price",
+          "data_type": "numeric",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "is_food_item",
+          "data_type": "boolean",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "is_drink_item",
+          "data_type": "boolean",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "compiled_sql": "with\n\nsource as (\n\n    select * from \"demo\".\"raw\".\"raw_products\"\n\n),\n\nrenamed as (\n\n    select\n\n        ----------  ids\n        sku as product_id,\n\n        ---------- text\n        name as product_name,\n        type as product_type,\n        description as product_description,\n\n\n        ---------- numerics\n        (price::numeric(16, 2) / 100) as product_price,\n\n        ---------- booleans\n        coalesce(type = 'jaffle', false) as is_food_item,\n\n        coalesce(type = 'beverage', false) as is_drink_item\n\n    from source\n\n)\n\nselect * from renamed"
+    },
+    {
+      "id": "model.jaffle_shop.stg_supplies",
+      "name": "model.jaffle_shop.stg_supplies",
+      "label": null,
+      "description": "List of our supply expenses data with basic cleaning and transformation applied.\nOne row per supply cost, not per supply. As supply costs fluctuate they receive a new row with a new UUID. Thus there can be multiple rows per supply_id.\n",
+      "resource_type": "model",
+      "schema_name": "public",
+      "database": "demo",
+      "columns": [
+        {
+          "name": "supply_uuid",
+          "data_type": "text",
+          "description": "The unique key of our supplies per cost.",
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "supply_id",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "product_id",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "supply_name",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "supply_cost",
+          "data_type": "numeric",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "is_perishable_supply",
+          "data_type": "boolean",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "compiled_sql": "with\n\nsource as (\n\n    select * from \"demo\".\"raw\".\"raw_supplies\"\n\n),\n\nrenamed as (\n\n    select\n\n        ----------  ids\n        md5(cast(coalesce(cast(id as TEXT), '_dbt_utils_surrogate_key_null_') || '-' || coalesce(cast(sku as TEXT), '_dbt_utils_surrogate_key_null_') as TEXT)) as supply_uuid,\n        id as supply_id,\n        sku as product_id,\n\n        ---------- text\n        name as supply_name,\n\n        ---------- numerics\n        (cost::numeric(16, 2) / 100) as supply_cost,\n\n        ---------- booleans\n        perishable as is_perishable_supply\n\n    from source\n\n)\n\nselect * from renamed"
+    },
+    {
+      "id": "model.jaffle_shop.supplies",
+      "name": "model.jaffle_shop.supplies",
+      "label": null,
+      "description": null,
+      "resource_type": "model",
+      "schema_name": "public",
+      "database": "demo",
+      "columns": [
+        {
+          "name": "supply_uuid",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "supply_id",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "product_id",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "supply_name",
+          "data_type": "text",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "supply_cost",
+          "data_type": "numeric",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        },
+        {
+          "name": "is_perishable_supply",
+          "data_type": "boolean",
+          "description": null,
+          "is_primary_key": false,
+          "is_foreign_key": false
+        }
+      ],
+      "compiled_sql": "with\n\nsupplies as (\n\n    select * from \"demo\".\"public\".\"stg_supplies\"\n\n)\n\nselect * from supplies"
+    }
+  ],
+  "edges": [
+    {
+      "id": "test.jaffle_shop.relationships_order_items_order_id__order_id__ref_orders_.a799023ee8",
+      "from_id": "model.jaffle_shop.order_items",
+      "to_id": "model.jaffle_shop.orders",
+      "from_columns": [
+        "order_id"
+      ],
+      "to_columns": [
+        "order_id"
+      ],
+      "relationship_type": "fk",
+      "name": "test.jaffle_shop.relationships_order_items_order_id__order_id__ref_orders_.a799023ee8",
+      "label": null,
+      "cardinality": "n1"
+    },
+    {
+      "id": "test.jaffle_shop.relationships_orders_customer_id__customer_id__ref_stg_customers_.918495ce16",
+      "from_id": "model.jaffle_shop.orders",
+      "to_id": "model.jaffle_shop.stg_customers",
+      "from_columns": [
+        "customer_id"
+      ],
+      "to_columns": [
+        "customer_id"
+      ],
+      "relationship_type": "fk",
+      "name": "test.jaffle_shop.relationships_orders_customer_id__customer_id__ref_stg_customers_.918495ce16",
+      "label": null,
+      "cardinality": "n1"
+    },
+    {
+      "id": "test.jaffle_shop.relationships_stg_order_items_order_id__order_id__ref_stg_orders_.dbe9930c54",
+      "from_id": "model.jaffle_shop.stg_order_items",
+      "to_id": "model.jaffle_shop.stg_orders",
+      "from_columns": [
+        "order_id"
+      ],
+      "to_columns": [
+        "order_id"
+      ],
+      "relationship_type": "fk",
+      "name": "test.jaffle_shop.relationships_stg_order_items_order_id__order_id__ref_stg_orders_.dbe9930c54",
+      "label": null,
+      "cardinality": "n1"
+    }
+  ],
+  "metadata": {
+    "generated_at": "2024-07-28T01:54:24.620460Z",
+    "dbt_project_name": "jaffle_shop",
+    "dbterd_version": "latest"
+  }
+}

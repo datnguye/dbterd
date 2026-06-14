@@ -19,6 +19,7 @@ class TestDbterdRun:
         [
             ("jaffle-shop", "dbml", "test_relationship", [], "output.dbml"),
             ("jaffle-shop", "mermaid", "test_relationship", [], "output.md"),
+            ("jaffle-shop", "json", "test_relationship", [], "output.json"),
             # dbt 1.11 artifacts: same manifest v12, but macros gained a `config`
             # property and `supported_languages` gained `javascript` (see issue #145).
             ("jaffle-shop-v1.11", "dbml", "test_relationship", [], "output.dbml"),
@@ -89,6 +90,8 @@ class TestDbterdRun:
 
             if expected_file.endswith(".ddb"):
                 self._compare_ddb_outputs(actual_content, expected_content)
+            elif expected_file == "output.json":
+                self._compare_json_outputs(actual_content, expected_content)
             else:
                 assert actual_content == expected_content, f"Output mismatch for {sample}/{target}"
 
@@ -182,3 +185,16 @@ class TestDbterdRun:
             data.pop("date", None)
 
         assert actual_json == expected_json, "DrawDB output mismatch"
+
+    def _compare_json_outputs(self, actual: str, expected: str) -> None:
+        """Compare ERD JSON outputs, ignoring version-pinned fields."""
+        actual_json = json.loads(actual)
+        expected_json = json.loads(expected)
+
+        # `$schema` and `metadata.dbterd_version` embed the dbterd version,
+        # which differs per build/release.
+        for data in [actual_json, expected_json]:
+            data.pop("$schema", None)
+            data.get("metadata", {}).pop("dbterd_version", None)
+
+        assert actual_json == expected_json, "ERD JSON output mismatch"
