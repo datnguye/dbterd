@@ -6,10 +6,19 @@ extension, dbt-docs, and friends — can validate dbterd output instead of guess
 field names.
 """
 
+import os
 from typing import Any
 
 
-SCHEMA_BASE_URL = "https://datnguye.github.io/dbterd/schemas/erd"
+# Absolute base URL for the published ERD JSON Schema. It is baked into every
+# emitted payload's ``$schema`` (validators must be able to dereference it) and
+# into the schema's own ``$id``. The default tracks the docs ``site_url``; set
+# ``DBTERD_SCHEMA_BASE_URL`` to point payloads at a different host (e.g. a fork
+# or a vanity domain) without touching code.
+SCHEMA_BASE_URL = os.environ.get(
+    "DBTERD_SCHEMA_BASE_URL",
+    "https://dbterd.datnguye.me/latest/schemas/erd",
+)
 
 
 def build_erd_json_schema(schema_version: str) -> dict[str, Any]:

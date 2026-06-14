@@ -2,7 +2,7 @@
 
 This module converts parsed dbt artifacts into the canonical dbterd ERD JSON
 payload (``nodes`` / ``edges`` / ``metadata``). The shape is published as a
-JSON Schema on the docs site (https://datnguye.github.io/dbterd/schemas/erd/)
+JSON Schema on the docs site (https://dbterd.datnguye.me/latest/schemas/erd/)
 so downstream tools — like the dbterd VS Code extension and dbt-docs — can
 consume it with confidence rather than reverse-engineering field names.
 """

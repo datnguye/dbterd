@@ -1,5 +1,5 @@
 {
-  "$schema": "https://datnguye.github.io/dbterd/schemas/erd/latest/erd.json",
+  "$schema": "https://dbterd.datnguye.me/latest/schemas/erd/latest/erd.json",
   "nodes": [
     {
       "id": "model.jaffle_shop.customers",

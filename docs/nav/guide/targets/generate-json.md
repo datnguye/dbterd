@@ -29,7 +29,7 @@ Here is a trimmed sample of the output:
 
 ```json
 {
-  "$schema": "https://datnguye.github.io/dbterd/schemas/erd/latest/erd.json",
+  "$schema": "https://dbterd.datnguye.me/latest/schemas/erd/latest/erd.json",
   "nodes": [
     {
       "id": "model.jaffle_shop.orders",
@@ -76,13 +76,13 @@ Here is a trimmed sample of the output:
 
 Every payload carries a `$schema` URL pinned to the dbterd version that produced it. The
 schema is published on this site at
-[`schemas/erd/latest/erd.json`](/dbterd/schemas/erd/latest/erd.json)
+[`schemas/erd/latest/erd.json`](../../../../schemas/erd/latest/erd.json)
 (versioned copies live at `schemas/erd/{version}/erd.json`), so you can validate output in CI:
 
 ```bash
 # any draft 2020-12 validator works; example with check-jsonschema
 pipx run check-jsonschema --schemafile \
-  https://datnguye.github.io/dbterd/schemas/erd/latest/erd.json \
+  https://dbterd.datnguye.me/latest/schemas/erd/latest/erd.json \
   output.json
 ```
 

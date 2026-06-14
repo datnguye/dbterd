@@ -8,6 +8,7 @@ import pytest
 from dbterd.adapters.algos.test_relationship import TestRelationshipAlgo
 from dbterd.adapters.targets.json import JsonAdapter, get_schema_version
 from dbterd.core.models import Column, Ref, Table
+from dbterd.core.schemas.erd import SCHEMA_BASE_URL
 
 
 @dataclass
@@ -204,7 +205,7 @@ class TestJsonTestRelationship:
     def test_schema_url_is_pinned_to_version(self):
         adapter = JsonAdapter()
         result = json.loads(adapter.build_erd(tables=[], relationships=[]))
-        assert result["$schema"] == f"https://datnguye.github.io/dbterd/schemas/erd/{get_schema_version()}/erd.json"
+        assert result["$schema"] == f"{SCHEMA_BASE_URL}/{get_schema_version()}/erd.json"
 
     def test_composite_foreign_key(self):
         """Composite FK maps every from/to column into the column lists."""
