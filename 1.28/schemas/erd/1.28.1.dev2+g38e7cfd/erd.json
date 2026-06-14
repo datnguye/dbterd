@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://dbterd.datnguye.me/latest/schemas/erd/1.28.1.dev1+gbea3a54/erd.json",
+  "$id": "https://dbterd.datnguye.me/latest/schemas/erd/1.28.1.dev2+g38e7cfd/erd.json",
   "title": "dbterd ERD Payload",
   "description": "Entity Relationship Diagram payload produced by the dbterd `json` target.",
   "type": "object",
