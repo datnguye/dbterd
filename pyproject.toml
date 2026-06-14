@@ -21,6 +21,7 @@ keywords = [
     "graphviz",
     "d2",
     "drawdb",
+    "json",
     "data-modeling",
     "data-documentation",
     "dbt-cloud"
@@ -74,6 +75,7 @@ dev = [
   "pytest >=6.2.5",
   "pytest-sugar >=0.9.6",  # Better test output formatting
   "coverage[toml] >=6.5.0",  # Test coverage reporting
+  "jsonschema >=4.0.0",  # Validate the published ERD JSON Schema in tests
 
   # Code quality and formatting
   "ruff >=0.2.0",
@@ -98,6 +100,7 @@ test = [
   "pytest >=6.2.5",
   "pytest-sugar >=0.9.6",
   "coverage[toml] >=6.5.0",
+  "jsonschema >=4.0.0",
 ]
 
 # Documentation dependencies subset

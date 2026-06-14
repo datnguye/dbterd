@@ -6,7 +6,7 @@
   <img src="assets/logo.svg" alt="dbterd logo" width="200" height="80">
 </div>
 
-Transform your dbt artifact files or metadata into stunning Entity Relationship Diagrams using multiple formats: DBML, Mermaid, PlantUML, GraphViz, D2, and DrawDB
+Transform your dbt artifact files or metadata into stunning Entity Relationship Diagrams using multiple formats: DBML, Mermaid, PlantUML, GraphViz, D2, DrawDB, and a canonical JSON payload
 
 [![docs](https://img.shields.io/badge/docs-visit%20site-blue?style=flat&logo=gitbook&logoColor=white)](https://dbterd.datnguye.me/)
 [![PyPI version](https://badge.fury.io/py/dbterd.svg)](https://pypi.org/project/dbterd/)
@@ -56,6 +56,7 @@ For detailed configuration options, see our [CLI References](./nav/guide/cli-ref
 | **[GraphViz](https://graphviz.org/)** | DOT graph description | Complex relationship visualization |
 | **[D2](https://d2lang.com/)** | Modern diagram scripting | Beautiful, customizable diagrams |
 | **[DrawDB](https://drawdb.vercel.app/)** | Web-based database designer | Interactive database design |
+| **[JSON](./nav/guide/targets/generate-json.md)** | Canonical, schema-validated ERD payload | Tooling & integrations (VS Code extension, custom apps) |
 
 ---
 
@@ -169,6 +170,10 @@ print("ERD (DBML):", erd)
 # Generate Mermaid format
 erd = DbtErd(target="mermaid").get_erd()
 print("ERD (Mermaid):", erd)
+
+# Generate canonical JSON payload (nodes/edges/metadata)
+erd = DbtErd(target="json").get_erd()
+print("ERD (JSON):", erd)
 ```
 
 - Generate a Single Model ERD:
