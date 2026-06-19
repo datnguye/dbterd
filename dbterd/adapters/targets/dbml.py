@@ -43,23 +43,27 @@ class DbmlAdapter(BaseTargetAdapter):
         builder.add_section("//Refs (based on the DBT Relationship Tests)")
         builder.add_relationships(relationships, lambda r: self.format_relationship(r, quote=quote))
 
-        if kwargs.get("dbml_table_group"):
-            table_groups = self.format_table_groups(tables, quote=quote)
+        entity_group = kwargs.get("entity_group")
+        if entity_group:
+            table_groups = self.format_table_groups(tables, entity_group, quote=quote)
             if table_groups:
-                builder.add_section("//TableGroups (based on the table schema)")
+                builder.add_section(f"//TableGroups (based on {entity_group})")
                 builder.add_section(table_groups)
 
         return builder.build()
 
-    def format_table_groups(self, tables: list[Table], quote: str = '"') -> str:
-        """Format standard DBML TableGroup blocks, grouping tables by schema.
+    def format_table_groups(self, tables: list[Table], entity_group: str, quote: str = '"') -> str:
+        """Format standard DBML TableGroup blocks, grouping tables by Table attributes.
 
-        Tables are grouped by ``f"{database}.{schema}"`` (the same key used in the
-        per-table configured-schema comment), preserving first-seen order.
+        ``entity_group`` is a dot-separated list of ``Table`` attribute names
+        (e.g. ``"database.schema"`` or ``"schema"``). The group key for each table is
+        built by joining those attribute values with ``.``, preserving first-seen order.
         """
+        attributes = [attr.lower() for attr in entity_group.split(".")]
+
         groups: dict[str, list[str]] = {}
         for table in tables:
-            key = f"{table.database}.{table.schema}"
+            key = ".".join(str(getattr(table, attr)) for attr in attributes)
             groups.setdefault(key, []).append(table.name)
 
         blocks = []

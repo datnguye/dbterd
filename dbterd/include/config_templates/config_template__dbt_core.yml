@@ -53,8 +53,8 @@ entity-name-format: {default_entity_name_format}
 # Omit double quotes in entity names (dbml only)
 omit-entity-name-quotes: {default_omit_entity_name_quotes}
 
-# Emit standard DBML TableGroup blocks grouping tables by schema (dbml only)
-dbml-table-group: {default_dbml_table_group}
+# Group entities by dot-separated Table attribute names, e.g. database.schema (dbml only)
+entity-group: {default_entity_group}
 
 # Display Options
 # ---------------

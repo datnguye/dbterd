@@ -395,7 +395,7 @@ class TestDbmlTestRelationship:
 
 class TestDbmlTableGroup:
     @pytest.mark.parametrize(
-        "tables, relationships, select, exclude, resource_type, omit_entity_name_quotes, expected",
+        "tables, relationships, select, exclude, resource_type, omit_entity_name_quotes, entity_group, expected",
         [
             (
                 [
@@ -429,6 +429,7 @@ class TestDbmlTableGroup:
                 [],
                 ["model", "source"],
                 False,
+                "database.schema",
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
                 Table "model.dbt_resto.table1" {
@@ -446,7 +447,7 @@ class TestDbmlTableGroup:
                     Note:""
                 }
                 //Refs (based on the DBT Relationship Tests)
-                //TableGroups (based on the table schema)
+                //TableGroups (based on database.schema)
                 TableGroup "--database--.--schema--" {
                     "model.dbt_resto.table1"
                     "model.dbt_resto.table2"
@@ -472,6 +473,7 @@ class TestDbmlTableGroup:
                 [],
                 ["model"],
                 True,
+                "database.schema",
                 """//Tables (based on the selection criteria)
                 //--configured at schema: --database--.--schema--
                 Table model.dbt_resto.table1 {
@@ -479,9 +481,53 @@ class TestDbmlTableGroup:
                     Note:""
                 }
                 //Refs (based on the DBT Relationship Tests)
-                //TableGroups (based on the table schema)
+                //TableGroups (based on database.schema)
                 TableGroup --database--.--schema-- {
                     model.dbt_resto.table1
+                }
+                """,
+            ),
+            (
+                [
+                    Table(
+                        name="model.dbt_resto.table1",
+                        node_name="model.dbt_resto.table1",
+                        database="--database--",
+                        schema="--schema--",
+                        columns=[Column(name="name1", data_type="--name1-type--")],
+                        raw_sql="--irrelevant--",
+                    ),
+                    Table(
+                        name="source.dbt_resto.table3",
+                        node_name="source.dbt_resto.table3",
+                        database="--database3--",
+                        schema="--schema--",
+                        columns=[Column(name="name3", data_type="--name3-type3--")],
+                        raw_sql="--irrelevant--",
+                    ),
+                ],
+                [],
+                [],
+                [],
+                ["model", "source"],
+                False,
+                "schema",
+                """//Tables (based on the selection criteria)
+                //--configured at schema: --database--.--schema--
+                Table "model.dbt_resto.table1" {
+                    "name1" "--name1-type--"
+                    Note:""
+                }
+                //--configured at schema: --database3--.--schema--
+                Table "source.dbt_resto.table3" {
+                    "name3" "--name3-type3--"
+                    Note:""
+                }
+                //Refs (based on the DBT Relationship Tests)
+                //TableGroups (based on schema)
+                TableGroup "--schema--" {
+                    "model.dbt_resto.table1"
+                    "source.dbt_resto.table3"
                 }
                 """,
             ),
@@ -495,6 +541,7 @@ class TestDbmlTableGroup:
         exclude,
         resource_type,
         omit_entity_name_quotes,
+        entity_group,
         expected,
     ):
         algo = TestRelationshipAlgo()
@@ -517,9 +564,25 @@ class TestDbmlTableGroup:
             tables=enriched_tables,
             relationships=filtered_relationships,
             omit_entity_name_quotes=omit_entity_name_quotes,
-            dbml_table_group=True,
+            entity_group=entity_group,
         )
         assert dbml.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
+
+    @pytest.mark.parametrize("entity_group", [None, ""])
+    def test_no_table_group_when_unset(self, entity_group):
+        """No TableGroup section is emitted when entity_group is unset/empty (default off)."""
+        adapter = DbmlAdapter()
+        tables = [
+            Table(
+                name="model.dbt_resto.table1",
+                node_name="model.dbt_resto.table1",
+                database="db",
+                schema="public",
+                columns=[Column(name="name1", data_type="int")],
+            ),
+        ]
+        dbml = adapter.build_erd(tables=tables, relationships=[], entity_group=entity_group)
+        assert "TableGroup" not in dbml
 
 
 class TestFormatColumnRef:

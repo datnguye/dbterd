@@ -85,11 +85,15 @@ def common_params(func):
         show_default=True,
     )
     @click.option(
-        "--dbml-table-group",
-        help="Flag to emit standard DBML TableGroup blocks grouping tables by schema. Currently only dbml is supported",
-        is_flag=True,
-        default=default.default_dbml_table_group(),
+        "--entity-group",
+        "-eg",
+        help=(
+            "Group entities by dot-separated Table attribute names (e.g. 'database.schema'). "
+            "Emits standard DBML TableGroup blocks. Currently only dbml is supported"
+        ),
+        default=default.default_entity_group(),
         show_default=True,
+        type=click.STRING,
     )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
