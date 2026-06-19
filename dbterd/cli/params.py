@@ -84,6 +84,13 @@ def common_params(func):
         default=default.default_omit_columns(),
         show_default=True,
     )
+    @click.option(
+        "--dbml-table-group",
+        help="Flag to emit standard DBML TableGroup blocks grouping tables by schema. Currently only dbml is supported",
+        is_flag=True,
+        default=default.default_dbml_table_group(),
+        show_default=True,
+    )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)  # pragma: no cover

@@ -43,7 +43,30 @@ class DbmlAdapter(BaseTargetAdapter):
         builder.add_section("//Refs (based on the DBT Relationship Tests)")
         builder.add_relationships(relationships, lambda r: self.format_relationship(r, quote=quote))
 
+        if kwargs.get("dbml_table_group"):
+            table_groups = self.format_table_groups(tables, quote=quote)
+            if table_groups:
+                builder.add_section("//TableGroups (based on the table schema)")
+                builder.add_section(table_groups)
+
         return builder.build()
+
+    def format_table_groups(self, tables: list[Table], quote: str = '"') -> str:
+        """Format standard DBML TableGroup blocks, grouping tables by schema.
+
+        Tables are grouped by ``f"{database}.{schema}"`` (the same key used in the
+        per-table configured-schema comment), preserving first-seen order.
+        """
+        groups: dict[str, list[str]] = {}
+        for table in tables:
+            key = f"{table.database}.{table.schema}"
+            groups.setdefault(key, []).append(table.name)
+
+        blocks = []
+        for key, names in groups.items():
+            members = "\n".join(f"  {quote}{name}{quote}" for name in names)
+            blocks.append(f"TableGroup {quote}{key}{quote} {{\n{members}\n}}")
+        return "\n".join(blocks)
 
     def format_table(self, table: Table, **kwargs) -> str:
         """Format a single table in DBML syntax."""
