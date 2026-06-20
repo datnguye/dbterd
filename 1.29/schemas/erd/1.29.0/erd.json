@@ -1,0 +1,223 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dbterd.datnguye.me/latest/schemas/erd/1.29.0/erd.json",
+  "title": "dbterd ERD Payload",
+  "description": "Entity Relationship Diagram payload produced by the dbterd `json` target.",
+  "type": "object",
+  "required": [
+    "nodes",
+    "edges",
+    "metadata"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri"
+    },
+    "nodes": {
+      "type": "array",
+      "description": "Tables/models in the diagram.",
+      "items": {
+        "$ref": "#/$defs/node"
+      }
+    },
+    "edges": {
+      "type": "array",
+      "description": "Relationships (foreign keys) between nodes.",
+      "items": {
+        "$ref": "#/$defs/edge"
+      }
+    },
+    "metadata": {
+      "$ref": "#/$defs/metadata"
+    }
+  },
+  "$defs": {
+    "resourceType": {
+      "type": "string",
+      "description": "dbt node types dbterd collects (manifest: model/seed/snapshot nodes + sources).",
+      "enum": [
+        "model",
+        "source",
+        "seed",
+        "snapshot"
+      ]
+    },
+    "cardinality": {
+      "type": "string",
+      "description": "dbterd relationship type code.",
+      "enum": [
+        "01",
+        "11",
+        "0n",
+        "1n",
+        "nn",
+        "n1"
+      ]
+    },
+    "column": {
+      "type": "object",
+      "required": [
+        "name",
+        "data_type"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "data_type": {
+          "type": "string"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "is_primary_key": {
+          "type": "boolean",
+          "default": false
+        },
+        "is_foreign_key": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "node": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "resource_type",
+        "schema_name",
+        "database",
+        "columns"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "dbt unique id, e.g. model.pkg.orders."
+        },
+        "name": {
+          "type": "string",
+          "description": "Friendly table name."
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Display label, when set."
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Table/model documentation."
+        },
+        "resource_type": {
+          "$ref": "#/$defs/resourceType"
+        },
+        "schema_name": {
+          "type": "string"
+        },
+        "database": {
+          "type": "string"
+        },
+        "columns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/column"
+          }
+        },
+        "compiled_sql": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Compiled SQL of the node."
+        }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "required": [
+        "id",
+        "from_id",
+        "to_id",
+        "name"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "from_id": {
+          "type": "string",
+          "description": "Node id of the FK (child) side."
+        },
+        "to_id": {
+          "type": "string",
+          "description": "Node id of the referenced (parent) side."
+        },
+        "from_columns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "to_columns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "relationship_type": {
+          "type": "string",
+          "enum": [
+            "fk"
+          ],
+          "default": "fk"
+        },
+        "name": {
+          "type": "string"
+        },
+        "label": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "cardinality": {
+          "$ref": "#/$defs/cardinality"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": [
+        "generated_at",
+        "dbt_project_name",
+        "dbterd_version"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "generated_at": {
+          "type": "string"
+        },
+        "dbt_project_name": {
+          "type": "string"
+        },
+        "dbterd_version": {
+          "type": "string",
+          "description": "dbterd version that produced this payload."
+        }
+      }
+    }
+  }
+}
