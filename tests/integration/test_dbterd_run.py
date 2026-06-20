@@ -9,6 +9,16 @@ import pytest
 SAMPLES_DIR = Path(__file__).parent.parent.parent / "samples"
 EXPECTED_OUTPUTS_DIR = Path(__file__).parent / "expected_outputs"
 
+TARGET_OUTPUT_FILENAME = {
+    "dbml": "output.dbml",
+    "mermaid": "output.md",
+    "json": "output.json",
+    "plantuml": "output.plantuml",
+    "d2": "output.d2",
+    "drawdb": "output.ddb",
+    "graphviz": "output.graphviz",
+}
+
 
 @pytest.mark.integration
 class TestDbterdRun:
@@ -18,6 +28,20 @@ class TestDbterdRun:
         "sample,target,algo,options,expected_file",
         [
             ("jaffle-shop", "dbml", "test_relationship", [], "output.dbml"),
+            (
+                "jaffle-shop",
+                "dbml",
+                "test_relationship",
+                ["--entity-group", "database.schema"],
+                "output-entity-group.dbml",
+            ),
+            (
+                "jaffle-shop",
+                "dbml",
+                "test_relationship",
+                ["--entity-group", "database.schema", "--entity-name-format", "table"],
+                "output-entity-group-name-format.dbml",
+            ),
             ("jaffle-shop", "mermaid", "test_relationship", [], "output.md"),
             ("jaffle-shop", "json", "test_relationship", [], "output.json"),
             # dbt 1.11 artifacts: same manifest v12, but macros gained a `config`
@@ -82,7 +106,7 @@ class TestDbterdRun:
 
             assert result.returncode == 0, f"dbterd failed with code {result.returncode}: {result.stderr}"
 
-            actual_output_path = Path(tmp_dir) / expected_file
+            actual_output_path = Path(tmp_dir) / TARGET_OUTPUT_FILENAME[target]
             assert actual_output_path.exists(), f"Output file not created: {actual_output_path}"
 
             actual_content = actual_output_path.read_text()

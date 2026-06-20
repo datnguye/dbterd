@@ -393,40 +393,34 @@ class TestDbmlTestRelationship:
         assert dbml.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
 
 
+def _make_table(name, database="--database--", schema="--schema--", column="name1", data_type="--name1-type--"):
+    """Build a Table fixture with a single column, keeping group tests DRY."""
+    return Table(
+        name=name,
+        node_name=name,
+        database=database,
+        schema=schema,
+        columns=[Column(name=column, data_type=data_type)],
+        raw_sql="--irrelevant--",
+    )
+
+
 class TestDbmlTableGroup:
     @pytest.mark.parametrize(
-        "tables, relationships, select, exclude, resource_type, omit_entity_name_quotes, entity_group, expected",
+        "tables, resource_type, omit_entity_name_quotes, entity_group, expected",
         [
             (
                 [
-                    Table(
-                        name="model.dbt_resto.table1",
-                        node_name="model.dbt_resto.table1",
-                        database="--database--",
-                        schema="--schema--",
-                        columns=[Column(name="name1", data_type="--name1-type--")],
-                        raw_sql="--irrelevant--",
-                    ),
-                    Table(
-                        name="model.dbt_resto.table2",
-                        node_name="model.dbt_resto.table2",
-                        database="--database--",
-                        schema="--schema--",
-                        columns=[Column(name="name2", data_type="--name2-type2--")],
-                        raw_sql="--irrelevant--",
-                    ),
-                    Table(
-                        name="source.dbt_resto.table3",
-                        node_name="source.dbt_resto.table3",
+                    _make_table("model.dbt_resto.table1"),
+                    _make_table("model.dbt_resto.table2", column="name2", data_type="--name2-type2--"),
+                    _make_table(
+                        "source.dbt_resto.table3",
                         database="--database3--",
                         schema="--schema3--",
-                        columns=[Column(name="name3", data_type="--name3-type3--")],
-                        raw_sql="--irrelevant--",
+                        column="name3",
+                        data_type="--name3-type3--",
                     ),
                 ],
-                [],
-                [],
-                [],
                 ["model", "source"],
                 False,
                 "database.schema",
@@ -458,19 +452,7 @@ class TestDbmlTableGroup:
                 """,
             ),
             (
-                [
-                    Table(
-                        name="model.dbt_resto.table1",
-                        node_name="model.dbt_resto.table1",
-                        database="--database--",
-                        schema="--schema--",
-                        columns=[Column(name="name1", data_type="--name1-type--")],
-                        raw_sql="--irrelevant--",
-                    ),
-                ],
-                [],
-                [],
-                [],
+                [_make_table("model.dbt_resto.table1")],
                 ["model"],
                 True,
                 "database.schema",
@@ -489,26 +471,14 @@ class TestDbmlTableGroup:
             ),
             (
                 [
-                    Table(
-                        name="model.dbt_resto.table1",
-                        node_name="model.dbt_resto.table1",
-                        database="--database--",
-                        schema="--schema--",
-                        columns=[Column(name="name1", data_type="--name1-type--")],
-                        raw_sql="--irrelevant--",
-                    ),
-                    Table(
-                        name="source.dbt_resto.table3",
-                        node_name="source.dbt_resto.table3",
+                    _make_table("model.dbt_resto.table1"),
+                    _make_table(
+                        "source.dbt_resto.table3",
                         database="--database3--",
-                        schema="--schema--",
-                        columns=[Column(name="name3", data_type="--name3-type3--")],
-                        raw_sql="--irrelevant--",
+                        column="name3",
+                        data_type="--name3-type3--",
                     ),
                 ],
-                [],
-                [],
-                [],
                 ["model", "source"],
                 False,
                 "schema",
@@ -536,9 +506,6 @@ class TestDbmlTableGroup:
     def test_parse_with_table_group(
         self,
         tables,
-        relationships,
-        select,
-        exclude,
         resource_type,
         omit_entity_name_quotes,
         entity_group,
@@ -548,21 +515,17 @@ class TestDbmlTableGroup:
         adapter = DbmlAdapter()
         filtered_tables = algo.filter_tables_based_on_selection(
             tables=tables,
-            select=select,
-            exclude=exclude,
+            select=[],
+            exclude=[],
             resource_type=resource_type,
         )
         enriched_tables = algo.enrich_tables_from_relationships(
             tables=filtered_tables,
-            relationships=relationships,
+            relationships=[],
         )
-        table_names = {table.name for table in enriched_tables}
-        filtered_relationships = [
-            rel for rel in relationships if all(table_name in table_names for table_name in rel.table_map)
-        ]
         dbml = adapter.build_erd(
             tables=enriched_tables,
-            relationships=filtered_relationships,
+            relationships=[],
             omit_entity_name_quotes=omit_entity_name_quotes,
             entity_group=entity_group,
         )
@@ -572,17 +535,33 @@ class TestDbmlTableGroup:
     def test_no_table_group_when_unset(self, entity_group):
         """No TableGroup section is emitted when entity_group is unset/empty (default off)."""
         adapter = DbmlAdapter()
-        tables = [
-            Table(
-                name="model.dbt_resto.table1",
-                node_name="model.dbt_resto.table1",
-                database="db",
-                schema="public",
-                columns=[Column(name="name1", data_type="int")],
-            ),
-        ]
-        dbml = adapter.build_erd(tables=tables, relationships=[], entity_group=entity_group)
+        dbml = adapter.build_erd(
+            tables=[_make_table("model.dbt_resto.table1")],
+            relationships=[],
+            entity_group=entity_group,
+        )
         assert "TableGroup" not in dbml
+
+    def test_no_table_group_when_no_tables(self):
+        """No TableGroup section is emitted when there are no tables to group."""
+        adapter = DbmlAdapter()
+        dbml = adapter.build_erd(tables=[], relationships=[], entity_group="database.schema")
+        assert "TableGroup" not in dbml
+
+    @pytest.mark.parametrize(
+        "entity_group",
+        ["databse.schema", "schema.", "."],
+        ids=["typo", "trailing-dot", "lone-dot"],
+    )
+    def test_unknown_attribute_raises_attribute_error(self, entity_group):
+        """An unknown/empty attribute name surfaces as a plain AttributeError from getattr."""
+        adapter = DbmlAdapter()
+        with pytest.raises(AttributeError):
+            adapter.build_erd(
+                tables=[_make_table("model.dbt_resto.table1")],
+                relationships=[],
+                entity_group=entity_group,
+            )
 
 
 class TestFormatColumnRef:
