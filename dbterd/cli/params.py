@@ -87,10 +87,7 @@ def common_params(func):
     @click.option(
         "--entity-group",
         "-eg",
-        help=(
-            "Group entities by dot-separated Table attribute names (e.g. 'database.schema'). "
-            "Emits standard DBML TableGroup blocks. Currently only dbml is supported"
-        ),
+        help="Group entities by dot-separated Table attribute names (e.g. 'database.schema').",
         default=default.default_entity_group(),
         show_default=True,
         type=click.STRING,

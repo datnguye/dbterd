@@ -44,6 +44,13 @@ class TestDbterdRun:
             ),
             ("jaffle-shop", "mermaid", "test_relationship", [], "output.md"),
             ("jaffle-shop", "json", "test_relationship", [], "output.json"),
+            (
+                "jaffle-shop",
+                "json",
+                "test_relationship",
+                ["--entity-group", "database.schema"],
+                "output-entity-group.json",
+            ),
             # dbt 1.11 artifacts: same manifest v12, but macros gained a `config`
             # property and `supported_languages` gained `javascript` (see issue #145).
             ("jaffle-shop-v1.11", "dbml", "test_relationship", [], "output.dbml"),
@@ -114,7 +121,7 @@ class TestDbterdRun:
 
             if expected_file.endswith(".ddb"):
                 self._compare_ddb_outputs(actual_content, expected_content)
-            elif expected_file == "output.json":
+            elif expected_file.endswith(".json"):
                 self._compare_json_outputs(actual_content, expected_content)
             else:
                 assert actual_content == expected_content, f"Output mismatch for {sample}/{target}"

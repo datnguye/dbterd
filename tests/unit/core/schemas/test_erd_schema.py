@@ -5,6 +5,7 @@ import jsonschema
 from dbterd.adapters.targets.json import JsonAdapter, get_schema_version
 from dbterd.core.models import Column, Ref, Table
 from dbterd.core.schemas.erd import SCHEMA_BASE_URL, build_erd_json_schema
+from tests.unit.fixtures.models import make_column, make_table
 
 
 class TestBuildErdJsonSchema:
@@ -68,4 +69,18 @@ class TestBuildErdJsonSchema:
             )
         ]
         payload = json.loads(JsonAdapter().build_erd(tables, relationships))
+        jsonschema.validate(instance=payload, schema=build_erd_json_schema(get_schema_version()))
+
+    def test_validates_grouped_adapter_output(self):
+        """The schema must accept the optional `groups` block emitted with `--entity-group`."""
+        tables = [
+            make_table(
+                name="model.pkg.orders",
+                database="db",
+                schema="sch",
+                columns=[make_column(name="id", data_type="int")],
+            )
+        ]
+        payload = json.loads(JsonAdapter().build_erd(tables, [], entity_group="database.schema"))
+        assert payload["groups"] == [{"name": "db.sch", "node_ids": ["model.pkg.orders"]}]
         jsonschema.validate(instance=payload, schema=build_erd_json_schema(get_schema_version()))

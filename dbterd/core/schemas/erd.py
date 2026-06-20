@@ -53,6 +53,11 @@ def build_erd_json_schema(schema_version: str) -> dict[str, Any]:
                 "items": {"$ref": "#/$defs/edge"},
             },
             "metadata": {"$ref": "#/$defs/metadata"},
+            "groups": {
+                "type": "array",
+                "description": "Node groupings, emitted only when the `--entity-group` option is set.",
+                "items": {"$ref": "#/$defs/group"},
+            },
         },
         "$defs": {
             "resourceType": {
@@ -107,6 +112,22 @@ def build_erd_json_schema(schema_version: str) -> dict[str, Any]:
                     "name": {"type": "string"},
                     "label": {"type": ["string", "null"]},
                     "cardinality": {"$ref": "#/$defs/cardinality"},
+                },
+            },
+            "group": {
+                "type": "object",
+                "required": ["name", "node_ids"],
+                "additionalProperties": True,
+                "properties": {
+                    "name": {
+                        "type": "string",
+                        "description": "Group key, the dot-joined `--entity-group` attribute values.",
+                    },
+                    "node_ids": {
+                        "type": "array",
+                        "description": "Node ids belonging to this group.",
+                        "items": {"type": "string"},
+                    },
                 },
             },
             "metadata": {

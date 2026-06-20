@@ -9,6 +9,7 @@ from dbterd.adapters.algos.test_relationship import TestRelationshipAlgo
 from dbterd.adapters.targets.json import JsonAdapter, get_schema_version
 from dbterd.core.models import Column, Ref, Table
 from dbterd.core.schemas.erd import SCHEMA_BASE_URL
+from tests.unit.fixtures.models import make_column, make_table
 
 
 @dataclass
@@ -315,3 +316,84 @@ class TestJsonTestRelationship:
     def test_get_schema_version_fallback(self):
         with mock.patch("dbterd.adapters.targets.json.version", side_effect=PackageNotFoundError):
             assert get_schema_version() == "latest"
+
+
+class TestJsonEntityGroup:
+    @pytest.mark.parametrize(
+        "tables, entity_group, expected_groups",
+        [
+            (
+                [
+                    make_table("model.dbt_resto.table1"),
+                    make_table("model.dbt_resto.table2", columns=[make_column(name="name2")]),
+                    make_table("source.dbt_resto.table3", database="--database3--", schema="--schema3--"),
+                ],
+                "database.schema",
+                [
+                    {
+                        "name": "--database--.--schema--",
+                        "node_ids": ["model.dbt_resto.table1", "model.dbt_resto.table2"],
+                    },
+                    {"name": "--database3--.--schema3--", "node_ids": ["source.dbt_resto.table3"]},
+                ],
+            ),
+            (
+                [
+                    make_table("model.dbt_resto.table1"),
+                    make_table("source.dbt_resto.table3", database="--database3--"),
+                ],
+                "schema",
+                [
+                    {
+                        "name": "--schema--",
+                        "node_ids": ["model.dbt_resto.table1", "source.dbt_resto.table3"],
+                    }
+                ],
+            ),
+        ],
+    )
+    def test_build_erd_with_groups(self, tables, entity_group, expected_groups):
+        adapter = JsonAdapter()
+        result = json.loads(adapter.build_erd(tables=tables, relationships=[], entity_group=entity_group))
+        assert result["groups"] == expected_groups
+
+    @pytest.mark.parametrize("entity_group", [None, ""])
+    def test_no_groups_when_unset(self, entity_group):
+        """No `groups` key is emitted when entity_group is unset/empty (default off)."""
+        adapter = JsonAdapter()
+        result = json.loads(
+            adapter.build_erd(
+                tables=[make_table("model.dbt_resto.table1")], relationships=[], entity_group=entity_group
+            )
+        )
+        assert "groups" not in result
+
+    def test_no_groups_when_no_tables(self):
+        """No `groups` key is emitted when there are no tables to group."""
+        adapter = JsonAdapter()
+        result = json.loads(adapter.build_erd(tables=[], relationships=[], entity_group="database.schema"))
+        assert "groups" not in result
+
+    @pytest.mark.parametrize(
+        "entity_group",
+        ["databse.schema", "schema.", "."],
+        ids=["typo", "trailing-dot", "lone-dot"],
+    )
+    def test_unknown_attribute_raises_attribute_error(self, entity_group):
+        """An unknown/empty attribute name surfaces as a plain AttributeError from getattr."""
+        adapter = JsonAdapter()
+        with pytest.raises(AttributeError):
+            adapter.build_erd(
+                tables=[make_table("model.dbt_resto.table1")],
+                relationships=[],
+                entity_group=entity_group,
+            )
+
+    def test_group_node_id_falls_back_to_name(self):
+        """A node with no node_name groups under its name, matching the node `id` field."""
+        adapter = JsonAdapter()
+        table = make_table(name="orders", database="db", schema="sch")
+        # make_table coerces node_name to name; force the falsy case this test exists for.
+        table.node_name = None
+        groups = adapter.format_entity_groups([table], "schema")
+        assert groups == [{"name": "sch", "node_ids": ["orders"]}]

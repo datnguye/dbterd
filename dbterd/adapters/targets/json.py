@@ -58,6 +58,11 @@ class JsonAdapter(BaseTargetAdapter):
             "edges": "$relationships",
             "metadata": self._build_metadata(schema_version, **kwargs),
         }
+
+        entity_group = kwargs.get("entity_group")
+        if entity_group and tables:
+            schema["groups"] = self.format_entity_groups(tables, entity_group)
+
         return builder.build(schema=schema)
 
     def format_table(self, table: Table, **kwargs) -> str:
@@ -126,6 +131,26 @@ class JsonAdapter(BaseTargetAdapter):
             "label": relationship.relationship_label,
             "cardinality": relationship.type,
         }
+
+    def format_entity_groups(self, tables: list[Table], entity_group: str) -> list[dict]:
+        """Group nodes by ``Table`` attributes, mirroring the DBML ``TableGroup`` feature.
+
+        ``entity_group`` is a dot-separated list of ``Table`` attribute names
+        (e.g. ``"database.schema"`` or ``"schema"``). Each table's group key is built
+        by joining those attribute values with ``.``, preserving first-seen order.
+
+        Returns a list of ``{"name": <key>, "node_ids": [...]}`` dicts, where each
+        ``node_id`` matches the corresponding node's ``id`` field.
+        """
+        attributes = [attr.lower() for attr in entity_group.split(".")]
+
+        groups: dict[str, list[str]] = {}
+        for table in tables:
+            key = ".".join(str(getattr(table, attr)) for attr in attributes)
+            node_id = table.node_name or table.name
+            groups.setdefault(key, []).append(node_id)
+
+        return [{"name": key, "node_ids": node_ids} for key, node_ids in groups.items()]
 
     def _collect_foreign_keys(self, relationships: list[Ref]) -> dict[str, set[str]]:
         """Map each node id to the set of its columns participating in a FK.
