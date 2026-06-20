@@ -393,6 +393,177 @@ class TestDbmlTestRelationship:
         assert dbml.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
 
 
+def _make_table(name, database="--database--", schema="--schema--", column="name1", data_type="--name1-type--"):
+    """Build a Table fixture with a single column, keeping group tests DRY."""
+    return Table(
+        name=name,
+        node_name=name,
+        database=database,
+        schema=schema,
+        columns=[Column(name=column, data_type=data_type)],
+        raw_sql="--irrelevant--",
+    )
+
+
+class TestDbmlTableGroup:
+    @pytest.mark.parametrize(
+        "tables, resource_type, omit_entity_name_quotes, entity_group, expected",
+        [
+            (
+                [
+                    _make_table("model.dbt_resto.table1"),
+                    _make_table("model.dbt_resto.table2", column="name2", data_type="--name2-type2--"),
+                    _make_table(
+                        "source.dbt_resto.table3",
+                        database="--database3--",
+                        schema="--schema3--",
+                        column="name3",
+                        data_type="--name3-type3--",
+                    ),
+                ],
+                ["model", "source"],
+                False,
+                "database.schema",
+                """//Tables (based on the selection criteria)
+                //--configured at schema: --database--.--schema--
+                Table "model.dbt_resto.table1" {
+                    "name1" "--name1-type--"
+                    Note:""
+                }
+                //--configured at schema: --database--.--schema--
+                Table "model.dbt_resto.table2" {
+                    "name2" "--name2-type2--"
+                    Note:""
+                }
+                //--configured at schema: --database3--.--schema3--
+                Table "source.dbt_resto.table3" {
+                    "name3" "--name3-type3--"
+                    Note:""
+                }
+                //Refs (based on the DBT Relationship Tests)
+                //TableGroups (based on database.schema)
+                TableGroup "--database--.--schema--" {
+                    "model.dbt_resto.table1"
+                    "model.dbt_resto.table2"
+                }
+                TableGroup "--database3--.--schema3--" {
+                    "source.dbt_resto.table3"
+                }
+                """,
+            ),
+            (
+                [_make_table("model.dbt_resto.table1")],
+                ["model"],
+                True,
+                "database.schema",
+                """//Tables (based on the selection criteria)
+                //--configured at schema: --database--.--schema--
+                Table model.dbt_resto.table1 {
+                    "name1" "--name1-type--"
+                    Note:""
+                }
+                //Refs (based on the DBT Relationship Tests)
+                //TableGroups (based on database.schema)
+                TableGroup --database--.--schema-- {
+                    model.dbt_resto.table1
+                }
+                """,
+            ),
+            (
+                [
+                    _make_table("model.dbt_resto.table1"),
+                    _make_table(
+                        "source.dbt_resto.table3",
+                        database="--database3--",
+                        column="name3",
+                        data_type="--name3-type3--",
+                    ),
+                ],
+                ["model", "source"],
+                False,
+                "schema",
+                """//Tables (based on the selection criteria)
+                //--configured at schema: --database--.--schema--
+                Table "model.dbt_resto.table1" {
+                    "name1" "--name1-type--"
+                    Note:""
+                }
+                //--configured at schema: --database3--.--schema--
+                Table "source.dbt_resto.table3" {
+                    "name3" "--name3-type3--"
+                    Note:""
+                }
+                //Refs (based on the DBT Relationship Tests)
+                //TableGroups (based on schema)
+                TableGroup "--schema--" {
+                    "model.dbt_resto.table1"
+                    "source.dbt_resto.table3"
+                }
+                """,
+            ),
+        ],
+    )
+    def test_parse_with_table_group(
+        self,
+        tables,
+        resource_type,
+        omit_entity_name_quotes,
+        entity_group,
+        expected,
+    ):
+        algo = TestRelationshipAlgo()
+        adapter = DbmlAdapter()
+        filtered_tables = algo.filter_tables_based_on_selection(
+            tables=tables,
+            select=[],
+            exclude=[],
+            resource_type=resource_type,
+        )
+        enriched_tables = algo.enrich_tables_from_relationships(
+            tables=filtered_tables,
+            relationships=[],
+        )
+        dbml = adapter.build_erd(
+            tables=enriched_tables,
+            relationships=[],
+            omit_entity_name_quotes=omit_entity_name_quotes,
+            entity_group=entity_group,
+        )
+        assert dbml.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
+
+    @pytest.mark.parametrize("entity_group", [None, ""])
+    def test_no_table_group_when_unset(self, entity_group):
+        """No TableGroup section is emitted when entity_group is unset/empty (default off)."""
+        adapter = DbmlAdapter()
+        dbml = adapter.build_erd(
+            tables=[_make_table("model.dbt_resto.table1")],
+            relationships=[],
+            entity_group=entity_group,
+        )
+        assert "TableGroup" not in dbml
+
+    def test_no_table_group_when_no_tables(self):
+        """No TableGroup section is emitted when there are no tables to group."""
+        adapter = DbmlAdapter()
+        dbml = adapter.build_erd(tables=[], relationships=[], entity_group="database.schema")
+        assert "TableGroup" not in dbml
+
+    @pytest.mark.parametrize(
+        "entity_group",
+        ["databse.schema", "schema.", "."],
+        ids=["typo", "trailing-dot", "lone-dot"],
+    )
+    def test_unknown_attribute_raises_attribute_error(self, entity_group):
+        """An unknown/empty attribute name surfaces as a plain AttributeError from getattr."""
+        adapter = DbmlAdapter()
+        with pytest.raises(AttributeError):
+            adapter.build_erd(
+                tables=[_make_table("model.dbt_resto.table1")],
+                relationships=[],
+                entity_group=entity_group,
+            )
+
+
 class TestFormatColumnRef:
     def setup_method(self):
         self.adapter = DbmlAdapter()

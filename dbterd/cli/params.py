@@ -84,6 +84,17 @@ def common_params(func):
         default=default.default_omit_columns(),
         show_default=True,
     )
+    @click.option(
+        "--entity-group",
+        "-eg",
+        help=(
+            "Group entities by dot-separated Table attribute names (e.g. 'database.schema'). "
+            "Emits standard DBML TableGroup blocks. Currently only dbml is supported"
+        ),
+        default=default.default_entity_group(),
+        show_default=True,
+        type=click.STRING,
+    )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)  # pragma: no cover

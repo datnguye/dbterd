@@ -53,6 +53,9 @@ entity-name-format: {default_entity_name_format}
 # Omit double quotes in entity names (dbml only)
 omit-entity-name-quotes: {default_omit_entity_name_quotes}
 
+# Group entities by dot-separated Table attribute names, e.g. database.schema (dbml only)
+entity-group: {default_entity_group}
+
 # Display Options
 # ---------------
 # Omit columns in diagram (mermaid only)

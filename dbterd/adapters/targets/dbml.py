@@ -43,7 +43,36 @@ class DbmlAdapter(BaseTargetAdapter):
         builder.add_section("//Refs (based on the DBT Relationship Tests)")
         builder.add_relationships(relationships, lambda r: self.format_relationship(r, quote=quote))
 
+        entity_group = kwargs.get("entity_group")
+        if entity_group and tables:
+            builder.add_section(f"//TableGroups (based on {entity_group})")
+            builder.add_section(self.format_entity_groups(tables, entity_group, quote=quote))
+
         return builder.build()
+
+    def _quote(self, name: str, quote: str) -> str:
+        """Wrap a DBML identifier in the configured quote characters."""
+        return f"{quote}{name}{quote}"
+
+    def format_entity_groups(self, tables: list[Table], entity_group: str, quote: str = '"') -> str:
+        """Format standard DBML ``TableGroup`` blocks, grouping tables by Table attributes.
+
+        ``entity_group`` is a dot-separated list of ``Table`` attribute names
+        (e.g. ``"database.schema"`` or ``"schema"``). The group key for each table is
+        built by joining those attribute values with ``.``, preserving first-seen order.
+        """
+        attributes = [attr.lower() for attr in entity_group.split(".")]
+
+        groups: dict[str, list[str]] = {}
+        for table in tables:
+            key = ".".join(str(getattr(table, attr)) for attr in attributes)
+            groups.setdefault(key, []).append(table.name)
+
+        blocks = []
+        for key, names in groups.items():
+            members = "\n".join(f"  {self._quote(name, quote)}" for name in names)
+            blocks.append(f"TableGroup {self._quote(key, quote)} {{\n{members}\n}}")
+        return "\n".join(blocks)
 
     def format_table(self, table: Table, **kwargs) -> str:
         """Format a single table in DBML syntax."""
@@ -54,7 +83,7 @@ class DbmlAdapter(BaseTargetAdapter):
 
         return (
             f"//--configured at schema: {table.database}.{table.schema}\n"
-            f"Table {quote}{table.name}{quote} {{\n"
+            f"Table {self._quote(table.name, quote)} {{\n"
             f"{columns}\n\n"
             f"  Note: {json.dumps(table.description)}\n"
             f"{indexes_block}"
@@ -88,9 +117,9 @@ class DbmlAdapter(BaseTargetAdapter):
         For multiple columns: `"table".("col1", "col2")`
         """
         if len(columns) == 1:
-            return f'{quote}{table}{quote}."{columns[0]}"'
+            return f'{self._quote(table, quote)}."{columns[0]}"'
         cols_str = ", ".join(f'"{c}"' for c in columns)
-        return f"{quote}{table}{quote}.({cols_str})"
+        return f"{self._quote(table, quote)}.({cols_str})"
 
     def _format_indexes_block(self, pk_columns: list[str]) -> str:
         """Format a DBML indexes block for a composite or single primary key."""

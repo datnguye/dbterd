@@ -146,6 +146,11 @@ Command to generate diagram-as-a-code file from dbt artifact files, optionally d
                                       defined in the target module
       --omit-columns                  Flag to omit columns in diagram. Currently
                                       only mermaid is supported
+      -eg, --entity-group TEXT        Group entities by dot-separated Table
+                                      attribute names (e.g. 'database.schema').
+                                      Emits standard DBML TableGroup blocks.
+                                      Currently only dbml is supported  [default:
+                                      ""]
       -ad, --artifacts-dir TEXT       Specified the path to dbt artifact directory
                                       which known as /target directory
       -mv, --manifest-version TEXT    Specified dbt manifest.json version
@@ -706,6 +711,42 @@ Enabled it to allow `dbdocs` to recognize the schemas and display them as groupi
     dbterd run --entity-name-format schema.table --omit-entity-name-quotes # ✅
     ```
 
+### dbterd run --entity-group (-eg)
+
+Group entities into standard DBML `TableGroup` blocks. Currently only `dbml` is supported.
+
+> Default to `` (empty, the feature is off)
+
+The value is a dot-separated list of `Table` attribute names. Each table's group key is built by joining those attribute values with `.`, so `database.schema` puts every table that shares the same `database` and `schema` into one group. Other useful attributes include `schema`, `database`, and `resource_type`.
+
+When enabled, a `//TableGroups` section is appended after the tables and refs:
+
+```
+//TableGroups (based on database.schema)
+TableGroup "demo.public" {
+  "customers"
+  "orders"
+}
+```
+
+It plays nicely with [`--entity-name-format`](#dbterd-run-entity-name-format-enf): the group members reuse whatever table names the format produces, so the references always resolve.
+
+**Examples:**
+=== "CLI"
+
+    ```bash
+    dbterd run --entity-group database.schema # group by database and schema
+    dbterd run --entity-group schema # group by schema only
+    dbterd run -eg database.schema -enf table # combine with a custom name format
+    ```
+
+=== "Sample-specific examples"
+
+    ```bash
+    # Group jaffle-shop tables by database.schema into a DBML TableGroup
+    dbterd run --artifacts-dir ./samples/jaffle-shop --entity-group database.schema -t dbml
+    ```
+
 ### dbterd run --dbt-cloud
 
 Decide to download artifact files from dbt Cloud Job Run instead of compiling locally.
@@ -775,6 +816,11 @@ Check [this guideline](./dbt-cloud/read-artifact-from-an-environment.md) for mor
                                       defined in the target module
       --omit-columns                  Flag to omit columns in diagram. Currently
                                       only mermaid is supported
+      -eg, --entity-group TEXT        Group entities by dot-separated Table
+                                      attribute names (e.g. 'database.schema').
+                                      Emits standard DBML TableGroup blocks.
+                                      Currently only dbml is supported  [default:
+                                      ""]
       --dbt-cloud-host-url TEXT       Configure dbt Cloud's Host URL. Try to get
                                       OS environment variable
                                       (DBTERD_DBT_CLOUD_HOST_URL) if not
@@ -890,6 +936,11 @@ Shows hidden configured values, which will help us to see what configs are passe
                                       defined in the target module
       --omit-columns                  Flag to omit columns in diagram. Currently
                                       only mermaid is supported
+      -eg, --entity-group TEXT        Group entities by dot-separated Table
+                                      attribute names (e.g. 'database.schema').
+                                      Emits standard DBML TableGroup blocks.
+                                      Currently only dbml is supported  [default:
+                                      ""]
       -ad, --artifacts-dir TEXT       Specified the path to dbt artifact directory
                                       which known as /target directory
       -mv, --manifest-version TEXT    Specified dbt manifest.json version
