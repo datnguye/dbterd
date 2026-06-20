@@ -86,6 +86,7 @@ algo: test_relationship
 entity-name-format: schema.table
 omit-entity-name-quotes: false
 omit-columns: false
+entity-group: database.schema
 
 # dbt Artifact Settings
 artifacts-dir: ./target
@@ -122,6 +123,7 @@ algo = "test_relationship"
 entity-name-format = "schema.table"
 omit-entity-name-quotes = false
 omit-columns = false
+entity-group = "database.schema"
 
 artifacts-dir = "./target"
 # Parser relaxation policies (omit for all; empty list for strict)
@@ -216,6 +218,7 @@ All CLI parameters can be configured in files. Here's the complete reference:
 | `entity-name-format` | string | `resource.package.model` | Format for entity names |
 | `omit-entity-name-quotes` | boolean | `false` | Remove quotes from entity names (dbml only) |
 | `omit-columns` | boolean | `false` | Hide columns in diagram (mermaid only) |
+| `entity-group` | string | `` (empty) | Group entities into DBML `TableGroup` blocks by dot-separated `Table` attribute names, e.g. `database.schema` (dbml only) |
 
 ### Artifact Settings
 
