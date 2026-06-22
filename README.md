@@ -56,7 +56,7 @@ No need to pick just one — dbterd has a format for every occasion, from quick 
 | **[DrawDB](https://drawdb.vercel.app/)** | Web-based database designer | Interactive database design |
 | **[JSON](https://dbterd.datnguye.me/latest/nav/guide/targets/generate-json.html)** | Canonical, schema-validated ERD payload | Tooling & integrations (VS Code extension, custom apps) |
 
-🎯 **[Try the Quick Demo](https://dbterd.datnguye.me/latest/nav/guide/targets/generate-dbml.html)** with DBML format!
+🎯 **[Try the DBML Demo](https://dbterd.datnguye.me/latest/nav/guide/targets/generate-dbml.html)**, or see the **[canonical JSON payload](https://dbterd.datnguye.me/latest/nav/guide/targets/generate-json.html)** that powers the VS Code extension and docs sites!
 
 ## 🌟 Ecosystem
 

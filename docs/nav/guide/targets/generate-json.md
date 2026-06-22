@@ -3,8 +3,9 @@
 The `json` target emits dbterd's **canonical ERD payload** — a stable, schema-validated
 shape (`nodes` / `edges` / `metadata`) designed to be consumed by other tools rather than
 imported into a drawing app. It's the format the
-[dbterd VS Code extension](https://github.com/datnguye/dbterd-vscode) speaks natively, so if
-you're building an integration this is the target you want.
+[dbterd VS Code extension](https://github.com/datnguye/dbterd-vscode) and the
+[Jaffle Shop Docs](https://github.com/datnguye/dbt-docs) site (a dbt-docs fork) both speak
+natively, so if you're building an integration this is the target you want.
 
 ## 1. Produce dbt artifact files
 
@@ -72,6 +73,41 @@ Here is a trimmed sample of the output:
 }
 ```
 
+## Sample config
+
+Rather than passing a fistful of flags every run, drop a `.dbterd.yml` next to your dbt
+project. The demo above is generated from a config like this — it scopes the JSON down to a
+handful of marts and uses short table names. The same file is honored by the
+[dbterd VS Code extension](https://github.com/datnguye/dbterd-vscode) on every `Open ERD`, so
+CLI and editor stay in lockstep:
+
+```yaml
+# .dbterd.yml
+
+# Detect FKs from dbt `foreign_key` model contracts (not `relationships` tests).
+algo: model_contract
+
+# Short node labels (e.g. "orders" instead of "model.jaffle_shop.orders").
+entity-name-format: model
+
+# Modelled tables only.
+resource-type:
+  - model
+
+# Narrow to exactly the marts you care about.
+#
+# Note: dbterd's selectors match against the fully-qualified `node_name`
+# (e.g. "model.jaffle_shop.orders"), not the short name — hence the prefix on
+# every pattern below.
+select:
+  - exact:model.jaffle_shop.locations
+  - exact:model.jaffle_shop.orders
+  - wildcard:model.jaffle_shop.dim_*
+  - wildcard:model.jaffle_shop.fct_*
+```
+
+See the [configuration file](./../configuration-file.md) guide for the full list of keys.
+
 ## 3. Validate against the schema
 
 Every payload carries a `$schema` URL pinned to the dbterd version that produced it. The
@@ -103,3 +139,29 @@ pipx run check-jsonschema --schemafile \
 | edge     | `cardinality`       | dbterd code: `n1`, `1n`, `11`, `nn`, `01`, `0n`                 |
 | metadata | `generated_at`      | Manifest generation timestamp                                    |
 | metadata | `dbterd_version`    | dbterd version that produced the payload (matches `$schema`)     |
+
+## 4. (Optional) Render it in VS Code
+
+The JSON isn't meant to be read by humans — it's meant to be drawn. The
+[dbterd VS Code extension](https://github.com/datnguye/dbterd-vscode) consumes this payload
+directly: hit `dbterd: Open ERD` and you get an interactive diagram next to your code, with a
+detail panel for the model under your cursor — primary keys, foreign keys, schema, and column
+descriptions, all from the payload:
+
+![dbterd VS Code extension rendering the JSON ERD with a model detail panel](./../../../assets/images/json-vscode-erd.png)
+
+## 5. (Optional) Render it on a static docs site
+
+Because the payload is a clean `nodes` / `edges` graph, a downstream UI can render it straight
+away — no parsing of DBML or PlantUML required. The
+[Jaffle Shop Docs](https://github.com/datnguye/dbt-docs) site (a dbt-docs fork) reads this
+exact JSON to draw an interactive entity-relationship diagram right on its catalog overview.
+See it live in the [demo site](https://dbdocs.datnguye.me/latest/demo/latest/):
+
+![dbt-docs catalog overview rendering the dbterd JSON ERD](./../../../assets/images/json-dbt-docs-erd.png)
+
+Click any table and you drop into a model page with the column-level detail — primary keys,
+foreign keys, data types, and descriptions — all sourced from the same payload's `columns`
+array:
+
+![dbt-docs model page showing column-level detail from the JSON payload](./../../../assets/images/json-dbt-docs-model.png)
