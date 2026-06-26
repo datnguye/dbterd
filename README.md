@@ -64,9 +64,9 @@ No need to pick just one — dbterd has a format for every occasion, from quick 
 
 | Project                  | What it does |
 |--------------------------|--------------|
-| [<img src="https://github.com/datnguye/dbterd-vscode/raw/main/extension/icon.png" alt="dbterd-vscode" height="40">](https://github.com/datnguye/dbterd-vscode) | **[dbterd-vscode](https://github.com/datnguye/dbterd-vscode)** — a VS Code extension that turns your dbt project into interactive ERDs without ever leaving your editor, powered by `dbterd` under the hood. |
+| [<img src="https://github.com/datnguye/dbterd-vscode/raw/main/extension/icon.png" alt="dbterd-vscode" width="40" height="40">](https://github.com/datnguye/dbterd-vscode) | **[dbterd-vscode](https://github.com/datnguye/dbterd-vscode)** — a VS Code extension that turns your dbt project into interactive ERDs without ever leaving your editor, powered by `dbterd` under the hood. |
 | [<img src="https://dbdocs.datnguye.me/latest/assets/logo.svg" alt="dbdocs" height="40">](https://dbdocs.datnguye.me/latest/) | **[`dbdocs`](https://dbdocs.datnguye.me/latest/)** — an alternative dbt docs site — catalog, ERD, and column-level lineage baked into a single self-contained HTML file. |
-| [<img src="https://img.shields.io/pypi/v/artifact-parser?label=&logo=pypi&logoColor=white&color=3775A9" alt="artifact-parser" height="24">](https://github.com/datnguye/artifact-parser) | **[`artifact-parser`](https://github.com/datnguye/artifact-parser)** — a pluggable framework that converts JSON artifacts into typed, validated Python objects |
+| [<img src="https://raw.githubusercontent.com/datnguye/artifact-parser/main/docs/assets/logo.svg" alt="artifact-parser" height="40">](https://github.com/datnguye/artifact-parser) | **[`artifact-parser`](https://github.com/datnguye/artifact-parser)** — a pluggable framework that converts JSON artifacts into typed, validated Python objects |
 
 ## 🚀 Installation
 
