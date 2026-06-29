@@ -60,7 +60,7 @@ No need to pick just one — dbterd has a format for every occasion, from quick 
 
 ## 🌟 Ecosystem
 
-`dbterd` plays well with others. These companion projects build on top of it to take your ERDs beyond the command line:
+`dbterd` plays well with others. These companion projects build on top (and "down")of it to take your ERDs beyond the command line:
 
 | Project                  | What it does |
 |--------------------------|--------------|
