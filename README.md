@@ -37,7 +37,7 @@ That's it — your diagram is generated. Read on for the full tour.
 dbterd intelligently detects entity relationships through three algorithms — pick the one that matches how your dbt project expresses its data contracts:
 
 - **🧪 [Test Relationships](https://docs.getdbt.com/reference/resource-properties/data-tests#relationships)** *(default)* — infers relationships from dbt `relationships` data tests
-- **🏛️ [Semantic Entities](https://docs.getdbt.com/docs/build/entities)** (`-a entity_relationship`) — detects relationships via dbt Semantic Layer entity definitions
+- **🏛️ [Semantic Entities](https://docs.getdbt.com/docs/build/entities)** (`-a semantic`) — detects relationships via dbt Semantic Layer entity definitions
 - **📜 [Model Contract Constraints](https://docs.getdbt.com/docs/collaborate/govern/model-contracts)** (`-a model_contract`) — detects relationships via dbt model contract's `foreign_key` constraints (dbt 1.9+ / manifest v12+)
 
 For detailed configuration options, see our [CLI References](https://dbterd.datnguye.me/latest/nav/guide/cli-references.html#dbterd-run-algo-a).
