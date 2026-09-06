@@ -10,6 +10,9 @@ on:
 permissions:
   contents: write
 
+env:
+  NO_MKDOCS_2_WARNING: "true"
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -44,7 +47,7 @@ jobs:
       - name: Install dependencies
         run: |
           uv venv
-          uv sync --all-extras
+          uv sync --extra docs
 
       - name: Configure Git user
         run: |
