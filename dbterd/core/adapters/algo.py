@@ -232,6 +232,17 @@ class BaseAlgoAdapter(ABC):
             )
         ]
 
+    def select_tables(self, tables: list[Table], **kwargs) -> list[Table]:
+        """Apply the selection rules, then resolve dependencies when `with_dependencies` is set.
+
+        Dependency resolution needs the pre-selection set so it can collapse
+        through intermediate nodes the selection dropped.
+        """
+        selected = self.filter_tables_based_on_selection(tables=tables, **kwargs)
+        if kwargs.get("with_dependencies"):
+            return self.resolve_dependencies(selected_tables=selected, all_tables=tables)
+        return selected
+
     def enrich_tables_from_relationships(self, tables: list[Table], relationships: list[Ref]) -> list[Table]:
         """
         Fulfill columns in Table due to `select *`.
@@ -307,6 +318,11 @@ class BaseAlgoAdapter(ABC):
             exposures=[x.get("exposure_name") for x in exposures if x.get("node_name") == node_name],
             description=node_description,
             label=node_label,
+            raw_depends_on=[
+                parent.get("uniqueId")
+                for parent in (model_metadata.get("node", {}).get("parents") or [])
+                if parent.get("uniqueId")
+            ],
         )
 
         # columns
@@ -371,6 +387,8 @@ class BaseAlgoAdapter(ABC):
             exposures=[x.get("exposure_name") for x in exposures if x.get("node_name") == node_name],
             description=manifest_node.description,
             label=manifest_node.meta.get("label"),
+            # Sources have no `depends_on`; seeds have one without `nodes`.
+            raw_depends_on=list(getattr(getattr(manifest_node, "depends_on", None), "nodes", None) or []),
         )
 
         if catalog_node:
@@ -483,6 +501,61 @@ class BaseAlgoAdapter(ABC):
                     )
 
         return exposures
+
+    def resolve_dependencies(self, selected_tables: list[Table], all_tables: list[Table]) -> list[Table]:
+        """Fill in each selected table's `depends_on` with upstream entity names.
+
+        The dbt DAG usually routes a mart to its sources through intermediate
+        nodes (staging, intermediate models) that the selection leaves out. The
+        walk passes straight through those, so each table ends up pointing at
+        its nearest *selected* ancestors and the graph stays connected however
+        the selection cuts through it.
+
+        Because the walk can only ever terminate on a selected node, every name
+        it produces belongs to a table that is actually emitted. Targets that
+        render dependencies (DBML `Dep`) therefore cannot emit a dangling
+        endpoint, which those formats reject outright.
+
+        Args:
+            selected_tables: Tables surviving selection; mutated in place.
+            all_tables: Every parsed table, pre-selection, needed to walk
+                through nodes the selection dropped.
+
+        Returns:
+            The same `selected_tables` list, with `depends_on` populated.
+
+        """
+        parents_of = {t.node_name: t.raw_depends_on for t in all_tables if t.node_name}
+        name_of = {t.node_name: t.name for t in all_tables if t.node_name}
+        selected_ids = {t.node_name for t in selected_tables if t.node_name}
+
+        def nearest_selected_ancestors(node_id: str) -> list[str]:
+            """Nearest selected ancestor ids, walking up through unselected nodes."""
+            found: list[str] = []
+            seen: set[str] = {node_id}
+            queue = list(parents_of.get(node_id, []))
+            while queue:
+                current = queue.pop()
+                if current in seen:
+                    continue  # already handled, or a cycle in a malformed manifest
+                seen.add(current)
+                if current in selected_ids:
+                    found.append(current)
+                else:
+                    queue.extend(parents_of.get(current, []))
+            return found
+
+        for table in selected_tables:
+            if not table.node_name:
+                continue
+
+            # Several dbt nodes can share one entity name (every table of a source
+            # collapses onto `source.<package>.<source_name>` by default), so dedupe
+            # by name and drop the self-edge that collapse would otherwise create.
+            upstream_ids = nearest_selected_ancestors(table.node_name)
+            table.depends_on = sorted({name_of[i] for i in upstream_ids if i in name_of} - {table.name})
+
+        return selected_tables
 
     def get_table_name(self, format: str, **kwargs) -> str:
         """

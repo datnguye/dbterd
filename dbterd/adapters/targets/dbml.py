@@ -48,6 +48,12 @@ class DbmlAdapter(BaseTargetAdapter):
             builder.add_section(f"//TableGroups (based on {entity_group})")
             builder.add_section(self.format_entity_groups(tables, entity_group, quote=quote))
 
+        if kwargs.get("with_dependencies") and tables:
+            deps = self.format_dependencies(tables, quote=quote)
+            if deps:
+                builder.add_section("//Deps (based on the DBT DAG)")
+                builder.add_section(deps)
+
         return builder.build()
 
     def _quote(self, name: str, quote: str) -> str:
@@ -72,6 +78,25 @@ class DbmlAdapter(BaseTargetAdapter):
         for key, names in groups.items():
             members = "\n".join(f"  {self._quote(name, quote)}" for name in names)
             blocks.append(f"TableGroup {self._quote(key, quote)} {{\n{members}\n}}")
+        return "\n".join(blocks)
+
+    def format_dependencies(self, tables: list[Table], quote: str = '"') -> str:
+        """Format DBML ``Dep`` blocks from each table's resolved ``depends_on``.
+
+        DBML requires every edge inside one ``Dep`` block to share the same
+        downstream table, so this emits one block per downstream entity holding
+        that entity's upstreams, written ``upstream -> downstream`` to match
+        DBML's lineage direction.
+        """
+        blocks = []
+        for table in sorted(tables, key=lambda t: t.name):
+            if not table.depends_on:
+                continue
+            edges = "\n".join(
+                f"  {self._quote(upstream, quote)} -> {self._quote(table.name, quote)}" for upstream in table.depends_on
+            )
+            blocks.append(f"Dep {{\n{edges}\n}}")
+
         return "\n".join(blocks)
 
     def format_table(self, table: Table, **kwargs) -> str:

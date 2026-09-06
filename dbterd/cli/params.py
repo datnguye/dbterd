@@ -92,6 +92,18 @@ def common_params(func):
         show_default=True,
         type=click.STRING,
     )
+    @click.option(
+        "--with-dependencies",
+        "-wd",
+        help=(
+            "Flag to emit the dbt DAG as DBML Dep blocks. Dependencies that route through "
+            "nodes the selection dropped are collapsed onto the nearest selected ancestors, "
+            "so the graph stays connected. Currently only dbml is supported"
+        ),
+        is_flag=True,
+        default=default.default_with_dependencies(),
+        show_default=True,
+    )
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         return func(*args, **kwargs)  # pragma: no cover

@@ -56,6 +56,9 @@ omit-entity-name-quotes: {default_omit_entity_name_quotes}
 # Group entities by dot-separated Table attribute names, e.g. database.schema (dbml only)
 entity-group: {default_entity_group}
 
+# Emit the dbt DAG as DBML Dep blocks (dbml only)
+with-dependencies: {default_with_dependencies}
+
 # Display Options
 # ---------------
 # Omit columns in diagram (mermaid only)

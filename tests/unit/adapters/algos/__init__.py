@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from typing import ClassVar
 
+from dbterd.core.models import Table
+
 
 @dataclass
 class DummyManifestV6:
@@ -414,3 +416,17 @@ class DummyCatalogTable:
     sources: ClassVar[dict[str, "ManifestNode"]] = {
         "source.dummy.source_table": CatalogNode(columns={"name1": CatalogNodeColumn(type="--name1-type--")}),
     }
+
+
+def dependency_chain_tables() -> list[Table]:
+    """`src -> stg -> mart` chain for `with_dependencies` tests.
+
+    Excluding `stg` from the selection lets a test prove that the walk collapses
+    through the dropped node, i.e. that the algo handed the pre-selection set to
+    `resolve_dependencies`.
+    """
+    return [
+        Table(name="src", database="db", schema="sc", node_name="source.p.src", resource_type="source"),
+        Table(name="stg", database="db", schema="sc", node_name="model.p.stg", raw_depends_on=["source.p.src"]),
+        Table(name="mart", database="db", schema="sc", node_name="model.p.mart", raw_depends_on=["model.p.stg"]),
+    ]

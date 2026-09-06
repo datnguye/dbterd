@@ -148,8 +148,7 @@ class ModelContractAlgo(BaseAlgoAdapter):
 
     def parse_artifacts(self, manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[list[Table], list[Ref]]:
         """Parse from file-based manifest/catalog artifacts."""
-        tables = self.get_tables(manifest=manifest, catalog=catalog, **kwargs)
-        tables = self.filter_tables_based_on_selection(tables=tables, **kwargs)
+        tables = self.select_tables(self.get_tables(manifest=manifest, catalog=catalog, **kwargs), **kwargs)
         tables = self._enrich_tables_with_pk_info(tables=tables, manifest=manifest)
 
         relationships = self.get_relationships(manifest=manifest, **kwargs)

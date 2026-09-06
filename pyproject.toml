@@ -68,7 +68,7 @@ excludes = ["tests", "tests/**/*"]
 # Development dependencies
 dev = [
   # dbt core and adapters for testing
-  "dbt-core >=1.7.11",
+  "dbt-core >=1.7.11,<2",
   "dbt-postgres >=1.7.11",
 
   # Testing

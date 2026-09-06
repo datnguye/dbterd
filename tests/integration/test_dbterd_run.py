@@ -42,6 +42,28 @@ class TestDbterdRun:
                 ["--entity-group", "database.schema", "--entity-name-format", "table"],
                 "output-entity-group-name-format.dbml",
             ),
+            (
+                "jaffle-shop",
+                "dbml",
+                "test_relationship",
+                [
+                    "--with-dependencies",
+                    "--resource-type",
+                    "model",
+                    "--resource-type",
+                    "source",
+                    "--entity-name-format",
+                    "resource.package.table",
+                ],
+                "output-with-dependencies.dbml",
+            ),
+            (
+                "jaffle-shop",
+                "dbml",
+                "test_relationship",
+                ["--with-dependencies", "--entity-name-format", "schema.table"],
+                "output-with-dependencies-name-format.dbml",
+            ),
             ("jaffle-shop", "mermaid", "test_relationship", [], "output.md"),
             ("jaffle-shop", "json", "test_relationship", [], "output.json"),
             (

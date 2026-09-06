@@ -49,8 +49,7 @@ class TestRelationshipAlgo(BaseAlgoAdapter):
     def parse_artifacts(self, manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[list[Table], list[Ref]]:
         """Parse from file-based manifest/catalog artifacts."""
         # Parse Table
-        tables = self.get_tables(manifest=manifest, catalog=catalog, **kwargs)
-        tables = self.filter_tables_based_on_selection(tables=tables, **kwargs)
+        tables = self.select_tables(self.get_tables(manifest=manifest, catalog=catalog, **kwargs), **kwargs)
 
         # Parse Ref
         relationships = self.get_relationships(manifest=manifest, **kwargs)
@@ -68,8 +67,7 @@ class TestRelationshipAlgo(BaseAlgoAdapter):
     def parse_metadata(self, data: dict, **kwargs) -> tuple[list[Table], list[Ref]]:
         """Parse from dbt Cloud metadata API response."""
         # Parse Table
-        tables = self.get_tables_from_metadata(data=data, **kwargs)
-        tables = self.filter_tables_based_on_selection(tables=tables, **kwargs)
+        tables = self.select_tables(self.get_tables_from_metadata(data=data, **kwargs), **kwargs)
 
         # Parse Ref
         relationships = self.get_relationships_from_metadata(data=data, **kwargs)

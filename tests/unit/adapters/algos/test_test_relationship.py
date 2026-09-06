@@ -15,6 +15,7 @@ from tests.unit.adapters.algos import (
     DummyManifestV6,
     DummyManifestV7,
     DummyManifestWithExposure,
+    dependency_chain_tables,
 )
 
 
@@ -749,3 +750,34 @@ class TestAlgoTestRelationship:
         assert algo.find_related_nodes_by_id(
             manifest=DummyManifestRel(), node_unique_id="model.dbt_resto.not-exists"
         ) == ["model.dbt_resto.not-exists"]
+
+    def test_parse_artifacts_with_dependencies(self):
+        """`with_dependencies` resolves through nodes the selection dropped."""
+        with (
+            mock.patch.object(TestRelationshipAlgo, "get_tables", return_value=dependency_chain_tables()),
+            mock.patch.object(TestRelationshipAlgo, "get_relationships", return_value=[]),
+        ):
+            tables, _ = TestRelationshipAlgo().parse_artifacts(
+                manifest="--manifest--",
+                catalog="--catalog--",
+                select=[],
+                exclude=["model.p.stg"],
+                resource_type=["model", "source"],
+                with_dependencies=True,
+            )
+            assert {t.name: t.depends_on for t in tables} == {"src": [], "mart": ["src"]}
+
+    def test_parse_metadata_with_dependencies(self):
+        """`with_dependencies` resolves through nodes the selection dropped."""
+        with (
+            mock.patch.object(TestRelationshipAlgo, "get_tables_from_metadata", return_value=dependency_chain_tables()),
+            mock.patch.object(TestRelationshipAlgo, "get_relationships_from_metadata", return_value=[]),
+        ):
+            tables, _ = TestRelationshipAlgo().parse_metadata(
+                data={},
+                select=[],
+                exclude=["model.p.stg"],
+                resource_type=["model", "source"],
+                with_dependencies=True,
+            )
+            assert {t.name: t.depends_on for t in tables} == {"src": [], "mart": ["src"]}

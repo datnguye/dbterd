@@ -649,3 +649,55 @@ class TestDbmlCompositeFK:
         )
         result = adapter.format_table(table)
         assert "indexes" not in result
+
+
+class TestDbmlFormatDependencies:
+    """DBML ``Dep`` block emission from resolved ``Table.depends_on``."""
+
+    @staticmethod
+    def _table(name: str, depends_on: list[str] | None = None) -> Table:
+        return Table(
+            name=name,
+            node_name=name,
+            database="db",
+            schema="public",
+            columns=[Column(name="id", data_type="int")],
+            depends_on=depends_on or [],
+        )
+
+    def test_groups_edges_by_downstream_table(self):
+        """DBML requires one downstream per Dep block, so fan-in groups together."""
+        adapter = DbmlAdapter()
+        tables = [
+            self._table("stg_a"),
+            self._table("stg_b"),
+            self._table("mart", depends_on=["stg_a", "stg_b"]),
+        ]
+        assert adapter.format_dependencies(tables) == ('Dep {\n  "stg_a" -> "mart"\n  "stg_b" -> "mart"\n}')
+
+    def test_fan_out_emits_one_block_per_downstream(self):
+        """Two downstreams sharing an upstream must NOT share a Dep block."""
+        adapter = DbmlAdapter()
+        tables = [
+            self._table("stg_a"),
+            self._table("mart_x", depends_on=["stg_a"]),
+            self._table("mart_y", depends_on=["stg_a"]),
+        ]
+        result = adapter.format_dependencies(tables)
+        assert result == ('Dep {\n  "stg_a" -> "mart_x"\n}\nDep {\n  "stg_a" -> "mart_y"\n}')
+
+    def test_omit_entity_name_quotes(self):
+        adapter = DbmlAdapter()
+        tables = [self._table("stg_a"), self._table("mart", depends_on=["stg_a"])]
+        assert adapter.format_dependencies(tables, quote="") == "Dep {\n  stg_a -> mart\n}"
+
+    def test_no_dependencies_emits_nothing(self):
+        adapter = DbmlAdapter()
+        assert adapter.format_dependencies([self._table("mart")]) == ""
+
+    def test_build_erd_omits_section_when_flag_is_off(self):
+        """Backward compatibility: no flag, no Deps section."""
+        adapter = DbmlAdapter()
+        tables = [self._table("stg_a"), self._table("mart", depends_on=["stg_a"])]
+        assert "//Deps" not in adapter.build_erd(tables, [])
+        assert "//Deps" in adapter.build_erd(tables, [], with_dependencies=True)

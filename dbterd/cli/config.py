@@ -228,6 +228,7 @@ def get_yaml_template(template_type: str = "dbt-core") -> str:
         default_omit_entity_name_quotes=str(default.default_omit_entity_name_quotes()).lower(),
         default_omit_columns=str(default.default_omit_columns()).lower(),
         default_entity_group=default.default_entity_group(),
+        default_with_dependencies=str(default.default_with_dependencies()).lower(),
         default_dbt_project_dir=default.default_dbt_project_dir(),
         default_dbt=str(default.default_dbt()).lower(),
         default_dbt_auto_artifacts=str(default.default_dbt_auto_artifacts()).lower(),

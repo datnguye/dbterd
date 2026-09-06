@@ -27,6 +27,8 @@ class Table:
     node_name: Optional[str] = None
     description: str = ""
     label: Optional[str] = None
+    raw_depends_on: list[str] = field(default_factory=list)
+    depends_on: list[str] = field(default_factory=list)
 
 
 @dataclass

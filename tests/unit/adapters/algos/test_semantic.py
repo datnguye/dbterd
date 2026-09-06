@@ -5,7 +5,7 @@ import pytest
 
 from dbterd.adapters.algos.semantic import SemanticAlgo
 from dbterd.core.models import Ref
-from tests.unit.adapters.algos import DummyManifestRel, DummyManifestTable
+from tests.unit.adapters.algos import DummyManifestRel, DummyManifestTable, dependency_chain_tables
 
 
 class TestAlgoSemantic:
@@ -166,6 +166,22 @@ class TestAlgoSemantic:
             mock_get_tables.assert_called_once()
             mock_get_relationships.assert_called_once()
 
+    def test_parse_with_dependencies(self):
+        """`with_dependencies` resolves through nodes the selection dropped."""
+        with (
+            mock.patch.object(SemanticAlgo, "get_tables", return_value=dependency_chain_tables()),
+            mock.patch.object(SemanticAlgo, "get_relationships", return_value=[]),
+        ):
+            tables, _ = SemanticAlgo().parse_artifacts(
+                manifest="--manifest--",
+                catalog="--catalog--",
+                select=[],
+                exclude=["model.p.stg"],
+                resource_type=["model", "source"],
+                with_dependencies=True,
+            )
+            assert {t.name: t.depends_on for t in tables} == {"src": [], "mart": ["src"]}
+
     def test_parse_metadata(self):
         with (
             mock.patch.object(
@@ -186,3 +202,18 @@ class TestAlgoSemantic:
             )
             mock_get_tables.assert_called_once()
             mock_get_relationships.assert_called_once()
+
+    def test_parse_metadata_with_dependencies(self):
+        """`with_dependencies` resolves through nodes the selection dropped."""
+        with (
+            mock.patch.object(SemanticAlgo, "get_tables_from_metadata", return_value=dependency_chain_tables()),
+            mock.patch.object(SemanticAlgo, "get_relationships_from_metadata", return_value=[]),
+        ):
+            tables, _ = SemanticAlgo().parse_metadata(
+                data=[],
+                select=[],
+                exclude=["model.p.stg"],
+                resource_type=["model", "source"],
+                with_dependencies=True,
+            )
+            assert {t.name: t.depends_on for t in tables} == {"src": [], "mart": ["src"]}

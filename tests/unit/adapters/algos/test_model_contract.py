@@ -20,6 +20,7 @@ from tests.unit.adapters.algos import (
     ManifestNodeColumnWithConstraints,
     ManifestNodeConstraint,
     ManifestNodeWithConstraints,
+    dependency_chain_tables,
 )
 
 
@@ -862,6 +863,22 @@ class TestAlgoModelContract:
             )
             mock_get_tables.assert_called_once()
             mock_get_relationships.assert_called_once()
+
+    def test_parse_artifacts_with_dependencies(self):
+        """`with_dependencies` resolves through nodes the selection dropped."""
+        with (
+            mock.patch.object(ModelContractAlgo, "get_tables", return_value=dependency_chain_tables()),
+            mock.patch.object(ModelContractAlgo, "get_relationships", return_value=[]),
+        ):
+            tables, _ = ModelContractAlgo().parse_artifacts(
+                manifest="--manifest--",
+                catalog="--catalog--",
+                select=[],
+                exclude=["model.p.stg"],
+                resource_type=["model", "source"],
+                with_dependencies=True,
+            )
+            assert {t.name: t.depends_on for t in tables} == {"src": [], "mart": ["src"]}
 
     def test_parse_metadata_not_supported(self):
         algo = ModelContractAlgo()
