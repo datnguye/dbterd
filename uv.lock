@@ -453,6 +453,7 @@ docs = [
     { name = "mkdocs" },
     { name = "mkdocs-material" },
     { name = "mkdocs-minify-plugin" },
+    { name = "pdoc" },
 ]
 test = [
     { name = "coverage", extra = ["toml"] },
@@ -481,6 +482,7 @@ requires-dist = [
     { name = "mkdocs-minify-plugin", marker = "extra == 'docs'", specifier = ">=0.6.4" },
     { name = "pdm-backend", marker = "extra == 'dev'" },
     { name = "pdoc", marker = "extra == 'dev'", specifier = ">=14.4.0" },
+    { name = "pdoc", marker = "extra == 'docs'", specifier = ">=14.4.0" },
     { name = "poethepoet", marker = "extra == 'dev'", specifier = ">=0.16.4" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=2.20.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=6.2.5" },

@@ -106,6 +106,7 @@ test = [
 # Documentation dependencies subset
 docs = [
   "mkdocs >=1.4.2,<2.0.0",
+  "pdoc >=14.4.0",
   "mkdocs-minify-plugin >=0.6.4",
   "mkdocs-material >=9.1.5",
   "mike >=1.1.2",
