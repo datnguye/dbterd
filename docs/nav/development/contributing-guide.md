@@ -9,6 +9,7 @@
     - [External contributors](#external-contributors)
   - [Setting up an environment](#setting-up-an-environment)
     - [Tools](#tools)
+    - [AI coding agents (optional)](#ai-coding-agents-optional)
   - [Testing](#testing)
   - [Submitting a Pull Request](#submitting-a-pull-request)
 
@@ -67,6 +68,12 @@ poe git-hooks
 # Verify installation
 dbterd -h
 ```
+
+### AI coding agents (optional)
+
+If you contribute with an AI coding agent, we recommend the [`lazy`](https://github.com/datnguye/lazy) plugin. It keeps generated contributions small and boring, which is exactly what reviewers like: YAGNI, stdlib first, no speculative abstractions, the shortest diff that works.
+
+Installation and the supported agents are documented in the [repository](https://github.com/datnguye/lazy). The best pull request is the one you didn't have to write.
 
 ## Testing
 
