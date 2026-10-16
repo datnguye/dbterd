@@ -14,6 +14,23 @@ from dbterd.helpers.log import logger
 from dbterd.types import Catalog, Manifest
 
 
+def _get_relationship_type(meta_value: str) -> str:
+    """Convert semantic relationship metadata to the target cardinality codes."""
+    return {
+        "zero-to-many": "0n",
+        "zero-to-one": "01",
+        "one-to-one": "11",
+        "many-to-many": "nn",
+        "one-to-many": "1n",
+        "0n": "0n",
+        "01": "01",
+        "11": "11",
+        "nn": "nn",
+        "1n": "1n",
+        "n1": "n1",
+    }.get(meta_value.lower(), "n1")
+
+
 @register_algo("semantic", description="Detect relationships via Semantic Layer entities")
 class SemanticAlgo(BaseAlgoAdapter):
     """Algorithm adapter using dbt Semantic Layer entities.
@@ -260,7 +277,7 @@ class SemanticAlgo(BaseAlgoAdapter):
                         [primary_entity.column_name],
                         [foreign_entity.column_name],
                     ),
-                    type=primary_entity.relationship_type,
+                    type=_get_relationship_type(primary_entity.relationship_type),
                 )
                 for foreign_entity, primary_entity in entities
             ]
@@ -286,7 +303,7 @@ class SemanticAlgo(BaseAlgoAdapter):
                         [primary_entity.column_name],
                         [foreign_entity.column_name],
                     ),
-                    type=primary_entity.relationship_type,
+                    type=_get_relationship_type(primary_entity.relationship_type),
                 )
                 for foreign_entity, primary_entity in entities
             ]

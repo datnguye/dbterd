@@ -50,7 +50,7 @@ class TestAlgoSemantic:
                         name="semantic_model.a.model1",
                         table_map=("model.a.model1", "model.a.model2"),
                         column_map=(["one"], ["one"]),
-                        type="",
+                        type="n1",
                     )
                 ],
             ),
@@ -90,7 +90,7 @@ class TestAlgoSemantic:
                         name="semantic_model.a.model1",
                         table_map=("model.a.model1", "model.a.model2"),
                         column_map=(["one"], ["two"]),
-                        type="",
+                        type="n1",
                     )
                 ],
             ),
@@ -110,13 +110,13 @@ class TestAlgoSemantic:
                         name="semantic_model.dbt_resto.sm1",
                         table_map=("model.dbt_resto.table1", "model.dbt_resto.table2"),
                         column_map=(["id1"], ["id2"]),
-                        type="",
+                        type="n1",
                     ),
                     Ref(
                         name="semantic_model.dbt_resto.sm1",
                         table_map=("model.dbt_resto.table1", "model.dbt_resto.tablex"),
                         column_map=(["id1"], ["x"]),
-                        type="",
+                        type="n1",
                     ),
                 ],
             ),
