@@ -30,9 +30,9 @@ class DbtErd:
     ```python
     from dbterd.api import DbtErd
 
-    erd = DbtErd(select="exposure:my_exposure_name").get_erd()
+    erd = DbtErd(select=["exposure:my_exposure_name"]).get_erd()
     ```
-    See the
+    Pass `select` and `exclude` as lists, even for a single rule. See the
     [Selection](https://dbterd.datnguye.me/latest/nav/guide/cli-references.html#dbterd-run-select-s)
     page for more details.
 
@@ -40,9 +40,8 @@ class DbtErd:
 
     ```python
     from dbterd.api import DbtErd
-    erd = DbtErd().get_model_erd(s
-        node_fqn="model.jaffle_shop.my_model"
-    )
+
+    erd = DbtErd().get_model_erd(node_unique_id="model.jaffle_shop.my_model")
     ```
     """
 

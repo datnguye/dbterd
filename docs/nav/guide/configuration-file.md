@@ -69,10 +69,10 @@ output-file-name: schema.mmd
 
 # Selection & Filtering
 select:
-  - fct_*
-  - dim_*
+  - wildcard:*fct_*
+  - wildcard:*dim_*
 exclude:
-  - stg_*
+  - wildcard:*stg_*
 
 # Resource Types
 resource-type:
@@ -113,10 +113,10 @@ output = "./docs/erd"
 output-file-name = "schema.mmd"
 
 select = [
-    "fct_*",
-    "dim_*"
+    "wildcard:*fct_*",
+    "wildcard:*dim_*"
 ]
-exclude = ["stg_*"]
+exclude = ["wildcard:*stg_*"]
 
 resource-type = ["model", "source"]
 algo = "test_relationship"
@@ -256,11 +256,12 @@ All CLI parameters can be configured in files. Here's the complete reference:
 | `dbt-cloud-query-file-path` | string | - | Custom GraphQL query file path (for Discovery API) |
 
 !!! info "Environment Variables"
-    All options support environment variable overrides with the `DBTERD_*` prefix. For example:
+    Environment variables provide defaults for options with a corresponding `DBTERD_*` variable. For example:
     ```bash
     export DBTERD_TARGET=mermaid
-    export DBTERD_OUTPUT=./my-docs
+    export DBTERD_OUTPUT_PATH=./my-docs
     ```
+    Configuration file values override these defaults; explicit CLI arguments take precedence over both.
 
 ## Usage Patterns
 
@@ -285,7 +286,7 @@ Use different config files for different environments:
     target: mermaid
     artifacts-dir: ./target
     select:
-      - "*"
+      - "wildcard:*"
     ```
 
     ```bash
@@ -300,10 +301,10 @@ Use different config files for different environments:
     target: dbml
     artifacts-dir: ./target
     select:
-      - fct_*
-      - dim_*
+      - wildcard:*fct_*
+      - wildcard:*dim_*
     exclude:
-      - stg_*
+      - wildcard:*stg_*
     ```
 
 !!! note "Custom config file paths"
@@ -395,7 +396,7 @@ while parsing a block mapping
 If your config seems ignored:
 
 1. CLI arguments override config files – check your command
-2. Environment variables override config files – check `env | grep DBTERD`
+2. Configuration file values override environment defaults – remove a file setting if you want to use its environment default
 3. Use `dbterd debug` to see evaluated configuration values
 
 ### Python < 3.11 TOML Support
