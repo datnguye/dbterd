@@ -7,6 +7,7 @@ so downstream tools — like the dbterd VS Code extension and dbt-docs — can
 consume it with confidence rather than reverse-engineering field names.
 """
 
+from dataclasses import replace
 from importlib.metadata import PackageNotFoundError, version
 import json
 
@@ -43,6 +44,10 @@ class JsonAdapter(BaseTargetAdapter):
 
     def build_erd(self, tables: list[Table], relationships: list[Ref], **kwargs) -> str:
         """Build the dbterd ERD JSON payload from tables and relationships."""
+        node_ids = {table.name: table.node_name or table.name for table in tables}
+        relationships = [
+            replace(rel, table_map=(node_ids[rel.table_map[0]], node_ids[rel.table_map[1]])) for rel in relationships
+        ]
         foreign_keys = self._collect_foreign_keys(relationships)
         schema_version = get_schema_version()
 
