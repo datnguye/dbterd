@@ -163,7 +163,7 @@ def run_params(func):
             "artifacts (e.g. 'relax_extra_fields,relax_enum_values'). Omit to apply all "
             "policies; pass an empty value for strict validation."
         ),
-        type=click.STRING,
+        type=click.UNPROCESSED,
         default=None,
     )
     @click.option(
@@ -305,7 +305,7 @@ def debug_params(func):
             "artifacts (e.g. 'relax_extra_fields,relax_enum_values'). Omit to apply all "
             "policies; pass an empty value for strict validation."
         ),
-        type=click.STRING,
+        type=click.UNPROCESSED,
         default=None,
     )
     @click.option(
