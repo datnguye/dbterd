@@ -115,7 +115,7 @@ def is_satisfied_by_name(table: Table, rule: str = "") -> bool:
     """
     if not rule:
         return True
-    return table.node_name.startswith(rule)
+    return table.node_name.lower().startswith(rule)
 
 
 def is_satisfied_by_exact(table: Table, rule: str = "") -> bool:
@@ -170,7 +170,7 @@ def is_satisfied_by_wildcard(table: Table, rule: str = "*") -> bool:
     """
     if not rule:
         return True
-    return fnmatch(table.node_name, rule)
+    return fnmatch(table.node_name.lower(), rule)
 
 
 def is_satisfied_by_exposure(table: Table, rule: str = "") -> bool:
