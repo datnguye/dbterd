@@ -46,6 +46,7 @@ class ManifestNode:
     schema_: str = ""
     depends_on: ManifestNodeDependsOn = field(default_factory=ManifestNodeDependsOn)
     description: str = ""
+    config: "NodeConfig | None" = None
 
 
 @dataclass
@@ -63,6 +64,7 @@ class SemanticModelEntity:
 @dataclass
 class NodeConfig:
     meta: dict = field(default_factory=dict)
+    enabled: bool = True
 
 
 @dataclass
@@ -171,6 +173,52 @@ class DummyManifestRel:
             meta={},
             columns={},
             depends_on=ManifestNodeDependsOn(nodes=["model.dbt_resto.table1"]),
+        ),
+    }
+
+
+@dataclass
+class DummyManifestRelDisabled:
+    """Relationship tests of disabled models: dbt keeps them with `config.enabled: false`
+    and drops the disabled models from `depends_on.nodes`."""
+
+    nodes: ClassVar[dict[str, "ManifestNode"]] = {
+        "test.dbt_resto.relationships_enabled": ManifestNode(
+            test_metadata=ManifestNodeTestMetaData(kwargs={"column_name": "f1", "field": "f2", "to": "ref('table2')"}),
+            meta={},
+            columns={},
+            depends_on=ManifestNodeDependsOn(nodes=["model.dbt_resto.table2", "model.dbt_resto.table1"]),
+            config=NodeConfig(enabled=True),
+        ),
+        "test.dbt_resto.relationships_recursive": ManifestNode(
+            test_metadata=ManifestNodeTestMetaData(kwargs={"column_name": "f1", "field": "f2", "to": "ref('table1')"}),
+            meta={},
+            columns={},
+            depends_on=ManifestNodeDependsOn(nodes=["model.dbt_resto.table1"]),
+            config=NodeConfig(enabled=True),
+        ),
+        # the model owning the test is disabled: only the `to` model is left in `depends_on`
+        "test.dbt_resto.relationships_disabled_one_parent": ManifestNode(
+            test_metadata=ManifestNodeTestMetaData(kwargs={"column_name": "f1", "field": "f2", "to": "ref('table1')"}),
+            meta={},
+            columns={},
+            depends_on=ManifestNodeDependsOn(nodes=["model.dbt_resto.table1"]),
+            config=NodeConfig(enabled=False),
+        ),
+        # both models are disabled: nothing is left in `depends_on`
+        "test.dbt_resto.relationships_disabled_no_parent": ManifestNode(
+            test_metadata=ManifestNodeTestMetaData(kwargs={"column_name": "f1", "field": "f2", "to": "ref('table9')"}),
+            meta={},
+            columns={},
+            depends_on=ManifestNodeDependsOn(nodes=[]),
+            config=NodeConfig(enabled=False),
+        ),
+        # no `config` and no parent (e.g. an older manifest): still must not raise
+        "test.dbt_resto.relationships_no_config_no_parent": ManifestNode(
+            test_metadata=ManifestNodeTestMetaData(kwargs={"column_name": "f1", "field": "f2", "to": "ref('table9')"}),
+            meta={},
+            columns={},
+            depends_on=ManifestNodeDependsOn(nodes=[]),
         ),
     }
 

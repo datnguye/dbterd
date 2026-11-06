@@ -38,6 +38,18 @@ def _extract_column_name(kwargs: dict, rule_key: str) -> str:
     return str(column).replace('"', "").lower()
 
 
+def _is_enabled(node) -> bool:
+    """Tell whether a manifest node is enabled.
+
+    dbt keeps the tests of a disabled model in `manifest.nodes` with `config.enabled: false`.
+    Nodes without a `config` (older manifests) are treated as enabled.
+    """
+    config = getattr(node, "config", None)
+    if isinstance(config, dict):
+        return config.get("enabled", True) is not False
+    return getattr(config, "enabled", True) is not False
+
+
 @register_algo("test_relationship", description="Detect relationships via dbt tests")
 class TestRelationshipAlgo(BaseAlgoAdapter):
     """Algorithm adapter using dbt relationship tests.
@@ -142,6 +154,7 @@ class TestRelationshipAlgo(BaseAlgoAdapter):
                 relationship_label=manifest.nodes[x].meta.get("relationship_label"),
             )
             for x in self.get_test_nodes_by_rule_name(manifest=manifest, rule_name=rule.get("name").lower())
+            if self._has_parents(manifest.nodes[x], name=x)
         ]
 
         return self.get_unique_refs(refs=refs)
@@ -251,8 +264,21 @@ class TestRelationshipAlgo(BaseAlgoAdapter):
                 x.startswith("test")
                 and rule_name in x.lower()
                 and manifest.nodes[x].meta.get(TEST_META_IGNORE_IN_ERD, "0") == "0"
+                and _is_enabled(manifest.nodes[x])
             )
         ]
+
+    @staticmethod
+    def _has_parents(test_node, name: str) -> bool:
+        """Tell whether a test node still depends on a model, warn and skip it otherwise.
+
+        A relationship test whose models are disabled can end up without any parent,
+        so there is no table to draw the relationship on.
+        """
+        if test_node.depends_on.nodes:
+            return True
+        logger.warning(f"Skipped the relationship test `{name}`: it has no parent model (disabled model?)")
+        return False
 
     def get_table_map(self, test_node, **kwargs) -> list[str]:
         """Get the table map with order of [to, from] guaranteed.
