@@ -4,17 +4,20 @@ from unittest.mock import MagicMock
 import click
 import pytest
 
-from dbterd.adapters.algos.test_relationship import TestRelationshipAlgo
+from dbterd.adapters.algos.test_relationship import TestRelationshipAlgo, _is_enabled
 from dbterd.core.models import Column, Ref, Table
 from tests.unit.adapters.algos import (
     DummyCatalogTable,
     DummyManifestError,
     DummyManifestHasColumns,
     DummyManifestRel,
+    DummyManifestRelDisabled,
     DummyManifestTable,
     DummyManifestV6,
     DummyManifestV7,
     DummyManifestWithExposure,
+    ManifestNode,
+    NodeConfig,
     dependency_chain_tables,
 )
 
@@ -170,6 +173,47 @@ class TestAlgoTestRelationship:
     def test_get_relationships(self, manifest, algorithm, expected):
         algo = TestRelationshipAlgo()
         assert algo.get_relationships(manifest=manifest, algo=algorithm) == expected
+
+    def test_get_relationships_skips_disabled_tests_and_tests_without_parent(self):
+        algo = TestRelationshipAlgo()
+
+        refs = algo.get_relationships(manifest=DummyManifestRelDisabled())
+
+        assert refs == [
+            Ref(
+                name="test.dbt_resto.relationships_enabled",
+                table_map=["model.dbt_resto.table2", "model.dbt_resto.table1"],
+                column_map=(["f2"], ["f1"]),
+            ),
+            Ref(
+                name="test.dbt_resto.relationships_recursive",
+                table_map=["model.dbt_resto.table1", "model.dbt_resto.table1"],
+                column_map=(["f2"], ["f1"]),
+            ),
+        ]
+
+    def test_get_test_nodes_by_rule_name_skips_disabled_tests(self):
+        algo = TestRelationshipAlgo()
+
+        assert algo.get_test_nodes_by_rule_name(manifest=DummyManifestRelDisabled(), rule_name="relationships") == [
+            "test.dbt_resto.relationships_enabled",
+            "test.dbt_resto.relationships_recursive",
+            "test.dbt_resto.relationships_no_config_no_parent",
+        ]
+
+    @pytest.mark.parametrize(
+        "config, expected",
+        [
+            (None, True),
+            (NodeConfig(enabled=True), True),
+            (NodeConfig(enabled=False), False),
+            ({"enabled": False}, False),
+            ({"enabled": True}, True),
+            ({}, True),
+        ],
+    )
+    def test_is_enabled(self, config, expected):
+        assert _is_enabled(ManifestNode(test_metadata=None, meta={}, columns={}, config=config)) is expected
 
     @pytest.mark.parametrize(
         "meta, type",
