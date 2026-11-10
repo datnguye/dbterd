@@ -34,6 +34,14 @@ class TestNormalizeConfigKeys:
         result = normalize_config_keys(config)
         assert result == config
 
+    def test_rejects_non_string_keys(self):
+        with pytest.raises(ConfigError, match="must be strings"):
+            normalize_config_keys({123: "value"})
+
+    def test_rejects_non_string_nested_keys(self):
+        with pytest.raises(ConfigError, match="must be strings"):
+            normalize_config_keys({"dbt-cloud": {456: "value"}})
+
     def test_handles_mixed_values(self):
         config = {
             "string-key": "value",

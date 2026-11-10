@@ -43,6 +43,10 @@ def normalize_config_keys(config: dict[str, Any]) -> dict[str, Any]:
     """
     normalized = {}
     for key, value in config.items():
+        if not isinstance(key, str):
+            raise ConfigError(
+                f"Invalid configuration key {key!r}: keys must be strings"
+            )
         normalized_key = key.replace("-", "_")
         if isinstance(value, dict):
             normalized[normalized_key] = normalize_config_keys(value)
