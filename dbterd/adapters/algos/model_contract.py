@@ -143,6 +143,23 @@ def _info_schema_nodes(info: InfoSchema) -> dict:
     return {node.unique_id: node for node in BaseAlgoAdapter.get_info_schema_nodes(info)}
 
 
+def _info_schema_pk_map(info: InfoSchema) -> dict[str, set[str]]:
+    """Map each info schema node unique ID to its lowercase primary key column names.
+
+    Reads model-level constraints from the node rows and column-level ones from `node_columns`,
+    mirroring _extract_pk_column_names for a manifest node.
+    """
+    pk_map: dict[str, set[str]] = {}
+    for node in BaseAlgoAdapter.get_info_schema_nodes(info):
+        for constraint in _constraints_of_type(node.constraints, "primary_key"):
+            columns = _constraint_value(constraint, "columns") or []
+            pk_map.setdefault(node.unique_id, set()).update(c.lower() for c in columns)
+    for column in info.dbt_node_columns:
+        if _constraints_of_type(column.constraints, "primary_key"):
+            pk_map.setdefault(column.node_unique_id, set()).add(column.column_name.lower())
+    return pk_map
+
+
 def _constraint_value(constraint, key: str):
     """Read a constraint field from a manifest constraint object or an info schema dict."""
     if isinstance(constraint, dict):
@@ -244,16 +261,7 @@ class ModelContractAlgo(BaseAlgoAdapter):
     def parse_info_schema(self, info: InfoSchema, **kwargs) -> tuple[list[Table], list[Ref]]:
         """Parse from the dbt info schema."""
         tables = self.select_tables(self.get_tables_from_info_schema(info=info, **kwargs), **kwargs)
-
-        pk_map: dict[str, set[str]] = {}
-        for node in _info_schema_nodes(info).values():
-            for constraint in _constraints_of_type(node.constraints, "primary_key"):
-                pk_map.setdefault(node.unique_id, set()).update(c.lower() for c in constraint.get("columns") or [])
-        for column in info.dbt_node_columns:
-            if _constraints_of_type(column.constraints, "primary_key"):
-                pk_map.setdefault(column.node_unique_id, set()).add(column.column_name.lower())
-
-        tables = self._mark_primary_keys(tables=tables, pk_map=pk_map)
+        tables = self._mark_primary_keys(tables=tables, pk_map=_info_schema_pk_map(info))
         return self.collect(tables=tables, relationships=self.get_relationships_from_info_schema(info=info))
 
     def _enrich_tables_with_pk_info(self, tables: list[Table], manifest: Manifest) -> list[Table]:
