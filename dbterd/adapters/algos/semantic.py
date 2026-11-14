@@ -314,7 +314,7 @@ class SemanticAlgo(BaseAlgoAdapter):
                 entity_name=x.primary_entity,
                 entity_type="primary",
                 column_name=x.primary_entity,
-                relationship_type=relationship_type_of[x.unique_id],
+                relationship_type=relationship_type_of.get(x.unique_id, ""),
             )
             for x in info.dbt_semantic_models
             if x.unique_id in model_of and x.primary_entity
