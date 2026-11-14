@@ -1,7 +1,3 @@
-from pathlib import Path
-from unittest import mock
-
-from artifact_parser.core import OptionalDependencyError
 from artifact_parser.dbt_info_schema import InfoSchemaV1, parse_info_schema
 import click
 import pytest
@@ -9,16 +5,12 @@ import pytest
 from dbterd.adapters.algos.model_contract import ModelContractAlgo
 from dbterd.adapters.algos.semantic import SemanticAlgo
 from dbterd.adapters.algos.test_relationship import TestRelationshipAlgo
-from dbterd.api import DbtErd
-from dbterd.cli.main import DbterdRunner
 from dbterd.core.adapters.algo import BaseAlgoAdapter
 from dbterd.core.models import Column
 from dbterd.helpers import file
+from tests.unit.fixtures.test_data import JAFFLE_V2, JAFFLE_V2_OSS_INFO
 
 
-SAMPLES = Path(__file__).parents[4] / "samples"
-JAFFLE_V2 = SAMPLES / "jaffle-shop-v2"
-JAFFLE_V2_OSS_INFO = SAMPLES / "jaffle-shop-v2-oss" / "info_schema" / "v1"
 OPTIONS = {
     "select": [],
     "exclude": [],
@@ -220,46 +212,3 @@ class TestSemantic:
                 "n1",
             )
         ]
-
-
-class TestExecutor:
-    @pytest.mark.parametrize(
-        "info_schema, expected",
-        [
-            (True, str(JAFFLE_V2 / "info_schema" / "v1")),
-            ("some/dir", str(Path("some/dir").absolute())),
-            (None, None),
-        ],
-    )
-    def test_evaluate_kwargs(self, dummy_executor, info_schema, expected):
-        kwargs = dummy_executor.evaluate_kwargs(
-            artifacts_dir=str(JAFFLE_V2), select=[], exclude=[], info_schema=info_schema
-        )
-        assert kwargs["artifacts_dir"] == str(JAFFLE_V2)
-        assert kwargs["info_schema"] == expected
-
-    def test_get_dir_falls_back_to_target(self, dummy_executor):
-        artifacts_dir, _ = dummy_executor._get_dir(artifacts_dir=str(SAMPLES), info_schema=True)
-        assert artifacts_dir == str(SAMPLES / "target")
-
-    def test_missing_info_schema_dir(self, dummy_executor, tmp_path):
-        with pytest.raises(click.FileError, match="Info schema directory does not exist"):
-            dummy_executor._read_info_schema(str(tmp_path / "info_schema" / "v1"))
-
-    def test_missing_pyarrow(self, dummy_executor):
-        with (
-            mock.patch("dbterd.core.executor.parse_info_schema", side_effect=OptionalDependencyError("no pyarrow")),
-            pytest.raises(click.UsageError, match=r"dbterd\[info-schema\]"),
-        ):
-            dummy_executor._read_info_schema(str(JAFFLE_V2))
-
-    def test_api_model_erd(self):
-        erd = DbtErd(artifacts_dir=str(JAFFLE_V2), info_schema=True, target="mermaid").get_model_erd(
-            node_unique_id="model.jaffle_shop.orders"
-        )
-        assert '"MODEL.JAFFLE_SHOP.ORDER_ITEMS" }|--|| "MODEL.JAFFLE_SHOP.ORDERS"' in erd
-        assert "MODEL.JAFFLE_SHOP.STG_ORDERS" not in erd
-
-    def test_cli_flag(self, tmp_path):
-        DbterdRunner().invoke(["run", "--info-schema", str(JAFFLE_V2_OSS_INFO), "-o", str(tmp_path)])
-        assert "Ref: " in (tmp_path / "output.dbml").read_text()

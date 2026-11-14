@@ -2,12 +2,14 @@ import contextlib
 from pathlib import Path
 from unittest import mock
 
+from artifact_parser.core import OptionalDependencyError
 import click
 import pytest
 
 from dbterd import default
 from dbterd.core.executor import Executor
 from dbterd.plugins.dbt_core.dbt_invocation import DbtInvocation
+from tests.unit.fixtures.test_data import JAFFLE_V2, SAMPLES
 
 
 class TestBase:
@@ -340,3 +342,35 @@ class TestBase:
                 tables=[], relationships=[], manifest={}, api=True, algo="test_relationship", target="dbml"
             ),
         ]
+
+
+class TestInfoSchema:
+    @pytest.mark.parametrize(
+        "info_schema, expected",
+        [
+            (True, str(JAFFLE_V2 / "info_schema" / "v1")),
+            ("some/dir", str(Path("some/dir").absolute())),
+            (None, None),
+        ],
+    )
+    def test_evaluate_kwargs(self, dummy_executor, info_schema, expected):
+        kwargs = dummy_executor.evaluate_kwargs(
+            artifacts_dir=str(JAFFLE_V2), select=[], exclude=[], info_schema=info_schema
+        )
+        assert kwargs["artifacts_dir"] == str(JAFFLE_V2)
+        assert kwargs["info_schema"] == expected
+
+    def test_get_dir_falls_back_to_target(self, dummy_executor):
+        artifacts_dir, _ = dummy_executor._get_dir(artifacts_dir=str(SAMPLES), info_schema=True)
+        assert artifacts_dir == str(SAMPLES / "target")
+
+    def test_missing_info_schema_dir(self, dummy_executor, tmp_path):
+        with pytest.raises(click.FileError, match="Info schema directory does not exist"):
+            dummy_executor._read_info_schema(str(tmp_path / "info_schema" / "v1"))
+
+    def test_missing_pyarrow(self, dummy_executor):
+        with (
+            mock.patch("dbterd.core.executor.parse_info_schema", side_effect=OptionalDependencyError("no pyarrow")),
+            pytest.raises(click.UsageError, match=r"dbterd\[info-schema\]"),
+        ):
+            dummy_executor._read_info_schema(str(JAFFLE_V2))

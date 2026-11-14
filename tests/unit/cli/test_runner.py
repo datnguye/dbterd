@@ -12,6 +12,7 @@ from dbterd.adapters.targets.plantuml import PlantumlAdapter
 from dbterd.cli.config import ConfigError
 from dbterd.cli.main import DbterdRunner
 from dbterd.default import default_output_path
+from tests.unit.fixtures.test_data import JAFFLE_V2_OSS_INFO
 
 
 class TestRunner:
@@ -174,3 +175,7 @@ class TestRunner:
         ):
             dbterd.invoke(["run"])
         assert "Test config error" in str(exc_info.value)
+
+    def test_invoke_run_info_schema(self, dbterd: DbterdRunner, tmp_path) -> None:
+        dbterd.invoke(["run", "--info-schema", str(JAFFLE_V2_OSS_INFO), "-o", str(tmp_path)])
+        assert "Ref: " in (tmp_path / "output.dbml").read_text()

@@ -3,6 +3,7 @@ from unittest import mock
 
 from dbterd import default
 from dbterd.api import DbtErd
+from tests.unit.fixtures.test_data import JAFFLE_V2
 
 
 class TestDbtErd:
@@ -34,3 +35,10 @@ class TestDbtErd:
             }
         }
         assert actual.executor.ctx.command.name == "run"
+
+    def test_get_model_erd_from_info_schema(self):
+        erd = DbtErd(artifacts_dir=str(JAFFLE_V2), info_schema=True, target="mermaid").get_model_erd(
+            node_unique_id="model.jaffle_shop.orders"
+        )
+        assert '"MODEL.JAFFLE_SHOP.ORDER_ITEMS" }|--|| "MODEL.JAFFLE_SHOP.ORDERS"' in erd
+        assert "MODEL.JAFFLE_SHOP.STG_ORDERS" not in erd
