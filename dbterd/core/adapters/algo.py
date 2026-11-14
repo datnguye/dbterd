@@ -439,7 +439,7 @@ class BaseAlgoAdapter(ABC):
 
         if hasattr(manifest_node, "columns"):  # nodes having no compiled but just list of columns
             columns = ",\n            ".join([str(x) for x in manifest_node.columns])
-            table = f"{manifest_node.database}.{manifest_node.schema}.undefined"
+            table = f"{manifest_node.database}.{manifest_node.schema_}.undefined"
             return f"""select
             {columns}
         from {table}"""
