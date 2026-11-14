@@ -230,13 +230,13 @@ class BaseAlgoAdapter(ABC):
 
         return tables
 
-    def get_tables(self, manifest: Manifest, catalog: Catalog, **kwargs) -> list[Table]:
+    def get_tables(self, manifest: Manifest, catalog: Optional[Catalog], **kwargs) -> list[Table]:
         """
         Extract tables from dbt artifacts.
 
         Args:
             manifest (dict): dbt manifest json
-            catalog (dict): dbt catalog json
+            catalog (dict): dbt catalog json, or None when catalog.json is absent
             **kwargs: Additional options including:
                 entity_name_format (str): Format string for entity names
                 omit_columns (bool): Whether to exclude columns from tables
@@ -252,7 +252,7 @@ class BaseAlgoAdapter(ABC):
         if hasattr(manifest, "nodes"):
             for node_name, node in manifest.nodes.items():
                 if node_name.startswith("model.") or node_name.startswith("seed.") or node_name.startswith("snapshot."):
-                    catalog_node = catalog.nodes.get(node_name)
+                    catalog_node = catalog.nodes.get(node_name) if catalog else None
                     table = self.get_table(
                         node_name=node_name,
                         manifest_node=node,
@@ -265,7 +265,7 @@ class BaseAlgoAdapter(ABC):
         if hasattr(manifest, "sources"):
             for node_name, source in manifest.sources.items():
                 if node_name.startswith("source"):
-                    catalog_source = catalog.sources.get(node_name)
+                    catalog_source = catalog.sources.get(node_name) if catalog else None
                     table = self.get_table(
                         node_name=node_name,
                         manifest_node=source,

@@ -224,7 +224,7 @@ node.description       # Model description
 
 ### Catalog Structure
 
-The catalog contains runtime information:
+The catalog contains runtime information. It's optional: when `catalog.json` is absent, `catalog` is `None` and `get_tables()` falls back to the manifest columns, so guard any direct catalog access in a custom algorithm.
 
 ```python
 catalog.nodes           # Dict with column types from the actual database
