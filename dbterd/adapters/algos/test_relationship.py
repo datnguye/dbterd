@@ -17,7 +17,7 @@ from dbterd.core.adapters.algo import BaseAlgoAdapter
 from dbterd.core.models import Ref, Table
 from dbterd.core.registry.decorators import register_algo
 from dbterd.helpers.log import logger
-from dbterd.types import Catalog, Manifest
+from dbterd.types import Catalog, InfoSchema, Manifest
 
 
 # Constants
@@ -36,6 +36,17 @@ def _extract_column_name(kwargs: dict, rule_key: str) -> str:
     """
     column = kwargs.get(rule_key) or "_and_".join(kwargs.get(f"{rule_key}s", ["unknown"]))
     return str(column).replace('"', "").lower()
+
+
+def _column_map(kwargs: dict, rule: dict[str, str]) -> tuple[list[str], list[str]]:
+    """Get the ([to column], [from column]) of a relationship test from its kwargs."""
+    return (
+        [_extract_column_name(kwargs, rule.get("c_to"))],
+        [
+            str(kwargs.get("column_name") or "").replace('"', "").lower()
+            or _extract_column_name(kwargs, rule.get("c_from"))
+        ],
+    )
 
 
 def _is_enabled(node) -> bool:
@@ -60,21 +71,13 @@ class TestRelationshipAlgo(BaseAlgoAdapter):
 
     def parse_artifacts(self, manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[list[Table], list[Ref]]:
         """Parse from file-based manifest/catalog artifacts."""
-        # Parse Table
         tables = self.select_tables(self.get_tables(manifest=manifest, catalog=catalog, **kwargs), **kwargs)
+        return self.collect(tables=tables, relationships=self.get_relationships(manifest=manifest, **kwargs))
 
-        # Parse Ref
-        relationships = self.get_relationships(manifest=manifest, **kwargs)
-        relationships = self.make_up_relationships(relationships=relationships, tables=tables)
-
-        # Fulfill columns in Tables (due to `select *`)
-        tables = self.enrich_tables_from_relationships(tables=tables, relationships=relationships)
-
-        logger.info(f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)")
-        return (
-            sorted(tables, key=lambda tbl: tbl.node_name),
-            sorted(relationships, key=lambda rel: rel.name),
-        )
+    def parse_info_schema(self, info: InfoSchema, **kwargs) -> tuple[list[Table], list[Ref]]:
+        """Parse from the dbt info schema."""
+        tables = self.select_tables(self.get_tables_from_info_schema(info=info, **kwargs), **kwargs)
+        return self.collect(tables=tables, relationships=self.get_relationships_from_info_schema(info=info, **kwargs))
 
     def parse_metadata(self, data: dict, **kwargs) -> tuple[list[Table], list[Ref]]:
         """Parse from dbt Cloud metadata API response."""
@@ -113,6 +116,10 @@ class TestRelationshipAlgo(BaseAlgoAdapter):
         found_nodes = [node_unique_id]
         if type == "metadata":
             return found_nodes  # not supported yet, return input only
+        if type == "info_schema":
+            return self.find_related_nodes_from_refs(
+                self.get_relationships_from_info_schema(info=manifest, **kwargs), node_unique_id
+            )
 
         rule = self.get_algo_rule(**kwargs)
         test_nodes = self.get_test_nodes_by_rule_name(manifest=manifest, rule_name=rule.get("name").lower())
@@ -143,19 +150,58 @@ class TestRelationshipAlgo(BaseAlgoAdapter):
             Ref(
                 name=x,
                 table_map=self.get_table_map(test_node=manifest.nodes[x], **kwargs),
-                column_map=(
-                    [_extract_column_name(manifest.nodes[x].test_metadata.kwargs, rule.get("c_to"))],
-                    [
-                        str(manifest.nodes[x].test_metadata.kwargs.get("column_name") or "").replace('"', "").lower()
-                        or _extract_column_name(manifest.nodes[x].test_metadata.kwargs, rule.get("c_from"))
-                    ],
-                ),
+                column_map=_column_map(manifest.nodes[x].test_metadata.kwargs, rule),
                 type=self.get_relationship_type(manifest.nodes[x].meta.get(TEST_META_RELATIONSHIP_TYPE, "")),
                 relationship_label=manifest.nodes[x].meta.get("relationship_label"),
             )
             for x in self.get_test_nodes_by_rule_name(manifest=manifest, rule_name=rule.get("name").lower())
             if self._has_parents(manifest.nodes[x], name=x)
         ]
+
+        return self.get_unique_refs(refs=refs)
+
+    def get_relationships_from_info_schema(self, info: InfoSchema, **kwargs) -> list[Ref]:
+        """Extract relationships from the dbt info schema `data_tests` based on test relationship.
+
+        The model under test is the `from` side; the test's other parent (from `edges`) is the `to` side.
+
+        Args:
+            info: Parsed dbt info schema
+            **kwargs: Additional options including:
+                algo (str): Algorithm name and optional rules
+
+        Returns:
+            List[Ref]: List of parsed relationship
+
+        """
+        rule = self.get_algo_rule(**kwargs)
+        parents_of: dict[str, list[str]] = {}
+        for edge in info.dbt_edges:
+            parents_of.setdefault(edge.child_unique_id, []).append(edge.parent_unique_id)
+
+        refs = []
+        for test in info.dbt_data_tests:
+            meta = test.meta or {}
+            if (
+                rule.get("name").lower() not in test.unique_id.lower()
+                or meta.get(TEST_META_IGNORE_IN_ERD, "0") != "0"
+                or test.enabled is False
+            ):
+                continue
+            parents = parents_of.get(test.unique_id, [])
+            if not parents:
+                logger.warning(f"Skipped the relationship test `{test.unique_id}`: it has no parent model")
+                continue
+            to_node = next((x for x in parents if x != test.node_unique_id), test.node_unique_id)
+            refs.append(
+                Ref(
+                    name=test.unique_id,
+                    table_map=[to_node, test.node_unique_id],
+                    column_map=_column_map(test.arguments or {}, rule),
+                    type=self.get_relationship_type(meta.get(TEST_META_RELATIONSHIP_TYPE, "")),
+                    relationship_label=meta.get("relationship_label"),
+                )
+            )
 
         return self.get_unique_refs(refs=refs)
 

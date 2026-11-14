@@ -13,7 +13,7 @@ from dbterd.core.adapters.algo import BaseAlgoAdapter
 from dbterd.core.models import Ref, Table
 from dbterd.core.registry.decorators import register_algo
 from dbterd.helpers.log import logger
-from dbterd.types import Catalog, Manifest
+from dbterd.types import Catalog, InfoSchema, Manifest
 
 
 def _resolve_ref_to_node_id(to_str: str, manifest_nodes: dict) -> Optional[str]:
@@ -138,6 +138,18 @@ def _extract_pk_column_names(node) -> list[str]:
     return pk_columns
 
 
+def _info_schema_nodes(info: InfoSchema) -> dict:
+    """Map each info schema model, seed, snapshot and source unique ID to its row."""
+    return {
+        node.unique_id: node for node in [*info.dbt_models, *info.dbt_seeds, *info.dbt_snapshots, *info.dbt_sources]
+    }
+
+
+def _constraints_of_type(constraints: Optional[list], constraint_type: str) -> list[dict]:
+    """Filter info schema constraints (decoded JSON dicts) by their type."""
+    return [c for c in constraints or [] if c.get("type") == constraint_type]
+
+
 @register_algo("model_contract", description="Detect relationships via dbt model contract constraints")
 class ModelContractAlgo(BaseAlgoAdapter):
     """Algorithm adapter using dbt model contract constraints.
@@ -150,17 +162,22 @@ class ModelContractAlgo(BaseAlgoAdapter):
         """Parse from file-based manifest/catalog artifacts."""
         tables = self.select_tables(self.get_tables(manifest=manifest, catalog=catalog, **kwargs), **kwargs)
         tables = self._enrich_tables_with_pk_info(tables=tables, manifest=manifest)
+        return self.collect(tables=tables, relationships=self.get_relationships(manifest=manifest, **kwargs))
 
-        relationships = self.get_relationships(manifest=manifest, **kwargs)
-        relationships = self.make_up_relationships(relationships=relationships, tables=tables)
+    def parse_info_schema(self, info: InfoSchema, **kwargs) -> tuple[list[Table], list[Ref]]:
+        """Parse from the dbt info schema."""
+        tables = self.select_tables(self.get_tables_from_info_schema(info=info, **kwargs), **kwargs)
 
-        tables = self.enrich_tables_from_relationships(tables=tables, relationships=relationships)
+        pk_map: dict[str, set[str]] = {}
+        for node in _info_schema_nodes(info).values():
+            for constraint in _constraints_of_type(node.constraints, "primary_key"):
+                pk_map.setdefault(node.unique_id, set()).update(c.lower() for c in constraint.get("columns") or [])
+        for column in info.dbt_node_columns:
+            if _constraints_of_type(column.constraints, "primary_key"):
+                pk_map.setdefault(column.node_unique_id, set()).add(column.column_name.lower())
 
-        logger.info(f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)")
-        return (
-            sorted(tables, key=lambda tbl: tbl.node_name),
-            sorted(relationships, key=lambda rel: rel.name),
-        )
+        tables = self._mark_primary_keys(tables=tables, pk_map=pk_map)
+        return self.collect(tables=tables, relationships=self.get_relationships_from_info_schema(info=info))
 
     def _enrich_tables_with_pk_info(self, tables: list[Table], manifest: Manifest) -> list[Table]:
         """Mark columns as primary key based on manifest constraints.
@@ -182,6 +199,11 @@ class ModelContractAlgo(BaseAlgoAdapter):
             if pk_cols:
                 pk_map[node_name] = {c.lower() for c in pk_cols}
 
+        return self._mark_primary_keys(tables=tables, pk_map=pk_map)
+
+    @staticmethod
+    def _mark_primary_keys(tables: list[Table], pk_map: dict[str, set[str]]) -> list[Table]:
+        """Set is_primary_key on the columns listed per node unique ID in `pk_map`."""
         for table in tables:
             pks = pk_map.get(table.node_name, set())
             if not pks:
@@ -222,6 +244,10 @@ class ModelContractAlgo(BaseAlgoAdapter):
         found_nodes = [node_unique_id]
         if type == "metadata":
             return found_nodes
+        if type == "info_schema":
+            return self.find_related_nodes_from_refs(
+                self.get_relationships_from_info_schema(info=manifest), node_unique_id
+            )
 
         if not hasattr(manifest, "nodes"):
             return found_nodes
@@ -265,6 +291,66 @@ class ModelContractAlgo(BaseAlgoAdapter):
 
             refs.extend(self._extract_column_level_refs(node_name, node, manifest.nodes))
             refs.extend(self._extract_model_level_refs(node_name, node, manifest.nodes))
+
+        return self.get_unique_refs(refs=refs)
+
+    def get_relationships_from_info_schema(self, info: InfoSchema) -> list[Ref]:
+        """Extract relationships from the foreign_key constraints of the dbt info schema models.
+
+        Column-level constraints come from `node_columns`, model-level ones from `models`.
+
+        Args:
+            info: Parsed dbt info schema
+
+        Returns:
+            List of parsed relationships
+
+        """
+        nodes = _info_schema_nodes(info)
+        refs = []
+
+        for column in info.dbt_node_columns:
+            node = nodes.get(column.node_unique_id)
+            if not column.node_unique_id.startswith("model.") or node is None:
+                continue
+            node_meta = node.meta or {}
+            relationship_type = _get_relationship_type((column.meta or {}).get(TEST_META_RELATIONSHIP_TYPE, ""))
+            for constraint in _constraints_of_type(column.constraints, "foreign_key"):
+                to_node_id = _resolve_to_node_id(constraint.get("to"), nodes)
+                if not to_node_id:
+                    continue
+                constraint_name = constraint.get("name") or None
+                for to_column in constraint.get("to_columns") or [column.column_name]:
+                    refs.append(
+                        Ref(
+                            name=constraint_name or column.node_unique_id,
+                            table_map=[to_node_id, column.node_unique_id],
+                            column_map=([to_column], [column.column_name]),
+                            type=relationship_type,
+                            relationship_label=node_meta.get("relationship_labels", {}).get(constraint_name),
+                        )
+                    )
+
+        for model in info.dbt_models:
+            node_meta = model.meta or {}
+            for constraint in _constraints_of_type(model.constraints, "foreign_key"):
+                to_node_id = _resolve_to_node_id(constraint.get("to"), nodes)
+                if not to_node_id or not constraint.get("columns"):
+                    continue
+                constraint_name = constraint.get("name") or None
+                refs.append(
+                    Ref(
+                        name=constraint_name or model.unique_id,
+                        table_map=[to_node_id, model.unique_id],
+                        column_map=(
+                            list(constraint.get("to_columns") or constraint["columns"]),
+                            list(constraint["columns"]),
+                        ),
+                        type=_get_relationship_type(node_meta.get("relationship_types", {}).get(constraint_name) or ""),
+                        relationship_label=node_meta.get("relationship_labels", {}).get(constraint_name)
+                        or node_meta.get("relationship_label"),
+                    )
+                )
 
         return self.get_unique_refs(refs=refs)
 

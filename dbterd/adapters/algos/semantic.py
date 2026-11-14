@@ -11,7 +11,7 @@ from dbterd.core.adapters.algo import BaseAlgoAdapter
 from dbterd.core.models import Ref, SemanticEntity, Table
 from dbterd.core.registry.decorators import register_algo
 from dbterd.helpers.log import logger
-from dbterd.types import Catalog, Manifest
+from dbterd.types import Catalog, InfoSchema, Manifest
 
 
 def _get_relationship_type(meta_value: str) -> str:
@@ -31,6 +31,26 @@ def _get_relationship_type(meta_value: str) -> str:
     }.get(meta_value.lower(), "n1")
 
 
+def _link_entities(
+    foreigns: list[SemanticEntity], primaries: list[SemanticEntity]
+) -> list[tuple[SemanticEntity, SemanticEntity]]:
+    """Pair each foreign entity with the primary entities of the same name."""
+    return [(f, p) for f in foreigns for p in primaries if f.entity_name == p.entity_name]
+
+
+def _entity_refs(linked: list[tuple[SemanticEntity, SemanticEntity]]) -> list[Ref]:
+    """Build the relationships of linked (foreign, primary) entity pairs."""
+    return [
+        Ref(
+            name=primary_entity.semantic_model,
+            table_map=(primary_entity.model, foreign_entity.model),
+            column_map=([primary_entity.column_name], [foreign_entity.column_name]),
+            type=_get_relationship_type(primary_entity.relationship_type),
+        )
+        for foreign_entity, primary_entity in linked
+    ]
+
+
 @register_algo("semantic", description="Detect relationships via Semantic Layer entities")
 class SemanticAlgo(BaseAlgoAdapter):
     """Algorithm adapter using dbt Semantic Layer entities.
@@ -41,21 +61,13 @@ class SemanticAlgo(BaseAlgoAdapter):
 
     def parse_artifacts(self, manifest: Manifest, catalog: Catalog, **kwargs) -> tuple[list[Table], list[Ref]]:
         """Parse from file-based manifest/catalog artifacts."""
-        # Parse Table
         tables = self.select_tables(self.get_tables(manifest=manifest, catalog=catalog, **kwargs), **kwargs)
+        return self.collect(tables=tables, relationships=self.get_relationships(manifest=manifest))
 
-        # Parse Ref
-        relationships = self.get_relationships(manifest=manifest)
-        relationships = self.make_up_relationships(relationships=relationships, tables=tables)
-
-        # Fulfill columns in Tables (due to `select *`)
-        tables = self.enrich_tables_from_relationships(tables=tables, relationships=relationships)
-
-        logger.info(f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)")
-        return (
-            sorted(tables, key=lambda tbl: tbl.node_name),
-            sorted(relationships, key=lambda rel: rel.name),
-        )
+    def parse_info_schema(self, info: InfoSchema, **kwargs) -> tuple[list[Table], list[Ref]]:
+        """Parse from the dbt info schema."""
+        tables = self.select_tables(self.get_tables_from_info_schema(info=info, **kwargs), **kwargs)
+        return self.collect(tables=tables, relationships=self.get_relationships_from_info_schema(info=info))
 
     def parse_metadata(self, data: dict, **kwargs) -> tuple[list[Table], list[Ref]]:
         """Parse from dbt Cloud metadata API response."""
@@ -96,6 +108,10 @@ class SemanticAlgo(BaseAlgoAdapter):
         found_nodes = [node_unique_id]
         if type == "metadata":  # pragma: no cover
             return found_nodes  # not supported yet, return input only
+        if type == "info_schema":
+            return self.find_related_nodes_from_refs(
+                self.get_relationships_from_info_schema(info=manifest), node_unique_id
+            )
 
         entities = self.get_linked_semantic_entities(manifest=manifest)
         for foreign, primary in entities:
@@ -228,13 +244,7 @@ class SemanticAlgo(BaseAlgoAdapter):
             List of (FK, PK) entity tuples
 
         """
-        foreigns, primaries = self.get_semantic_entities(manifest=manifest)
-        linked_entities = []
-        for foreign_entity in foreigns:
-            for primary_entity in primaries:
-                if foreign_entity.entity_name == primary_entity.entity_name:
-                    linked_entities.append((foreign_entity, primary_entity))
-        return linked_entities
+        return _link_entities(*self.get_semantic_entities(manifest=manifest))
 
     def get_linked_semantic_entities_from_metadata(
         self,
@@ -249,13 +259,7 @@ class SemanticAlgo(BaseAlgoAdapter):
             List of (FK, PK) entity tuples
 
         """
-        foreigns, primaries = self.get_semantic_entities_from_metadata(data=data)
-        linked_entities = []
-        for foreign_entity in foreigns:
-            for primary_entity in primaries:
-                if foreign_entity.entity_name == primary_entity.entity_name:
-                    linked_entities.append((foreign_entity, primary_entity))
-        return linked_entities
+        return _link_entities(*self.get_semantic_entities_from_metadata(data=data))
 
     def get_relationships(self, manifest: Manifest) -> list[Ref]:
         """Extract relationships from dbt artifacts based on Semantic Entities.
@@ -268,20 +272,59 @@ class SemanticAlgo(BaseAlgoAdapter):
 
         """
         entities = self.get_linked_semantic_entities(manifest=manifest)
-        return self.get_unique_refs(
-            refs=[
-                Ref(
-                    name=primary_entity.semantic_model,
-                    table_map=(primary_entity.model, foreign_entity.model),
-                    column_map=(
-                        [primary_entity.column_name],
-                        [foreign_entity.column_name],
-                    ),
-                    type=_get_relationship_type(primary_entity.relationship_type),
-                )
-                for foreign_entity, primary_entity in entities
-            ]
+        return self.get_unique_refs(refs=_entity_refs(entities))
+
+    def get_relationships_from_info_schema(self, info: InfoSchema) -> list[Ref]:
+        """Extract relationships from the dbt info schema based on Semantic Entities.
+
+        Each semantic model maps to its parent model through `edges`.
+
+        Args:
+            info: Parsed dbt info schema
+
+        Returns:
+            List of parsed relationships
+
+        """
+        model_of = {
+            edge.child_unique_id: edge.parent_unique_id
+            for edge in info.dbt_edges
+            if edge.child_unique_id.startswith("semantic_model.") and edge.parent_unique_id.startswith("model.")
+        }
+        relationship_type_of = {
+            x.unique_id: ((x.config or {}).get("meta") or {}).get(TEST_META_RELATIONSHIP_TYPE, "")
+            for x in info.dbt_semantic_models
+        }
+
+        entities = [
+            SemanticEntity(
+                semantic_model=e.unique_id,
+                model=model_of[e.unique_id],
+                entity_name=e.name,
+                entity_type=e.entity_type,
+                column_name=e.expr or e.name,
+                relationship_type=relationship_type_of.get(e.unique_id, ""),
+            )
+            for e in info.dbt_semantic_entities
+            if e.unique_id in model_of and e.entity_type in ["primary", "foreign"]
+        ] + [
+            SemanticEntity(
+                semantic_model=x.unique_id,
+                model=model_of[x.unique_id],
+                entity_name=x.primary_entity,
+                entity_type="primary",
+                column_name=x.primary_entity,
+                relationship_type=relationship_type_of[x.unique_id],
+            )
+            for x in info.dbt_semantic_models
+            if x.unique_id in model_of and x.primary_entity
+        ]
+
+        linked = _link_entities(
+            [x for x in entities if x.entity_type == "foreign"],
+            [x for x in entities if x.entity_type == "primary"],
         )
+        return self.get_unique_refs(refs=_entity_refs(linked))
 
     def get_relationships_from_metadata(self, data: list) -> list[Ref]:
         """Extract relationships from Metadata result list on Semantic Entities.
@@ -294,17 +337,4 @@ class SemanticAlgo(BaseAlgoAdapter):
 
         """
         entities = self.get_linked_semantic_entities_from_metadata(data=data)
-        return self.get_unique_refs(
-            refs=[
-                Ref(
-                    name=primary_entity.semantic_model,
-                    table_map=(primary_entity.model, foreign_entity.model),
-                    column_map=(
-                        [primary_entity.column_name],
-                        [foreign_entity.column_name],
-                    ),
-                    type=_get_relationship_type(primary_entity.relationship_type),
-                )
-                for foreign_entity, primary_entity in entities
-            ]
-        )
+        return self.get_unique_refs(refs=_entity_refs(entities))

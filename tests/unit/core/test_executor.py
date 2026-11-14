@@ -329,7 +329,7 @@ class TestBase:
             mock.call.mock_read_manifest(mp=None, mv=None, policies=None),
             mock.call.mock_read_catalog(cp=None, cv=None, policies=None),
             mock.call.mock_set_single_node_selection(
-                manifest={}, node_unique_id="irr", algo="test_relationship", target="dbml"
+                manifest={}, node_unique_id="irr", type=None, algo="test_relationship", target="dbml"
             ),
             mock.call.mock_load_algo(name="test_relationship"),
             mock.call.mock_load_target(name="dbml"),

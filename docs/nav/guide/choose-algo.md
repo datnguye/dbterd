@@ -258,6 +258,18 @@ models:
 
 Supported values: `zero-to-many`, `zero-to-one`, `one-to-one`, `many-to-many`, `one-to-many`, `many-to-one` (default).
 
+## dbt info schema
+
+With [`--info-schema`](./cli-references.md#dbterd-run-info-schema), the algorithms read the dbt 2.0 parquet info schema instead of `manifest.json`, and draw the same relationships from it:
+
+| Algorithm | Reads |
+|-----------|-------|
+| `test_relationship` | `dbt.data_tests` (test arguments, meta) + `dbt.edges` for the referenced model |
+| `semantic` | `dbt.semantic_entities` + `dbt.semantic_models` (`primary_entity`, `config.meta`), mapped to models through `dbt.edges` |
+| `model_contract` | `constraints` of `dbt.models` (model-level) and `dbt.node_columns` (column-level) |
+
+Tables come from `dbt.models`, `dbt.seeds`, `dbt.snapshots` and `dbt.sources` with their `dbt.node_columns`. The info schema lists every column dbt knows about, not only the documented ones, so expect fuller tables than the JSON mode without a `catalog.json`. The newer `dbt.semantic_relationships` table isn't read yet. A custom algorithm opts in by implementing `parse_info_schema(info, **kwargs)`; one that doesn't stops with a clear error instead of drawing a lonely, relationship-free ERD.
+
 ## New module(s)?
 
 If you've got an idea of having new type of module(s) to parse ERs, feel free to:
