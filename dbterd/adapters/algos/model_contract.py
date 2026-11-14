@@ -143,9 +143,88 @@ def _info_schema_nodes(info: InfoSchema) -> dict:
     return {node.unique_id: node for node in BaseAlgoAdapter.get_info_schema_nodes(info)}
 
 
-def _constraints_of_type(constraints: Optional[list], constraint_type: str) -> list[dict]:
-    """Filter info schema constraints (decoded JSON dicts) by their type."""
-    return [c for c in constraints or [] if c.get("type") == constraint_type]
+def _constraint_value(constraint, key: str):
+    """Read a constraint field from a manifest constraint object or an info schema dict."""
+    if isinstance(constraint, dict):
+        return constraint.get(key)
+    value = getattr(constraint, key, None)
+    return getattr(value, "value", value)
+
+
+def _constraints_of_type(constraints: Optional[list], constraint_type: str) -> list:
+    """Filter constraints (manifest objects or info schema dicts) by their type."""
+    return [c for c in constraints or [] if _constraint_value(c, "type") == constraint_type]
+
+
+def _column_fk_refs(
+    node_name: str, node_meta: Optional[dict], column_name: str, column_meta: Optional[dict], constraints, nodes: dict
+) -> list[Ref]:
+    """Build the relationships of a column's foreign_key constraints.
+
+    Args:
+        node_name: The node unique ID (e.g. model.pkg.orders)
+        node_meta: The node meta
+        column_name: The constrained column
+        column_meta: The column meta
+        constraints: The column constraints (manifest objects or info schema dicts)
+        nodes: Dict of node unique IDs to nodes, to resolve `to`
+
+    Returns:
+        List of Ref objects, one per referenced column
+
+    """
+    relationship_type = _get_relationship_type((column_meta or {}).get(TEST_META_RELATIONSHIP_TYPE, ""))
+    refs = []
+    for constraint in _constraints_of_type(constraints, "foreign_key"):
+        to_node_id = _resolve_to_node_id(_constraint_value(constraint, "to"), nodes)
+        if not to_node_id:
+            continue
+        constraint_name = _constraint_value(constraint, "name") or None
+        for to_column in _constraint_value(constraint, "to_columns") or [column_name]:
+            refs.append(
+                Ref(
+                    name=constraint_name or node_name,
+                    table_map=[to_node_id, node_name],
+                    column_map=([to_column], [column_name]),
+                    type=relationship_type,
+                    relationship_label=(node_meta or {}).get("relationship_labels", {}).get(constraint_name),
+                )
+            )
+    return refs
+
+
+def _model_fk_refs(node_name: str, node_meta: Optional[dict], constraints, nodes: dict) -> list[Ref]:
+    """Build the relationships of a model's model-level foreign_key constraints.
+
+    Args:
+        node_name: The node unique ID (e.g. model.pkg.orders)
+        node_meta: The node meta
+        constraints: The model constraints (manifest objects or info schema dicts)
+        nodes: Dict of node unique IDs to nodes, to resolve `to`
+
+    Returns:
+        List of Ref objects, one per constraint
+
+    """
+    node_meta = node_meta or {}
+    refs = []
+    for constraint in _constraints_of_type(constraints, "foreign_key"):
+        columns = _constraint_value(constraint, "columns")
+        to_node_id = _resolve_to_node_id(_constraint_value(constraint, "to"), nodes)
+        if not to_node_id or not columns:
+            continue
+        constraint_name = _constraint_value(constraint, "name") or None
+        refs.append(
+            Ref(
+                name=constraint_name or node_name,
+                table_map=[to_node_id, node_name],
+                column_map=(list(_constraint_value(constraint, "to_columns") or columns), list(columns)),
+                type=_get_relationship_type(node_meta.get("relationship_types", {}).get(constraint_name) or ""),
+                relationship_label=node_meta.get("relationship_labels", {}).get(constraint_name)
+                or node_meta.get("relationship_label"),
+            )
+        )
+    return refs
 
 
 @register_algo("model_contract", description="Detect relationships via dbt model contract constraints")
@@ -306,50 +385,16 @@ class ModelContractAlgo(BaseAlgoAdapter):
         """
         nodes = _info_schema_nodes(info)
         refs = []
-
         for column in info.dbt_node_columns:
             node = nodes.get(column.node_unique_id)
-            if not column.node_unique_id.startswith("model.") or node is None:
-                continue
-            node_meta = node.meta or {}
-            relationship_type = _get_relationship_type((column.meta or {}).get(TEST_META_RELATIONSHIP_TYPE, ""))
-            for constraint in _constraints_of_type(column.constraints, "foreign_key"):
-                to_node_id = _resolve_to_node_id(constraint.get("to"), nodes)
-                if not to_node_id:
-                    continue
-                constraint_name = constraint.get("name") or None
-                for to_column in constraint.get("to_columns") or [column.column_name]:
-                    refs.append(
-                        Ref(
-                            name=constraint_name or column.node_unique_id,
-                            table_map=[to_node_id, column.node_unique_id],
-                            column_map=([to_column], [column.column_name]),
-                            type=relationship_type,
-                            relationship_label=node_meta.get("relationship_labels", {}).get(constraint_name),
-                        )
-                    )
-
-        for model in info.dbt_models:
-            node_meta = model.meta or {}
-            for constraint in _constraints_of_type(model.constraints, "foreign_key"):
-                to_node_id = _resolve_to_node_id(constraint.get("to"), nodes)
-                if not to_node_id or not constraint.get("columns"):
-                    continue
-                constraint_name = constraint.get("name") or None
-                refs.append(
-                    Ref(
-                        name=constraint_name or model.unique_id,
-                        table_map=[to_node_id, model.unique_id],
-                        column_map=(
-                            list(constraint.get("to_columns") or constraint["columns"]),
-                            list(constraint["columns"]),
-                        ),
-                        type=_get_relationship_type(node_meta.get("relationship_types", {}).get(constraint_name) or ""),
-                        relationship_label=node_meta.get("relationship_labels", {}).get(constraint_name)
-                        or node_meta.get("relationship_label"),
+            if column.node_unique_id.startswith("model.") and node is not None:
+                refs.extend(
+                    _column_fk_refs(
+                        column.node_unique_id, node.meta, column.column_name, column.meta, column.constraints, nodes
                     )
                 )
-
+        for model in info.dbt_models:
+            refs.extend(_model_fk_refs(model.unique_id, model.meta, model.constraints, nodes))
         return self.get_unique_refs(refs=refs)
 
     def _collect_fk_targets(self, node, manifest_nodes: dict) -> list[str]:
@@ -396,44 +441,18 @@ class ModelContractAlgo(BaseAlgoAdapter):
             List of Ref objects
 
         """
-        refs = []
-
-        if not hasattr(node, "columns") or not node.columns:
-            return refs
-
-        for col_name, col in node.columns.items():
-            if not hasattr(col, "constraints") or not col.constraints:
-                continue
-
-            for constraint in col.constraints:
-                if constraint.type.value != "foreign_key":
-                    continue
-                if not getattr(constraint, "to", None):
-                    continue
-
-                to_node_id = _resolve_to_node_id(constraint.to, manifest_nodes)
-                if not to_node_id:
-                    continue
-
-                to_columns = getattr(constraint, "to_columns", None) or [col_name]
-                col_meta = getattr(col, "meta", None) or {}
-                relationship_type = _get_relationship_type(col_meta.get(TEST_META_RELATIONSHIP_TYPE, ""))
-
-                constraint_name = getattr(constraint, "name", None) or None
-                node_meta = getattr(node, "meta", None) or {}
-                relationship_label = node_meta.get("relationship_labels", {}).get(constraint_name)
-                for to_column in to_columns:
-                    refs.append(
-                        Ref(
-                            name=constraint_name or node_name,
-                            table_map=[to_node_id, node_name],
-                            column_map=([to_column], [col_name]),
-                            type=relationship_type,
-                            relationship_label=relationship_label,
-                        )
-                    )
-
-        return refs
+        return [
+            ref
+            for col_name, col in (getattr(node, "columns", None) or {}).items()
+            for ref in _column_fk_refs(
+                node_name,
+                getattr(node, "meta", None),
+                col_name,
+                getattr(col, "meta", None),
+                getattr(col, "constraints", None),
+                manifest_nodes,
+            )
+        ]
 
     def _extract_model_level_refs(self, node_name: str, node, manifest_nodes: dict) -> list[Ref]:
         """Extract Ref objects from model-level FK constraints.
@@ -447,41 +466,6 @@ class ModelContractAlgo(BaseAlgoAdapter):
             List of Ref objects
 
         """
-        refs = []
-
-        if not hasattr(node, "constraints") or not node.constraints:
-            return refs
-
-        for constraint in node.constraints:
-            if constraint.type.value != "foreign_key":
-                continue
-            if not getattr(constraint, "to", None):
-                continue
-            if not getattr(constraint, "columns", None):
-                continue
-
-            to_node_id = _resolve_to_node_id(constraint.to, manifest_nodes)
-            if not to_node_id:
-                continue
-
-            to_columns = list(getattr(constraint, "to_columns", None) or constraint.columns)
-            node_meta = getattr(node, "meta", None) or {}
-            constraint_name = getattr(constraint, "name", None) or None
-            relationship_type = _get_relationship_type(
-                node_meta.get("relationship_types", {}).get(constraint_name) or ""
-            )
-            relationship_label = node_meta.get("relationship_labels", {}).get(constraint_name) or node_meta.get(
-                "relationship_label"
-            )
-
-            refs.append(
-                Ref(
-                    name=constraint_name or node_name,
-                    table_map=[to_node_id, node_name],
-                    column_map=(to_columns, list(constraint.columns)),
-                    type=relationship_type,
-                    relationship_label=relationship_label,
-                )
-            )
-
-        return refs
+        return _model_fk_refs(
+            node_name, getattr(node, "meta", None), getattr(node, "constraints", None), manifest_nodes
+        )
