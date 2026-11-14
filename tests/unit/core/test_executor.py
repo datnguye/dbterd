@@ -186,7 +186,7 @@ class TestBase:
                 {
                     "dbt": True,
                     "dbt_auto_artifacts": True,
-                    "artifacts_dir": "/path/dpd/target",
+                    "artifacts_dir": str(Path("/path/dpd") / "target"),
                     "dbt_project_dir": "/path/dpd",
                     "select": ["yolo"],
                     "exclude": [],
@@ -198,7 +198,7 @@ class TestBase:
                 ["yolo"],
                 {
                     "dbt_cloud": True,
-                    "artifacts_dir": "/path/dpd/target",
+                    "artifacts_dir": str(Path("/path/dpd") / "target"),
                     "dbt_project_dir": "/path/dpd",
                     "select": [],
                     "exclude": [],

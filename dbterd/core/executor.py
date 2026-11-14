@@ -121,9 +121,9 @@ class Executor:
 
                 if kwargs.get("dbt_auto_artifacts"):
                     self.dbt.get_artifacts_for_erd()
-                    artifacts_dir = f"{dbt_project_dir}/target"
+                    artifacts_dir = str(Path(dbt_project_dir) / "target")
             elif kwargs.get("dbt_cloud"):
-                artifacts_dir = f"{dbt_project_dir}/target"
+                artifacts_dir = str(Path(dbt_project_dir) / "target")
             logger.info(f"Using dbt artifact dir at: {artifacts_dir}")
 
         if kwargs.get("info_schema"):
