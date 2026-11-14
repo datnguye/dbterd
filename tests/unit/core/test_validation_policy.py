@@ -31,6 +31,7 @@ class TestValidationPolicyRegistry:
         known = validation_policy.known_relax_policies()
         assert "relax_extra_fields" in known
         assert "relax_enum_values" in known
+        assert "relax_checksum_objects" in known
 
     def test_known_relax_policies_is_sorted(self):
         known = validation_policy.known_relax_policies()

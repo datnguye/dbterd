@@ -509,6 +509,7 @@ Available policies:
 
 - `relax_extra_fields` — ignore unknown fields instead of rejecting them.
 - `relax_enum_values` — accept unknown enum values (widening non-`type` enum fields to strings).
+- `relax_checksum_objects` — accept a `{name, checksum}` object where a string `checksum` is declared, unwrapping it to the string (dbt 2.0 writes unit-test checksums this way while still declaring manifest v12).
 
 > **Omit** the option to apply **all** policies (the default — keeps things working out of the box). Pass an **empty** value (`--relax-policies ""` or `relax-policies: []` in config) for **strict** validation.
 

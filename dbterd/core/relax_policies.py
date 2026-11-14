@@ -11,7 +11,7 @@ from enum import Enum
 from types import UnionType
 from typing import Union, get_args, get_origin
 
-from pydantic import BaseModel
+from pydantic import BaseModel, BeforeValidator
 
 from dbterd.core.validation_policy import register_relax_policy
 
@@ -75,6 +75,32 @@ def relax_enum_members(artifact_module: object) -> None:
                 rebuilt = True
         if rebuilt:
             model.model_rebuild(force=True)
+
+
+@register_relax_policy("relax_checksum_objects")
+def relax_checksum_objects(artifact_module: object) -> None:
+    """Accept a ``{name, checksum}`` object where a string ``checksum`` is declared.
+
+    Manifest v12 types ``nodes.*.checksum`` as a ``{name, checksum}`` object but
+    ``unit_tests.*.checksum`` as a plain string; dbt 2.0 writes the object form for
+    unit tests too while still declaring v12. String-typed ``checksum`` fields get a
+    before-validator that unwraps the object to its ``checksum`` string, so the
+    parsed value keeps its declared type.
+
+    Args:
+        artifact_module: The imported ``*_v{n}`` parser module to patch.
+    """
+    for model in _iter_pydantic_models(artifact_module):
+        field = model.model_fields.get("checksum")
+        if field is None or str not in (field.annotation, *get_args(field.annotation)):
+            continue
+        field.metadata.append(BeforeValidator(_unwrap_checksum_object))
+        model.model_rebuild(force=True)
+
+
+def _unwrap_checksum_object(value: object) -> object:
+    """Return a checksum object's ``checksum`` string; pass anything else through."""
+    return value.get("checksum") if isinstance(value, dict) else value
 
 
 def _annotation_references_enum(annotation: object) -> bool:
