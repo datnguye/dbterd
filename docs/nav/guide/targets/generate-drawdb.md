@@ -7,7 +7,7 @@ Let's use [Jaffle-Shop](https://github.com/dbt-labs/jaffle-shop) as the example.
 Clone it, then perform the `dbt docs generate` in order to generate the `/target` folder containing:
 
 - `manifest.json`
-- `catalog.json`
+- `catalog.json` (optional, adds warehouse column types; dbt 2.0 no longer writes it)
 
 Or we can use the generated files found in the [samples](https://github.com/datnguye/dbterd/tree/main/samples/jaffle-shop)
 

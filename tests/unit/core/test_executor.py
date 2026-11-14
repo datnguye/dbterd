@@ -1,5 +1,7 @@
 import contextlib
+import json
 from pathlib import Path
+import shutil
 from unittest import mock
 
 from artifact_parser.core import OptionalDependencyError
@@ -7,6 +9,7 @@ import click
 import pytest
 
 from dbterd import default
+from dbterd.api import DbtErd
 from dbterd.core.executor import Executor
 from dbterd.plugins.dbt_core.dbt_invocation import DbtInvocation
 from tests.unit.fixtures.test_data import JAFFLE_V2, SAMPLES
@@ -114,20 +117,39 @@ class TestBase:
             (10, "12", 10, False),
         ],
     )
-    def test___read_catalog(self, cv, default_version_return, expected_version, should_call_default, dummy_executor):
+    def test___read_catalog(
+        self, cv, default_version_return, expected_version, should_call_default, dummy_executor, tmp_path
+    ):
+        (tmp_path / "catalog.json").touch()
         with contextlib.ExitStack() as stack:
             mock_read_catalog = stack.enter_context(mock.patch("dbterd.helpers.file.read_catalog", return_value={}))
-            mock_check_existence = stack.enter_context(mock.patch("dbterd.helpers.cli_messaging.check_existence"))
             mock_default_catalog_version = stack.enter_context(
                 mock.patch("dbterd.default.default_catalog_version", return_value=default_version_return)
             )
-            assert dummy_executor._read_catalog(cp=Path.cwd(), cv=cv) == {}
-        mock_check_existence.assert_called_once_with(Path.cwd(), "catalog.json")
+            assert dummy_executor._read_catalog(cp=tmp_path, cv=cv) == {}
         if should_call_default:
-            mock_default_catalog_version.assert_called_once_with(artifacts_dir=Path.cwd())
+            mock_default_catalog_version.assert_called_once_with(artifacts_dir=tmp_path)
         else:
             assert mock_default_catalog_version.call_count == 0
-        mock_read_catalog.assert_called_once_with(path=Path.cwd(), version=expected_version, policies=None)
+        mock_read_catalog.assert_called_once_with(path=tmp_path, version=expected_version, policies=None)
+
+    @pytest.mark.parametrize("cv", [None, 1])
+    def test___read_catalog_missing(self, cv, dummy_executor, tmp_path):
+        with (
+            mock.patch("dbterd.helpers.file.read_catalog") as mock_read_catalog,
+            mock.patch("dbterd.core.executor.logger.warning") as mock_warning,
+        ):
+            assert dummy_executor._read_catalog(cp=tmp_path, cv=cv) is None
+        mock_read_catalog.assert_not_called()
+        mock_warning.assert_called_once()
+        assert "fall back to the manifest" in mock_warning.call_args.args[0]
+
+    @pytest.mark.parametrize("algo, relationships", [("test_relationship", 3), ("semantic", 4), ("model_contract", 0)])
+    def test_get_erd_without_catalog(self, algo, relationships, tmp_path):
+        shutil.copy(JAFFLE_V2 / "manifest.json", tmp_path)
+        erd = json.loads(DbtErd(artifacts_dir=str(tmp_path), target="json", algo=algo).get_erd())
+        assert erd["nodes"]
+        assert len(erd["edges"]) == relationships
 
     @mock.patch("dbterd.core.executor.DbtInvocation.get_selection", return_value="dummy")
     def test__get_selection(self, mock_dbt_invocation, dummy_executor):

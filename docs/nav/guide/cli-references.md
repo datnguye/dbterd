@@ -299,6 +299,8 @@ It will take the nested `/target` directory of `--dbt-project-dir` if not specif
 
 > Default to the current directory's `/target` if both this option and `--dbt-project-dir` option are not specified
 
+`manifest.json` is required, `catalog.json` is optional. dbt 2.0's `dbt docs generate` doesn't write a catalog anymore, so when it's missing dbterd logs a warning and builds the ERD from the manifest alone: tables, columns and relationships stay the same, but column types come from the `data_type` declared in your YAML (or `unknown`), and columns that exist only in the warehouse don't show up. A `catalog.json` that exists but can't be read still fails loudly, because a corrupt catalog deserves attention, not a shrug.
+
 **Examples:**
 === "CLI"
 
@@ -493,6 +495,8 @@ Specified dbt manifest.json version
 
 Specified dbt catalog.json version
 > Auto detect if not specified
+
+Only used when `catalog.json` exists. Without the file, the version is ignored and the run falls back to the manifest columns (see [--artifacts-dir](#dbterd-run-artifacts-dir-ad)), so a `catalog-version` pinned in `.dbterd.yml` won't break a dbt 2.0 project.
 
 **Examples:**
 === "CLI"

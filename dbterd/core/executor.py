@@ -254,16 +254,23 @@ class Executor:
             policies: Validation relaxation policy names (None = all registered)
 
         Returns:
-            Catalog object
+            Catalog object, or None when catalog.json is absent (columns then come
+            from the manifest only, so warehouse data types are unknown)
 
         """
+        if not (Path(cp) / self.filename_catalog).is_file():
+            logger.warning(
+                f"{self.filename_catalog} not found in {cp}: columns fall back to the manifest "
+                "(no warehouse data types)"
+            )
+            return None
+
         if cv is None:
             detected_version = default.default_catalog_version(artifacts_dir=cp)
             if detected_version:
                 cv = int(detected_version)
                 logger.info(f"Auto-detected catalog version: {cv}")
 
-        cli_messaging.check_existence(cp, self.filename_catalog)
         with cli_messaging.handle_read_errors(self.filename_catalog):
             return file_handlers.read_catalog(path=cp, version=cv, policies=policies)
 
