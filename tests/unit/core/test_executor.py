@@ -241,7 +241,7 @@ class TestBase:
             (
                 {"artifacts_dir": Path.cwd(), "dbt_project_dir": Path.cwd()},
                 [False],
-                (str(f"{Path.cwd()}/target"), str(Path.cwd())),
+                (str(Path.cwd() / "target"), str(Path.cwd())),
             ),
             (
                 {"artifacts_dir": Path.cwd(), "dbt_project_dir": Path.cwd()},
@@ -268,7 +268,7 @@ class TestBase:
             ),
         ],
     )
-    @mock.patch("os.path.isfile")
+    @mock.patch("pathlib.Path.is_file")
     def test__get_dir(self, mock_isfile, kwargs, mock_isfile_se, expected, dummy_executor):
         mock_isfile.side_effect = mock_isfile_se
         assert dummy_executor._get_dir(**kwargs) == expected

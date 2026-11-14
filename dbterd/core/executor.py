@@ -6,7 +6,6 @@ ERD generation from dbt artifacts.
 
 import importlib
 import importlib.metadata
-import os
 from pathlib import Path
 import pkgutil
 from typing import Optional
@@ -195,11 +194,11 @@ class Executor:
         project_dir = Path(project_dir).absolute()
 
         if kwargs.get("info_schema"):
-            has_artifacts = os.path.isdir(f"{artifact_dir}/{self.dirname_info_schema}")
+            has_artifacts = (artifact_dir / self.dirname_info_schema).is_dir()
         else:
-            has_artifacts = os.path.isfile(f"{artifact_dir}/{self.filename_manifest}")
+            has_artifacts = (artifact_dir / self.filename_manifest).is_file()
         if not has_artifacts:
-            artifact_dir = f"{project_dir}/target"  # try child target
+            artifact_dir = project_dir / "target"  # try child target
 
         return (str(artifact_dir), str(project_dir))
 
