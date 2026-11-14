@@ -1,5 +1,7 @@
 """Test data fixtures for adapter tests."""
 
+from pathlib import Path
+
 import pytest
 
 from dbterd.adapters.targets.d2 import D2Adapter
@@ -113,3 +115,9 @@ ADAPTER_REL_SYMBOL_CONFIGS = [
     (PlantumlAdapter, PLANTUML_SYMBOLS),
     (DrawdbAdapter, DRAWDB_SYMBOLS),
 ]
+
+
+# Committed dbt 2.0 sample artifacts (manifest + parquet info schema)
+SAMPLES = Path(__file__).parents[3] / "samples"
+JAFFLE_V2 = SAMPLES / "jaffle-shop-v2"
+JAFFLE_V2_OSS_INFO = SAMPLES / "jaffle-shop-v2-oss" / "info_schema" / "v1"

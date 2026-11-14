@@ -6,11 +6,12 @@ ERD generation from dbt artifacts.
 
 import importlib
 import importlib.metadata
-import os
 from pathlib import Path
 import pkgutil
 from typing import Optional
 
+from artifact_parser.core import OptionalDependencyError
+from artifact_parser.dbt_info_schema import parse_info_schema
 import click
 
 from dbterd import default
@@ -72,6 +73,7 @@ class Executor:
         self.ctx = ctx
         self.filename_manifest = "manifest.json"
         self.filename_catalog = "catalog.json"
+        self.dirname_info_schema = "info_schema/v1"
         self.dbt: DbtInvocation = None
 
     def run(self, node_unique_id: Optional[str] = None, **kwargs) -> tuple[list[Table], list[Ref]]:
@@ -119,10 +121,17 @@ class Executor:
 
                 if kwargs.get("dbt_auto_artifacts"):
                     self.dbt.get_artifacts_for_erd()
-                    artifacts_dir = f"{dbt_project_dir}/target"
+                    artifacts_dir = str(Path(dbt_project_dir) / "target")
             elif kwargs.get("dbt_cloud"):
-                artifacts_dir = f"{dbt_project_dir}/target"
+                artifacts_dir = str(Path(dbt_project_dir) / "target")
             logger.info(f"Using dbt artifact dir at: {artifacts_dir}")
+
+        if kwargs.get("info_schema"):
+            kwargs["info_schema"] = str(
+                Path(artifacts_dir, self.dirname_info_schema)
+                if kwargs["info_schema"] is True
+                else Path(kwargs["info_schema"]).absolute()
+            )
 
         kwargs["artifacts_dir"] = artifacts_dir
         kwargs["dbt_project_dir"] = dbt_project_dir
@@ -184,8 +193,12 @@ class Executor:
         artifact_dir = Path(artifact_dir).absolute()
         project_dir = Path(project_dir).absolute()
 
-        if not os.path.isfile(f"{artifact_dir}/{self.filename_manifest}"):
-            artifact_dir = f"{project_dir}/target"  # try child target
+        if kwargs.get("info_schema"):
+            has_artifacts = (artifact_dir / self.dirname_info_schema).is_dir()
+        else:
+            has_artifacts = (artifact_dir / self.filename_manifest).is_file()
+        if not has_artifacts:
+            artifact_dir = project_dir / "target"  # try child target
 
         return (str(artifact_dir), str(project_dir))
 
@@ -254,6 +267,32 @@ class Executor:
         with cli_messaging.handle_read_errors(self.filename_catalog):
             return file_handlers.read_catalog(path=cp, version=cv, policies=policies)
 
+    def _read_info_schema(self, path: str):
+        """Read the dbt 2.0 parquet info schema.
+
+        Args:
+            path: info_schema/v1 directory path
+
+        Raises:
+            click.FileError: The directory does not exist or its content is unreadable
+            click.UsageError: pyarrow is not installed
+
+        Returns:
+            InfoSchema object
+
+        """
+        if not Path(path).is_dir():
+            raise click.FileError(
+                path, "Info schema directory does not exist, run dbt with `--generate-info-schema` to produce it"
+            )
+        with cli_messaging.handle_read_errors(path):
+            try:
+                return parse_info_schema(path)
+            except OptionalDependencyError as e:
+                raise click.UsageError(
+                    "Reading the dbt info schema needs pyarrow: pip install 'dbterd[info-schema]'"
+                ) from e
+
     def _save_result(self, path, data):
         """Save ERD data to file.
 
@@ -280,7 +319,7 @@ class Executor:
         Args:
             manifest: Manifest data
             node_unique_id: Manifest node unique ID
-            type: Manifest type (file or metadata)
+            type: Manifest type (None for file, "metadata" or "info_schema")
 
         Returns:
             Edited kwargs dict
@@ -331,20 +370,29 @@ class Executor:
         if kwargs.get("dbt_cloud"):
             DbtCloudArtifact(**kwargs).get(artifacts_dir=kwargs.get("artifacts_dir"))
 
-        policies = self._resolve_validation_policies(kwargs.get("relax_policies"))
-        manifest = self._read_manifest(
-            mp=kwargs.get("artifacts_dir"),
-            mv=kwargs.get("manifest_version"),
-            policies=policies,
-        )
-        catalog = self._read_catalog(
-            cp=kwargs.get("artifacts_dir"),
-            cv=kwargs.get("catalog_version"),
-            policies=policies,
-        )
+        if kwargs.get("info_schema"):
+            manifest = self._read_info_schema(kwargs["info_schema"])
+            catalog = "info_schema"
+        else:
+            policies = self._resolve_validation_policies(kwargs.get("relax_policies"))
+            manifest = self._read_manifest(
+                mp=kwargs.get("artifacts_dir"),
+                mv=kwargs.get("manifest_version"),
+                policies=policies,
+            )
+            catalog = self._read_catalog(
+                cp=kwargs.get("artifacts_dir"),
+                cv=kwargs.get("catalog_version"),
+                policies=policies,
+            )
 
         if node_unique_id:
-            kwargs = self._set_single_node_selection(manifest=manifest, node_unique_id=node_unique_id, **kwargs)
+            kwargs = self._set_single_node_selection(
+                manifest=manifest,
+                node_unique_id=node_unique_id,
+                type="info_schema" if catalog == "info_schema" else None,
+                **kwargs,
+            )
 
         # Load adapters
         algo_adapter = self.load_algo(name=kwargs["algo"])

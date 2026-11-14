@@ -157,6 +157,11 @@ Command to generate diagram-as-a-code file from dbt artifact files, optionally d
                                       names applied when reading artifacts. Omit
                                       to apply all policies; pass an empty value
                                       for strict validation.
+      --info-schema TEXT              Read the dbt 2.0 parquet info schema instead
+                                      of manifest.json/catalog.json. Optionally
+                                      pass its directory, default: <artifacts-
+                                      dir>/info_schema/v1. Needs the `dbterd[info-
+                                      schema]` extra
       --dbt                           Flag to indicate the Selection to follow
                                       dbt's one leveraging Programmatic Invocation
       -dpd, --dbt-project-dir TEXT    Specified dbt project directory path
@@ -509,6 +514,7 @@ Available policies:
 
 - `relax_extra_fields` — ignore unknown fields instead of rejecting them.
 - `relax_enum_values` — accept unknown enum values (widening non-`type` enum fields to strings).
+- `relax_checksum_objects` — accept a `{name, checksum}` object where a string `checksum` is declared, unwrapping it to the string (dbt 2.0 writes unit-test checksums this way while still declaring manifest v12).
 
 > **Omit** the option to apply **all** policies (the default — keeps things working out of the box). Pass an **empty** value (`--relax-policies ""` or `relax-policies: []` in config) for **strict** validation.
 
@@ -527,6 +533,47 @@ Available policies:
 
     # Strict validation
     dbterd run --relax-policies "" -mv 12 -cv 1
+    ```
+
+### dbterd run --info-schema
+
+Read the dbt 2.0 parquet "information schema" instead of `manifest.json`/`catalog.json`. dbt writes it to `target/info_schema/v1/` when run with `--generate-info-schema`, and it already carries the column types, so there's no `catalog.json` to chase down.
+
+Pass the flag alone to read `<artifacts-dir>/info_schema/v1`, or give it the directory explicitly. Off by default: without the flag `dbterd` reads the JSON artifacts as it always has.
+
+Reading parquet needs `pyarrow`, which comes with the extra:
+
+```bash
+pip install "dbterd[info-schema]"
+```
+
+All the built-in algorithms (`test_relationship`, `semantic`, `model_contract`) support it, see [Choose the Parser](./choose-algo.md#dbt-info-schema) for what each one reads. Column types prefer the warehouse type, then the declared one, then the type dbt inferred.
+
+**Examples:**
+=== "CLI"
+
+    ```bash
+    # Read ./target/info_schema/v1
+    dbterd run --info-schema
+
+    # Read the sample's info schema
+    dbterd run --artifacts-dir ./samples/jaffle-shop-v2 --info-schema
+
+    # Read an explicit directory
+    dbterd run --info-schema ./samples/jaffle-shop-v2-oss/info_schema/v1
+    ```
+=== "Config file"
+
+    ```yaml
+    # .dbterd.yml: `true` reads <artifacts-dir>/info_schema/v1, a path reads that directory
+    info-schema: true
+    ```
+=== "Python API"
+
+    ```python
+    from dbterd.api import DbtErd
+
+    erd = DbtErd(artifacts_dir="./target", info_schema=True).get_erd()
     ```
 
 ### dbterd run --resource-type (-rt)
@@ -1000,6 +1047,11 @@ Shows hidden configured values, which will help us to see what configs are passe
                                       names applied when reading artifacts. Omit
                                       to apply all policies; pass an empty value
                                       for strict validation.
+      --info-schema TEXT              Read the dbt 2.0 parquet info schema instead
+                                      of manifest.json/catalog.json. Optionally
+                                      pass its directory, default: <artifacts-
+                                      dir>/info_schema/v1. Needs the `dbterd[info-
+                                      schema]` extra
       --dbt                           Flag to indicate the Selection to follow
                                       dbt's one leveraging Programmatic Invocation
       -dpd, --dbt-project-dir TEXT    Specified dbt project directory path

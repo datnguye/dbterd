@@ -23,7 +23,10 @@ class DummyManifestError:
 class DummyManifestHasColumns:
     columns: ClassVar[dict[str, None]] = {"col1": None, "col2": None}
     database = "database_dummy"
-    schema = "schema_dummy"
+    schema_ = "schema_dummy"
+
+    def schema(self):
+        return "bound-method-not-a-value"
 
 
 @dataclass

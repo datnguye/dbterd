@@ -9,9 +9,12 @@ from abc import ABC, abstractmethod
 import copy
 from typing import Optional, Union
 
+import click
+
 from dbterd.core.filter import is_selected_table
 from dbterd.core.models import Column, Ref, Table
-from dbterd.types import Catalog, Manifest
+from dbterd.helpers.log import logger
+from dbterd.types import Catalog, InfoSchema, Manifest
 
 
 class BaseAlgoAdapter(ABC):
@@ -26,7 +29,8 @@ class BaseAlgoAdapter(ABC):
         - parse_metadata: Parse from dbt Cloud metadata API
 
     The parse() method automatically dispatches to parse_metadata() when
-    catalog == "metadata", otherwise it calls parse_artifacts().
+    catalog == "metadata", to parse_info_schema() when catalog == "info_schema",
+    otherwise it calls parse_artifacts().
 
     """
 
@@ -35,11 +39,13 @@ class BaseAlgoAdapter(ABC):
         Parse dbt artifacts to extract tables and relationships.
 
         This is the main entry point. It automatically dispatches to
-        parse_metadata() when catalog == "metadata".
+        parse_metadata() when catalog == "metadata" and to parse_info_schema()
+        when catalog == "info_schema".
 
         Args:
-            manifest: Manifest json or metadata dict (when catalog == "metadata")
-            catalog: Catalog json or "metadata" string
+            manifest: Manifest json, metadata dict (when catalog == "metadata")
+                or the dbt info schema (when catalog == "info_schema")
+            catalog: Catalog json, "metadata" or "info_schema" string
             **kwargs: Additional options including:
                 resource_type: Types of resources to include
                 entity_name_format: Format string for entity names
@@ -53,6 +59,8 @@ class BaseAlgoAdapter(ABC):
         """
         if catalog == "metadata":
             return self.parse_metadata(data=manifest, **kwargs)
+        if catalog == "info_schema":
+            return self.parse_info_schema(info=manifest, **kwargs)
         return self.parse_artifacts(manifest=manifest, catalog=catalog, **kwargs)
 
     @abstractmethod
@@ -86,6 +94,51 @@ class BaseAlgoAdapter(ABC):
         """
         pass
 
+    def parse_info_schema(self, info: InfoSchema, **kwargs) -> tuple[list[Table], list[Ref]]:
+        """
+        Parse from the dbt 2.0 parquet info schema (`target/info_schema/v1`).
+
+        Algorithms opt in by overriding this hook; the default refuses rather
+        than silently drawing an ERD without relationships.
+
+        Args:
+            info: Parsed dbt info schema
+            **kwargs: Additional options
+
+        Raises:
+            click.UsageError: The algorithm does not support the info schema
+
+        Returns:
+            Tuple of (tables, relationships)
+
+        """
+        raise click.UsageError(f"Algorithm `{kwargs.get('algo')}` does not support the dbt info schema input")
+
+    def collect(self, tables: list[Table], relationships: list[Ref]) -> tuple[list[Table], list[Ref]]:
+        """
+        Finalize parsed tables and node-level relationships into the ERD result.
+
+        Keeps the relationships whose both ends are among the tables, renames
+        their ends to entity names, adds the related columns missing from the
+        tables (due to `select *`), and sorts both lists.
+
+        Args:
+            tables: Selected tables
+            relationships: Relationships keyed by node unique IDs
+
+        Returns:
+            Tuple of (tables, relationships)
+
+        """
+        relationships = self.make_up_relationships(relationships=relationships, tables=tables)
+        tables = self.enrich_tables_from_relationships(tables=tables, relationships=relationships)
+
+        logger.info(f"Collected {len(tables)} table(s) and {len(relationships)} relationship(s)")
+        return (
+            sorted(tables, key=lambda tbl: tbl.node_name),
+            sorted(relationships, key=lambda rel: rel.name),
+        )
+
     def find_related_nodes_by_id(
         self,
         manifest: Union[Manifest, dict],
@@ -111,6 +164,24 @@ class BaseAlgoAdapter(ABC):
 
         """
         return [node_unique_id]
+
+    def find_related_nodes_from_refs(self, relationships: list[Ref], node_unique_id: str) -> list[str]:
+        """
+        Find the nodes sharing a relationship with the given node.
+
+        Args:
+            relationships: Relationships keyed by node unique IDs
+            node_unique_id: Node unique ID
+
+        Returns:
+            The input node and its related node unique IDs
+
+        """
+        found_nodes = {node_unique_id}
+        for relationship in relationships:
+            if node_unique_id in relationship.table_map:
+                found_nodes.update(relationship.table_map)
+        return list(found_nodes)
 
     # -------------------------------------------------------------------------
     # Common table extraction methods
@@ -205,6 +276,73 @@ class BaseAlgoAdapter(ABC):
                     tables.append(table)
 
         return tables
+
+    def get_tables_from_info_schema(self, info: InfoSchema, **kwargs) -> list[Table]:
+        """
+        Extract tables from the dbt info schema.
+
+        Args:
+            info: Parsed dbt info schema
+            **kwargs: Additional options including:
+                entity_name_format (str): Format string for entity names
+
+        Returns:
+            List[Table]: Tables of the enabled models, seeds, snapshots and sources
+
+        """
+        columns_of: dict[str, list] = {}
+        for column in sorted(info.dbt_node_columns, key=lambda c: c.column_index or 0):
+            columns_of.setdefault(column.node_unique_id, []).append(column)
+
+        parents_of = self.get_info_schema_parents(info)
+        exposures_of: dict[str, list[str]] = {}
+        for child, parents in parents_of.items():
+            if child.startswith("exposure."):
+                for parent in parents:
+                    exposures_of.setdefault(parent, []).append(child.split(".")[-1])
+
+        return [
+            self.get_table_from_info_schema(
+                node=node,
+                columns=columns_of.get(node.unique_id, []),
+                parents=parents_of.get(node.unique_id, []),
+                exposures=exposures_of.get(node.unique_id, []),
+                **kwargs,
+            )
+            for node in self.get_info_schema_nodes(info)
+            if node.enabled is not False
+        ]
+
+    @staticmethod
+    def get_info_schema_nodes(info: InfoSchema) -> list:
+        """
+        Get the info schema rows that become ERD tables.
+
+        Args:
+            info: Parsed dbt info schema
+
+        Returns:
+            The model, seed, snapshot and source rows
+
+        """
+        return [*info.dbt_models, *info.dbt_seeds, *info.dbt_snapshots, *info.dbt_sources]
+
+    @staticmethod
+    def get_info_schema_parents(info: InfoSchema) -> dict[str, list[str]]:
+        """
+        Map each node to its parents, from the info schema `edges`.
+
+        Args:
+            info: Parsed dbt info schema
+
+        Returns:
+            Parent unique IDs per child node unique ID
+
+        """
+        parents_of: dict[str, list[str]] = {}
+        for edge in info.dbt_edges:
+            parents_of.setdefault(edge.child_unique_id, []).append(edge.parent_unique_id)
+        return parents_of
 
     def filter_tables_based_on_selection(self, tables: list[Table], **kwargs) -> list[Table]:
         """
@@ -420,6 +558,61 @@ class BaseAlgoAdapter(ABC):
 
         return table
 
+    def get_table_from_info_schema(
+        self, node, columns: list, parents: list[str], exposures: list[str], **kwargs
+    ) -> Table:
+        """
+        Construct a single Table object (for the dbt info schema).
+
+        Column types prefer the warehouse type, then the declared one, then the inferred one.
+
+        Args:
+            node: Info schema model, seed, snapshot or source row
+            columns: Info schema `node_columns` rows of the node, in column order
+            parents: Parent node unique IDs
+            exposures: Names of the exposures depending on the node
+            **kwargs: Additional options including:
+                entity_name_format (str): Format string for entity names
+
+        Returns:
+            Table: Parsed table
+
+        """
+        node_name_parts = node.unique_id.split(".")
+        database = (node.database_name or "").lower()
+        schema = (node.schema_name or "").lower()
+        return Table(
+            name=self.get_table_name(
+                format=kwargs.get("entity_name_format"),
+                resource=node_name_parts[0],
+                package=node_name_parts[1],
+                model=node_name_parts[2],
+                database=database,
+                schema=schema,
+                table=(node.identifier or node.alias or node.name).lower(),
+            ),
+            node_name=node.unique_id,
+            raw_sql=node.compiled_code or node.raw_code,
+            database=database,
+            schema=schema,
+            columns=[
+                Column(
+                    name=column.column_name.strip('"').lower(),
+                    data_type=str(
+                        column.data_type_actual or column.data_type_declared or column.data_type_inferred or "unknown"
+                    ).lower(),
+                    description=column.description or "",
+                )
+                for column in columns
+            ]
+            or [Column()],
+            resource_type=node_name_parts[0],
+            exposures=exposures,
+            description=node.description or "",
+            label=(node.meta or {}).get("label"),
+            raw_depends_on=parents,
+        )
+
     def get_compiled_sql(self, manifest_node):
         """
         Retrieve compiled SQL from manifest node.
@@ -439,7 +632,7 @@ class BaseAlgoAdapter(ABC):
 
         if hasattr(manifest_node, "columns"):  # nodes having no compiled but just list of columns
             columns = ",\n            ".join([str(x) for x in manifest_node.columns])
-            table = f"{manifest_node.database}.{manifest_node.schema}.undefined"
+            table = f"{manifest_node.database}.{manifest_node.schema_}.undefined"
             return f"""select
             {columns}
         from {table}"""

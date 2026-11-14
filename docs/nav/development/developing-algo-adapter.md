@@ -64,11 +64,15 @@ Your adapter must inherit from `BaseAlgoAdapter` which provides:
 
 | Method | Type | Description |
 |--------|------|-------------|
-| `parse()` | method | Entry point - dispatches to `parse_artifacts()` or `parse_metadata()` |
+| `parse()` | method | Entry point - dispatches to `parse_artifacts()`, `parse_metadata()` or `parse_info_schema()` |
 | `parse_artifacts()` | abstract | **You implement this** - parse file-based artifacts |
 | `parse_metadata()` | abstract | **You implement this** - parse dbt Cloud metadata API |
+| `parse_info_schema()` | virtual | Override to support `--info-schema` (the dbt 2.0 parquet info schema); the default refuses with a clear error |
 | `get_tables()` | inherited | Extracts tables from manifest/catalog |
 | `get_tables_from_metadata()` | inherited | Extracts tables from metadata API |
+| `get_tables_from_info_schema()` | inherited | Extracts tables from the info schema |
+| `get_info_schema_nodes()` / `get_info_schema_parents()` | inherited | The info schema rows that become tables, and each node's parents from `dbt.edges` |
+| `collect()` | inherited | Finalizes a parse: `make_up_relationships()`, `enrich_tables_from_relationships()`, then sorts both lists |
 | `filter_tables_based_on_selection()` | inherited | Filters tables by selection rules |
 | `make_up_relationships()` | inherited | Filters refs and applies entity name format |
 | `get_unique_refs()` | inherited | Deduplicates relationships |

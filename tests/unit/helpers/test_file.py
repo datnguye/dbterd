@@ -57,11 +57,24 @@ def _build_fake_parser_module(artifact: str, version: int) -> types.ModuleType:
         # `type` is a consumed enum field (read via `.value`) and must stay an enum.
         type: Optional[ConstraintType] = None
 
+    class Checksum(BaseModel):
+        name: str
+        checksum: str
+
+    class Nodes(BaseModel):
+        checksum: Checksum
+
+    class UnitTests(BaseModel):
+        checksum: Optional[str] = None
+
     module = types.ModuleType(f"{artifact.lower()}_v{version}")
     module.SupportedLanguage = SupportedLanguage
     module.ConstraintType = ConstraintType
     module.Metadata = Metadata
     module.Macros = Macros
+    module.Checksum = Checksum
+    module.Nodes = Nodes
+    module.UnitTests = UnitTests
     setattr(module, f"{artifact}V{version}", Macros)
     return module
 
@@ -219,6 +232,35 @@ class TestFile:
         instance = fake_module.Macros(name="m", type="primary_key")
         assert isinstance(instance.type, fake_module.ConstraintType)
         assert instance.type.value == "primary_key"
+
+    @pytest.mark.parametrize(
+        "raw, expected",
+        [
+            ({"name": "none", "checksum": ""}, ""),
+            ({"name": "sha256", "checksum": "abc"}, "abc"),
+            ("abc", "abc"),
+            (None, None),
+        ],
+    )
+    def test_patch_parser_compatibility_unwraps_checksum_object(self, raw, expected):
+        """dbt 2.0 writes unit-test checksums as objects under the v12 string schema."""
+        fake_module = _build_fake_parser_module("Manifest", 12)
+        with _patch_parser_import(fake_module):
+            file.patch_parser_compatibility(
+                artifact="manifest", artifact_version=12, policies=["relax_checksum_objects"]
+            )
+
+        assert fake_module.UnitTests(checksum=raw).checksum == expected
+        node = fake_module.Nodes(checksum={"name": "sha256", "checksum": "abc"})
+        assert node.checksum == fake_module.Checksum(name="sha256", checksum="abc")
+
+    def test_patch_parser_compatibility_checksum_object_strict_without_policy(self):
+        fake_module = _build_fake_parser_module("Manifest", 12)
+        with _patch_parser_import(fake_module):
+            file.patch_parser_compatibility(artifact="manifest", artifact_version=12, policies=["relax_extra_fields"])
+
+        with pytest.raises(PydanticValidationError):
+            fake_module.UnitTests(checksum={"name": "none", "checksum": ""})
 
     def test_patch_parser_compatibility_empty_policies_skips_patching(self):
         """An empty policy list applies no relaxation: extra fields still rejected."""

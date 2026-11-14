@@ -140,6 +140,20 @@ def dbt_cloud_common_params(func):
     return wrapper
 
 
+info_schema_option = click.option(
+    "--info-schema",
+    help=(
+        "Read the dbt 2.0 parquet info schema instead of manifest.json/catalog.json. "
+        "Optionally pass its directory, default: <artifacts-dir>/info_schema/v1. "
+        "Needs the `dbterd[info-schema]` extra"
+    ),
+    is_flag=False,
+    flag_value=True,
+    default=None,
+    type=click.UNPROCESSED,
+)
+
+
 def run_params(func):
     @common_params
     @dbt_cloud_common_params
@@ -166,6 +180,7 @@ def run_params(func):
         type=click.UNPROCESSED,
         default=None,
     )
+    @info_schema_option
     @click.option(
         "--catalog-version",
         "-cv",
@@ -308,6 +323,7 @@ def debug_params(func):
         type=click.UNPROCESSED,
         default=None,
     )
+    @info_schema_option
     @click.option(
         "--catalog-version",
         "-cv",

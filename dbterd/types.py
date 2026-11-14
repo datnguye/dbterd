@@ -13,6 +13,7 @@ from artifact_parser.dbt.generated.models.manifest.manifest_v9 import ManifestV9
 from artifact_parser.dbt.generated.models.manifest.manifest_v10 import ManifestV10
 from artifact_parser.dbt.generated.models.manifest.manifest_v11 import ManifestV11
 from artifact_parser.dbt.generated.models.manifest.manifest_v12 import ManifestV12
+from artifact_parser.dbt_info_schema import InfoSchemaV1
 
 
 Manifest = Union[
@@ -32,3 +33,6 @@ Manifest = Union[
 
 # If a new version of Catalog is added, replace with `Union[CatalogV1, CatalogV2, ...]`.
 Catalog = CatalogV1
+
+# If a new version of the info schema is added, replace with `Union[InfoSchemaV1, InfoSchemaV2, ...]`.
+InfoSchema = InfoSchemaV1

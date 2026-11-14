@@ -231,6 +231,7 @@ All CLI parameters can be configured in files. Here's the complete reference:
 | `manifest-version` | string | auto-detect | dbt manifest.json version |
 | `catalog-version` | string | auto-detect | dbt catalog.json version |
 | `relax-policies` | list | all policies | Parser relaxation policy names (empty = strict) |
+| `info-schema` | boolean or string | off | Read the dbt 2.0 parquet info schema instead of the JSON artifacts: `true` for `<artifacts-dir>/info_schema/v1`, or its directory path. Needs `dbterd[info-schema]` |
 
 ### dbt Project Settings
 
