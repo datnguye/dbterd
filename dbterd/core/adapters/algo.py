@@ -294,12 +294,12 @@ class BaseAlgoAdapter(ABC):
         for column in sorted(info.dbt_node_columns, key=lambda c: c.column_index or 0):
             columns_of.setdefault(column.node_unique_id, []).append(column)
 
-        parents_of: dict[str, list[str]] = {}
+        parents_of = self.get_info_schema_parents(info)
         exposures_of: dict[str, list[str]] = {}
-        for edge in info.dbt_edges:
-            parents_of.setdefault(edge.child_unique_id, []).append(edge.parent_unique_id)
-            if edge.child_unique_id.startswith("exposure."):
-                exposures_of.setdefault(edge.parent_unique_id, []).append(edge.child_unique_id.split(".")[-1])
+        for child, parents in parents_of.items():
+            if child.startswith("exposure."):
+                for parent in parents:
+                    exposures_of.setdefault(parent, []).append(child.split(".")[-1])
 
         return [
             self.get_table_from_info_schema(
@@ -309,9 +309,40 @@ class BaseAlgoAdapter(ABC):
                 exposures=exposures_of.get(node.unique_id, []),
                 **kwargs,
             )
-            for node in [*info.dbt_models, *info.dbt_seeds, *info.dbt_snapshots, *info.dbt_sources]
+            for node in self.get_info_schema_nodes(info)
             if node.enabled is not False
         ]
+
+    @staticmethod
+    def get_info_schema_nodes(info: InfoSchema) -> list:
+        """
+        Get the info schema rows that become ERD tables.
+
+        Args:
+            info: Parsed dbt info schema
+
+        Returns:
+            The model, seed, snapshot and source rows
+
+        """
+        return [*info.dbt_models, *info.dbt_seeds, *info.dbt_snapshots, *info.dbt_sources]
+
+    @staticmethod
+    def get_info_schema_parents(info: InfoSchema) -> dict[str, list[str]]:
+        """
+        Map each node to its parents, from the info schema `edges`.
+
+        Args:
+            info: Parsed dbt info schema
+
+        Returns:
+            Parent unique IDs per child node unique ID
+
+        """
+        parents_of: dict[str, list[str]] = {}
+        for edge in info.dbt_edges:
+            parents_of.setdefault(edge.child_unique_id, []).append(edge.parent_unique_id)
+        return parents_of
 
     def filter_tables_based_on_selection(self, tables: list[Table], **kwargs) -> list[Table]:
         """

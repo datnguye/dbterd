@@ -140,9 +140,7 @@ def _extract_pk_column_names(node) -> list[str]:
 
 def _info_schema_nodes(info: InfoSchema) -> dict:
     """Map each info schema model, seed, snapshot and source unique ID to its row."""
-    return {
-        node.unique_id: node for node in [*info.dbt_models, *info.dbt_seeds, *info.dbt_snapshots, *info.dbt_sources]
-    }
+    return {node.unique_id: node for node in BaseAlgoAdapter.get_info_schema_nodes(info)}
 
 
 def _constraints_of_type(constraints: Optional[list], constraint_type: str) -> list[dict]:

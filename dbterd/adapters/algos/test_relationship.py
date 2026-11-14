@@ -175,9 +175,7 @@ class TestRelationshipAlgo(BaseAlgoAdapter):
 
         """
         rule = self.get_algo_rule(**kwargs)
-        parents_of: dict[str, list[str]] = {}
-        for edge in info.dbt_edges:
-            parents_of.setdefault(edge.child_unique_id, []).append(edge.parent_unique_id)
+        parents_of = self.get_info_schema_parents(info)
 
         refs = []
         for test in info.dbt_data_tests:
