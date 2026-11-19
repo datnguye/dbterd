@@ -58,6 +58,15 @@ jobs:
           file: ./coverage.xml
           fail_ci_if_error: true
 
+      - name: Smoke test clean install
+        if: matrix.os == 'ubuntu-latest' && matrix.python-version == '3.10'
+        run: |
+          uv venv /tmp/smoke
+          uv pip install -p /tmp/smoke/bin/python .
+          /tmp/smoke/bin/dbterd --version
+          mkdir -p /tmp/smoke-out
+          /tmp/smoke/bin/dbterd run -ad samples/jaffle-shop -o /tmp/smoke-out
+
       - name: Run integration tests
         if: matrix.python-version == '3.10'
         run: |
