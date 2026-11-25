@@ -4,6 +4,7 @@ This module converts parsed dbt artifacts into GraphViz DOT format
 for visualization with GraphViz tools.
 """
 
+from html import escape
 from typing import ClassVar
 
 from dbterd.core.adapters.target import BaseTargetAdapter
@@ -48,9 +49,11 @@ class GraphvizAdapter(BaseTargetAdapter):
     def format_table(self, table: Table, **kwargs) -> str:
         """Format a single table in GraphViz syntax."""
         columns = "\n".join(
-            f'         <tr><td align="left"><b>({col.data_type}) {col.name} [PK]</b></td></tr>'
+            f'         <tr><td align="left"><b>({escape(col.data_type, quote=False)}) '
+            f"{escape(col.name, quote=False)} [PK]</b></td></tr>"
             if col.is_primary_key
-            else f'         <tr><td align="left">({col.data_type}) {col.name}</td></tr>'
+            else f'         <tr><td align="left">({escape(col.data_type, quote=False)}) '
+            f"{escape(col.name, quote=False)}</td></tr>"
             for col in table.columns
         )
 
@@ -64,7 +67,7 @@ class GraphvizAdapter(BaseTargetAdapter):
             "    label =<\n"
             '      <table border="0" cellborder="0" cellpadding="3" bgcolor="white">\n'
             f'         <tr><td bgcolor="black" align="center" colspan="2">'
-            f'<font color="white">{table.name}</font></td></tr>\n'
+            f'<font color="white">{escape(table.name, quote=False)}</font></td></tr>\n'
             f"{columns}\n"
             "      </table>> ];"
         )

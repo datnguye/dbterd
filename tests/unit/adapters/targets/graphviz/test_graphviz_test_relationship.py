@@ -366,3 +366,22 @@ class TestGraphVizTestRelationship:
         print("graphviz ", graphviz.replace(" ", "").replace("\n", ""))
         print("expected", expected.replace(" ", "").replace("\n", ""))
         assert graphviz.replace(" ", "").replace("\n", "") == str(expected).replace(" ", "").replace("\n", "")
+
+    def test_build_erd_escapes_html_label_text(self):
+        adapter = GraphvizAdapter()
+        table = Table(
+            name="model.dbt_resto.table1",
+            node_name="model.dbt_resto.table1",
+            database="--database--",
+            schema="--schema--",
+            columns=[
+                Column(name="nested", data_type="array<struct<x int>>"),
+                Column(name="profit_and_loss", data_type="decimal<10,2>"),
+            ],
+            raw_sql="--irrelevant--",
+        )
+
+        graphviz = adapter.build_erd(tables=[table], relationships=[])
+
+        assert "(array&lt;struct&lt;x int&gt;&gt;) nested" in graphviz
+        assert "(decimal&lt;10,2&gt;) profit_and_loss" in graphviz
